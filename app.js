@@ -1470,115 +1470,208 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
   });
 
-  // Manual import submit action
-  document.getElementById("btn-manual-submit").onclick = () => {
-    const eng = document.getElementById("manual-english").value.trim();
-    const trans = document.getElementById("manual-translation").value.trim();
-    const lang = document.getElementById("manual-lang").value;
-    const cat = document.getElementById("manual-category").value.trim() || "nouns";
-    const imgUrl = document.getElementById("manual-image-url").value.trim();
-
-    if (eng && trans) {
-      addCustomWord(eng, trans, lang, cat, imgUrl, currentRecordingBase64);
-      saveState();
-      renderImportedList();
-      alert("Word added successfully!");
-      
-      // Reset input fields & recording data
-      document.getElementById("manual-english").value = "";
-      document.getElementById("manual-translation").value = "";
-      document.getElementById("manual-image-url").value = "";
-      currentRecordingBase64 = "";
-      document.getElementById("btn-record-play").disabled = true;
-      document.getElementById("record-status-text").textContent = "No audio recorded";
-    } else {
-      alert("Please fill in both word and translation.");
-    }
+  // Helper to load synonym data into editor inputs
+  window.loadSynonymIntoEditor = function(en, de, it, es, fr, category) {
+    document.getElementById("manual-lang-en").value = en;
+    document.getElementById("manual-lang-de").value = de;
+    document.getElementById("manual-lang-it").value = it;
+    document.getElementById("manual-lang-es").value = es;
+    document.getElementById("manual-lang-fr").value = fr;
+    document.getElementById("manual-category").value = category;
+    document.getElementById("manual-image-url").value = en;
+    playSound("sound-click");
   };
 
-  // Manual import auto-translate
-  document.getElementById("btn-manual-autotranslate").onclick = async () => {
-    const eng = document.getElementById("manual-english").value.trim();
-    const lang = document.getElementById("manual-lang").value;
-    const btn = document.getElementById("btn-manual-autotranslate");
+  // Helper to save synonym directly
+  window.addSynonymDirectly = function(en, de, it, es, fr, category) {
+    const newWord = {
+      en, de, it, es, fr,
+      category: category || "imported",
+      image: en,
+      audio: "",
+      details: {
+        articles: {},
+        sentences: {},
+        variations: {},
+        synonyms: { en: [], de: [], it: [], es: [], fr: [] }
+      }
+    };
+    
+    newWord.lang = state.selectedLang;
+    newWord.target = newWord[state.selectedLang];
 
-    if (!eng) {
-      alert("Please enter an English word/phrase to translate.");
+    state.customVocab.push(newWord);
+    saveState();
+    renderImportedList();
+    alert(`Word "${en}" added directly to your custom set!`);
+  };
+
+  // AI translate, classify & suggest synonyms
+  document.getElementById("btn-manual-ai-process").onclick = async () => {
+    const word = document.getElementById("manual-input-word").value.trim();
+    const lang = document.getElementById("manual-input-lang").value;
+    const btn = document.getElementById("btn-manual-ai-process");
+
+    if (!word) {
+      alert("Please enter a word or phrase.");
       return;
     }
 
-    const originalText = btn.textContent;
-    btn.textContent = "⏳...";
+    const origText = btn.textContent;
+    btn.textContent = "⏳ Analyzing & Translating with AI...";
     btn.disabled = true;
 
     try {
-      const prompt = `Translate the word/phrase "${eng}" from English to target language key "${lang}". Output ONLY the translated text, no description, no markdown, no quotes.`;
-      const result = await callLLM(prompt);
-      document.getElementById("manual-translation").value = result.trim();
-    } catch (err) {
-      alert(err.message);
-    } finally {
-      btn.textContent = originalText;
-      btn.disabled = false;
-    }
-  };
-
-  // Manual import propose similar words
-  document.getElementById("btn-manual-propose").onclick = async () => {
-    const eng = document.getElementById("manual-english").value.trim();
-    const lang = document.getElementById("manual-lang").value;
-    const btn = document.getElementById("btn-manual-propose");
-    const category = document.getElementById("manual-category").value.trim() || "imported";
-
-    const keyword = eng || "learning";
-
-    const originalText = btn.textContent;
-    btn.textContent = "⏳ Generating...";
-    btn.disabled = true;
-
-    try {
-      const prompt = `Based on the vocabulary word/topic "${keyword}", propose 5 related words or short phrases in English and their translations in target language key "${lang}".
-      Output your response ONLY as a clean JSON array of objects, with keys "word" (English text) and "trans" (translation text). Do not wrap in markdown code blocks, do not output anything else.
-      Example: [{"word": "ticket", "trans": "Fahrkarte"}, ...]`;
+      const prompt = `Classify and translate the vocabulary word/phrase "${word}" written in input language key "${lang}".
+      Output your response ONLY as a clean, parseable JSON object with the exact keys described below. Do not wrap in markdown code blocks. Do not write extra commentary.
+      
+      JSON schema:
+      {
+        "translations": {
+          "en": "English translation",
+          "de": "German translation",
+          "it": "Italian translation",
+          "es": "Spanish translation",
+          "fr": "French translation"
+        },
+        "category": "nouns, verbs, adjectives, or phrases",
+        "synonyms": [
+          {
+            "word": "Synonym word 1 in English",
+            "category": "nouns, verbs, etc.",
+            "translations": {
+              "en": "English",
+              "de": "German",
+              "it": "Italian",
+              "es": "Spanish",
+              "fr": "French"
+            }
+          },
+          {
+            "word": "Synonym word 2 in English",
+            "category": "nouns, verbs, etc.",
+            "translations": {
+              "en": "English",
+              "de": "German",
+              "it": "Italian",
+              "es": "Spanish",
+              "fr": "French"
+            }
+          }
+        ]
+      }`;
 
       const resText = await callLLM(prompt);
-      
-      let parsed = [];
+      let parsed;
       try {
         const cleanJson = resText.replace(/```json/g, "").replace(/```/g, "").trim();
         parsed = JSON.parse(cleanJson);
       } catch (e) {
-        throw new Error("AI returned malformed JSON response. Please try again.");
+        throw new Error("AI returned a non-JSON response. Please try again.");
       }
 
-      if (parsed.length > 0) {
-        // Switch tab to Bulk Import tab
-        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-        document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-        
-        document.querySelector('.tab-btn[data-tab="tab-bulk"]').classList.add("active");
-        document.getElementById("tab-bulk").classList.add("active");
+      if (parsed.translations) {
+        document.getElementById("manual-lang-en").value = parsed.translations.en || "";
+        document.getElementById("manual-lang-de").value = parsed.translations.de || "";
+        document.getElementById("manual-lang-it").value = parsed.translations.it || "";
+        document.getElementById("manual-lang-es").value = parsed.translations.es || "";
+        document.getElementById("manual-lang-fr").value = parsed.translations.fr || "";
+      }
+      
+      document.getElementById("manual-category").value = parsed.category || "nouns";
+      document.getElementById("manual-image-url").value = parsed.translations?.en || word;
 
-        parsedRows = parsed.map(item => ({
-          word: item.word || item.en || "",
-          trans: item.trans || item.target || "",
-          active: true
-        }));
+      const synContainer = document.getElementById("manual-synonyms-container");
+      synContainer.innerHTML = "";
 
-        document.getElementById("bulk-lang").value = lang;
-        document.getElementById("bulk-category").value = category;
+      if (parsed.synonyms && parsed.synonyms.length > 0) {
+        parsed.synonyms.forEach(syn => {
+          const t = syn.translations || {};
+          const li = document.createElement("li");
+          li.style.display = "flex";
+          li.style.justifyContent = "space-between";
+          li.style.alignItems = "center";
+          li.style.padding = "10px 12px";
+          li.style.background = "rgba(255,255,255,0.02)";
+          li.style.border = "1px solid var(--border-color)";
+          li.style.borderRadius = "10px";
 
-        renderPreviewTable();
-        alert("Proposed 5 similar words! We have switched to the 'Bulk List' tab so you can preview, edit, and confirm importing them.");
+          li.innerHTML = `
+            <div style="text-align: left; flex: 1; padding-right: 8px;">
+              <strong style="color: #fff;">${syn.word}</strong>
+              <span class="category-tag" style="margin-left: 6px; font-size: 0.65rem; padding: 1px 4px;">${syn.category}</span>
+              <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">
+                🇩🇪 ${t.de || '-'} | 🇮🇹 ${t.it || '-'} | 🇪🇸 ${t.es || '-'}
+              </div>
+            </div>
+            <div style="display: flex; gap: 6px; flex-shrink: 0;">
+              <button class="btn btn-secondary btn-sm" style="padding: 4px 8px; font-size: 0.75rem; width: auto; min-height: 28px;" onclick="window.loadSynonymIntoEditor('${(t.en || syn.word).replace(/'/g, "\\'")}', '${(t.de || '').replace(/'/g, "\\'")}', '${(t.it || '').replace(/'/g, "\\'")}', '${(t.es || '').replace(/'/g, "\\'")}', '${(t.fr || '').replace(/'/g, "\\'")}', '${(syn.category || 'nouns').replace(/'/g, "\\'")}')">📥 Load</button>
+              <button class="btn btn-primary btn-sm" style="padding: 4px 8px; font-size: 0.75rem; width: auto; min-height: 28px;" onclick="window.addSynonymDirectly('${(t.en || syn.word).replace(/'/g, "\\'")}', '${(t.de || '').replace(/'/g, "\\'")}', '${(t.it || '').replace(/'/g, "\\'")}', '${(t.es || '').replace(/'/g, "\\'")}', '${(t.fr || '').replace(/'/g, "\\'")}', '${(syn.category || 'nouns').replace(/'/g, "\\'")}')">➕ Add</button>
+            </div>
+          `;
+          synContainer.appendChild(li);
+        });
       } else {
-        alert("AI could not generate proposed words. Try again.");
+        synContainer.innerHTML = `<li style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; padding: 12px;">No synonyms returned by AI.</li>`;
       }
     } catch (err) {
-      alert(err.message);
+      alert("Error processing word: " + err.message);
     } finally {
-      btn.textContent = originalText;
+      btn.textContent = origText;
       btn.disabled = false;
     }
+  };
+
+  // Manual import submit action
+  document.getElementById("btn-manual-submit").onclick = () => {
+    const en = document.getElementById("manual-lang-en").value.trim();
+    const de = document.getElementById("manual-lang-de").value.trim();
+    const it = document.getElementById("manual-lang-it").value.trim();
+    const es = document.getElementById("manual-lang-es").value.trim();
+    const fr = document.getElementById("manual-lang-fr").value.trim();
+    const category = document.getElementById("manual-category").value.trim() || "nouns";
+    const imageUrl = document.getElementById("manual-image-url").value.trim();
+
+    if (!en || !de || !it || !es || !fr) {
+      alert("Please ensure all translation fields are filled before saving.");
+      return;
+    }
+
+    const newWord = {
+      en, de, it, es, fr,
+      category,
+      image: imageUrl || en,
+      audio: currentRecordingBase64,
+      details: {
+        articles: {},
+        sentences: {},
+        variations: {},
+        synonyms: { en: [], de: [], it: [], es: [], fr: [] }
+      }
+    };
+
+    newWord.lang = state.selectedLang;
+    newWord.target = newWord[state.selectedLang];
+
+    state.customVocab.push(newWord);
+    saveState();
+    renderImportedList();
+
+    // Reset inputs
+    document.getElementById("manual-input-word").value = "";
+    document.getElementById("manual-lang-en").value = "";
+    document.getElementById("manual-lang-de").value = "";
+    document.getElementById("manual-lang-it").value = "";
+    document.getElementById("manual-lang-es").value = "";
+    document.getElementById("manual-lang-fr").value = "";
+    document.getElementById("manual-category").value = "";
+    document.getElementById("manual-image-url").value = "";
+    document.getElementById("manual-synonyms-container").innerHTML = `<li style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; padding: 12px;">Enter a word above and run AI Translate to suggest synonyms.</li>`;
+    currentRecordingBase64 = "";
+    document.getElementById("btn-record-play").disabled = true;
+    document.getElementById("record-status-text").textContent = "No audio recorded";
+
+    alert("Word added successfully!");
   };
 
   // URL import scraper submit action

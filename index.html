@@ -431,48 +431,80 @@
       <!-- Manual/Custom tab -->
       <div id="tab-manual" class="tab-content">
         <div class="card">
-          <div class="form-group">
-            <label>English Word/Phrase</label>
-            <div style="display: flex; gap: 8px;">
-              <input type="text" id="manual-english" placeholder="e.g. apple" style="flex: 1; margin: 0;">
-              <button id="btn-manual-autotranslate" class="btn btn-secondary" style="width: auto; min-height: 40px; border-radius: 10px; margin: 0; font-size: 0.8rem; display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 0 12px;">🤖 Auto-Translate</button>
+          <!-- Step 1: Input word & language -->
+          <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+            <div class="form-group" style="flex: 2; min-width: 200px; margin: 0;">
+              <label>Enter Word/Phrase</label>
+              <input type="text" id="manual-input-word" placeholder="e.g. nuss, apple, mangiare..." style="margin: 0;">
+            </div>
+            <div class="form-group" style="flex: 1; min-width: 120px; margin: 0;">
+              <label>Input Language</label>
+              <select id="manual-input-lang" class="custom-select" style="margin: 0;">
+                <option value="en">🇬🇧 English</option>
+                <option value="de">🇩🇪 German</option>
+                <option value="it">🇮🇹 Italiano</option>
+                <option value="es">🇪🇸 Spanish</option>
+                <option value="fr">🇫🇷 French</option>
+              </select>
             </div>
           </div>
-          <div class="form-group">
-            <label>Translation</label>
-            <input type="text" id="manual-translation" placeholder="e.g. Apfel">
+          
+          <button id="btn-manual-ai-process" class="btn btn-secondary btn-block" style="margin-bottom: 20px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">🤖 Auto-Translate & Classify Word</button>
+
+          <!-- Step 2: Auto-filled translations (all 5 languages) -->
+          <h4 style="margin-bottom: 12px; color: var(--accent-color); font-weight: 700; font-size: 0.95rem;">🌐 Multi-Language Translations</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+            <div class="form-group" style="margin: 0;">
+              <label>🇬🇧 English</label>
+              <input type="text" id="manual-lang-en" placeholder="English translation..." style="margin: 0;">
+            </div>
+            <div class="form-group" style="margin: 0;">
+              <label>🇩🇪 German</label>
+              <input type="text" id="manual-lang-de" placeholder="German translation..." style="margin: 0;">
+            </div>
+            <div class="form-group" style="margin: 0;">
+              <label>🇮🇹 Italian</label>
+              <input type="text" id="manual-lang-it" placeholder="Italian translation..." style="margin: 0;">
+            </div>
+            <div class="form-group" style="margin: 0;">
+              <label>🇪🇸 Spanish</label>
+              <input type="text" id="manual-lang-es" placeholder="Spanish translation..." style="margin: 0;">
+            </div>
+            <div class="form-group" style="grid-column: span 2; margin: 0;">
+              <label>🇫🇷 French</label>
+              <input type="text" id="manual-lang-fr" placeholder="French translation..." style="margin: 0;">
+            </div>
           </div>
-          <div class="form-group">
-            <label>Language</label>
-            <select id="manual-lang" class="custom-select">
-              <option value="de">German</option>
-              <option value="it">Italiano</option>
-              <option value="es">Spanish</option>
-              <option value="fr">French</option>
-            </select>
-          </div>
+
+          <!-- Category, Image & Recording -->
           <div class="form-group">
             <label>Category (Pocket)</label>
-            <input type="text" id="manual-category" placeholder="verbs, nouns, technology...">
+            <input type="text" id="manual-category" placeholder="e.g. nouns, verbs, technology..." style="margin-bottom: 12px;">
           </div>
           <div class="form-group">
             <label>Image URL (Optional)</label>
-            <input type="text" id="manual-image-url" placeholder="https://example.com/image.png">
+            <input type="text" id="manual-image-url" placeholder="https://example.com/image.png" style="margin-bottom: 12px;">
           </div>
           
           <!-- Custom Audio Recording Block inside Add Custom Word -->
           <div class="form-group">
             <label>Pronunciation Recording</label>
-            <div class="audio-record-block">
+            <div class="audio-record-block" style="margin-bottom: 16px;">
               <button id="btn-record-word" class="btn btn-secondary">🎙️ Record Pronunciation</button>
               <button id="btn-record-play" class="btn btn-secondary" disabled>🔊 Test Playback</button>
               <span id="record-status-text" class="record-status">No audio recorded</span>
             </div>
           </div>
           
-          <div style="display: flex; gap: 12px; margin-top: 16px;">
-            <button id="btn-manual-submit" class="btn btn-primary" style="flex: 1; margin: 0;">Add Word</button>
-            <button id="btn-manual-propose" class="btn btn-secondary" style="flex: 1; margin: 0; font-size: 0.85rem; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">✨ Propose Similar Words</button>
+          <button id="btn-manual-submit" class="btn btn-primary btn-block" style="margin-top: 12px; margin-bottom: 24px;">💾 Save Custom Word</button>
+
+          <!-- Step 3: Synonyms & Alternatives Suggestions Widget -->
+          <div style="background: rgba(255, 255, 255, 0.02); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color);" id="manual-synonyms-card">
+            <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--text-primary); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">🔍 Synonyms & Translation Variations</h4>
+            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0; margin-bottom: 12px;">Review related synonyms. Click any synonym to instantly load it as the active word above.</p>
+            <ul id="manual-synonyms-container" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+              <li style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; padding: 12px;">Enter a word above and run AI Translate to suggest synonyms.</li>
+            </ul>
           </div>
         </div>
       </div>
