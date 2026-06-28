@@ -1198,3 +1198,65 @@ body {
   background: rgba(255, 255, 255, 0.08);
 }
 
+/* Short-Screen and Virtual Keyboard Optimization */
+#view-test {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+@media (max-height: 680px) {
+  .word-card-wrapper {
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .word-image-container {
+    height: 100px;
+    max-width: 180px;
+  }
+  .word-card h2 {
+    font-size: 1.8rem;
+  }
+  .test-input-area {
+    min-height: 100px;
+    margin-bottom: 8px;
+  }
+  .test-mode-toggles {
+    margin-bottom: 8px;
+  }
+}
+
+@media (max-height: 520px) {
+  .word-image-container {
+    display: none !important;
+  }
+  .word-card-wrapper {
+    margin-bottom: 6px;
+    gap: 4px;
+  }
+  .word-card h2 {
+    font-size: 1.5rem;
+  }
+  .test-input-area {
+    min-height: 70px;
+    margin-bottom: 6px;
+  }
+  .test-mode-toggles {
+    margin-bottom: 6px;
+  }
+  .category-tag {
+    margin-bottom: 4px;
+    font-size: 0.75rem;
+  }
+  .test-header {
+    margin-bottom: 8px;
+  }
+  .btn-lg {
+    padding: 8px 12px;
+    font-size: 0.95rem;
+    min-height: 40px;
+  }
+}
+
+

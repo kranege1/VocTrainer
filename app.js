@@ -886,6 +886,44 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Continue to next question
   document.getElementById("btn-next-question").onclick = nextQuestion;
 
+  // Typing Input Key Listener (Enter key to submit answer)
+  document.getElementById("input-typing-answer").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const feedback = document.getElementById("feedback-overlay");
+      const customModal = document.getElementById("custom-modal-overlay");
+      
+      // If modal or feedback overlay are NOT active, submit the answer
+      if ((!feedback || !feedback.classList.contains("active")) && (!customModal || !customModal.classList.contains("active"))) {
+        submitAnswer();
+      }
+    }
+  });
+
+  // Global Key Listener (Enter key to proceed or dismiss dialogs)
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      const feedback = document.getElementById("feedback-overlay");
+      const customModal = document.getElementById("custom-modal-overlay");
+      
+      // 1. If custom modal is active, dismiss it (simulate clicking the primary action button, e.g., OK or Confirm)
+      if (customModal && customModal.classList.contains("active")) {
+        e.preventDefault();
+        const primaryBtn = customModal.querySelector(".modal-actions .btn-primary");
+        if (primaryBtn) {
+          primaryBtn.click();
+        }
+        return;
+      }
+      
+      // 2. If feedback overlay is active, proceed to the next question
+      if (feedback && feedback.classList.contains("active")) {
+        e.preventDefault();
+        nextQuestion();
+      }
+    }
+  });
+
   // Repeat wrong answers trigger
   document.getElementById("btn-start-repeat").onclick = startRepeatingMistakes;
 
