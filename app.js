@@ -1207,6 +1207,151 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   };
 
+  // Bulk Import Logic
+  let parsedRows = [];
+
+  const btnBulkPreview = document.getElementById("btn-bulk-preview");
+  const btnBulkSwap = document.getElementById("btn-bulk-swap");
+  const btnBulkConfirm = document.getElementById("btn-bulk-confirm");
+  const bulkPreviewArea = document.getElementById("bulk-preview-area");
+  const bulkTableBody = document.getElementById("bulk-preview-table-body");
+
+  function parseBulkInput() {
+    const text = document.getElementById("bulk-import-text").value;
+    const sep = document.getElementById("bulk-separator").value;
+    const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+    
+    parsedRows = lines.map(line => {
+      let word = line;
+      let trans = "";
+      
+      let actualSep = null;
+      if (sep === "auto") {
+        const candidates = [",", ";", "\t", " - ", " – ", " — ", ":", "="];
+        for (const c of candidates) {
+          if (line.includes(c)) {
+            actualSep = c;
+            break;
+          }
+        }
+      } else if (sep === "comma") actualSep = ",";
+      else if (sep === "semicolon") actualSep = ";";
+      else if (sep === "tab") actualSep = "\t";
+      else if (sep === "hyphen") {
+        if (line.includes(" - ")) actualSep = " - ";
+        else if (line.includes(" – ")) actualSep = " – ";
+        else if (line.includes(" — ")) actualSep = " — ";
+        else if (line.includes("-")) actualSep = "-";
+      }
+      else if (sep === "colon") actualSep = ":";
+      else if (sep === "equal") actualSep = "=";
+      
+      if (actualSep && sep !== "none") {
+        const parts = line.split(actualSep);
+        word = parts[0].trim();
+        trans = parts.slice(1).join(actualSep).trim();
+      }
+      
+      return { word, trans, active: true };
+    });
+    
+    renderPreviewTable();
+  }
+
+  function renderPreviewTable() {
+    bulkTableBody.innerHTML = "";
+    
+    if (parsedRows.length === 0) {
+      bulkPreviewArea.style.display = "none";
+      btnBulkSwap.style.display = "none";
+      return;
+    }
+    
+    bulkPreviewArea.style.display = "block";
+    btnBulkSwap.style.display = "inline-flex";
+    
+    parsedRows.forEach((row, idx) => {
+      const tr = document.createElement("tr");
+      tr.style.borderBottom = "1px solid var(--border-color)";
+      
+      const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+      
+      tr.innerHTML = `
+        <td style="padding: 8px;">
+          <input type="text" value="${esc(row.word)}" class="custom-select" style="min-height:36px; padding:6px; font-size:0.85rem;" data-idx="${idx}" data-field="word">
+        </td>
+        <td style="padding: 8px;">
+          <input type="text" value="${esc(row.trans)}" class="custom-select" placeholder="Type translation..." style="min-height:36px; padding:6px; font-size:0.85rem;" data-idx="${idx}" data-field="trans">
+        </td>
+        <td style="padding: 8px; text-align: center;">
+          <input type="checkbox" ${row.active ? "checked" : ""} class="preview-chk" data-idx="${idx}" style="width:18px; height:18px; cursor:pointer;">
+        </td>
+      `;
+      bulkTableBody.appendChild(tr);
+    });
+
+    bulkTableBody.querySelectorAll("input[type='text']").forEach(inp => {
+      inp.oninput = (e) => {
+        const idx = parseInt(e.target.dataset.idx);
+        const field = e.target.dataset.field;
+        if (parsedRows[idx]) {
+          parsedRows[idx][field] = e.target.value;
+        }
+      };
+    });
+
+    bulkTableBody.querySelectorAll(".preview-chk").forEach(chk => {
+      chk.onchange = (e) => {
+        const idx = parseInt(e.target.dataset.idx);
+        if (parsedRows[idx]) {
+          parsedRows[idx].active = e.target.checked;
+        }
+      };
+    });
+  }
+
+  if (btnBulkPreview) {
+    btnBulkPreview.onclick = parseBulkInput;
+  }
+
+  if (btnBulkSwap) {
+    btnBulkSwap.onclick = () => {
+      parsedRows = parsedRows.map(r => ({
+        word: r.trans,
+        trans: r.word,
+        active: r.active
+      }));
+      renderPreviewTable();
+    };
+  }
+
+  if (btnBulkConfirm) {
+    btnBulkConfirm.onclick = () => {
+      const lang = document.getElementById("bulk-lang").value;
+      const cat = document.getElementById("bulk-category").value.trim() || "imported";
+      let count = 0;
+      
+      parsedRows.forEach(row => {
+        if (row.active && row.word.trim()) {
+          addCustomWord(row.word.trim(), row.trans.trim(), lang, cat);
+          count++;
+        }
+      });
+      
+      if (count > 0) {
+        saveState();
+        renderImportedList();
+        alert(`Successfully imported ${count} custom words!`);
+        document.getElementById("bulk-import-text").value = "";
+        bulkPreviewArea.style.display = "none";
+        btnBulkSwap.style.display = "none";
+        parsedRows = [];
+      } else {
+        alert("No words selected to import.");
+      }
+    };
+  }
+
   // Browse & History Navigation & Listeners
   document.getElementById("btn-go-browse").onclick = () => {
     showView("view-browse");
