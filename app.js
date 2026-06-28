@@ -528,13 +528,15 @@ function submitAnswer() {
   const currentWord = tState.words[tState.index];
   let studentAnswer = "";
 
-  if (tState.selectedMode === "typing") {
+  const activeMode = document.querySelector(".mode-toggle-btn.active")?.dataset.mode || "typing";
+
+  if (activeMode === "typing") {
     studentAnswer = document.getElementById("input-typing-answer").value.trim();
-  } else if (tState.selectedMode === "bubbles") {
+  } else if (activeMode === "bubbles") {
     const selectedBubbles = document.getElementById("bubble-selected-zone").querySelectorAll(".word-bubble");
     const arr = Array.from(selectedBubbles).map(b => b.textContent);
     studentAnswer = currentWord.target.split(/\s+/).length === 1 ? arr.join("") : arr.join(" ");
-  } else if (tState.selectedMode === "speech") {
+  } else if (activeMode === "speech") {
     studentAnswer = document.getElementById("speech-transcript").textContent.trim();
   }
 
