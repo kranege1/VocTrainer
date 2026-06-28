@@ -1199,7 +1199,7 @@ body {
 }
 
 /* Short-Screen and Virtual Keyboard Optimization */
-#view-test {
+#view-test.active {
   overflow: hidden;
   display: flex;
   flex-direction: column;
