@@ -44,6 +44,8 @@ let state = {
   history: [], // Completed tests history
   deletedStarters: [], // Deleted starter vocab terms
   editedStarters: {}, // Edited starter vocab terms overrides
+  customFolders: [], // Custom folder names
+  wordStats: {}, // Spaced Repetition / Leitner stats: { wordEn: { attempts, errors, box, lastReview } }
 
   // Current active test state
   currentTest: {
@@ -81,7 +83,9 @@ function saveState() {
     selectedLang: state.selectedLang,
     history: state.history,
     deletedStarters: state.deletedStarters,
-    editedStarters: state.editedStarters
+    editedStarters: state.editedStarters,
+    customFolders: state.customFolders,
+    wordStats: state.wordStats
   }));
   updateHeaderUI();
   populateCustomCategoryDropdown();
@@ -109,6 +113,8 @@ function loadState() {
     state.history = parsed.history || [];
     state.deletedStarters = parsed.deletedStarters || [];
     state.editedStarters = parsed.editedStarters || {};
+    state.customFolders = parsed.customFolders || [];
+    state.wordStats = parsed.wordStats || {};
 
     // Prefill Setup fields
     document.getElementById("setup-openai-key").value = state.openaiKey;
@@ -144,11 +150,12 @@ function populateCustomCategoryDropdown() {
   const dropdown = document.getElementById("select-custom-category");
   const browseDropdown = document.getElementById("select-browse-custom-category");
   
-  const categories = [...new Set(state.customVocab.map(v => v.category))].filter(Boolean);
+  const vocabCategories = state.customVocab.map(v => v.category).filter(Boolean);
+  const combined = [...new Set([...vocabCategories, ...state.customFolders])];
   
   if (dropdown) {
     dropdown.innerHTML = '<option value="none">✨ -- Select Custom Set --</option>';
-    categories.forEach(cat => {
+    combined.forEach(cat => {
       const opt = document.createElement("option");
       opt.value = cat;
       opt.textContent = `👤 ${cat}`;
@@ -158,7 +165,7 @@ function populateCustomCategoryDropdown() {
 
   if (browseDropdown) {
     browseDropdown.innerHTML = '<option value="none">✨ -- Select Custom Set --</option>';
-    categories.forEach(cat => {
+    combined.forEach(cat => {
       const opt = document.createElement("option");
       opt.value = cat;
       opt.textContent = `👤 ${cat}`;
@@ -897,6 +904,16 @@ function submitAnswer() {
     tState.correctCount++;
     state.xp += 10;
     checkLevelUp();
+
+    // Spaced Repetition Stats: correct progression
+    if (!state.wordStats[currentWord.en]) {
+      state.wordStats[currentWord.en] = { attempts: 0, errors: 0, box: 1, lastReview: null };
+    }
+    const stats = state.wordStats[currentWord.en];
+    stats.attempts = (stats.attempts || 0) + 1;
+    stats.lastReview = Date.now();
+    if (!stats.box) stats.box = 1;
+    if (stats.box < 5) stats.box++;
   } else {
     playSound("sound-incorrect");
     overlay.className = "feedback-overlay active incorrect-ans";
@@ -909,6 +926,16 @@ function submitAnswer() {
     }
     
     recordMistake(currentWord);
+
+    // Spaced Repetition Stats: incorrect penalty
+    if (!state.wordStats[currentWord.en]) {
+      state.wordStats[currentWord.en] = { attempts: 0, errors: 0, box: 1, lastReview: null };
+    }
+    const stats = state.wordStats[currentWord.en];
+    stats.attempts = (stats.attempts || 0) + 1;
+    stats.errors = (stats.errors || 0) + 1;
+    stats.lastReview = Date.now();
+    stats.box = 1; // Leitner penalty reset
   }
 
   setupWordDetails(currentWord);
@@ -1531,6 +1558,59 @@ document.addEventListener("DOMContentLoaded", async () => {
       renderBrowseList();
     };
   }
+
+  // Create folder listener
+  const btnCreateFolder = document.getElementById("btn-create-folder");
+  if (btnCreateFolder) {
+    btnCreateFolder.onclick = () => {
+      const overlay = document.getElementById("custom-modal-overlay");
+      const icon = document.getElementById("modal-icon");
+      const title = document.getElementById("modal-title");
+      const msgEl = document.getElementById("modal-message");
+      const actions = document.getElementById("modal-actions");
+
+      playSound("sound-popup");
+
+      icon.textContent = "📁";
+      title.textContent = "Create New Folder";
+      msgEl.innerHTML = `
+        <div class="form-group" style="text-align: left; margin-top: 10px; width: 100%;">
+          <label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-secondary);">Folder Name</label>
+          <input type="text" id="create-folder-input" placeholder="e.g. Travel Words" class="custom-select" style="width: 100%; min-height: 40px; padding: 8px 12px; background: rgba(255,255,255,0.03); color: #fff; border: 1px solid var(--border-color); border-radius: 10px;">
+        </div>
+      `;
+
+      actions.innerHTML = "";
+      const cancelBtn = document.createElement("button");
+      cancelBtn.className = "btn btn-secondary";
+      cancelBtn.textContent = "Cancel";
+      cancelBtn.onclick = () => overlay.classList.remove("active");
+
+      const createBtn = document.createElement("button");
+      createBtn.className = "btn btn-primary";
+      createBtn.textContent = "Create";
+      createBtn.onclick = () => {
+        const name = document.getElementById("create-folder-input").value.trim();
+        if (!name) {
+          alert("Folder name cannot be empty.");
+          return;
+        }
+        
+        if (!state.customFolders.includes(name)) {
+          state.customFolders.push(name);
+          saveState();
+          renderBrowseList();
+        } else {
+          alert("A folder with this name already exists.");
+        }
+        overlay.classList.remove("active");
+      };
+
+      actions.appendChild(cancelBtn);
+      actions.appendChild(createBtn);
+      overlay.classList.add("active");
+    };
+  }
 });
 
 // Render the completed sessions in history list
@@ -1627,6 +1707,10 @@ function renderBrowseList() {
     }
   }
 
+  // Render Spaced Repetition stats and folder lists
+  renderFoldersList();
+  renderBrowseStats(pool);
+
   document.getElementById("browse-list-title").textContent = `Vocabulary List (${pool.length} words)`;
 
   if (pool.length === 0) {
@@ -1637,6 +1721,19 @@ function renderBrowseList() {
   pool.forEach(vocab => {
     const isCustom = !vocab.isStarter;
     const key = isCustom ? vocab.en : vocab.origEn;
+    
+    // Fetch Leitner / Spaced Repetition stats
+    const stats = state.wordStats[vocab.en] || { attempts: 0, errors: 0, box: 1 };
+    const box = stats.box || 1;
+    const errors = stats.errors || 0;
+    
+    const boxLabels = {
+      1: "🆕 Box 1",
+      2: "📚 Box 2",
+      3: "📈 Box 3",
+      4: "⭐ Box 4",
+      5: "🏆 Box 5"
+    };
     
     const li = document.createElement("li");
     li.style.display = "flex";
@@ -1650,6 +1747,11 @@ function renderBrowseList() {
         <span class="list-word" style="font-weight: 700;">${vocab.en}</span>
         <span class="list-translation" style="color: var(--accent-color); font-weight: 500;">&rarr; ${vocab.target}</span>
         <span class="category-tag" style="margin: 0; font-size:0.7rem; padding: 2px 6px;">${vocab.category}</span>
+        
+        <!-- Leitner Spaced Repetition Level Badge -->
+        <span class="badge" style="background: rgba(255,255,255,0.05); color: var(--text-secondary); font-size:0.7rem; border: 1px solid var(--border-color); padding: 2px 6px; border-radius: 6px;">${boxLabels[box]}</span>
+        
+        ${errors > 0 ? `<span style="font-size:0.7rem; color: var(--error-color); font-weight:600;">⚠️ ${errors} errors</span>` : ""}
       </div>
       <div style="display: flex; gap: 8px; flex-shrink: 0;">
         <button class="btn btn-secondary btn-sm" style="padding: 4px 8px; min-height: 28px; border-radius: 8px; font-size: 0.8rem;" onclick="window.triggerEditWord('${key}', ${isCustom})">✏️ Edit</button>
@@ -2132,6 +2234,194 @@ async function testApiKey(engine, key, statusElId) {
     }
   } catch (err) {
     statusEl.innerHTML = `<span style="color: var(--error-color);">❌ Network error: ${err.message}</span>`;
+  }
+}
+
+// Folders Management Render list
+function renderFoldersList() {
+  const container = document.getElementById("browse-folders-list");
+  if (!container) return;
+  
+  container.innerHTML = "";
+  
+  const vocabCategories = state.customVocab.map(v => v.category).filter(Boolean);
+  const combined = [...new Set([...vocabCategories, ...state.customFolders])];
+  
+  if (combined.length === 0) {
+    container.innerHTML = `<li class="empty-state">No custom folders created yet.</li>`;
+    return;
+  }
+  
+  combined.forEach(folder => {
+    const li = document.createElement("li");
+    li.style.display = "flex";
+    li.style.justifyContent = "space-between";
+    li.style.alignItems = "center";
+    li.style.padding = "10px 14px";
+    li.style.marginBottom = "6px";
+    li.style.background = "rgba(255,255,255,0.02)";
+    li.style.borderRadius = "10px";
+    li.style.border = "1px solid var(--border-color)";
+    
+    const count = state.customVocab.filter(v => v.category === folder).length;
+    
+    li.innerHTML = `
+      <div style="flex: 1; text-align: left;">
+        <span style="font-weight: 700; color: #fff;">📁 ${folder}</span>
+        <span style="font-size: 0.75rem; color: var(--text-secondary); margin-left: 8px;">(${count} words)</span>
+      </div>
+      <div style="display: flex; gap: 8px; flex-shrink: 0;">
+        <button class="btn btn-secondary btn-sm" style="padding: 4px 8px; min-height: 28px; border-radius: 8px; font-size: 0.75rem; width: auto;" onclick="window.triggerRenameFolder('${folder.replace(/'/g, "\\'")}')">✏️ Rename</button>
+        <button class="btn btn-secondary btn-sm" style="padding: 4px 8px; min-height: 28px; border-radius: 8px; font-size: 0.75rem; color: var(--error-color); border-color: rgba(239, 71, 111, 0.2); width: auto;" onclick="window.triggerDeleteFolder('${folder.replace(/'/g, "\\'")}')">❌ Delete</button>
+      </div>
+    `;
+    
+    container.appendChild(li);
+  });
+}
+
+// Global Folder Actions
+window.triggerRenameFolder = async function(oldName) {
+  const overlay = document.getElementById("custom-modal-overlay");
+  const icon = document.getElementById("modal-icon");
+  const title = document.getElementById("modal-title");
+  const msgEl = document.getElementById("modal-message");
+  const actions = document.getElementById("modal-actions");
+
+  playSound("sound-popup");
+
+  icon.textContent = "✏️";
+  title.textContent = "Rename Folder";
+  msgEl.innerHTML = `
+    <div class="form-group" style="text-align: left; margin-top: 10px; width: 100%;">
+      <label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-secondary);">New Folder Name</label>
+      <input type="text" id="rename-folder-input" value="${oldName.replace(/"/g, '&quot;')}" class="custom-select" style="width: 100%; min-height: 40px; padding: 8px 12px; background: rgba(255,255,255,0.03); color: #fff; border: 1px solid var(--border-color); border-radius: 10px;">
+    </div>
+  `;
+
+  actions.innerHTML = "";
+  const cancelBtn = document.createElement("button");
+  cancelBtn.className = "btn btn-secondary";
+  cancelBtn.textContent = "Cancel";
+  cancelBtn.onclick = () => overlay.classList.remove("active");
+
+  const saveBtn = document.createElement("button");
+  saveBtn.className = "btn btn-primary";
+  saveBtn.textContent = "Rename";
+  saveBtn.onclick = () => {
+    const newName = document.getElementById("rename-folder-input").value.trim();
+    if (!newName) {
+      alert("Folder name cannot be empty.");
+      return;
+    }
+    
+    state.customFolders = state.customFolders.map(f => f === oldName ? newName : f);
+    if (!state.customFolders.includes(newName)) {
+      state.customFolders.push(newName);
+    }
+    state.customFolders = state.customFolders.filter(f => f !== oldName);
+
+    state.customVocab = state.customVocab.map(v => {
+      if (v.category === oldName) {
+        return { ...v, category: newName };
+      }
+      return v;
+    });
+
+    saveState();
+    renderBrowseList();
+    overlay.classList.remove("active");
+  };
+
+  actions.appendChild(cancelBtn);
+  actions.appendChild(saveBtn);
+  overlay.classList.add("active");
+};
+
+window.triggerDeleteFolder = async function(folderName) {
+  const confirmDel = await showCustomConfirm(`Are you sure you want to delete the folder "${folderName}"? All words inside this folder will also be deleted!`);
+  if (!confirmDel) return;
+
+  state.customFolders = state.customFolders.filter(f => f !== folderName);
+  state.customVocab = state.customVocab.filter(v => v.category !== folderName);
+
+  saveState();
+  renderBrowseList();
+};
+
+// Spaced Repetition stats computation
+function renderBrowseStats(pool) {
+  const accuracyEl = document.getElementById("browse-stats-accuracy");
+  const masteryEl = document.getElementById("browse-stats-mastery");
+  const bar = document.getElementById("leitner-bar");
+  const hardestList = document.getElementById("browse-hardest-words-list");
+  
+  if (!accuracyEl || !masteryEl || !bar || !hardestList) return;
+
+  let totalAttempts = 0;
+  let totalErrors = 0;
+  let boxCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+  let hardest = [];
+
+  pool.forEach(word => {
+    const stats = state.wordStats[word.en] || { attempts: 0, errors: 0, box: 1 };
+    totalAttempts += stats.attempts || 0;
+    totalErrors += stats.errors || 0;
+    
+    const box = stats.box || 1;
+    boxCounts[box] = (boxCounts[box] || 0) + 1;
+
+    if (stats.errors && stats.errors > 0) {
+      hardest.push({ en: word.en, target: word.target, errors: stats.errors });
+    }
+  });
+
+  if (totalAttempts > 0) {
+    const accuracy = Math.round(((totalAttempts - totalErrors) / totalAttempts) * 100);
+    accuracyEl.textContent = `${accuracy}%`;
+    accuracyEl.style.color = accuracy >= 80 ? "#2ecc71" : accuracy >= 50 ? "#ff9f43" : "#ff4b4b";
+  } else {
+    accuracyEl.textContent = "N/A";
+    accuracyEl.style.color = "var(--text-secondary)";
+  }
+
+  const totalWords = pool.length;
+  if (totalWords > 0) {
+    const masteredCount = (boxCounts[4] || 0) + (boxCounts[5] || 0);
+    const masteryPct = Math.round((masteredCount / totalWords) * 100);
+    masteryEl.textContent = `${masteryPct}%`;
+  } else {
+    masteryEl.textContent = "N/A";
+  }
+
+  bar.innerHTML = "";
+  if (totalWords > 0) {
+    const p1 = (boxCounts[1] / totalWords) * 100;
+    const p2 = (boxCounts[2] / totalWords) * 100;
+    const p3 = (boxCounts[3] / totalWords) * 100;
+    const p4 = (boxCounts[4] / totalWords) * 100;
+    const p5 = (boxCounts[5] / totalWords) * 100;
+
+    bar.innerHTML = `
+      <div style="width: ${p1}%; background: #ff4b4b; height: 100%; transition: width 0.3s;" title="Box 1: ${boxCounts[1]} words"></div>
+      <div style="width: ${p2}%; background: #ff9f43; height: 100%; transition: width 0.3s;" title="Box 2: ${boxCounts[2]} words"></div>
+      <div style="width: ${p3}%; background: #f1c40f; height: 100%; transition: width 0.3s;" title="Box 3: ${boxCounts[3]} words"></div>
+      <div style="width: ${p4}%; background: #2ecc71; height: 100%; transition: width 0.3s;" title="Box 4: ${boxCounts[4]} words"></div>
+      <div style="width: ${p5}%; background: #00b894; height: 100%; transition: width 0.3s;" title="Box 5: ${boxCounts[5]} words"></div>
+    `;
+  }
+
+  hardestList.innerHTML = "";
+  if (hardest.length > 0) {
+    hardest.sort((a, b) => b.errors - a.errors);
+    const top3 = hardest.slice(0, 3);
+    top3.forEach(w => {
+      const li = document.createElement("li");
+      li.innerHTML = `<strong>${w.en}</strong> (${w.target}) &mdash; <span style="color:var(--error-color); font-weight:600;">${w.errors} errors</span>`;
+      hardestList.appendChild(li);
+    });
+  } else {
+    hardestList.innerHTML = `<li style="list-style:none; margin-left:-18px; color:var(--text-secondary);">No errors recorded yet! Keep it up.</li>`;
   }
 }
 

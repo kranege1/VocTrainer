@@ -593,6 +593,50 @@
         </div>
       </div>
 
+      <!-- Spaced Repetition & Folder Performance Stats Card -->
+      <div class="card" id="browse-stats-card" style="margin-top: 16px;">
+        <h3 style="margin-bottom: 12px; color: var(--accent-color); font-weight: 700; font-size: 1rem;">📊 Folder Performance Insights</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+          <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
+            <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Average Accuracy</span>
+            <strong id="browse-stats-accuracy" style="font-size: 1.3rem; color: #4CAF50; display: block; margin-top: 4px;">N/A</strong>
+          </div>
+          <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
+            <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Set Mastery Level</span>
+            <strong id="browse-stats-mastery" style="font-size: 1.3rem; color: var(--accent-color); display: block; margin-top: 4px;">N/A</strong>
+          </div>
+        </div>
+        
+        <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; margin-bottom: 16px; border: 1px solid var(--border-color);">
+          <span style="font-size: 0.8rem; font-weight: bold; color: var(--text-secondary); display: block; margin-bottom: 8px;">Leitner Boxes Mastery distribution</span>
+          <div style="display: flex; gap: 6px; height: 16px; border-radius: 8px; overflow: hidden; background: rgba(255,255,255,0.05);" id="leitner-bar">
+            <!-- Box colors distribution bar -->
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-secondary); margin-top: 6px;">
+            <span>Box 1: New/Wrong</span>
+            <span>Box 5: Mastered</span>
+          </div>
+        </div>
+
+        <div style="background: rgba(239, 71, 111, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(239, 71, 111, 0.15);" id="hardest-words-section">
+          <span style="font-size: 0.8rem; font-weight: bold; color: var(--error-color); display: block; margin-bottom: 6px;">🔥 Hardest Words (Need Practice)</span>
+          <ul id="browse-hardest-words-list" style="margin: 0; padding-left: 18px; font-size: 0.8rem; color: var(--text-primary); line-height: 1.5;">
+            <!-- Hardest words listed here -->
+          </ul>
+        </div>
+      </div>
+
+      <!-- Folder Manager Card -->
+      <div class="card" style="margin-top: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="margin: 0; color: #fff; font-weight: 700; font-size: 1rem;">📁 Manage Custom Folders</h3>
+          <button id="btn-create-folder" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0;">➕ New Folder</button>
+        </div>
+        <ul id="browse-folders-list" class="imported-list" style="max-height: 180px; overflow-y: auto; margin: 0; padding: 0;">
+          <!-- Folders listed dynamically -->
+        </ul>
+      </div>
+
       <div class="card">
         <h3 id="browse-list-title">Vocabulary Word List</h3>
         <ul class="imported-list" id="browse-words-list">
