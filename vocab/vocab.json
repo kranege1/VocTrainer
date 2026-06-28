@@ -8768,164 +8768,244 @@
     }
   },
   {
-    "en": "hello",
-    "de": "Hallo",
-    "it": "ciao",
-    "es": "hola",
-    "fr": "bonjour",
+    "en": "hello, how are you?",
+    "de": "Hallo, wie geht es dir?",
+    "it": "Ciao, come stai?",
+    "es": "Hola, ¿cómo estás?",
+    "fr": "Bonjour, comment ça va?",
     "category": "phrases",
-    "image": "hello,wave",
+    "image": "hello,greeting",
     "details": {
       "articles": {},
       "sentences": {
-        "en": "hello",
-        "de": "Hallo",
-        "it": "ciao",
-        "es": "hola",
-        "fr": "bonjour"
+        "en": "hello, how are you?",
+        "de": "Hallo, wie geht es dir?",
+        "it": "Ciao, come stai?",
+        "es": "Hola, ¿cómo estás?",
+        "fr": "Bonjour, comment ça va?"
       },
       "variations": {},
       "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
+        "en": [
+          "how are you doing?",
+          "hi, how are you?"
+        ],
+        "de": [
+          "wie gehts?",
+          "hallo, wie geht es ihnen?"
+        ],
+        "it": [
+          "come va?",
+          "ciao, come va?"
+        ],
+        "es": [
+          "¿cómo te va?",
+          "¿qué tal?"
+        ],
+        "fr": [
+          "comment allez-vous?",
+          "ça va?"
+        ]
       }
     }
   },
   {
-    "en": "goodbye",
-    "de": "Auf Wiedersehen",
-    "it": "arrivederci",
-    "es": "adiós",
-    "fr": "au revoir",
+    "en": "goodbye, see you tomorrow",
+    "de": "Auf Wiedersehen, bis morgen",
+    "it": "Arrivederci, a domani",
+    "es": "Adiós, hasta mañana",
+    "fr": "Au revoir, à demain",
     "category": "phrases",
-    "image": "bye,wave",
+    "image": "goodbye,farewell",
     "details": {
       "articles": {},
       "sentences": {
-        "en": "goodbye",
-        "de": "Auf Wiedersehen",
-        "it": "arrivederci",
-        "es": "adiós",
-        "fr": "au revoir"
+        "en": "goodbye, see you tomorrow",
+        "de": "Auf Wiedersehen, bis morgen",
+        "it": "Arrivederci, a domani",
+        "es": "Adiós, hasta mañana",
+        "fr": "Au revoir, à demain"
       },
       "variations": {},
       "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
+        "en": [
+          "bye, see you tomorrow",
+          "goodbye, see you"
+        ],
+        "de": [
+          "tschüss, bis morgen",
+          "bis morgen"
+        ],
+        "it": [
+          "ciao, a domani",
+          "a domani"
+        ],
+        "es": [
+          "hasta mañana",
+          "chau, hasta mañana"
+        ],
+        "fr": [
+          "salut, à demain",
+          "à demain"
+        ]
       }
     }
   },
   {
-    "en": "please",
-    "de": "Bitte",
-    "it": "per favore",
-    "es": "por favor",
-    "fr": "s'il vous plaît",
+    "en": "a table for two, please",
+    "de": "Ein Tisch für zwei, bitte",
+    "it": "Un tavolo per due, per favore",
+    "es": "Una mesa para dos, por favor",
+    "fr": "Une table pour deux, s'il vous plaît",
     "category": "phrases",
-    "image": "please,hands",
+    "image": "table,restaurant",
     "details": {
       "articles": {},
       "sentences": {
-        "en": "please",
-        "de": "Bitte",
-        "it": "per favore",
-        "es": "por favor",
-        "fr": "s'il vous plaît"
+        "en": "a table for two, please",
+        "de": "Ein Tisch für zwei, bitte",
+        "it": "Un tavolo per due, per favore",
+        "es": "Una mesa para dos, por favor",
+        "fr": "Une table pour deux, s'il vous plaît"
       },
       "variations": {},
       "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
+        "en": [
+          "table for two, please"
+        ],
+        "de": [
+          "tisch für zwei, bitte"
+        ],
+        "it": [
+          "un tavolo per due per favore"
+        ],
+        "es": [
+          "mesa para dos por favor"
+        ],
+        "fr": [
+          "table pour deux s'il vous plaît"
+        ]
       }
     }
   },
   {
-    "en": "thank you",
-    "de": "Danke",
-    "it": "grazie",
-    "es": "gracias",
-    "fr": "merci",
+    "en": "thank you very much",
+    "de": "Vielen Dank",
+    "it": "Grazie mille",
+    "es": "Muchas gracias",
+    "fr": "Merci beaucoup",
     "category": "phrases",
-    "image": "thanks,happy",
+    "image": "thanks,heart",
     "details": {
       "articles": {},
       "sentences": {
-        "en": "thank you",
-        "de": "Danke",
-        "it": "grazie",
-        "es": "gracias",
-        "fr": "merci"
+        "en": "thank you very much",
+        "de": "Vielen Dank",
+        "it": "Grazie mille",
+        "es": "Muchas gracias",
+        "fr": "Merci beaucoup"
       },
       "variations": {},
       "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
+        "en": [
+          "thanks a lot",
+          "thank you so much"
+        ],
+        "de": [
+          "besten dank",
+          "herzlichen dank"
+        ],
+        "it": [
+          "molte grazie",
+          "grazie di cuore"
+        ],
+        "es": [
+          "muchísimas gracias",
+          "mil gracias"
+        ],
+        "fr": [
+          "merci bien",
+          "merci mille fois"
+        ]
       }
     }
   },
   {
-    "en": "yes",
-    "de": "Ja",
-    "it": "sì",
-    "es": "sí",
-    "fr": "oui",
+    "en": "yes, of course",
+    "de": "Ja, natürlich",
+    "it": "Sì, certamente",
+    "es": "Sí, por supuesto",
+    "fr": "Oui, bien sûr",
     "category": "phrases",
-    "image": "yes,checkmark",
+    "image": "yes,check",
     "details": {
       "articles": {},
       "sentences": {
-        "en": "yes",
-        "de": "Ja",
-        "it": "sì",
-        "es": "sí",
-        "fr": "oui"
+        "en": "yes, of course",
+        "de": "Ja, natürlich",
+        "it": "Sì, certamente",
+        "es": "Sí, por supuesto",
+        "fr": "Oui, bien sûr"
       },
       "variations": {},
       "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
+        "en": [
+          "yes, sure",
+          "of course"
+        ],
+        "de": [
+          "sicherlich",
+          "ja, klar"
+        ],
+        "it": [
+          "sì, sicuro",
+          "certamente"
+        ],
+        "es": [
+          "sí, claro",
+          "por supuesto"
+        ],
+        "fr": [
+          "oui, sûr",
+          "bien sûr"
+        ]
       }
     }
   },
   {
-    "en": "no",
-    "de": "Nein",
-    "it": "no",
-    "es": "no",
-    "fr": "non",
+    "en": "no, thank you",
+    "de": "Nein, danke",
+    "it": "No, grazie",
+    "es": "No, gracias",
+    "fr": "Non, merci",
     "category": "phrases",
     "image": "no,cross",
     "details": {
       "articles": {},
       "sentences": {
-        "en": "no",
-        "de": "Nein",
-        "it": "no",
-        "es": "no",
-        "fr": "non"
+        "en": "no, thank you",
+        "de": "Nein, danke",
+        "it": "No, grazie",
+        "es": "No, gracias",
+        "fr": "Non, merci"
       },
       "variations": {},
       "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
+        "en": [
+          "no, thanks"
+        ],
+        "de": [
+          "nein, danke sehr"
+        ],
+        "it": [
+          "no, grazie mille"
+        ],
+        "es": [
+          "no, gracias de todos modos"
+        ],
+        "fr": [
+          "non, merci bien"
+        ]
       }
     }
   },
@@ -8957,83 +9037,119 @@
     }
   },
   {
-    "en": "sorry",
-    "de": "Es tut mir leid",
-    "it": "mi dispiace",
-    "es": "lo siento",
-    "fr": "désolé",
+    "en": "I am very sorry",
+    "de": "Es tut mir sehr leid",
+    "it": "Mi dispiace molto",
+    "es": "Lo siento mucho",
+    "fr": "Je suis vraiment désolé",
     "category": "phrases",
     "image": "sorry,sad",
     "details": {
       "articles": {},
       "sentences": {
-        "en": "sorry",
-        "de": "Es tut mir leid",
-        "it": "mi dispiace",
-        "es": "lo siento",
-        "fr": "désolé"
+        "en": "I am very sorry",
+        "de": "Es tut mir sehr leid",
+        "it": "Mi dispiace molto",
+        "es": "Lo siento mucho",
+        "fr": "Je suis vraiment désolé"
       },
       "variations": {},
       "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
+        "en": [
+          "i am so sorry",
+          "my apologies"
+        ],
+        "de": [
+          "tut mir leid",
+          "ich bitte um entschuldigung"
+        ],
+        "it": [
+          "scusami",
+          "mi dispiace"
+        ],
+        "es": [
+          "lo siento",
+          "lo lamento"
+        ],
+        "fr": [
+          "désolé",
+          "je suis désolé"
+        ]
       }
     }
   },
   {
-    "en": "good morning",
-    "de": "Guten Morgen",
-    "it": "buongiorno",
-    "es": "buenos días",
-    "fr": "bonjour",
+    "en": "good morning, everyone",
+    "de": "Guten Morgen zusammen",
+    "it": "Buongiorno a tutti",
+    "es": "Buenos días a todos",
+    "fr": "Bonjour à tous",
     "category": "phrases",
     "image": "sunrise,morning",
     "details": {
       "articles": {},
       "sentences": {
-        "en": "good morning",
-        "de": "Guten Morgen",
-        "it": "buongiorno",
-        "es": "buenos días",
-        "fr": "bonjour"
+        "en": "good morning, everyone",
+        "de": "Guten Morgen zusammen",
+        "it": "Buongiorno a tutti",
+        "es": "Buenos días a todos",
+        "fr": "Bonjour à tous"
       },
       "variations": {},
       "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
+        "en": [
+          "morning, everyone"
+        ],
+        "de": [
+          "guten morgen allerseits"
+        ],
+        "it": [
+          "buongiorno gente"
+        ],
+        "es": [
+          "buenos días gente"
+        ],
+        "fr": [
+          "bonjour tout le monde"
+        ]
       }
     }
   },
   {
-    "en": "good night",
-    "de": "Gute Nacht",
-    "it": "buonanotte",
-    "es": "buenas noches",
-    "fr": "bonne nuit",
+    "en": "good night, sleep well",
+    "de": "Gute Nacht, schlaf gut",
+    "it": "Buonanotte, dormi bene",
+    "es": "Buenas noches, que duermas bien",
+    "fr": "Bonne nuit, dors bien",
     "category": "phrases",
-    "image": "moon,sleep",
+    "image": "moon,stars",
     "details": {
       "articles": {},
       "sentences": {
-        "en": "good night",
-        "de": "Gute Nacht",
-        "it": "buonanotte",
-        "es": "buenas noches",
-        "fr": "bonne nuit"
+        "en": "good night, sleep well",
+        "de": "Gute Nacht, schlaf gut",
+        "it": "Buonanotte, dormi bene",
+        "es": "Buenas noches, que duermas bien",
+        "fr": "Bonne nuit, dors bien"
       },
       "variations": {},
       "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
+        "en": [
+          "night, sleep well",
+          "good night"
+        ],
+        "de": [
+          "gute nacht, schlaf schön"
+        ],
+        "it": [
+          "buonanotte, sogni d'oro"
+        ],
+        "es": [
+          "buenas noches, dulces sueños"
+        ],
+        "fr": [
+          "bonne nuit, fais de beaux rêves"
+        ]
       }
     }
   },
@@ -9254,56 +9370,81 @@
     }
   },
   {
-    "en": "welcome",
-    "de": "Willkommen",
-    "it": "benvenuto",
-    "es": "bienvenido",
-    "fr": "bienvenue",
+    "en": "welcome to our home",
+    "de": "Willkommen in unserem Zuhause",
+    "it": "Benvenuto a casa nostra",
+    "es": "Bienvenido a nuestra casa",
+    "fr": "Bienvenue dans notre maison",
     "category": "phrases",
-    "image": "door,welcome",
+    "image": "home,door",
     "details": {
       "articles": {},
       "sentences": {
-        "en": "welcome",
-        "de": "Willkommen",
-        "it": "benvenuto",
-        "es": "bienvenido",
-        "fr": "bienvenue"
+        "en": "welcome to our home",
+        "de": "Willkommen in unserem Zuhause",
+        "it": "Benvenuto a casa nostra",
+        "es": "Bienvenido a nuestra casa",
+        "fr": "Bienvenue dans notre maison"
       },
       "variations": {},
       "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
+        "en": [
+          "welcome home"
+        ],
+        "de": [
+          "willkommen bei uns zu hause"
+        ],
+        "it": [
+          "benvenuto in casa"
+        ],
+        "es": [
+          "bienvenido a nuestro hogar"
+        ],
+        "fr": [
+          "bienvenue chez nous"
+        ]
       }
     }
   },
   {
-    "en": "cheers",
-    "de": "Prost",
-    "it": "salute",
-    "es": "¡salud!",
-    "fr": "santé!",
+    "en": "cheers to your health",
+    "de": "Prost auf deine Gesundheit",
+    "it": "Salute alla tua salute",
+    "es": "Salud por tu salud",
+    "fr": "À votre santé",
     "category": "phrases",
     "image": "cheers,glasses",
     "details": {
       "articles": {},
       "sentences": {
-        "en": "cheers",
-        "de": "Prost",
-        "it": "salute",
-        "es": "¡salud!",
-        "fr": "santé!"
+        "en": "cheers to your health",
+        "de": "Prost auf deine Gesundheit",
+        "it": "Salute alla tua salute",
+        "es": "Salud por tu salud",
+        "fr": "À votre santé"
       },
       "variations": {},
       "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
+        "en": [
+          "to your health",
+          "cheers"
+        ],
+        "de": [
+          "auf dein wohl",
+          "prost"
+        ],
+        "it": [
+          "alla salute",
+          "salute"
+        ],
+        "es": [
+          "a tu salud",
+          "salud"
+        ],
+        "fr": [
+          "à ta santé",
+          "tchin tchin"
+        ]
       }
     }
   }
