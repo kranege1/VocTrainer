@@ -123,6 +123,7 @@ function loadState() {
     document.getElementById("setup-anthropic-key").value = state.anthropicKey;
     document.getElementById("select-audio-engine").value = state.audioEngine;
     document.getElementById("setup-allow-synonyms").checked = state.allowSynonyms;
+    document.getElementById("setup-base-lang").value = state.baseLang;
 
     if (state.openaiKey) testApiKey("openai", state.openaiKey, "setup-openai-status");
     if (state.grokKey) testApiKey("grok", state.grokKey, "setup-grok-status");
@@ -130,10 +131,6 @@ function loadState() {
     if (state.anthropicKey) testApiKey("anthropic", state.anthropicKey, "setup-anthropic-status");
 
     // Prefill dashboard buttons active state
-    document.querySelectorAll(".base-lang-btn").forEach(b => {
-      b.classList.remove("active");
-      if (b.dataset.lang === state.baseLang) b.classList.add("active");
-    });
     document.querySelectorAll(".lang-btn").forEach(b => {
       b.classList.remove("active");
       if (b.dataset.lang === state.selectedLang) b.classList.add("active");
@@ -1192,14 +1189,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
   });
 
-  // Base Language selectors (Source)
-  document.querySelectorAll(".base-lang-btn").forEach(btn => {
-    btn.onclick = () => {
-      document.querySelectorAll(".base-lang-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      state.baseLang = btn.dataset.lang;
-    };
-  });
+
 
   // Segmented control selectors
   document.querySelectorAll(".seg-btn").forEach(btn => {
@@ -1277,6 +1267,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     state.anthropicKey = document.getElementById("setup-anthropic-key").value.trim();
     state.audioEngine = document.getElementById("select-audio-engine").value;
     state.allowSynonyms = document.getElementById("setup-allow-synonyms").checked;
+    state.baseLang = document.getElementById("setup-base-lang").value;
     saveState();
     
     // Run verification directly

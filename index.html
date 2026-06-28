@@ -78,16 +78,7 @@
       <div class="card selector-card">
         <h3>Start a Practice Session</h3>
         
-        <div class="form-group">
-          <label>Your Base Language (Source)</label>
-          <div class="base-lang-selector" id="base-lang-selector">
-            <button class="base-lang-btn active" data-lang="en">🇬🇧 English</button>
-            <button class="base-lang-btn" data-lang="de">🇩🇪 German</button>
-            <button class="base-lang-btn" data-lang="it">🇮🇹 Italiano</button>
-            <button class="base-lang-btn" data-lang="es">🇪🇸 Spanish</button>
-            <button class="base-lang-btn" data-lang="fr">🇫🇷 French</button>
-          </div>
-        </div>
+
 
         <div class="form-group">
           <label>Target Language to Learn</label>
@@ -338,6 +329,16 @@
           <input type="text" id="setup-anthropic-key" placeholder="sk-ant-..." type="password">
           <span id="setup-anthropic-status" style="font-size:0.75rem; font-weight:600; display:block; margin-top:4px;"></span>
           <p class="input-hint">Used for premium AI Text-To-Speech (TTS), translation or custom evaluations.</p>
+        </div>
+        <div class="form-group">
+          <label>Your Base Language (Source)</label>
+          <select id="setup-base-lang" class="custom-select">
+            <option value="en">🇬🇧 English</option>
+            <option value="de">🇩🇪 German</option>
+            <option value="it">🇮🇹 Italiano</option>
+            <option value="es">🇪🇸 Spanish</option>
+            <option value="fr">🇫🇷 French</option>
+          </select>
         </div>
         <div class="form-group">
           <label>Audio Engine Choice</label>
