@@ -1336,31 +1336,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
   }
 
-  if (btnBulkConfirm) {
-    btnBulkConfirm.onclick = () => {
-      const lang = document.getElementById("bulk-lang").value;
-      const cat = document.getElementById("bulk-category").value.trim() || "imported";
-      let count = 0;
-      
-      parsedRows.forEach(row => {
-        if (row.active && row.word.trim()) {
-          addCustomWord(row.word.trim(), row.trans.trim(), lang, cat);
-          count++;
-        }
-      });
-      
-      if (count > 0) {
-        saveState();
-        renderImportedList();
-        alert(`Successfully imported ${count} custom words!`);
-        document.getElementById("bulk-import-text").value = "";
-        bulkPreviewArea.style.display = "none";
-        btnBulkSwap.style.display = "none";
-        parsedRows = [];
-      } else {
-        alert("No words selected to import.");
+  function executeBulkImport() {
+    const lang = document.getElementById("bulk-lang").value;
+    const cat = document.getElementById("bulk-category").value.trim() || "imported";
+    let count = 0;
+    
+    parsedRows.forEach(row => {
+      if (row.active && row.word.trim()) {
+        addCustomWord(row.word.trim(), row.trans.trim(), lang, cat);
+        count++;
       }
-    };
+    });
+    
+    if (count > 0) {
+      saveState();
+      renderImportedList();
+      alert(`Successfully imported ${count} custom words!`);
+      document.getElementById("bulk-import-text").value = "";
+      bulkPreviewArea.style.display = "none";
+      btnBulkSwap.style.display = "none";
+      parsedRows = [];
+    } else {
+      alert("No words selected to import.");
+    }
+  }
+
+  if (btnBulkConfirm) {
+    btnBulkConfirm.onclick = executeBulkImport;
+  }
+  const btnBulkConfirmTop = document.getElementById("btn-bulk-confirm-top");
+  if (btnBulkConfirmTop) {
+    btnBulkConfirmTop.onclick = executeBulkImport;
   }
 
   // Browse & History Navigation & Listeners
