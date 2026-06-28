@@ -80,6 +80,7 @@ function saveState() {
     history: state.history
   }));
   updateHeaderUI();
+  populateCustomCategoryDropdown();
 }
 
 // Load state from LocalStorage
@@ -125,6 +126,23 @@ function loadState() {
   renderImportedList();
   renderMistakesList();
   renderHistoryList();
+  populateCustomCategoryDropdown();
+}
+
+function populateCustomCategoryDropdown() {
+  const dropdown = document.getElementById("select-custom-category");
+  if (!dropdown) return;
+  
+  dropdown.innerHTML = '<option value="none">✨ -- Select Custom Set --</option>';
+  
+  const categories = [...new Set(state.customVocab.map(v => v.category))].filter(Boolean);
+  
+  categories.forEach(cat => {
+    const opt = document.createElement("option");
+    opt.value = cat;
+    opt.textContent = `👤 ${cat}`;
+    dropdown.appendChild(opt);
+  });
 }
 
 // ==========================================
@@ -486,11 +504,13 @@ window.removeMistake = function(index) {
 // ==========================================
 // 6. Test Runner Engine (Study Session)
 // ==========================================
-function startTestSession(language, category, count, isMistakesOnly = false) {
+function startTestSession(language, category, count, isMistakesOnly = false, customCategory = "none") {
   let pool = [];
   
   if (isMistakesOnly) {
     pool = [...state.mistakes];
+  } else if (customCategory !== "none") {
+    pool = state.customVocab.filter(v => v.lang === language && v.category === customCategory);
   } else {
     const base = state.baseLang || "en";
     const starters = STARTER_VOCAB_RAW.map(item => ({
@@ -962,8 +982,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     const activeSeg = document.querySelector(".seg-btn.active");
     const count = activeSeg ? parseInt(activeSeg.dataset.count) : 10;
     const category = document.getElementById("select-category").value;
-    startTestSession(state.selectedLang, category, count);
+    const customCategory = document.getElementById("select-custom-category").value;
+    startTestSession(state.selectedLang, category, count, false, customCategory);
   };
+
+  // Sync category dropdowns: choosing custom clears standard, choosing standard clears custom
+  const selectCategory = document.getElementById("select-category");
+  const selectCustomCategory = document.getElementById("select-custom-category");
+  if (selectCategory && selectCustomCategory) {
+    selectCategory.onchange = () => {
+      selectCustomCategory.value = "none";
+    };
+    selectCustomCategory.onchange = () => {
+      if (selectCustomCategory.value !== "none") {
+        selectCategory.value = "all";
+      }
+    };
+  }
 
   // Test mode switcher toggles
   document.querySelectorAll(".mode-toggle-btn").forEach(btn => {
