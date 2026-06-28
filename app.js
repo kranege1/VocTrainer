@@ -1279,16 +1279,16 @@ function setupWordDetails(currentWord) {
   const base = state.baseLang || "en";
   const lang = state.selectedLang;
 
-  const sectionArticles = document.getElementById("section-articles");
-  const sectionSentence = document.getElementById("section-sentence");
-  const sectionVariations = document.getElementById("section-variations");
-  const sectionSynonyms = document.getElementById("section-synonyms");
-
   const articlesEl = document.getElementById("detail-articles");
   const sentenceEl = document.getElementById("detail-sentence");
   const sentenceTransEl = document.getElementById("detail-sentence-translation");
   const variationsEl = document.getElementById("detail-variations");
   const synonymsEl = document.getElementById("detail-synonyms");
+
+  const sectionArticles = articlesEl ? articlesEl.parentElement : null;
+  const sectionSentence = sentenceEl ? sentenceEl.parentElement : null;
+  const sectionVariations = variationsEl ? variationsEl.parentElement : null;
+  const sectionSynonyms = synonymsEl ? synonymsEl.parentElement : null;
 
   if (details) {
     // 1. Articles
