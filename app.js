@@ -136,7 +136,9 @@ function showView(viewId) {
 function updateHeaderUI() {
   document.getElementById("xp-count").textContent = state.xp;
   document.getElementById("streak-count").textContent = state.streak;
-  document.getElementById("hearts-count").textContent = state.hearts;
+  
+  const heartsCount = document.getElementById("hearts-count");
+  if (heartsCount) heartsCount.textContent = state.hearts;
   
   // Update level badge on both top header and potentially any other layout element
   const levelBadges = document.querySelectorAll("#level-badge");
@@ -633,14 +635,6 @@ function submitAnswer() {
     }
     
     recordMistake(currentWord);
-    
-    state.hearts = Math.max(0, state.hearts - 1);
-    if (state.hearts === 0) {
-      alert("No hearts left! Session ended.");
-      state.hearts = 5; 
-      showView("view-dashboard");
-      return;
-    }
   }
 
   setupWordDetails(currentWord);
