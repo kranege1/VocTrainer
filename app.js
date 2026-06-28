@@ -2684,7 +2684,7 @@ async function callLLM(prompt, systemInstruction = "You are a helpful language t
       "Content-Type": "application/json"
     };
     body = {
-      model: "grok-beta",
+      model: "grok-2",
       messages: [
         { role: "system", content: systemInstruction },
         { role: "user", content: prompt }
