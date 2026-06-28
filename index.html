@@ -58,7 +58,10 @@
           <span class="icon">📥</span> Import
         </button>
         <button class="nav-item" data-view="view-setup">
-          <span class="icon">⚙️</span> Setup & API
+          <span class="icon">⚙️</span> Preferences
+        </button>
+        <button class="nav-item" data-view="view-api">
+          <span class="icon">🔑</span> API Keys
         </button>
         
         <!-- Build Timestamp on the bottom left -->
@@ -144,8 +147,11 @@
         <button id="btn-go-history" class="btn btn-secondary">
           <span class="icon">📈</span> History
         </button>
-        <button id="btn-go-setup" class="btn btn-secondary btn-block" style="grid-column: span 2;">
-          <span class="icon">⚙️</span> Setup & API Keys
+        <button id="btn-go-setup" class="btn btn-secondary" style="margin: 0;">
+          <span class="icon">⚙️</span> Preferences
+        </button>
+        <button id="btn-go-api" class="btn btn-secondary" style="margin: 0;">
+          <span class="icon">🔑</span> API Keys
         </button>
       </div>
     </section>
@@ -308,11 +314,119 @@
       </div>
     </section>
 
-    <!-- SETUP VIEW -->
+    <!-- SETUP VIEW (PREFERENCES) -->
     <section id="view-setup" class="app-view">
       <div class="view-header">
         <button id="btn-setup-back" class="btn-back">← Back</button>
-        <h2>Setup & Configuration</h2>
+        <h2>Preferences & Audio</h2>
+      </div>
+
+      <div class="card">
+        <h3>General Preferences</h3>
+        <div class="form-group">
+          <label>Your Base Language (Source)</label>
+          <select id="setup-base-lang" class="custom-select">
+            <option value="en">🇬🇧 English</option>
+            <option value="de">🇩🇪 German</option>
+            <option value="it">🇮🇹 Italiano</option>
+            <option value="es">🇪🇸 Spanish</option>
+            <option value="fr">🇫🇷 French</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Audio Engine Choice</label>
+          <select id="select-audio-engine" class="custom-select">
+            <option value="browser">🌐 Browser Web Speech API (Free)</option>
+            <option value="openai">🤖 OpenAI TTS API (Requires Key)</option>
+          </select>
+        </div>
+        <div class="form-group toggle-group" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <label style="margin:0; font-weight: 600;">Allow Synonyms / Similar Words</label>
+          <label class="switch">
+            <input type="checkbox" id="setup-allow-synonyms">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <button id="btn-save-setup" class="btn btn-primary btn-block">Save Preferences</button>
+      </div>
+
+      <!-- FREE ON-DEVICE VOICE SELECTOR -->
+      <div class="card">
+        <h3>Free On-Device Voices</h3>
+        <p class="import-help" style="margin-bottom: 16px;">Select which of your system's built-in voices to use for each language. This runs entirely locally and for 100% free.</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div class="form-group" style="margin: 0;">
+            <label>🇬🇧 English Voice</label>
+            <div style="display: flex; gap: 8px;">
+              <select id="voice-select-en" class="custom-select" style="flex: 1; margin: 0;"></select>
+              <button onclick="window.testSelectedVoice('en')" class="btn btn-secondary" style="width: auto; margin: 0; min-height: 40px;">🔊 Test</button>
+            </div>
+          </div>
+          <div class="form-group" style="margin: 0;">
+            <label>🇩🇪 German Voice</label>
+            <div style="display: flex; gap: 8px;">
+              <select id="voice-select-de" class="custom-select" style="flex: 1; margin: 0;"></select>
+              <button onclick="window.testSelectedVoice('de')" class="btn btn-secondary" style="width: auto; margin: 0; min-height: 40px;">🔊 Test</button>
+            </div>
+          </div>
+          <div class="form-group" style="margin: 0;">
+            <label>🇮🇹 Italian Voice</label>
+            <div style="display: flex; gap: 8px;">
+              <select id="voice-select-it" class="custom-select" style="flex: 1; margin: 0;"></select>
+              <button onclick="window.testSelectedVoice('it')" class="btn btn-secondary" style="width: auto; margin: 0; min-height: 40px;">🔊 Test</button>
+            </div>
+          </div>
+          <div class="form-group" style="margin: 0;">
+            <label>🇪🇸 Spanish Voice</label>
+            <div style="display: flex; gap: 8px;">
+              <select id="voice-select-es" class="custom-select" style="flex: 1; margin: 0;"></select>
+              <button onclick="window.testSelectedVoice('es')" class="btn btn-secondary" style="width: auto; margin: 0; min-height: 40px;">🔊 Test</button>
+            </div>
+          </div>
+          <div class="form-group" style="margin: 0;">
+            <label>🇫🇷 French Voice</label>
+            <div style="display: flex; gap: 8px;">
+              <select id="voice-select-fr" class="custom-select" style="flex: 1; margin: 0;"></select>
+              <button onclick="window.testSelectedVoice('fr')" class="btn btn-secondary" style="width: auto; margin: 0; min-height: 40px;">🔊 Test</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- iOS TIP -->
+      <div class="card">
+        <h3>iPhone Speech Quality Tip</h3>
+        <p class="import-help" style="margin-top: 0; line-height: 1.4;">
+          To get incredibly natural, premium pronunciation voices on iOS, download high-quality Siri voices directly in your iPhone settings:
+          <br><strong style="color: #fff;">Settings &rarr; Accessibility &rarr; Spoken Content &rarr; Voices</strong> &rarr; Select your Language (e.g. German, Italian) &rarr; Select & download <strong>Siri</strong> or <strong>Enhanced</strong>.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>iCloud & Local Backups</h3>
+        <p class="import-help">Backup all words, stats, custom picture links, and audio recordings to a single JSON file or sync them.</p>
+        <div class="backup-actions">
+          <button id="btn-export-data" class="btn btn-secondary">💾 Export Backup</button>
+          <label for="import-backup-file" class="btn btn-secondary" style="cursor: pointer; text-align: center;">
+            📥 Import Backup
+          </label>
+          <input type="file" id="import-backup-file" style="display: none;" accept=".json">
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>On-Device LLM (iPhone/Local)</h3>
+        <p class="import-help">Note: On newer iPhones or laptops, you can run language learning models locally (e.g. WebLLM or Apple's Gemini Nano via Safari Experiments). Toggle standard Local evaluations.</p>
+        <button class="btn btn-secondary btn-block" disabled>On-Device LLM: Ready & Supported</button>
+      </div>
+    </section>
+
+    <!-- API VIEW -->
+    <section id="view-api" class="app-view">
+      <div class="view-header">
+        <button id="btn-api-back" class="btn-back">← Back</button>
+        <h2>API Key Configurations</h2>
       </div>
 
       <div class="card">
@@ -338,58 +452,7 @@
           <span id="setup-anthropic-status" style="font-size:0.75rem; font-weight:600; display:block; margin-top:4px;"></span>
           <p class="input-hint">Used for premium AI Text-To-Speech (TTS), translation or custom evaluations.</p>
         </div>
-        <div class="form-group">
-          <label>Your Base Language (Source)</label>
-          <select id="setup-base-lang" class="custom-select">
-            <option value="en">🇬🇧 English</option>
-            <option value="de">🇩🇪 German</option>
-            <option value="it">🇮🇹 Italiano</option>
-            <option value="es">🇪🇸 Spanish</option>
-            <option value="fr">🇫🇷 French</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Audio Engine Choice</label>
-          <select id="select-audio-engine" class="custom-select">
-            <option value="browser">🌐 Browser Web Speech API (Free)</option>
-            <option value="openai">🤖 OpenAI TTS API (Requires Key)</option>
-          </select>
-        </div>
-        <div class="form-group toggle-group" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-          <label style="margin:0; font-weight: 600;">Allow Synonyms / Similar Words</label>
-          <label class="switch">
-            <input type="checkbox" id="setup-allow-synonyms">
-            <span class="slider round"></span>
-          </label>
-        </div>
-        <button id="btn-save-setup" class="btn btn-primary btn-block">Save API Configurations</button>
-
-        <!-- iOS Enhanced Voices Tip Card -->
-        <div style="background: rgba(76, 201, 240, 0.05); padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(76, 201, 240, 0.2); margin-top: 20px;">
-          <span style="font-size: 0.85rem; font-weight: 700; color: #4cc9f0; display: block; margin-bottom: 4px;">💡 iPhone Voice Quality Tip</span>
-          <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4; margin: 0;">
-            To get incredibly natural, premium pronunciation voices on iOS, download high-quality Siri voices directly in your iPhone settings:
-            <br><strong style="color: #fff;">Settings &rarr; Accessibility &rarr; Spoken Content &rarr; Voices</strong> &rarr; Select your Language (e.g. German, Italian) &rarr; Select & download <strong>Siri</strong> or <strong>Enhanced</strong>.
-          </p>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>iCloud & Local Backups</h3>
-        <p class="import-help">Backup all words, stats, custom picture links, and audio recordings to a single JSON file or sync them.</p>
-        <div class="backup-actions">
-          <button id="btn-export-data" class="btn btn-secondary">💾 Export Backup</button>
-          <label for="import-backup-file" class="btn btn-secondary" style="cursor: pointer; text-align: center;">
-            📥 Import Backup
-          </label>
-          <input type="file" id="import-backup-file" style="display: none;" accept=".json">
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>On-Device LLM (iPhone/Local)</h3>
-        <p class="import-help">Note: On newer iPhones or laptops, you can run language learning models locally (e.g. WebLLM or Apple's Gemini Nano via Safari Experiments). Toggle standard Local evaluations.</p>
-        <button class="btn btn-secondary btn-block" disabled>On-Device LLM: Ready & Supported</button>
+        <button id="btn-save-api-keys" class="btn btn-primary btn-block" style="margin-top: 16px;">Save API Keys</button>
       </div>
     </section>
 

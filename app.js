@@ -47,6 +47,7 @@ let state = {
   customFolders: [], // Custom folder names
   wordStats: {}, // Spaced Repetition / Leitner stats: { wordEn: { attempts, errors, box, lastReview } }
   testDirection: "forward", // forward (base -> target) or reverse (target -> base)
+  customVoices: {}, // Selected free local system voices for each language key: { en: "Voice Name", ... }
 
   // Current active test state
   currentTest: {
@@ -87,7 +88,8 @@ function saveState() {
     editedStarters: state.editedStarters,
     customFolders: state.customFolders,
     wordStats: state.wordStats,
-    testDirection: state.testDirection
+    testDirection: state.testDirection,
+    customVoices: state.customVoices
   }));
   updateHeaderUI();
   populateCustomCategoryDropdown();
@@ -118,6 +120,7 @@ function loadState() {
     state.customFolders = parsed.customFolders || [];
     state.wordStats = parsed.wordStats || {};
     state.testDirection = parsed.testDirection || "forward";
+    state.customVoices = parsed.customVoices || {};
 
     // Prefill Setup fields
     document.getElementById("setup-openai-key").value = state.openaiKey;
@@ -144,6 +147,7 @@ function loadState() {
       if (btn.dataset.direction === state.testDirection) btn.classList.add("active");
     });
     updateDirectionButtonsUI();
+    loadOnDeviceVoices();
   }
   updateHeaderUI();
   renderImportedList();
@@ -383,9 +387,16 @@ function speakWord(text, langCode, rate = 1.0) {
     utterance.lang = LANG_LOCALES[langCode] || "en-US";
     utterance.rate = rate; 
     
-    const bestVoice = getBestVoice(langCode);
-    if (bestVoice) {
-      utterance.voice = bestVoice;
+    let selectedVoice = null;
+    const customVoiceName = state.customVoices?.[langCode];
+    if (customVoiceName && customVoiceName !== "default") {
+      const voices = window.speechSynthesis.getVoices();
+      selectedVoice = voices.find(v => v.name === customVoiceName);
+    }
+    
+    const finalVoice = selectedVoice || getBestVoice(langCode);
+    if (finalVoice) {
+      utterance.voice = finalVoice;
     }
     window.speechSynthesis.speak(utterance);
   }
@@ -1202,10 +1213,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btn-go-import").onclick = () => showView("view-import");
   document.getElementById("btn-go-mistakes").onclick = () => showView("view-mistakes");
   document.getElementById("btn-go-setup").onclick = () => showView("view-setup");
+  document.getElementById("btn-go-api").onclick = () => showView("view-api");
   
   document.getElementById("btn-import-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-mistakes-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-setup-back").onclick = () => showView("view-dashboard");
+  document.getElementById("btn-api-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-report-home").onclick = () => showView("view-dashboard");
 
   // Sidebar Nav Tab Event Listeners (Prompt to quit test session if active)
@@ -1331,18 +1344,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   };
 
-  // Setup Actions
-  document.getElementById("btn-save-setup").onclick = async () => {
+  // Setup Actions (App Preferences)
+  document.getElementById("btn-save-setup").onclick = () => {
+    state.audioEngine = document.getElementById("select-audio-engine").value;
+    state.allowSynonyms = document.getElementById("setup-allow-synonyms").checked;
+    state.baseLang = document.getElementById("setup-base-lang").value;
+    
+    // Save chosen custom free voices
+    state.customVoices = {
+      en: document.getElementById("voice-select-en").value,
+      de: document.getElementById("voice-select-de").value,
+      it: document.getElementById("voice-select-it").value,
+      es: document.getElementById("voice-select-es").value,
+      fr: document.getElementById("voice-select-fr").value
+    };
+
+    saveState();
+    updateDirectionButtonsUI();
+    alert("Application preferences saved!");
+    showView("view-dashboard");
+  };
+
+  // API Key Actions
+  document.getElementById("btn-save-api-keys").onclick = async () => {
     state.openaiKey = document.getElementById("setup-openai-key").value.trim();
     state.grokKey = document.getElementById("setup-grok-key").value.trim();
     state.geminiKey = document.getElementById("setup-gemini-key").value.trim();
     state.anthropicKey = document.getElementById("setup-anthropic-key").value.trim();
-    state.audioEngine = document.getElementById("select-audio-engine").value;
-    state.allowSynonyms = document.getElementById("setup-allow-synonyms").checked;
-    state.baseLang = document.getElementById("setup-base-lang").value;
-    saveState();
-    updateDirectionButtonsUI();
     
+    saveState();
+
     // Run verification directly
     await Promise.all([
       testApiKey("openai", state.openaiKey, "setup-openai-status"),
@@ -1351,7 +1382,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       testApiKey("anthropic", state.anthropicKey, "setup-anthropic-status")
     ]);
 
-    alert("Configuration parameters updated!");
+    alert("API configurations updated!");
     showView("view-dashboard");
   };
 
@@ -2861,5 +2892,85 @@ async function getGrokModel(key) {
     console.error("Failed to dynamically resolve grok models:", e);
   }
   return "grok-beta"; // Fallback to grok-beta if listing models fails
+}
+
+// Load and populate on-device free voices
+function loadOnDeviceVoices() {
+  if (!('speechSynthesis' in window)) return;
+  const voices = window.speechSynthesis.getVoices();
+  const langs = ["en", "de", "it", "es", "fr"];
+
+  langs.forEach(lang => {
+    const select = document.getElementById(`voice-select-${lang}`);
+    if (!select) return;
+
+    const previousValue = select.value || state.customVoices?.[lang] || "default";
+    select.innerHTML = "";
+
+    // Default option
+    const defOpt = document.createElement("option");
+    defOpt.value = "default";
+    defOpt.textContent = "Automatic / Best Match";
+    select.appendChild(defOpt);
+
+    const targetLocale = (LANG_LOCALES[lang] || "en-US").toLowerCase().replace('_', '-');
+    
+    const matching = voices.filter(v => {
+      const vLang = v.lang.toLowerCase().replace('_', '-');
+      return vLang === targetLocale || vLang.startsWith(targetLocale.split('-')[0]);
+    });
+
+    matching.forEach(voice => {
+      const opt = document.createElement("option");
+      opt.value = voice.name;
+      opt.textContent = `${voice.name} (${voice.lang})`;
+      select.appendChild(opt);
+    });
+
+    // Re-select active choice
+    select.value = previousValue;
+  });
+}
+
+// Test speech synthesizer voice selection
+window.testSelectedVoice = function(lang) {
+  if (!('speechSynthesis' in window)) {
+    alert("Speech synthesis is not supported on this browser.");
+    return;
+  }
+
+  const select = document.getElementById(`voice-select-${lang}`);
+  if (!select) return;
+
+  const testPhrases = {
+    en: "Hello! This is a test of your selected English voice.",
+    de: "Hallo! Dies ist ein Test Ihrer ausgewählten deutschen Stimme.",
+    it: "Ciao! Questo è un test della tua voce italiana selezionata.",
+    es: "¡Hola! Esta es una prueba de tu voz en español seleccionada.",
+    fr: "Bonjour! Ceci est un test de votre voix française sélectionnée."
+  };
+
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(testPhrases[lang] || "Test");
+  utterance.lang = LANG_LOCALES[lang] || "en-US";
+
+  const selectedVoiceName = select.value;
+  if (selectedVoiceName && selectedVoiceName !== "default") {
+    const voices = window.speechSynthesis.getVoices();
+    const found = voices.find(v => v.name === selectedVoiceName);
+    if (found) utterance.voice = found;
+  } else {
+    const best = getBestVoice(lang);
+    if (best) utterance.voice = best;
+  }
+
+  window.speechSynthesis.speak(utterance);
+};
+
+// Bind speech voices updated events
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => {
+    loadOnDeviceVoices();
+  };
 }
 
