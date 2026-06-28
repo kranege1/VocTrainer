@@ -709,13 +709,19 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
   
   if (isMistakesOnly) {
     pool = [...state.mistakes];
+    // Filter out broken entries where question equals answer
+    pool = pool.filter(w => w.en && w.target && w.en.toLowerCase().trim() !== w.target.toLowerCase().trim());
   } else if (customCategory !== "none") {
     const base = state.baseLang || "en";
     pool = state.customVocab
       .filter(v => v.category === customCategory)
+      .filter(item => {
+        // Skip words missing a proper translation in either base or target language
+        return item[base] && item[language] && item[base].toLowerCase().trim() !== item[language].toLowerCase().trim();
+      })
       .map(item => {
-        const qText = item[base] || item.en || item.target;
-        const aText = item[language] || item.target;
+        const qText = item[base];
+        const aText = item[language];
         return {
           en: direction === "reverse" ? aText : qText,
           target: direction === "reverse" ? qText : aText,
@@ -756,19 +762,21 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
       };
     }).filter(Boolean);
     
-    const customs = state.customVocab.map(item => {
-      const qText = item[base] || item.en || item.target;
-      const aText = item[language] || item.target || item.en;
-      return {
-        en: direction === "reverse" ? aText : qText,
-        target: direction === "reverse" ? qText : aText,
-        category: item.category,
-        image: item.image,
-        details: item.details || {},
-        answerLang: direction === "reverse" ? base : language,
-        questionLang: direction === "reverse" ? language : base
-      };
-    });
+    const customs = state.customVocab
+      .filter(item => item[base] && item[language] && item[base].toLowerCase().trim() !== item[language].toLowerCase().trim())
+      .map(item => {
+        const qText = item[base];
+        const aText = item[language];
+        return {
+          en: direction === "reverse" ? aText : qText,
+          target: direction === "reverse" ? qText : aText,
+          category: item.category,
+          image: item.image,
+          details: item.details || {},
+          answerLang: direction === "reverse" ? base : language,
+          questionLang: direction === "reverse" ? language : base
+        };
+      });
     pool = [...starters, ...customs];
     
     // Filter out words where question and answer are identical (broken translations)
@@ -1012,9 +1020,12 @@ function submitAnswer() {
   const cleanAns = studentAnswer.toLowerCase().replace(/[¿?¡!.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").trim();
   const cleanTarget = currentWord.target.toLowerCase().replace(/[¿?¡!.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").trim();
 
+  // Use the actual answer language stored on the word (handles reverse direction correctly)
+  const ansLang = currentWord.answerLang || state.selectedLang;
+
   // Strip articles
-  const cleanAnsNoArticle = stripArticles(cleanAns, state.selectedLang);
-  const cleanTargetNoArticle = stripArticles(cleanTarget, state.selectedLang);
+  const cleanAnsNoArticle = stripArticles(cleanAns, ansLang);
+  const cleanTargetNoArticle = stripArticles(cleanTarget, ansLang);
 
   const isExactMatch = cleanAns === cleanTarget;
   const isCloseMatch = cleanAnsNoArticle === cleanTargetNoArticle;
@@ -1023,11 +1034,11 @@ function submitAnswer() {
   const dist = getLevenshteinDistance(cleanAnsNoArticle, cleanTargetNoArticle);
   const isTypo = dist > 0 && dist <= 2; 
 
-  // Synonym verification
-  const syns = (currentWord.details && currentWord.details.synonyms && currentWord.details.synonyms[state.selectedLang]) ? currentWord.details.synonyms[state.selectedLang] : [];
+  // Synonym verification - use the answer language for synonym lookup
+  const syns = (currentWord.details && currentWord.details.synonyms && currentWord.details.synonyms[ansLang]) ? currentWord.details.synonyms[ansLang] : [];
   const cleanSyns = syns.map(s => {
     const sLower = s.toLowerCase().replace(/[¿?¡!.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").trim();
-    return stripArticles(sLower, state.selectedLang);
+    return stripArticles(sLower, ansLang);
   });
   const isSynonymMatch = state.allowSynonyms && cleanSyns.includes(cleanAnsNoArticle);
 
