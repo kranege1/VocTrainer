@@ -836,16 +836,28 @@ function buildBubbleOptions(targetPhrase) {
 
   const shuffled = [...pieces].sort(() => 0.5 - Math.random());
 
-  shuffled.forEach(piece => {
+  shuffled.forEach((piece, index) => {
     const bubble = document.createElement("button");
     bubble.className = "word-bubble";
     bubble.textContent = piece;
+    bubble.dataset.idx = index;
+    
     bubble.onclick = () => {
-      if (bubble.parentElement === optionsZone) {
-        selectedZone.appendChild(bubble);
-      } else {
-        optionsZone.appendChild(bubble);
-      }
+      // Keep option button in the DOM layout, make invisible
+      bubble.style.visibility = "hidden";
+      bubble.style.pointerEvents = "none";
+
+      // Create matching select block
+      const selBubble = document.createElement("button");
+      selBubble.className = "word-bubble";
+      selBubble.textContent = piece;
+      selBubble.onclick = () => {
+        // Restore option button visibility
+        bubble.style.visibility = "visible";
+        bubble.style.pointerEvents = "auto";
+        selBubble.remove();
+      };
+      selectedZone.appendChild(selBubble);
     };
     optionsZone.appendChild(bubble);
   });
