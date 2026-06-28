@@ -717,7 +717,7 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
     const base = state.baseLang || "en";
     const starters = STARTER_VOCAB_RAW.map(item => {
       const origEn = item[base];
-      const origTarget = item[selectedLang || language];
+      const origTarget = item[state.selectedLang || language];
       
       if (state.deletedStarters.includes(origEn)) {
         return null;
