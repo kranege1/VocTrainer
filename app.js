@@ -131,18 +131,29 @@ function loadState() {
 
 function populateCustomCategoryDropdown() {
   const dropdown = document.getElementById("select-custom-category");
-  if (!dropdown) return;
-  
-  dropdown.innerHTML = '<option value="none">✨ -- Select Custom Set --</option>';
+  const browseDropdown = document.getElementById("select-browse-custom-category");
   
   const categories = [...new Set(state.customVocab.map(v => v.category))].filter(Boolean);
   
-  categories.forEach(cat => {
-    const opt = document.createElement("option");
-    opt.value = cat;
-    opt.textContent = `👤 ${cat}`;
-    dropdown.appendChild(opt);
-  });
+  if (dropdown) {
+    dropdown.innerHTML = '<option value="none">✨ -- Select Custom Set --</option>';
+    categories.forEach(cat => {
+      const opt = document.createElement("option");
+      opt.value = cat;
+      opt.textContent = `👤 ${cat}`;
+      dropdown.appendChild(opt);
+    });
+  }
+
+  if (browseDropdown) {
+    browseDropdown.innerHTML = '<option value="none">✨ -- Select Custom Set --</option>';
+    categories.forEach(cat => {
+      const opt = document.createElement("option");
+      opt.value = cat;
+      opt.textContent = `👤 ${cat}`;
+      browseDropdown.appendChild(opt);
+    });
+  }
 }
 
 // ==========================================
@@ -1375,9 +1386,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
   });
 
-  document.getElementById("select-browse-category").onchange = () => {
-    renderBrowseList();
-  };
+  const selectBrowseCategory = document.getElementById("select-browse-category");
+  const selectBrowseCustomCategory = document.getElementById("select-browse-custom-category");
+
+  if (selectBrowseCategory && selectBrowseCustomCategory) {
+    selectBrowseCategory.onchange = () => {
+      selectBrowseCustomCategory.value = "none";
+      renderBrowseList();
+    };
+    selectBrowseCustomCategory.onchange = () => {
+      if (selectBrowseCustomCategory.value !== "none") {
+        selectBrowseCategory.value = "all";
+      }
+      renderBrowseList();
+    };
+  }
 });
 
 // Render the completed sessions in history list
@@ -1417,22 +1440,29 @@ function renderBrowseList() {
   const activeLangBtn = document.querySelector("#browse-lang-selector .lang-btn.active");
   const selectedLang = activeLangBtn ? activeLangBtn.dataset.lang : "en";
   const selectedCategory = document.getElementById("select-browse-category").value;
+  const selectedCustomCategory = document.getElementById("select-browse-custom-category") ? document.getElementById("select-browse-custom-category").value : "none";
 
   // Gather pool
   const base = state.baseLang || "en";
-  const starters = STARTER_VOCAB_RAW.map(item => ({
-    en: item[base],
-    target: item[selectedLang],
-    category: item.category,
-    image: item.image,
-    details: item.details
-  }));
-  
-  const customs = state.customVocab.filter(v => v.lang === selectedLang);
-  let pool = [...starters, ...customs];
+  let pool = [];
 
-  if (selectedCategory !== "all") {
-    pool = pool.filter(v => v.category === selectedCategory);
+  if (selectedCustomCategory !== "none") {
+    pool = state.customVocab.filter(v => v.lang === selectedLang && v.category === selectedCustomCategory);
+  } else {
+    const starters = STARTER_VOCAB_RAW.map(item => ({
+      en: item[base],
+      target: item[selectedLang],
+      category: item.category,
+      image: item.image,
+      details: item.details
+    }));
+    
+    const customs = state.customVocab.filter(v => v.lang === selectedLang);
+    pool = [...starters, ...customs];
+
+    if (selectedCategory !== "all") {
+      pool = pool.filter(v => v.category === selectedCategory);
+    }
   }
 
   document.getElementById("browse-list-title").textContent = `Vocabulary List (${pool.length} words)`;
