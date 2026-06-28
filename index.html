@@ -415,7 +415,10 @@
         <div class="card">
           <div class="form-group">
             <label>English Word/Phrase</label>
-            <input type="text" id="manual-english" placeholder="e.g. apple">
+            <div style="display: flex; gap: 8px;">
+              <input type="text" id="manual-english" placeholder="e.g. apple" style="flex: 1; margin: 0;">
+              <button id="btn-manual-autotranslate" class="btn btn-secondary" style="width: auto; min-height: 40px; border-radius: 10px; margin: 0; font-size: 0.8rem; display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 0 12px;">🤖 Auto-Translate</button>
+            </div>
           </div>
           <div class="form-group">
             <label>Translation</label>
@@ -449,7 +452,10 @@
             </div>
           </div>
           
-          <button id="btn-manual-submit" class="btn btn-primary btn-block">Add Word</button>
+          <div style="display: flex; gap: 12px; margin-top: 16px;">
+            <button id="btn-manual-submit" class="btn btn-primary" style="flex: 1; margin: 0;">Add Word</button>
+            <button id="btn-manual-propose" class="btn btn-secondary" style="flex: 1; margin: 0; font-size: 0.85rem; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">✨ Propose Similar Words</button>
+          </div>
         </div>
       </div>
 

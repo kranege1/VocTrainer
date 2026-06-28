@@ -452,12 +452,86 @@ async function importFromUrl(url, category) {
       saveState();
       renderImportedList();
     } else {
-      alert("Could not automatically identify vocabularies. Try adding manually.");
+      const hasKey = state.openaiKey || state.grokKey || state.geminiKey;
+      if (hasKey) {
+        const useAI = await showCustomConfirm("Could not identify words in the URL structure. Would you like AI to generate a training set of 12 vocabulary words based on the TOPIC of this URL?");
+        if (useAI) {
+          spinner.style.display = "block";
+          spinner.querySelector("p").textContent = "AI is generating vocabulary list...";
+          try {
+            const prompt = `Based on the URL topic/context: "${url}", generate a list of 12 relevant vocabulary words in English and their translations in target language key "${state.selectedLang}".
+            Output your response ONLY as a clean JSON array of objects, with keys "word" (English text) and "trans" (translation text). Do not wrap in markdown code blocks.
+            Example: [{"word": "ticket", "trans": "Fahrkarte"}, ...]`;
+            
+            const resText = await callLLM(prompt);
+            let parsed = [];
+            try {
+              const cleanJson = resText.replace(/```json/g, "").replace(/```/g, "").trim();
+              parsed = JSON.parse(cleanJson);
+            } catch (e) {
+              throw new Error("AI returned malformed JSON response. Please try again.");
+            }
+
+            if (parsed.length > 0) {
+              for (const item of parsed) {
+                await addCustomWord(item.word.trim(), item.trans.trim(), state.selectedLang, category);
+              }
+              alert(`Successfully generated and imported ${parsed.length} vocabulary words with AI based on the URL context!`);
+            } else {
+              alert("AI could not generate words.");
+            }
+          } catch (err) {
+            alert("AI Generation failed: " + err.message);
+          } finally {
+            spinner.style.display = "none";
+            spinner.querySelector("p").textContent = "Scanning web page for words...";
+          }
+        }
+      } else {
+        alert("Could not automatically identify vocabularies. Try adding manually.");
+      }
     }
   } catch (error) {
     spinner.style.display = "none";
     console.error(error);
-    alert("Error fetching or parsing the URL.");
+    const hasKey = state.openaiKey || state.grokKey || state.geminiKey;
+    if (hasKey) {
+      const useAI = await showCustomConfirm("Error fetching URL (CORS limits). Since you have an API key configured, would you like AI to generate a training set of 12 vocabulary words based on the TOPIC of this URL?");
+      if (useAI) {
+        spinner.style.display = "block";
+        spinner.querySelector("p").textContent = "AI is generating vocabulary list...";
+        try {
+          const prompt = `Based on the URL topic/context: "${url}", generate a list of 12 relevant vocabulary words in English and their translations in target language key "${state.selectedLang}".
+          Output your response ONLY as a clean JSON array of objects, with keys "word" (English text) and "trans" (translation text). Do not wrap in markdown code blocks.
+          Example: [{"word": "ticket", "trans": "Fahrkarte"}, ...]`;
+          
+          const resText = await callLLM(prompt);
+          let parsed = [];
+          try {
+            const cleanJson = resText.replace(/```json/g, "").replace(/```/g, "").trim();
+            parsed = JSON.parse(cleanJson);
+          } catch (e) {
+            throw new Error("AI returned malformed JSON response. Please try again.");
+          }
+
+          if (parsed.length > 0) {
+            for (const item of parsed) {
+              await addCustomWord(item.word.trim(), item.trans.trim(), state.selectedLang, category);
+            }
+            alert(`Successfully generated and imported ${parsed.length} vocabulary words with AI based on the URL context!`);
+          } else {
+            alert("AI could not generate words.");
+          }
+        } catch (err) {
+          alert("AI Generation failed: " + err.message);
+        } finally {
+          spinner.style.display = "none";
+          spinner.querySelector("p").textContent = "Scanning web page for words...";
+        }
+      }
+    } else {
+      alert("Error fetching or parsing the URL (CORS block). Try adding manually or configure an API key to enable AI topic generation.");
+    }
   }
 }
 
@@ -1355,6 +1429,91 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("record-status-text").textContent = "No audio recorded";
     } else {
       alert("Please fill in both word and translation.");
+    }
+  };
+
+  // Manual import auto-translate
+  document.getElementById("btn-manual-autotranslate").onclick = async () => {
+    const eng = document.getElementById("manual-english").value.trim();
+    const lang = document.getElementById("manual-lang").value;
+    const btn = document.getElementById("btn-manual-autotranslate");
+
+    if (!eng) {
+      alert("Please enter an English word/phrase to translate.");
+      return;
+    }
+
+    const originalText = btn.textContent;
+    btn.textContent = "⏳...";
+    btn.disabled = true;
+
+    try {
+      const prompt = `Translate the word/phrase "${eng}" from English to target language key "${lang}". Output ONLY the translated text, no description, no markdown, no quotes.`;
+      const result = await callLLM(prompt);
+      document.getElementById("manual-translation").value = result.trim();
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }
+  };
+
+  // Manual import propose similar words
+  document.getElementById("btn-manual-propose").onclick = async () => {
+    const eng = document.getElementById("manual-english").value.trim();
+    const lang = document.getElementById("manual-lang").value;
+    const btn = document.getElementById("btn-manual-propose");
+    const category = document.getElementById("manual-category").value.trim() || "imported";
+
+    const keyword = eng || "learning";
+
+    const originalText = btn.textContent;
+    btn.textContent = "⏳ Generating...";
+    btn.disabled = true;
+
+    try {
+      const prompt = `Based on the vocabulary word/topic "${keyword}", propose 5 related words or short phrases in English and their translations in target language key "${lang}".
+      Output your response ONLY as a clean JSON array of objects, with keys "word" (English text) and "trans" (translation text). Do not wrap in markdown code blocks, do not output anything else.
+      Example: [{"word": "ticket", "trans": "Fahrkarte"}, ...]`;
+
+      const resText = await callLLM(prompt);
+      
+      let parsed = [];
+      try {
+        const cleanJson = resText.replace(/```json/g, "").replace(/```/g, "").trim();
+        parsed = JSON.parse(cleanJson);
+      } catch (e) {
+        throw new Error("AI returned malformed JSON response. Please try again.");
+      }
+
+      if (parsed.length > 0) {
+        // Switch tab to Bulk Import tab
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+        
+        document.querySelector('.tab-btn[data-tab="tab-bulk"]').classList.add("active");
+        document.getElementById("tab-bulk").classList.add("active");
+
+        parsedRows = parsed.map(item => ({
+          word: item.word || item.en || "",
+          trans: item.trans || item.target || "",
+          active: true
+        }));
+
+        document.getElementById("bulk-lang").value = lang;
+        document.getElementById("bulk-category").value = category;
+
+        renderPreviewTable();
+        alert("Proposed 5 similar words! We have switched to the 'Bulk List' tab so you can preview, edit, and confirm importing them.");
+      } else {
+        alert("AI could not generate proposed words. Try again.");
+      }
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      btn.textContent = originalText;
+      btn.disabled = false;
     }
   };
 
@@ -2422,6 +2581,74 @@ function renderBrowseStats(pool) {
     });
   } else {
     hardestList.innerHTML = `<li style="list-style:none; margin-left:-18px; color:var(--text-secondary);">No errors recorded yet! Keep it up.</li>`;
+  }
+}
+
+// Unified LLM Requester Helper (Gemini, OpenAI, Grok)
+async function callLLM(prompt, systemInstruction = "You are a helpful language translation assistant.") {
+  let key = "";
+  let url = "";
+  let headers = {};
+  let body = {};
+  
+  if (state.geminiKey) {
+    key = state.geminiKey;
+    url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
+    headers = { "Content-Type": "application/json" };
+    body = {
+      contents: [{ parts: [{ text: `${systemInstruction}\n\nUser request:\n${prompt}` }] }]
+    };
+  } else if (state.openaiKey) {
+    key = state.openaiKey;
+    url = "https://api.openai.com/v1/chat/completions";
+    headers = {
+      "Authorization": `Bearer ${key}`,
+      "Content-Type": "application/json"
+    };
+    body = {
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: systemInstruction },
+        { role: "user", content: prompt }
+      ]
+    };
+  } else if (state.grokKey) {
+    key = state.grokKey;
+    url = "https://api.x.ai/v1/chat/completions";
+    headers = {
+      "Authorization": `Bearer ${key}`,
+      "Content-Type": "application/json"
+    };
+    body = {
+      model: "grok-beta",
+      messages: [
+        { role: "system", content: systemInstruction },
+        { role: "user", content: prompt }
+      ]
+    };
+  } else if (state.anthropicKey) {
+    // Fallback or warning if they only have Anthropic (blocked by CORS client-side)
+    throw new Error("Anthropic API calls cannot be performed directly from browser client-side due to CORS limitations. Please configure Gemini or OpenAI key.");
+  } else {
+    throw new Error("No API Key configured. Please go to Setup & API to configure one.");
+  }
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body)
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error?.message || errorData.error || `HTTP error ${res.status}`);
+  }
+
+  const data = await res.json();
+  if (state.geminiKey) {
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+  } else {
+    return data.choices?.[0]?.message?.content || "";
   }
 }
 
