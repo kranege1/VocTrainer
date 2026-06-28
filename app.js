@@ -347,7 +347,30 @@ function playSynthesizedSound(type) {
   }
 }
 
-// Speech Synthesis (TTS)
+// Speech Synthesis (TTS) with Enhanced voice picker for iOS/Browsers
+function getBestVoice(langCode) {
+  if (!('speechSynthesis' in window)) return null;
+  const voices = window.speechSynthesis.getVoices();
+  const targetLocale = (LANG_LOCALES[langCode] || "en-US").toLowerCase().replace('_', '-');
+  
+  const matchingVoices = voices.filter(v => {
+    const vLang = v.lang.toLowerCase().replace('_', '-');
+    return vLang === targetLocale || vLang.startsWith(targetLocale.split('-')[0]);
+  });
+
+  if (matchingVoices.length === 0) return null;
+
+  // Prioritize premium Siri, Enhanced, Premium, and Google high-fidelity voices
+  const enhanced = matchingVoices.find(v => 
+    v.name.includes("Siri") || 
+    v.name.includes("Enhanced") || 
+    v.name.includes("Premium") || 
+    v.name.includes("Google") || 
+    v.name.includes("Samantha")
+  );
+  return enhanced || matchingVoices[0];
+}
+
 function speakWord(text, langCode, rate = 1.0) {
   if (state.audioEngine === "openai" && state.openaiKey) {
     speakOpenAI(text, rate);
@@ -355,11 +378,15 @@ function speakWord(text, langCode, rate = 1.0) {
   }
   
   if ('speechSynthesis' in window) {
-    // Cancel ongoing synthesis
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = LANG_LOCALES[langCode] || "en-US";
-    utterance.rate = rate; // Supports slow reading (0.5)
+    utterance.rate = rate; 
+    
+    const bestVoice = getBestVoice(langCode);
+    if (bestVoice) {
+      utterance.voice = bestVoice;
+    }
     window.speechSynthesis.speak(utterance);
   }
 }
