@@ -3,18 +3,20 @@
 // ==========================================
 let STARTER_VOCAB = { en: [], de: [], it: [], es: [], fr: [] };
 
-// Asynchronously load starter vocabularies from JSON files
+// Asynchronously load starter vocabularies from a single unified JSON file
 async function loadStarterVocab() {
-  const languages = ["en", "de", "it", "es", "fr"];
-  for (const lang of languages) {
-    try {
-      const res = await fetch(`vocab/${lang}.json`);
-      if (res.ok) {
-        STARTER_VOCAB[lang] = await res.json();
-      }
-    } catch (e) {
-      console.error(`Failed to load starter vocab for ${lang}:`, e);
+  try {
+    const res = await fetch("vocab/vocab.json");
+    if (res.ok) {
+      const data = await res.json();
+      STARTER_VOCAB.de = data.map(item => ({ en: item.en, target: item.de, category: item.category, image: item.image, details: item.details }));
+      STARTER_VOCAB.it = data.map(item => ({ en: item.en, target: item.it, category: item.category, image: item.image, details: item.details }));
+      STARTER_VOCAB.es = data.map(item => ({ en: item.en, target: item.es, category: item.category, image: item.image, details: item.details }));
+      STARTER_VOCAB.fr = data.map(item => ({ en: item.en, target: item.fr, category: item.category, image: item.image, details: item.details }));
+      STARTER_VOCAB.en = data.map(item => ({ en: item.de, target: item.en, category: item.category, image: item.image, details: item.details }));
     }
+  } catch (e) {
+    console.error("Failed to load starter vocab:", e);
   }
 }
 
@@ -121,15 +123,35 @@ function showView(viewId) {
   });
   const activeView = document.getElementById(viewId);
   if (activeView) activeView.classList.add("active");
+
+  // Update active state in sidebar navigation
+  document.querySelectorAll(".sidebar-nav .nav-item").forEach(btn => {
+    btn.classList.remove("active");
+    if (btn.getAttribute("onclick") && btn.getAttribute("onclick").includes(viewId)) {
+      btn.classList.add("active");
+    }
+  });
 }
 
 function updateHeaderUI() {
   document.getElementById("xp-count").textContent = state.xp;
   document.getElementById("streak-count").textContent = state.streak;
   document.getElementById("hearts-count").textContent = state.hearts;
-  document.getElementById("level-badge").textContent = `Lvl ${state.level}`;
-  document.getElementById("mistakes-badge").textContent = state.mistakes.length;
-  document.getElementById("vault-count").textContent = state.mistakes.length;
+  
+  // Update level badge on both top header and potentially any other layout element
+  const levelBadges = document.querySelectorAll("#level-badge");
+  levelBadges.forEach(badge => {
+    badge.textContent = `Lvl ${state.level}`;
+  });
+
+  const mistakesBadge = document.getElementById("mistakes-badge");
+  if (mistakesBadge) mistakesBadge.textContent = state.mistakes.length;
+
+  const sidebarMistakesBadge = document.getElementById("sidebar-mistakes-badge");
+  if (sidebarMistakesBadge) sidebarMistakesBadge.textContent = state.mistakes.length;
+
+  const vaultCount = document.getElementById("vault-count");
+  if (vaultCount) vaultCount.textContent = state.mistakes.length;
 }
 
 // Sound effects helpers
@@ -414,10 +436,19 @@ function renderQuestion() {
   document.getElementById("test-progress-fill").style.width = `${progressPercent}%`;
   document.getElementById("test-progress-text").textContent = `Question ${tState.index + 1}/${tState.words.length}`;
 
-  // Reset inputs
+  // Reset inputs & word details panel
   document.getElementById("input-typing-answer").value = "";
   document.getElementById("bubble-selected-zone").innerHTML = "";
   document.getElementById("speech-transcript").textContent = "...";
+  
+  const detailsContainer = document.getElementById("word-details-container");
+  if (detailsContainer) detailsContainer.style.display = "none";
+  const showDetailsBtn = document.getElementById("btn-show-details");
+  if (showDetailsBtn) showDetailsBtn.textContent = "ℹ️ Show Details";
+  const aiDetailsLoading = document.getElementById("ai-details-loading");
+  if (aiDetailsLoading) aiDetailsLoading.style.display = "none";
+  const aiDetailsResponse = document.getElementById("ai-details-response");
+  if (aiDetailsResponse) aiDetailsResponse.style.display = "none";
   
   buildBubbleOptions(currentWord.target);
 
@@ -612,6 +643,7 @@ function submitAnswer() {
     }
   }
 
+  setupWordDetails(currentWord);
   saveState();
 }
 
@@ -1011,4 +1043,190 @@ function renderBrowseList() {
     `;
     container.appendChild(li);
   });
+}
+
+// ==========================================
+// 9. Word Details & AI/Web Lookups
+// ==========================================
+function setupWordDetails(currentWord) {
+  const container = document.getElementById("word-details-container");
+  const showBtn = document.getElementById("btn-show-details");
+  const aiBtn = document.getElementById("btn-get-ai-details");
+  const aiLoading = document.getElementById("ai-details-loading");
+  const aiResponse = document.getElementById("ai-details-response");
+
+  // Reset display states
+  container.style.display = "none";
+  showBtn.textContent = "ℹ️ Show Details";
+  aiResponse.style.display = "none";
+  aiLoading.style.display = "none";
+
+  // Show Details Toggle
+  showBtn.onclick = () => {
+    if (container.style.display === "none") {
+      container.style.display = "block";
+      showBtn.textContent = "🙈 Hide Details";
+    } else {
+      container.style.display = "none";
+      showBtn.textContent = "ℹ️ Show Details";
+    }
+  };
+
+  // Populate local details
+  const details = currentWord.details;
+  const lang = state.selectedLang;
+
+  const articlesEl = document.getElementById("detail-articles");
+  const sentenceEl = document.getElementById("detail-sentence");
+  const sentenceTransEl = document.getElementById("detail-sentence-translation");
+  const variationsEl = document.getElementById("detail-variations");
+
+  if (details) {
+    // 1. Articles
+    const art = details.articles && details.articles[lang] ? details.articles[lang] : "";
+    if (art) {
+      articlesEl.innerHTML = `Article in <strong>${lang.toUpperCase()}</strong>: <span class="badge" style="background:var(--accent-color); padding: 4px 8px; border-radius: 6px; font-weight: bold; color: #0b0c10;">${art}</span>`;
+    } else {
+      articlesEl.innerHTML = `No article required for this category.`;
+    }
+
+    // 2. Sentences
+    if (details.sentences && details.sentences.en) {
+      sentenceEl.textContent = `"${details.sentences.en}"`;
+      sentenceTransEl.textContent = details.sentences[lang] ? `→ "${details.sentences[lang]}"` : "";
+    } else {
+      sentenceEl.textContent = "No example sentence available.";
+      sentenceTransEl.textContent = "";
+    }
+
+    // 3. Variations
+    let variationsHtml = "";
+    if (details.variations) {
+      if (details.variations.plural && details.variations.plural[lang]) {
+        variationsHtml += `Plural: <strong>${details.variations.plural.en}</strong> &rarr; <strong>${details.variations.plural[lang]}</strong>`;
+      }
+      if (details.variations.he && details.variations.he[lang]) {
+        variationsHtml += `Conjugation (He/She): <strong>${details.variations.he.en}</strong> &rarr; <strong>${details.variations.he[lang]}</strong>`;
+      }
+    }
+    variationsEl.innerHTML = variationsHtml || "No variations recorded.";
+  } else {
+    articlesEl.textContent = "No basic details available for this word.";
+    sentenceEl.textContent = "";
+    sentenceTransEl.textContent = "";
+    variationsEl.textContent = "";
+  }
+
+  // Ask AI / Web button action
+  aiBtn.onclick = async () => {
+    aiLoading.style.display = "block";
+    aiResponse.style.display = "none";
+    aiBtn.disabled = true;
+
+    try {
+      const promptText = `Explain the usage of the word "${currentWord.en}" and its translation "${currentWord.target}" in the language "${lang}". Provide articles, prepositions, example sentences, and cases (like plural, gender, etc.) if applicable. Keep it concise, helpful, and formatted clearly.`;
+
+      let responseText = "";
+
+      // Check keys
+      if (state.geminiKey) {
+        responseText = await callGeminiAPI(state.geminiKey, promptText);
+      } else if (state.openaiKey) {
+        responseText = await callOpenAIAPI(state.openaiKey, promptText);
+      } else if (state.anthropicKey) {
+        responseText = await callAnthropicAPI(state.anthropicKey, promptText);
+      } else {
+        responseText = await fetchWebDetailsFallback(currentWord.en, lang);
+      }
+
+      aiResponse.textContent = responseText;
+      aiResponse.style.display = "block";
+    } catch (err) {
+      aiResponse.textContent = `Could not fetch more details: ${err.message}`;
+      aiResponse.style.display = "block";
+    } finally {
+      aiLoading.style.display = "none";
+      aiBtn.disabled = false;
+    }
+  };
+}
+
+async function callGeminiAPI(apiKey, prompt) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+  });
+  if (!response.ok) throw new Error("Gemini API request failed.");
+  const data = await response.json();
+  return data.candidates[0].content.parts[0].text;
+}
+
+async function callOpenAIAPI(apiKey, prompt) {
+  const url = "https://api.openai.com/v1/chat/completions";
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }]
+    })
+  });
+  if (!response.ok) throw new Error("OpenAI API request failed.");
+  const data = await response.json();
+  return data.choices[0].message.content;
+}
+
+async function callAnthropicAPI(apiKey, prompt) {
+  const url = "https://api.anthropic.com/v1/messages";
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01"
+    },
+    body: JSON.stringify({
+      model: "claude-3-5-sonnet-20241022",
+      max_tokens: 1024,
+      messages: [{ role: "user", content: prompt }]
+    })
+  });
+  if (!response.ok) throw new Error("Anthropic API request failed.");
+  const data = await response.json();
+  return data.content[0].text;
+}
+
+async function fetchWebDetailsFallback(word, targetLang) {
+  try {
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+    if (!res.ok) throw new Error("Word not found in dictionary");
+    const data = await res.json();
+    
+    const entry = data[0];
+    const definition = entry.meanings[0].definitions[0].definition;
+    const example = entry.meanings[0].definitions[0].example || "No example sentence available on web dictionary.";
+    const partOfSpeech = entry.meanings[0].partOfSpeech;
+
+    let defTranslation = "";
+    try {
+      const transRes = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&q=${encodeURIComponent(definition)}`);
+      const transData = await transRes.json();
+      defTranslation = ` (${transData[0][0][0]})`;
+    } catch(e) {}
+
+    return `[Web Dictionary Fallback]
+Word: ${word} (${partOfSpeech})
+Definition: ${definition}${defTranslation}
+Example Usage: "${example}"`;
+
+  } catch (err) {
+    return `[Web Lookups]
+Could not find dictionary details for "${word}".
+You can read more directly on Wiktionary: https://en.wiktionary.org/wiki/${encodeURIComponent(word)}`;
+  }
 }

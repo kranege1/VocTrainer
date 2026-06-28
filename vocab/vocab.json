@@ -1,0 +1,5152 @@
+[
+  {
+    "en": "to run",
+    "de": "rennen",
+    "it": "correre",
+    "es": "correr",
+    "fr": "courir",
+    "category": "verbs",
+    "image": "run,exercise",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to run.",
+        "it": "Mi piace correre.",
+        "es": "Me gusta correr.",
+        "fr": "J'aime courir.",
+        "de": "Ich laufe gern."
+      },
+      "variations": {
+        "he": {
+          "en": "He runs.",
+          "it": "Corre.",
+          "fr": "Il court.",
+          "de": "Er rennt.",
+          "es": "Él corre."
+        }
+      }
+    }
+  },
+  {
+    "en": "to speak",
+    "de": "sprechen",
+    "it": "parlare",
+    "es": "hablar",
+    "fr": "parler",
+    "category": "verbs",
+    "image": "speak,talking",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to speak.",
+        "es": "Me gusta hablar.",
+        "fr": "J'aime parler.",
+        "de": "Ich rede gern.",
+        "it": "Mi piace parlare."
+      },
+      "variations": {
+        "he": {
+          "en": "He speaks.",
+          "de": "Er spricht.",
+          "es": "Él habla.",
+          "it": "Lui parla.",
+          "fr": "Il parle."
+        }
+      }
+    }
+  },
+  {
+    "en": "to learn",
+    "de": "lernen",
+    "it": "imparare",
+    "es": "aprender",
+    "fr": "apprendre",
+    "category": "verbs",
+    "image": "book,studying",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to learn.",
+        "de": "Ich lerne gerne.",
+        "es": "Me gusta aprender.",
+        "it": "Mi piace imparare.",
+        "fr": "J'aime apprendre."
+      },
+      "variations": {
+        "he": {
+          "en": "He learns.",
+          "de": "Er lernt.",
+          "fr": "Il apprend.",
+          "es": "Él aprende.",
+          "it": "Impara."
+        }
+      }
+    }
+  },
+  {
+    "en": "to go",
+    "de": "gehen",
+    "it": "andare",
+    "es": "ir",
+    "fr": "aller",
+    "category": "verbs",
+    "image": "walking,exercise",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to go.",
+        "de": "Ich gehe gern.",
+        "fr": "J'aime y aller.",
+        "es": "Me gusta ir.",
+        "it": "Mi piace andare."
+      },
+      "variations": {
+        "he": {
+          "en": "He goes.",
+          "de": "Er geht.",
+          "es": "Él va.",
+          "fr": "Il s'en va.",
+          "it": "Lui va."
+        }
+      }
+    }
+  },
+  {
+    "en": "to come",
+    "de": "kommen",
+    "it": "venire",
+    "es": "venir",
+    "fr": "venir",
+    "category": "verbs",
+    "image": "arrival",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to come.",
+        "it": "Mi piace venire.",
+        "fr": "J'aime venir.",
+        "de": "Ich komme gerne.",
+        "es": "Me gusta venir."
+      },
+      "variations": {
+        "he": {
+          "en": "He comes.",
+          "de": "Er kommt.",
+          "fr": "Il vient.",
+          "es": "Él viene.",
+          "it": "Lui viene."
+        }
+      }
+    }
+  },
+  {
+    "en": "to see",
+    "de": "sehen",
+    "it": "vedere",
+    "es": "ver",
+    "fr": "voir",
+    "category": "verbs",
+    "image": "eye,vision",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to see.",
+        "es": "Me gusta ver.",
+        "de": "Ich sehe gern.",
+        "it": "Mi piace vedere.",
+        "fr": "J'aime voir."
+      },
+      "variations": {
+        "he": {
+          "en": "He sees.",
+          "de": "Er sieht.",
+          "it": "Lui vede.",
+          "es": "Él ve.",
+          "fr": "Il voit."
+        }
+      }
+    }
+  },
+  {
+    "en": "to hear",
+    "de": "hören",
+    "it": "sentire",
+    "es": "oír",
+    "fr": "entendre",
+    "category": "verbs",
+    "image": "ear,listening",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to hear.",
+        "fr": "J'aime entendre.",
+        "es": "Me gusta escuchar.",
+        "de": "Ich höre gern.",
+        "it": "Mi piace sentire."
+      },
+      "variations": {
+        "he": {
+          "en": "He hears.",
+          "fr": "Il entend.",
+          "it": "Lui sente.",
+          "es": "Él escucha.",
+          "de": "Er hört."
+        }
+      }
+    }
+  },
+  {
+    "en": "to eat",
+    "de": "essen",
+    "it": "mangiare",
+    "es": "comer",
+    "fr": "manger",
+    "category": "verbs",
+    "image": "food,eating",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to eat.",
+        "it": "Mi piace mangiare.",
+        "es": "Me gusta comer.",
+        "de": "Ich esse gern.",
+        "fr": "J'aime manger."
+      },
+      "variations": {
+        "he": {
+          "en": "He eats.",
+          "it": "Lui mangia.",
+          "de": "Er isst.",
+          "fr": "Il mange.",
+          "es": "Él come."
+        }
+      }
+    }
+  },
+  {
+    "en": "to drink",
+    "de": "trinken",
+    "it": "bere",
+    "es": "beber",
+    "fr": "boire",
+    "category": "verbs",
+    "image": "drink,water",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to drink.",
+        "es": "Me gusta beber.",
+        "fr": "J'aime boire.",
+        "de": "Ich trinke gern.",
+        "it": "Mi piace bere."
+      },
+      "variations": {
+        "he": {
+          "en": "He drinks.",
+          "de": "Er trinkt.",
+          "fr": "Il boit.",
+          "it": "Beve.",
+          "es": "Él bebe."
+        }
+      }
+    }
+  },
+  {
+    "en": "to sleep",
+    "de": "schlafen",
+    "it": "dormire",
+    "es": "dormir",
+    "fr": "dormir",
+    "category": "verbs",
+    "image": "sleep,bed",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to sleep.",
+        "es": "Me gusta dormir.",
+        "fr": "J'aime dormir.",
+        "de": "Ich schlafe gern.",
+        "it": "Mi piace dormire."
+      },
+      "variations": {
+        "he": {
+          "en": "He sleeps.",
+          "de": "Er schläft.",
+          "es": "Él duerme.",
+          "fr": "Il dort.",
+          "it": "Dorme."
+        }
+      }
+    }
+  },
+  {
+    "en": "to write",
+    "de": "schreiben",
+    "it": "scrivere",
+    "es": "escribir",
+    "fr": "écrire",
+    "category": "verbs",
+    "image": "writing,pen",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to write.",
+        "es": "Me gusta escribir.",
+        "fr": "J'aime écrire.",
+        "it": "Mi piace scrivere.",
+        "de": "Ich schreibe gerne."
+      },
+      "variations": {
+        "he": {
+          "en": "He writes.",
+          "de": "Er schreibt.",
+          "es": "Él escribe.",
+          "fr": "Il écrit.",
+          "it": "Scrive."
+        }
+      }
+    }
+  },
+  {
+    "en": "to read",
+    "de": "lesen",
+    "it": "leggere",
+    "es": "leer",
+    "fr": "lire",
+    "category": "verbs",
+    "image": "reading,book",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to read.",
+        "fr": "J'aime lire.",
+        "es": "Me gusta leer.",
+        "it": "Mi piace leggere.",
+        "de": "Ich lese gern."
+      },
+      "variations": {
+        "he": {
+          "en": "He reads.",
+          "de": "Er liest.",
+          "it": "Legge.",
+          "es": "Él lee.",
+          "fr": "Il lit."
+        }
+      }
+    }
+  },
+  {
+    "en": "to open",
+    "de": "öffnen",
+    "it": "aprire",
+    "es": "abrir",
+    "fr": "ouvrir",
+    "category": "verbs",
+    "image": "door,open",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to open.",
+        "es": "Me gusta abrir.",
+        "fr": "J'aime ouvrir.",
+        "it": "Mi piace aprire.",
+        "de": "Ich öffne gerne."
+      },
+      "variations": {
+        "he": {
+          "en": "He opens.",
+          "it": "Apre.",
+          "de": "Er öffnet.",
+          "es": "Él abre.",
+          "fr": "Il ouvre."
+        }
+      }
+    }
+  },
+  {
+    "en": "to close",
+    "de": "schließen",
+    "it": "chiudere",
+    "es": "cerrar",
+    "fr": "fermer",
+    "category": "verbs",
+    "image": "door,closed",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to close.",
+        "es": "Me gusta cerrar.",
+        "fr": "J'aime fermer.",
+        "it": "Mi piace chiudere.",
+        "de": "Ich schließe gern."
+      },
+      "variations": {
+        "he": {
+          "en": "He closes.",
+          "de": "Er schließt.",
+          "es": "Él cierra.",
+          "fr": "Il ferme.",
+          "it": "Chiude."
+        }
+      }
+    }
+  },
+  {
+    "en": "to play",
+    "de": "spielen",
+    "it": "giocare",
+    "es": "jugar",
+    "fr": "jouer",
+    "category": "verbs",
+    "image": "playing,game",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to play.",
+        "es": "Me gusta jugar.",
+        "fr": "J'aime jouer.",
+        "it": "Mi piace giocare.",
+        "de": "Ich spiele gerne."
+      },
+      "variations": {
+        "he": {
+          "en": "He plays.",
+          "it": "Gioca.",
+          "fr": "Il joue.",
+          "de": "Er spielt.",
+          "es": "Él juega."
+        }
+      }
+    }
+  },
+  {
+    "en": "to work",
+    "de": "arbeiten",
+    "it": "lavorare",
+    "es": "trabajar",
+    "fr": "travailler",
+    "category": "verbs",
+    "image": "office,working",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to work.",
+        "it": "Mi piace lavorare.",
+        "de": "Ich arbeite gerne.",
+        "es": "Me gusta trabajar.",
+        "fr": "J'aime travailler."
+      },
+      "variations": {
+        "he": {
+          "en": "He works.",
+          "it": "Lavora.",
+          "fr": "Il travaille.",
+          "es": "Él trabaja.",
+          "de": "Er arbeitet."
+        }
+      }
+    }
+  },
+  {
+    "en": "to wait",
+    "de": "warten",
+    "it": "aspettare",
+    "es": "esperar",
+    "fr": "attendre",
+    "category": "verbs",
+    "image": "waiting,clock",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to wait.",
+        "es": "Me gusta esperar.",
+        "fr": "J'aime attendre.",
+        "it": "Mi piace aspettare.",
+        "de": "Ich warte gern."
+      },
+      "variations": {
+        "he": {
+          "en": "He waits.",
+          "fr": "Il attend.",
+          "it": "Aspetta.",
+          "de": "Er wartet.",
+          "es": "Él espera."
+        }
+      }
+    }
+  },
+  {
+    "en": "to help",
+    "de": "helfen",
+    "it": "aiutare",
+    "es": "ayudar",
+    "fr": "aider",
+    "category": "verbs",
+    "image": "help,hands",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to help.",
+        "fr": "J'aime aider.",
+        "es": "Me gusta ayudar.",
+        "it": "Mi piace aiutare.",
+        "de": "Ich helfe gerne."
+      },
+      "variations": {
+        "he": {
+          "en": "He helps.",
+          "de": "Er hilft.",
+          "es": "Él ayuda.",
+          "fr": "Il aide.",
+          "it": "Lui aiuta."
+        }
+      }
+    }
+  },
+  {
+    "en": "to search",
+    "de": "suchen",
+    "it": "cercare",
+    "es": "buscar",
+    "fr": "chercher",
+    "category": "verbs",
+    "image": "magnifier,search",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to search.",
+        "es": "Me gusta buscar.",
+        "fr": "J'aime chercher.",
+        "it": "Mi piace cercare.",
+        "de": "Ich suche gern."
+      },
+      "variations": {
+        "he": {
+          "en": "He searches.",
+          "es": "Él busca.",
+          "de": "Er sucht.",
+          "fr": "Il cherche.",
+          "it": "Cerca."
+        }
+      }
+    }
+  },
+  {
+    "en": "to live",
+    "de": "leben",
+    "it": "vivere",
+    "es": "vivir",
+    "fr": "vivre",
+    "category": "verbs",
+    "image": "life,nature",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to live.",
+        "fr": "J'aime vivre.",
+        "es": "Me gusta vivir.",
+        "it": "Mi piace vivere.",
+        "de": "Ich lebe gerne."
+      },
+      "variations": {
+        "he": {
+          "en": "He lives.",
+          "de": "Er lebt.",
+          "es": "Él vive.",
+          "it": "Lui vive.",
+          "fr": "Il vit."
+        }
+      }
+    }
+  },
+  {
+    "en": "to love",
+    "de": "lieben",
+    "it": "amare",
+    "es": "amar",
+    "fr": "aimer",
+    "category": "verbs",
+    "image": "heart,love",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to love.",
+        "es": "Me gusta amar.",
+        "it": "Mi piace amare.",
+        "de": "Ich liebe es gern.",
+        "fr": "J'aime aimer."
+      },
+      "variations": {
+        "he": {
+          "en": "He loves.",
+          "fr": "Il aime.",
+          "es": "Él ama.",
+          "de": "Er liebt.",
+          "it": "Lui ama."
+        }
+      }
+    }
+  },
+  {
+    "en": "to buy",
+    "de": "kaufen",
+    "it": "comprare",
+    "es": "comprar",
+    "fr": "acheter",
+    "category": "verbs",
+    "image": "shopping,buy",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to buy.",
+        "es": "Me gusta comprar.",
+        "de": "Ich kaufe gerne.",
+        "fr": "J'aime acheter.",
+        "it": "Mi piace comprare."
+      },
+      "variations": {
+        "he": {
+          "en": "He buys.",
+          "it": "Compra.",
+          "es": "Él compra.",
+          "de": "Er kauft.",
+          "fr": "Il achète."
+        }
+      }
+    }
+  },
+  {
+    "en": "to sell",
+    "de": "verkaufen",
+    "it": "vendere",
+    "es": "vender",
+    "fr": "vendre",
+    "category": "verbs",
+    "image": "selling,store",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to sell.",
+        "de": "Ich verkaufe gern.",
+        "fr": "J'aime vendre.",
+        "es": "Me gusta vender.",
+        "it": "Mi piace vendere."
+      },
+      "variations": {
+        "he": {
+          "en": "He sells.",
+          "es": "Él vende.",
+          "de": "Er verkauft.",
+          "fr": "Il vend.",
+          "it": "Lui vende."
+        }
+      }
+    }
+  },
+  {
+    "en": "to think",
+    "de": "denken",
+    "it": "pensare",
+    "es": "pensar",
+    "fr": "penser",
+    "category": "verbs",
+    "image": "thinking,brain",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to think.",
+        "it": "Mi piace pensare.",
+        "de": "Ich denke gern.",
+        "fr": "J'aime réfléchir.",
+        "es": "Me gusta pensar."
+      },
+      "variations": {
+        "he": {
+          "en": "He thinks.",
+          "it": "Lui pensa.",
+          "fr": "Il pense.",
+          "es": "Él piensa.",
+          "de": "Er denkt."
+        }
+      }
+    }
+  },
+  {
+    "en": "to make",
+    "de": "machen",
+    "it": "fare",
+    "es": "hacer",
+    "fr": "faire",
+    "category": "verbs",
+    "image": "making,diy",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to make.",
+        "es": "Me gusta hacer.",
+        "it": "Mi piace fare.",
+        "de": "Ich mache gerne.",
+        "fr": "J'aime faire."
+      },
+      "variations": {
+        "he": {
+          "en": "He makes.",
+          "de": "Er macht.",
+          "es": "Él hace.",
+          "fr": "Il fait.",
+          "it": "Lui fa."
+        }
+      }
+    }
+  },
+  {
+    "en": "to take",
+    "de": "nehmen",
+    "it": "prendere",
+    "es": "tomar",
+    "fr": "prendre",
+    "category": "verbs",
+    "image": "taking,hand",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to take.",
+        "it": "Mi piace prendere.",
+        "fr": "J'aime prendre.",
+        "es": "Me gusta tomar.",
+        "de": "Ich nehme gerne."
+      },
+      "variations": {
+        "he": {
+          "en": "He takes.",
+          "it": "Lui prende.",
+          "fr": "Il prend.",
+          "es": "Él toma.",
+          "de": "Er nimmt."
+        }
+      }
+    }
+  },
+  {
+    "en": "to give",
+    "de": "geben",
+    "it": "dare",
+    "es": "dar",
+    "fr": "donner",
+    "category": "verbs",
+    "image": "giving,hands",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to give.",
+        "es": "Me gusta dar.",
+        "it": "Mi piace dare.",
+        "de": "Ich gebe gerne.",
+        "fr": "J'aime donner."
+      },
+      "variations": {
+        "he": {
+          "en": "He gives.",
+          "de": "Er gibt.",
+          "fr": "Il donne.",
+          "it": "Lui dà.",
+          "es": "Él da."
+        }
+      }
+    }
+  },
+  {
+    "en": "to say",
+    "de": "sagen",
+    "it": "dire",
+    "es": "decir",
+    "fr": "dire",
+    "category": "verbs",
+    "image": "talking,mouth",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to say.",
+        "it": "mi piace dire.",
+        "de": "Ich sage es gern.",
+        "fr": "J'aime dire.",
+        "es": "Me gusta decir."
+      },
+      "variations": {
+        "he": {
+          "en": "He says.",
+          "fr": "dit-il.",
+          "it": "Dice.",
+          "de": "Er sagt.",
+          "es": "Él dice."
+        }
+      }
+    }
+  },
+  {
+    "en": "to know",
+    "de": "wissen",
+    "it": "sapere",
+    "es": "saber",
+    "fr": "savoir",
+    "category": "verbs",
+    "image": "knowledge,brain",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to know.",
+        "es": "Me gusta saber.",
+        "fr": "J'aime savoir.",
+        "it": "Mi piace sapere.",
+        "de": "Ich möchte es wissen."
+      },
+      "variations": {
+        "he": {
+          "en": "He knows.",
+          "it": "Lo sa.",
+          "de": "Er weiß es.",
+          "es": "Él lo sabe.",
+          "fr": "Il sait."
+        }
+      }
+    }
+  },
+  {
+    "en": "to fly",
+    "de": "fliegen",
+    "it": "volare",
+    "es": "volar",
+    "fr": "voler",
+    "category": "verbs",
+    "image": "airplane,flying",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to fly.",
+        "it": "Mi piace volare.",
+        "de": "Ich fliege gern.",
+        "fr": "J'aime voler.",
+        "es": "Me gusta volar."
+      },
+      "variations": {
+        "he": {
+          "en": "He flies.",
+          "fr": "Il vole.",
+          "de": "Er fliegt.",
+          "es": "Él vuela.",
+          "it": "Vola."
+        }
+      }
+    }
+  },
+  {
+    "en": "to drive",
+    "de": "fahren",
+    "it": "guidare",
+    "es": "conducir",
+    "fr": "conduire",
+    "category": "verbs",
+    "image": "driving,car",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to drive.",
+        "it": "Mi piace guidare.",
+        "es": "Me gusta conducir.",
+        "de": "Ich fahre gerne.",
+        "fr": "J'aime conduire."
+      },
+      "variations": {
+        "he": {
+          "en": "He drives.",
+          "de": "Er fährt.",
+          "fr": "Il conduit.",
+          "es": "Él conduce.",
+          "it": "Lui guida."
+        }
+      }
+    }
+  },
+  {
+    "en": "to sing",
+    "de": "singen",
+    "it": "cantare",
+    "es": "cantar",
+    "fr": "chanter",
+    "category": "verbs",
+    "image": "singing,microphone",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to sing.",
+        "de": "Ich singe gern.",
+        "it": "Mi piace cantare.",
+        "es": "Me gusta cantar.",
+        "fr": "J'aime chanter."
+      },
+      "variations": {
+        "he": {
+          "en": "He sings.",
+          "es": "Él canta.",
+          "it": "Canta.",
+          "fr": "Il chante.",
+          "de": "Er singt."
+        }
+      }
+    }
+  },
+  {
+    "en": "to dance",
+    "de": "tanzen",
+    "it": "ballare",
+    "es": "bailar",
+    "fr": "danser",
+    "category": "verbs",
+    "image": "dancing,people",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to dance.",
+        "es": "Me gusta bailar.",
+        "fr": "J'aime danser.",
+        "de": "Ich tanze gerne.",
+        "it": "Mi piace ballare."
+      },
+      "variations": {
+        "he": {
+          "en": "He dances.",
+          "es": "Él baila.",
+          "it": "Balla.",
+          "fr": "Il danse.",
+          "de": "Er tanzt."
+        }
+      }
+    }
+  },
+  {
+    "en": "to laugh",
+    "de": "lachen",
+    "it": "ridere",
+    "es": "reír",
+    "fr": "rire",
+    "category": "verbs",
+    "image": "laughing,happy",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to laugh.",
+        "it": "Mi piace ridere.",
+        "es": "Me gusta reír.",
+        "de": "Ich lache gerne.",
+        "fr": "J'aime rire."
+      },
+      "variations": {
+        "he": {
+          "en": "He laughs.",
+          "es": "Él se ríe.",
+          "de": "Er lacht.",
+          "fr": "Il rit.",
+          "it": "Lui ride."
+        }
+      }
+    }
+  },
+  {
+    "en": "to weep",
+    "de": "weinen",
+    "it": "piangere",
+    "es": "llorar",
+    "fr": "pleurer",
+    "category": "verbs",
+    "image": "crying,tears",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to weep.",
+        "it": "Mi piace piangere.",
+        "es": "Me gusta llorar.",
+        "de": "Ich weine gern.",
+        "fr": "J'aime pleurer."
+      },
+      "variations": {
+        "he": {
+          "en": "He weeps.",
+          "es": "Él llora.",
+          "fr": "Il pleure.",
+          "it": "Piange.",
+          "de": "Er weint."
+        }
+      }
+    }
+  },
+  {
+    "en": "to ask",
+    "de": "fragen",
+    "it": "chiedere",
+    "es": "preguntar",
+    "fr": "demander",
+    "category": "verbs",
+    "image": "question,ask",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to ask.",
+        "it": "Mi piace chiedere.",
+        "es": "Me gusta preguntar.",
+        "de": "Ich frage gern.",
+        "fr": "J'aime demander."
+      },
+      "variations": {
+        "he": {
+          "en": "He asks.",
+          "it": "Chiede.",
+          "de": "Er fragt.",
+          "es": "Él pregunta.",
+          "fr": "» demande-t-il."
+        }
+      }
+    }
+  },
+  {
+    "en": "to answer",
+    "de": "antworten",
+    "it": "rispondere",
+    "es": "responder",
+    "fr": "répondre",
+    "category": "verbs",
+    "image": "chat,answer",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to answer.",
+        "it": "Mi piace rispondere.",
+        "es": "Me gusta responder.",
+        "de": "Ich antworte gerne.",
+        "fr": "J'aime répondre."
+      },
+      "variations": {
+        "he": {
+          "en": "He answers.",
+          "es": "Él responde.",
+          "de": "Er antwortet.",
+          "it": "Lui risponde.",
+          "fr": "Il répond."
+        }
+      }
+    }
+  },
+  {
+    "en": "to sit",
+    "de": "sitzen",
+    "it": "sedersi",
+    "es": "sentarse",
+    "fr": "s'asseoir",
+    "category": "verbs",
+    "image": "sitting,chair",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to sit.",
+        "fr": "J'aime m'asseoir.",
+        "it": "Mi piace sedermi.",
+        "es": "Me gusta sentarme.",
+        "de": "Ich sitze gern."
+      },
+      "variations": {
+        "he": {
+          "en": "He sits.",
+          "de": "Er sitzt.",
+          "es": "Él se sienta.",
+          "it": "Si siede.",
+          "fr": "Il est assis."
+        }
+      }
+    }
+  },
+  {
+    "en": "to stand",
+    "de": "stehen",
+    "it": "stare in piedi",
+    "es": "estar de pie",
+    "fr": "se tenir debout",
+    "category": "verbs",
+    "image": "standing,person",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to stand.",
+        "es": "Me gusta estar de pie.",
+        "de": "Ich stehe gern.",
+        "fr": "J'aime rester debout.",
+        "it": "Mi piace stare in piedi."
+      },
+      "variations": {
+        "he": {
+          "en": "He stands.",
+          "de": "Er steht.",
+          "es": "Él está de pie.",
+          "fr": "Il se lève.",
+          "it": "Lui sta in piedi."
+        }
+      }
+    }
+  },
+  {
+    "en": "to call",
+    "de": "rufen",
+    "it": "chiamare",
+    "es": "llamar",
+    "fr": "appeler",
+    "category": "verbs",
+    "image": "calling,phone",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I like to call.",
+        "es": "Me gusta llamar.",
+        "de": "Ich rufe gerne an.",
+        "fr": "J'aime appeler.",
+        "it": "Mi piace chiamare."
+      },
+      "variations": {
+        "he": {
+          "en": "He calls.",
+          "it": "Chiama.",
+          "de": "Er ruft an.",
+          "es": "Él llama.",
+          "fr": "Il appelle."
+        }
+      }
+    }
+  },
+  {
+    "en": "apple",
+    "de": "Apfel",
+    "it": "mela",
+    "es": "manzana",
+    "fr": "pomme",
+    "category": "nouns",
+    "image": "apple,fruit",
+    "details": {
+      "articles": {
+        "de": "der",
+        "it": "la",
+        "fr": "la",
+        "es": "la"
+      },
+      "sentences": {
+        "en": "I see the apple.",
+        "de": "Ich sehe den Apfel.",
+        "es": "Veo la manzana.",
+        "fr": "Je vois la pomme.",
+        "it": "Vedo la mela."
+      },
+      "variations": {
+        "plural": {
+          "en": "apples",
+          "de": "Äpfel",
+          "fr": "pommes",
+          "it": "mele",
+          "es": "manzanas"
+        }
+      }
+    }
+  },
+  {
+    "en": "bread",
+    "de": "Brot",
+    "it": "pane",
+    "es": "pan",
+    "fr": "pain",
+    "category": "nouns",
+    "image": "bread,food",
+    "details": {
+      "articles": {
+        "es": "el",
+        "fr": "le",
+        "de": "das",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the bread.",
+        "de": "Ich sehe das Brot.",
+        "it": "Vedo il pane.",
+        "fr": "Je vois le pain.",
+        "es": "Veo el pan."
+      },
+      "variations": {
+        "plural": {
+          "en": "breads",
+          "es": "panes",
+          "de": "Brote",
+          "it": "pani",
+          "fr": "pains"
+        }
+      }
+    }
+  },
+  {
+    "en": "house",
+    "de": "Haus",
+    "it": "casa",
+    "es": "casa",
+    "fr": "maison",
+    "category": "nouns",
+    "image": "house,home",
+    "details": {
+      "articles": {
+        "de": "das",
+        "it": "la",
+        "es": "la",
+        "fr": "la"
+      },
+      "sentences": {
+        "en": "I see the house.",
+        "de": "Ich sehe das Haus.",
+        "es": "Veo la casa.",
+        "fr": "Je vois la maison.",
+        "it": "Vedo la casa."
+      },
+      "variations": {
+        "plural": {
+          "en": "houses",
+          "es": "casas",
+          "fr": "maisons",
+          "de": "Häuser",
+          "it": "case"
+        }
+      }
+    }
+  },
+  {
+    "en": "car",
+    "de": "Auto",
+    "it": "macchina",
+    "es": "coche",
+    "fr": "voiture",
+    "category": "nouns",
+    "image": "car,vehicle",
+    "details": {
+      "articles": {
+        "es": "el",
+        "fr": "la",
+        "de": "das",
+        "it": "la"
+      },
+      "sentences": {
+        "en": "I see the car.",
+        "es": "Veo el auto.",
+        "de": "Ich sehe das Auto.",
+        "it": "Vedo la macchina.",
+        "fr": "Je vois la voiture."
+      },
+      "variations": {
+        "plural": {
+          "en": "cars",
+          "es": "autos",
+          "fr": "voitures",
+          "it": "auto",
+          "de": "Autos"
+        }
+      }
+    }
+  },
+  {
+    "en": "cat",
+    "de": "Katze",
+    "it": "gatto",
+    "es": "gato",
+    "fr": "chat",
+    "category": "nouns",
+    "image": "cat,pet",
+    "details": {
+      "articles": {
+        "de": "die",
+        "fr": "le",
+        "es": "el",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the cat.",
+        "de": "Ich sehe die Katze.",
+        "it": "Vedo il gatto.",
+        "es": "Veo el gato.",
+        "fr": "Je vois le chat."
+      },
+      "variations": {
+        "plural": {
+          "en": "cats",
+          "es": "gatos",
+          "fr": "chats",
+          "it": "gatti",
+          "de": "Katzen"
+        }
+      }
+    }
+  },
+  {
+    "en": "dog",
+    "de": "Hund",
+    "it": "cane",
+    "es": "perro",
+    "fr": "chien",
+    "category": "nouns",
+    "image": "dog,pet",
+    "details": {
+      "articles": {
+        "de": "der",
+        "es": "el",
+        "fr": "le",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the dog.",
+        "es": "Veo al perro.",
+        "de": "Ich sehe den Hund.",
+        "it": "Vedo il cane.",
+        "fr": "Je vois le chien."
+      },
+      "variations": {
+        "plural": {
+          "en": "dogs",
+          "de": "Hunde",
+          "fr": "chiens",
+          "es": "perros",
+          "it": "cani"
+        }
+      }
+    }
+  },
+  {
+    "en": "table",
+    "de": "Tisch",
+    "it": "tavolo",
+    "es": "mesa",
+    "fr": "table",
+    "category": "nouns",
+    "image": "table,furniture",
+    "details": {
+      "articles": {
+        "es": "la",
+        "de": "der",
+        "it": "il",
+        "fr": "le"
+      },
+      "sentences": {
+        "en": "I see the table.",
+        "it": "Vedo il tavolo.",
+        "de": "Ich sehe die Tabelle.",
+        "es": "Veo la mesa.",
+        "fr": "Je vois le tableau."
+      },
+      "variations": {
+        "plural": {
+          "en": "tables",
+          "es": "mesas",
+          "fr": "tableaux",
+          "it": "tavoli",
+          "de": "Tische"
+        }
+      }
+    }
+  },
+  {
+    "en": "chair",
+    "de": "Stuhl",
+    "it": "sedia",
+    "es": "silla",
+    "fr": "chaise",
+    "category": "nouns",
+    "image": "chair,furniture",
+    "details": {
+      "articles": {
+        "it": "la",
+        "es": "la",
+        "de": "der",
+        "fr": "la"
+      },
+      "sentences": {
+        "en": "I see the chair.",
+        "it": "Vedo la sedia.",
+        "de": "Ich sehe den Stuhl.",
+        "es": "Veo la silla.",
+        "fr": "Je vois la chaise."
+      },
+      "variations": {
+        "plural": {
+          "en": "chairs",
+          "es": "sillas",
+          "it": "sedie",
+          "de": "Stühle",
+          "fr": "chaises"
+        }
+      }
+    }
+  },
+  {
+    "en": "book",
+    "de": "Buch",
+    "it": "libro",
+    "es": "libro",
+    "fr": "livre",
+    "category": "nouns",
+    "image": "book,reading",
+    "details": {
+      "articles": {
+        "de": "das",
+        "es": "",
+        "fr": "le",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the book.",
+        "it": "Vedo il libro.",
+        "de": "Ich sehe das Buch.",
+        "es": "Veo el libro.",
+        "fr": "Je vois le livre."
+      },
+      "variations": {
+        "plural": {
+          "en": "books",
+          "fr": "livres",
+          "de": "Bücher",
+          "es": "libros",
+          "it": "libri"
+        }
+      }
+    }
+  },
+  {
+    "en": "window",
+    "de": "Fenster",
+    "it": "finestra",
+    "es": "ventana",
+    "fr": "fenêtre",
+    "category": "nouns",
+    "image": "window,glass",
+    "details": {
+      "articles": {
+        "fr": "la",
+        "es": "la",
+        "de": "das",
+        "it": "la"
+      },
+      "sentences": {
+        "en": "I see the window.",
+        "it": "Vedo la finestra.",
+        "es": "Veo la ventana.",
+        "fr": "Je vois la fenêtre.",
+        "de": "Ich sehe das Fenster."
+      },
+      "variations": {
+        "plural": {
+          "en": "windows",
+          "it": "finestre",
+          "de": "Fenster",
+          "fr": "fenêtres",
+          "es": "ventanas"
+        }
+      }
+    }
+  },
+  {
+    "en": "door",
+    "de": "Tür",
+    "it": "porta",
+    "es": "puerta",
+    "fr": "porte",
+    "category": "nouns",
+    "image": "door,wood",
+    "details": {
+      "articles": {
+        "de": "die",
+        "it": "la",
+        "fr": "la",
+        "es": "la"
+      },
+      "sentences": {
+        "en": "I see the door.",
+        "de": "Ich sehe die Tür.",
+        "es": "Veo la puerta.",
+        "fr": "Je vois la porte.",
+        "it": "Vedo la porta."
+      },
+      "variations": {
+        "plural": {
+          "en": "doors",
+          "de": "Türen",
+          "fr": "portes",
+          "es": "puertas",
+          "it": "porte"
+        }
+      }
+    }
+  },
+  {
+    "en": "sun",
+    "de": "Sonne",
+    "it": "sole",
+    "es": "sol",
+    "fr": "soleil",
+    "category": "nouns",
+    "image": "sun,sky",
+    "details": {
+      "articles": {
+        "de": "die",
+        "fr": "le",
+        "es": "el",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the sun.",
+        "es": "Veo el sol.",
+        "fr": "Je vois le soleil.",
+        "de": "Ich sehe die Sonne.",
+        "it": "Vedo il sole."
+      },
+      "variations": {
+        "plural": {
+          "en": "suns",
+          "de": "Sonnen",
+          "fr": "soleils",
+          "es": "soles",
+          "it": "soli"
+        }
+      }
+    }
+  },
+  {
+    "en": "moon",
+    "de": "Mond",
+    "it": "luna",
+    "es": "luna",
+    "fr": "lune",
+    "category": "nouns",
+    "image": "moon,night",
+    "details": {
+      "articles": {
+        "de": "der",
+        "es": "la",
+        "fr": "la",
+        "it": "la"
+      },
+      "sentences": {
+        "en": "I see the moon.",
+        "de": "Ich sehe den Mond.",
+        "fr": "Je vois la lune.",
+        "es": "Veo la luna.",
+        "it": "Vedo la luna."
+      },
+      "variations": {
+        "plural": {
+          "en": "moons",
+          "fr": "lunes",
+          "de": "Monde",
+          "es": "lunas",
+          "it": "lune"
+        }
+      }
+    }
+  },
+  {
+    "en": "tree",
+    "de": "Baum",
+    "it": "albero",
+    "es": "árbol",
+    "fr": "arbre",
+    "category": "nouns",
+    "image": "tree,forest",
+    "details": {
+      "articles": {
+        "de": "der",
+        "es": "el",
+        "it": "",
+        "fr": ""
+      },
+      "sentences": {
+        "en": "I see the tree.",
+        "es": "Veo el árbol.",
+        "fr": "Je vois l'arbre.",
+        "de": "Ich sehe den Baum.",
+        "it": "Vedo l'albero."
+      },
+      "variations": {
+        "plural": {
+          "en": "trees",
+          "fr": "arbres",
+          "de": "Bäume",
+          "es": "arboles",
+          "it": "alberi"
+        }
+      }
+    }
+  },
+  {
+    "en": "flower",
+    "de": "Blume",
+    "it": "fiore",
+    "es": "flor",
+    "fr": "fleur",
+    "category": "nouns",
+    "image": "flower,garden",
+    "details": {
+      "articles": {
+        "fr": "la",
+        "de": "die",
+        "es": "la",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the flower.",
+        "de": "Ich sehe die Blume.",
+        "fr": "Je vois la fleur.",
+        "es": "Veo la flor.",
+        "it": "Vedo il fiore."
+      },
+      "variations": {
+        "plural": {
+          "en": "flowers",
+          "de": "Blumen",
+          "es": "flores",
+          "fr": "fleurs",
+          "it": "fiori"
+        }
+      }
+    }
+  },
+  {
+    "en": "water",
+    "de": "Wasser",
+    "it": "acqua",
+    "es": "agua",
+    "fr": "eau",
+    "category": "nouns",
+    "image": "water,glass",
+    "details": {
+      "articles": {
+        "es": "el",
+        "de": "das",
+        "it": "",
+        "fr": ""
+      },
+      "sentences": {
+        "en": "I see the water.",
+        "de": "Ich sehe das Wasser.",
+        "es": "Veo el agua.",
+        "fr": "Je vois l'eau.",
+        "it": "Vedo l'acqua."
+      },
+      "variations": {
+        "plural": {
+          "en": "waters",
+          "de": "Gewässer",
+          "fr": "eaux",
+          "es": "aguas",
+          "it": "acque"
+        }
+      }
+    }
+  },
+  {
+    "en": "milk",
+    "de": "Milch",
+    "it": "latte",
+    "es": "leche",
+    "fr": "lait",
+    "category": "nouns",
+    "image": "milk,glass",
+    "details": {
+      "articles": {
+        "de": "die",
+        "it": "il",
+        "es": "la",
+        "fr": "le"
+      },
+      "sentences": {
+        "en": "I see the milk.",
+        "de": "Ich sehe die Milch.",
+        "es": "Veo la leche.",
+        "fr": "Je vois le lait.",
+        "it": "Vedo il latte."
+      },
+      "variations": {
+        "plural": {
+          "en": "milks",
+          "de": "Milch",
+          "fr": "laits",
+          "es": "leches",
+          "it": "latti"
+        }
+      }
+    }
+  },
+  {
+    "en": "coffee",
+    "de": "Kaffee",
+    "it": "caffè",
+    "es": "café",
+    "fr": "café",
+    "category": "nouns",
+    "image": "coffee,cup",
+    "details": {
+      "articles": {
+        "fr": "le",
+        "de": "der",
+        "es": "el",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the coffee.",
+        "de": "Ich sehe den Kaffee.",
+        "fr": "Je vois le café.",
+        "es": "Veo el café.",
+        "it": "Vedo il caffè."
+      },
+      "variations": {
+        "plural": {
+          "en": "coffees",
+          "it": "caffè",
+          "fr": "cafés",
+          "de": "Kaffee",
+          "es": "cafes"
+        }
+      }
+    }
+  },
+  {
+    "en": "tea",
+    "de": "Tee",
+    "it": "tè",
+    "es": "té",
+    "fr": "thé",
+    "category": "nouns",
+    "image": "tea,cup",
+    "details": {
+      "articles": {
+        "de": "der",
+        "fr": "le",
+        "it": "il",
+        "es": "el"
+      },
+      "sentences": {
+        "en": "I see the tea.",
+        "es": "Veo el té.",
+        "de": "Ich sehe den Tee.",
+        "it": "Vedo il tè.",
+        "fr": "Je vois le thé."
+      },
+      "variations": {
+        "plural": {
+          "en": "teas",
+          "de": "Tees",
+          "fr": "thés",
+          "es": "tes",
+          "it": "tè"
+        }
+      }
+    }
+  },
+  {
+    "en": "mother",
+    "de": "Mutter",
+    "it": "madre",
+    "es": "madre",
+    "fr": "mère",
+    "category": "nouns",
+    "image": "mother,family",
+    "details": {
+      "articles": {
+        "it": "la",
+        "fr": "la",
+        "de": "die",
+        "es": "la"
+      },
+      "sentences": {
+        "en": "I see the mother.",
+        "es": "Veo a la madre.",
+        "de": "Ich sehe die Mutter.",
+        "it": "Vedo la madre.",
+        "fr": "Je vois la mère."
+      },
+      "variations": {
+        "plural": {
+          "en": "mothers",
+          "fr": "mères",
+          "de": "Mütter",
+          "es": "madres",
+          "it": "madri"
+        }
+      }
+    }
+  },
+  {
+    "en": "father",
+    "de": "Vater",
+    "it": "padre",
+    "es": "padre",
+    "fr": "père",
+    "category": "nouns",
+    "image": "father,family",
+    "details": {
+      "articles": {
+        "de": "der",
+        "it": "il",
+        "fr": "le",
+        "es": "el"
+      },
+      "sentences": {
+        "en": "I see the father.",
+        "es": "Veo al padre.",
+        "it": "Vedo il padre.",
+        "fr": "Je vois le père.",
+        "de": "Ich sehe den Vater."
+      },
+      "variations": {
+        "plural": {
+          "en": "fathers",
+          "fr": "pères",
+          "es": "padres",
+          "it": "padri",
+          "de": "Väter"
+        }
+      }
+    }
+  },
+  {
+    "en": "brother",
+    "de": "Bruder",
+    "it": "fratello",
+    "es": "hermano",
+    "fr": "frère",
+    "category": "nouns",
+    "image": "brother,family",
+    "details": {
+      "articles": {
+        "es": "el",
+        "fr": "le",
+        "de": "der",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the brother.",
+        "es": "Veo al hermano.",
+        "de": "Ich sehe den Bruder.",
+        "it": "Vedo il fratello.",
+        "fr": "Je vois le frère."
+      },
+      "variations": {
+        "plural": {
+          "en": "brothers",
+          "de": "Brüder",
+          "es": "hermanos",
+          "it": "fratelli",
+          "fr": "frères"
+        }
+      }
+    }
+  },
+  {
+    "en": "sister",
+    "de": "Schwester",
+    "it": "sorella",
+    "es": "hermana",
+    "fr": "sœur",
+    "category": "nouns",
+    "image": "sister,family",
+    "details": {
+      "articles": {
+        "es": "la",
+        "fr": "la",
+        "de": "die",
+        "it": "la"
+      },
+      "sentences": {
+        "en": "I see the sister.",
+        "es": "Veo a la hermana.",
+        "de": "Ich sehe die Schwester.",
+        "it": "Vedo la sorella.",
+        "fr": "Je vois la sœur."
+      },
+      "variations": {
+        "plural": {
+          "en": "sisters",
+          "de": "Schwestern",
+          "it": "sorelle",
+          "es": "hermanas",
+          "fr": "soeurs"
+        }
+      }
+    }
+  },
+  {
+    "en": "child",
+    "de": "Kind",
+    "it": "bambino",
+    "es": "niño",
+    "fr": "enfant",
+    "category": "nouns",
+    "image": "child,happy",
+    "details": {
+      "articles": {
+        "es": "el",
+        "de": "das",
+        "it": "il",
+        "fr": ""
+      },
+      "sentences": {
+        "en": "I see the child.",
+        "de": "Ich sehe das Kind.",
+        "it": "Vedo il bambino.",
+        "fr": "Je vois l'enfant.",
+        "es": "Veo al niño."
+      },
+      "variations": {
+        "plural": {
+          "en": "children",
+          "fr": "enfants",
+          "es": "niños",
+          "de": "Kinder",
+          "it": "bambini"
+        }
+      }
+    }
+  },
+  {
+    "en": "school",
+    "de": "Schule",
+    "it": "scuola",
+    "es": "escuela",
+    "fr": "école",
+    "category": "nouns",
+    "image": "school,building",
+    "details": {
+      "articles": {
+        "it": "la",
+        "de": "die",
+        "fr": "",
+        "es": "la"
+      },
+      "sentences": {
+        "en": "I see the school.",
+        "es": "Veo la escuela.",
+        "fr": "Je vois l'école.",
+        "de": "Ich sehe die Schule.",
+        "it": "Vedo la scuola."
+      },
+      "variations": {
+        "plural": {
+          "en": "schools",
+          "es": "escuelas",
+          "it": "scuole",
+          "de": "Schulen",
+          "fr": "écoles"
+        }
+      }
+    }
+  },
+  {
+    "en": "friend",
+    "de": "Freund",
+    "it": "amico",
+    "es": "amigo",
+    "fr": "ami",
+    "category": "nouns",
+    "image": "friends,happy",
+    "details": {
+      "articles": {
+        "es": "el",
+        "fr": "",
+        "de": "der",
+        "it": ""
+      },
+      "sentences": {
+        "en": "I see the friend.",
+        "es": "Veo al amigo.",
+        "de": "Ich sehe den Freund.",
+        "it": "Vedo l'amico.",
+        "fr": "Je vois l'ami."
+      },
+      "variations": {
+        "plural": {
+          "en": "friends",
+          "es": "amigos",
+          "de": "Freunde",
+          "it": "amici",
+          "fr": "amis"
+        }
+      }
+    }
+  },
+  {
+    "en": "street",
+    "de": "Straße",
+    "it": "strada",
+    "es": "calle",
+    "fr": "rue",
+    "category": "nouns",
+    "image": "street,road",
+    "details": {
+      "articles": {
+        "fr": "la",
+        "de": "die",
+        "es": "la",
+        "it": "la"
+      },
+      "sentences": {
+        "en": "I see the street.",
+        "es": "Veo la calle.",
+        "de": "Ich sehe die Straße.",
+        "it": "Vedo la strada.",
+        "fr": "Je vois la rue."
+      },
+      "variations": {
+        "plural": {
+          "en": "streets",
+          "es": "calles",
+          "de": "Straßen",
+          "it": "strade",
+          "fr": "rues"
+        }
+      }
+    }
+  },
+  {
+    "en": "city",
+    "de": "Stadt",
+    "it": "città",
+    "es": "ciudad",
+    "fr": "ville",
+    "category": "nouns",
+    "image": "city,skyline",
+    "details": {
+      "articles": {
+        "es": "la",
+        "it": "la",
+        "de": "die",
+        "fr": "la"
+      },
+      "sentences": {
+        "en": "I see the city.",
+        "es": "Veo la ciudad.",
+        "fr": "Je vois la ville.",
+        "de": "Ich sehe die Stadt.",
+        "it": "Vedo la città."
+      },
+      "variations": {
+        "plural": {
+          "en": "cities",
+          "it": "città",
+          "es": "ciudades",
+          "de": "Städte",
+          "fr": "villes"
+        }
+      }
+    }
+  },
+  {
+    "en": "country",
+    "de": "Land",
+    "it": "paese",
+    "es": "país",
+    "fr": "pays",
+    "category": "nouns",
+    "image": "countryside,field",
+    "details": {
+      "articles": {
+        "es": "el",
+        "it": "il",
+        "de": "das",
+        "fr": "le"
+      },
+      "sentences": {
+        "en": "I see the country.",
+        "es": "Veo el país.",
+        "fr": "Je vois le pays.",
+        "de": "Ich sehe das Land.",
+        "it": "Vedo il paese."
+      },
+      "variations": {
+        "plural": {
+          "en": "countries",
+          "es": "paises",
+          "it": "paesi",
+          "de": "Länder",
+          "fr": "pays"
+        }
+      }
+    }
+  },
+  {
+    "en": "sky",
+    "de": "Himmel",
+    "it": "cielo",
+    "es": "cielo",
+    "fr": "ciel",
+    "category": "nouns",
+    "image": "sky,clouds",
+    "details": {
+      "articles": {
+        "it": "il",
+        "fr": "le",
+        "de": "der",
+        "es": "el"
+      },
+      "sentences": {
+        "en": "I see the sky.",
+        "es": "Veo el cielo.",
+        "de": "Ich sehe den Himmel.",
+        "it": "Vedo il cielo.",
+        "fr": "Je vois le ciel."
+      },
+      "variations": {
+        "plural": {
+          "en": "skies",
+          "de": "Himmel",
+          "it": "cieli",
+          "es": "cielos",
+          "fr": "ciels"
+        }
+      }
+    }
+  },
+  {
+    "en": "rain",
+    "de": "Regen",
+    "it": "pioggia",
+    "es": "lluvia",
+    "fr": "pluie",
+    "category": "nouns",
+    "image": "rain,wet",
+    "details": {
+      "articles": {
+        "it": "la",
+        "de": "der",
+        "es": "la",
+        "fr": "la"
+      },
+      "sentences": {
+        "en": "I see the rain.",
+        "it": "Vedo la pioggia.",
+        "es": "Veo la lluvia.",
+        "fr": "Je vois la pluie.",
+        "de": "Ich sehe den Regen."
+      },
+      "variations": {
+        "plural": {
+          "en": "rains",
+          "es": "lluvias",
+          "de": "Regenfälle",
+          "fr": "pluies",
+          "it": "piogge"
+        }
+      }
+    }
+  },
+  {
+    "en": "snow",
+    "de": "Schnee",
+    "it": "neve",
+    "es": "nieve",
+    "fr": "neige",
+    "category": "nouns",
+    "image": "snow,winter",
+    "details": {
+      "articles": {
+        "it": "la",
+        "fr": "la",
+        "es": "la",
+        "de": "der"
+      },
+      "sentences": {
+        "en": "I see the snow.",
+        "fr": "Je vois la neige.",
+        "de": "Ich sehe den Schnee.",
+        "it": "Vedo la neve.",
+        "es": "Veo la nieve."
+      },
+      "variations": {
+        "plural": {
+          "en": "snows",
+          "de": "Schneefälle",
+          "es": "nieves",
+          "fr": "neiges",
+          "it": "nevi"
+        }
+      }
+    }
+  },
+  {
+    "en": "watch",
+    "de": "Uhr",
+    "it": "orologio",
+    "es": "reloj",
+    "fr": "montre",
+    "category": "nouns",
+    "image": "watch,time",
+    "details": {
+      "articles": {
+        "de": "die",
+        "es": "el",
+        "fr": "la",
+        "it": ""
+      },
+      "sentences": {
+        "en": "I see the watch.",
+        "it": "Vedo l'orologio.",
+        "es": "Veo el reloj.",
+        "de": "Ich sehe die Uhr.",
+        "fr": "Je vois la montre."
+      },
+      "variations": {
+        "plural": {
+          "en": "watches",
+          "fr": "montres",
+          "it": "orologi",
+          "de": "Uhren",
+          "es": "relojes"
+        }
+      }
+    }
+  },
+  {
+    "en": "money",
+    "de": "Geld",
+    "it": "denaro",
+    "es": "dinero",
+    "fr": "argent",
+    "category": "nouns",
+    "image": "money,cash",
+    "details": {
+      "articles": {
+        "es": "el",
+        "it": "i",
+        "de": "das",
+        "fr": ""
+      },
+      "sentences": {
+        "en": "I see the money.",
+        "it": "Vedo i soldi.",
+        "es": "Veo el dinero.",
+        "de": "Ich sehe das Geld.",
+        "fr": "Je vois l'argent."
+      },
+      "variations": {
+        "plural": {
+          "en": "moneys",
+          "fr": "argent",
+          "it": "soldi",
+          "de": "Geld",
+          "es": "dineros"
+        }
+      }
+    }
+  },
+  {
+    "en": "bag",
+    "de": "Tasche",
+    "it": "borsa",
+    "es": "bolsa",
+    "fr": "sac",
+    "category": "nouns",
+    "image": "bag,travel",
+    "details": {
+      "articles": {
+        "it": "la",
+        "de": "die",
+        "fr": "le",
+        "es": "la"
+      },
+      "sentences": {
+        "en": "I see the bag.",
+        "de": "Ich sehe die Tasche.",
+        "it": "Vedo la borsa.",
+        "es": "Veo la bolsa.",
+        "fr": "Je vois le sac."
+      },
+      "variations": {
+        "plural": {
+          "en": "bags",
+          "es": "bolsas",
+          "it": "borse",
+          "de": "Taschen",
+          "fr": "sacs"
+        }
+      }
+    }
+  },
+  {
+    "en": "head",
+    "de": "Kopf",
+    "it": "testa",
+    "es": "cabeza",
+    "fr": "tête",
+    "category": "nouns",
+    "image": "head,face",
+    "details": {
+      "articles": {
+        "de": "der",
+        "fr": "la",
+        "es": "la",
+        "it": "la"
+      },
+      "sentences": {
+        "en": "I see the head.",
+        "de": "Ich sehe den Kopf.",
+        "it": "Vedo la testa.",
+        "es": "Veo la cabeza.",
+        "fr": "Je vois la tête."
+      },
+      "variations": {
+        "plural": {
+          "en": "heads",
+          "fr": "têtes",
+          "de": "Köpfe",
+          "es": "cabezas",
+          "it": "teste"
+        }
+      }
+    }
+  },
+  {
+    "en": "hand",
+    "de": "Hand",
+    "it": "mano",
+    "es": "mano",
+    "fr": "main",
+    "category": "nouns",
+    "image": "hand,fingers",
+    "details": {
+      "articles": {
+        "de": "die",
+        "it": "la",
+        "fr": "la",
+        "es": "la"
+      },
+      "sentences": {
+        "en": "I see the hand.",
+        "de": "Ich sehe die Hand.",
+        "it": "Vedo la mano.",
+        "es": "Veo la mano.",
+        "fr": "Je vois la main."
+      },
+      "variations": {
+        "plural": {
+          "en": "hands",
+          "it": "mani",
+          "fr": "mains",
+          "es": "manos",
+          "de": "Hände"
+        }
+      }
+    }
+  },
+  {
+    "en": "eye",
+    "de": "Auge",
+    "it": "occhio",
+    "es": "ojo",
+    "fr": "œil",
+    "category": "nouns",
+    "image": "eye,iris",
+    "details": {
+      "articles": {
+        "de": "das",
+        "fr": "",
+        "es": "el",
+        "it": ""
+      },
+      "sentences": {
+        "en": "I see the eye.",
+        "it": "Vedo l'occhio.",
+        "es": "Veo el ojo.",
+        "de": "Ich sehe das Auge.",
+        "fr": "Je vois l'oeil."
+      },
+      "variations": {
+        "plural": {
+          "en": "eyes",
+          "es": "ojos",
+          "fr": "yeux",
+          "de": "Augen",
+          "it": "occhi"
+        }
+      }
+    }
+  },
+  {
+    "en": "foot",
+    "de": "Fuß",
+    "it": "piede",
+    "es": "pie",
+    "fr": "pied",
+    "category": "nouns",
+    "image": "foot,shoe",
+    "details": {
+      "articles": {
+        "de": "der",
+        "es": "el",
+        "fr": "le",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the foot.",
+        "it": "Vedo il piede.",
+        "es": "Veo el pie.",
+        "de": "Ich sehe den Fuß.",
+        "fr": "Je vois le pied."
+      },
+      "variations": {
+        "plural": {
+          "en": "feet",
+          "fr": "pieds",
+          "es": "pies",
+          "de": "Fuß",
+          "it": "piedi"
+        }
+      }
+    }
+  },
+  {
+    "en": "shoe",
+    "de": "Schuh",
+    "it": "scarpa",
+    "es": "zapato",
+    "fr": "chaussure",
+    "category": "nouns",
+    "image": "shoe,sneaker",
+    "details": {
+      "articles": {
+        "de": "der",
+        "fr": "la",
+        "it": "la",
+        "es": "el"
+      },
+      "sentences": {
+        "en": "I see the shoe.",
+        "es": "Veo el zapato.",
+        "de": "Ich sehe den Schuh.",
+        "it": "Vedo la scarpa.",
+        "fr": "Je vois la chaussure."
+      },
+      "variations": {
+        "plural": {
+          "en": "shoes",
+          "de": "Schuhe",
+          "es": "zapatos",
+          "fr": "chaussures",
+          "it": "scarpe"
+        }
+      }
+    }
+  },
+  {
+    "en": "dress",
+    "de": "Kleid",
+    "it": "vestito",
+    "es": "vestido",
+    "fr": "robe",
+    "category": "nouns",
+    "image": "dress,clothing",
+    "details": {
+      "articles": {
+        "it": "il",
+        "es": "el",
+        "fr": "la",
+        "de": "das"
+      },
+      "sentences": {
+        "en": "I see the dress.",
+        "es": "Veo el vestido.",
+        "de": "Ich sehe das Kleid.",
+        "it": "Vedo il vestito.",
+        "fr": "Je vois la robe."
+      },
+      "variations": {
+        "plural": {
+          "en": "dresses",
+          "de": "Kleider",
+          "fr": "robes",
+          "es": "vestidos",
+          "it": "vestiti"
+        }
+      }
+    }
+  },
+  {
+    "en": "shirt",
+    "de": "Hemd",
+    "it": "camicia",
+    "es": "camisa",
+    "fr": "chemise",
+    "category": "nouns",
+    "image": "shirt,clothing",
+    "details": {
+      "articles": {
+        "es": "la",
+        "de": "das",
+        "it": "la",
+        "fr": "la"
+      },
+      "sentences": {
+        "en": "I see the shirt.",
+        "it": "Vedo la maglietta.",
+        "fr": "Je vois la chemise.",
+        "es": "Veo la camisa.",
+        "de": "Ich sehe das Hemd."
+      },
+      "variations": {
+        "plural": {
+          "en": "shirts",
+          "es": "camisas",
+          "de": "Hemden",
+          "it": "magliette",
+          "fr": "chemises"
+        }
+      }
+    }
+  },
+  {
+    "en": "pants",
+    "de": "Hose",
+    "it": "pantaloni",
+    "es": "pantalones",
+    "fr": "pantalon",
+    "category": "nouns",
+    "image": "pants,clothing",
+    "details": {
+      "articles": {
+        "de": "die",
+        "es": "los",
+        "fr": "le",
+        "it": "i"
+      },
+      "sentences": {
+        "en": "I see the pants.",
+        "es": "Veo los pantalones.",
+        "de": "Ich sehe die Hose.",
+        "it": "Vedo i pantaloni.",
+        "fr": "Je vois le pantalon."
+      },
+      "variations": {
+        "plural": {
+          "en": "pantses",
+          "fr": "pantalons",
+          "it": "pantaloni",
+          "es": "pantalones",
+          "de": "Hosen"
+        }
+      }
+    }
+  },
+  {
+    "en": "bed",
+    "de": "Bett",
+    "it": "letto",
+    "es": "cama",
+    "fr": "lit",
+    "category": "nouns",
+    "image": "bed,bedroom",
+    "details": {
+      "articles": {
+        "de": "das",
+        "es": "la",
+        "fr": "le",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the bed.",
+        "es": "Veo la cama.",
+        "de": "Ich sehe das Bett.",
+        "it": "Vedo il letto.",
+        "fr": "Je vois le lit."
+      },
+      "variations": {
+        "plural": {
+          "en": "beds",
+          "fr": "lits",
+          "it": "letti",
+          "es": "camas",
+          "de": "Betten"
+        }
+      }
+    }
+  },
+  {
+    "en": "kitchen",
+    "de": "Küche",
+    "it": "cucina",
+    "es": "cocina",
+    "fr": "cuisine",
+    "category": "nouns",
+    "image": "kitchen,cooking",
+    "details": {
+      "articles": {
+        "es": "la",
+        "fr": "la",
+        "it": "la",
+        "de": "die"
+      },
+      "sentences": {
+        "en": "I see the kitchen.",
+        "fr": "Je vois la cuisine.",
+        "es": "Veo la cocina.",
+        "de": "Ich sehe die Küche.",
+        "it": "Vedo la cucina."
+      },
+      "variations": {
+        "plural": {
+          "en": "kitchens",
+          "fr": "cuisines",
+          "it": "cucine",
+          "es": "cocinas",
+          "de": "Küchen"
+        }
+      }
+    }
+  },
+  {
+    "en": "room",
+    "de": "Zimmer",
+    "it": "stanza",
+    "es": "habitación",
+    "fr": "chambre",
+    "category": "nouns",
+    "image": "room,interior",
+    "details": {
+      "articles": {
+        "fr": "la",
+        "de": "das",
+        "es": "la",
+        "it": "la"
+      },
+      "sentences": {
+        "en": "I see the room.",
+        "es": "Veo la habitación.",
+        "de": "Ich sehe den Raum.",
+        "it": "Vedo la stanza.",
+        "fr": "Je vois la pièce."
+      },
+      "variations": {
+        "plural": {
+          "en": "rooms",
+          "it": "stanze",
+          "fr": "chambres",
+          "de": "Zimmer",
+          "es": "habitaciones"
+        }
+      }
+    }
+  },
+  {
+    "en": "cheese",
+    "de": "Käse",
+    "it": "formaggio",
+    "es": "queso",
+    "fr": "fromage",
+    "category": "nouns",
+    "image": "cheese,food",
+    "details": {
+      "articles": {
+        "fr": "le",
+        "de": "der",
+        "es": "el",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the cheese.",
+        "fr": "Je vois le fromage.",
+        "it": "Vedo il formaggio.",
+        "es": "Veo el queso.",
+        "de": "Ich sehe den Käse."
+      },
+      "variations": {
+        "plural": {
+          "en": "cheeses",
+          "es": "quesos",
+          "de": "Käsesorten",
+          "fr": "fromages",
+          "it": "formaggi"
+        }
+      }
+    }
+  },
+  {
+    "en": "meat",
+    "de": "Fleisch",
+    "it": "carne",
+    "es": "carne",
+    "fr": "viande",
+    "category": "nouns",
+    "image": "meat,food",
+    "details": {
+      "articles": {
+        "de": "das",
+        "fr": "la",
+        "es": "la",
+        "it": "la"
+      },
+      "sentences": {
+        "en": "I see the meat.",
+        "es": "Veo la carne.",
+        "de": "Ich sehe das Fleisch.",
+        "it": "Vedo la carne.",
+        "fr": "Je vois la viande."
+      },
+      "variations": {
+        "plural": {
+          "en": "meats",
+          "fr": "viandes",
+          "it": "carni",
+          "es": "carnes",
+          "de": "Fleischsorten"
+        }
+      }
+    }
+  },
+  {
+    "en": "fish",
+    "de": "Fisch",
+    "it": "pesce",
+    "es": "pescado",
+    "fr": "poisson",
+    "category": "nouns",
+    "image": "fish,water",
+    "details": {
+      "articles": {
+        "de": "der",
+        "es": "el",
+        "fr": "le",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the fish.",
+        "fr": "Je vois le poisson.",
+        "it": "Vedo il pesce.",
+        "es": "Veo el pez.",
+        "de": "Ich sehe den Fisch."
+      },
+      "variations": {
+        "plural": {
+          "en": "fishes",
+          "es": "peces",
+          "de": "Fische",
+          "fr": "poissons",
+          "it": "pesci"
+        }
+      }
+    }
+  },
+  {
+    "en": "bird",
+    "de": "Vogel",
+    "it": "uccello",
+    "es": "pájaro",
+    "fr": "oiseau",
+    "category": "nouns",
+    "image": "bird,flying",
+    "details": {
+      "articles": {
+        "it": "",
+        "fr": "",
+        "es": "el",
+        "de": "der"
+      },
+      "sentences": {
+        "en": "I see the bird.",
+        "es": "Veo el pájaro.",
+        "de": "Ich sehe den Vogel.",
+        "it": "Vedo l'uccello.",
+        "fr": "Je vois l'oiseau."
+      },
+      "variations": {
+        "plural": {
+          "en": "birds",
+          "it": "uccelli",
+          "de": "Vögel",
+          "fr": "oiseaux",
+          "es": "pájaros"
+        }
+      }
+    }
+  },
+  {
+    "en": "computer",
+    "de": "Computer",
+    "it": "computer",
+    "es": "ordenador",
+    "fr": "ordinateur",
+    "category": "technology",
+    "image": "computer,laptop",
+    "details": {
+      "articles": {
+        "de": "Der",
+        "fr": "",
+        "es": "la",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the computer.",
+        "es": "Veo la computadora.",
+        "it": "Vedo il computer.",
+        "de": "Ich sehe den Computer.",
+        "fr": "Je vois l'ordinateur."
+      },
+      "variations": {
+        "plural": {
+          "en": "computers",
+          "fr": "ordinateurs",
+          "es": "computadoras",
+          "de": "Computer",
+          "it": "computer"
+        }
+      }
+    }
+  },
+  {
+    "en": "database",
+    "de": "Datenbank",
+    "it": "database",
+    "es": "base de datos",
+    "fr": "base de données",
+    "category": "technology",
+    "image": "database,server",
+    "details": {
+      "articles": {
+        "fr": "la",
+        "it": "la",
+        "es": "la",
+        "de": "die"
+      },
+      "sentences": {
+        "en": "I see the database.",
+        "es": "Veo la base de datos.",
+        "it": "Vedo il database.",
+        "de": "Ich sehe die Datenbank.",
+        "fr": "Je vois la base de données."
+      },
+      "variations": {
+        "plural": {
+          "en": "databases",
+          "it": "banche dati",
+          "de": "Datenbanken",
+          "es": "bases de datos",
+          "fr": "bases de données"
+        }
+      }
+    }
+  },
+  {
+    "en": "screen",
+    "de": "Bildschirm",
+    "it": "schermo",
+    "es": "pantalla",
+    "fr": "écran",
+    "category": "technology",
+    "image": "screen,display",
+    "details": {
+      "articles": {
+        "fr": "",
+        "it": "lo",
+        "es": "la",
+        "de": ""
+      },
+      "sentences": {
+        "en": "I see the screen.",
+        "es": "Veo la pantalla.",
+        "it": "Vedo lo schermo.",
+        "de": "Ich sehe den Bildschirm.",
+        "fr": "Je vois l'écran."
+      },
+      "variations": {
+        "plural": {
+          "en": "screens",
+          "it": "schermi",
+          "de": "Bildschirme",
+          "es": "pantallas",
+          "fr": "écrans"
+        }
+      }
+    }
+  },
+  {
+    "en": "keyboard",
+    "de": "Tastatur",
+    "it": "tastiera",
+    "es": "teclado",
+    "fr": "clavier",
+    "category": "technology",
+    "image": "keyboard,computer",
+    "details": {
+      "articles": {
+        "it": "la",
+        "fr": "le",
+        "es": "el",
+        "de": "die"
+      },
+      "sentences": {
+        "en": "I see the keyboard.",
+        "es": "Veo el teclado.",
+        "it": "Vedo la tastiera.",
+        "de": "Ich sehe die Tastatur.",
+        "fr": "Je vois le clavier."
+      },
+      "variations": {
+        "plural": {
+          "en": "keyboards",
+          "it": "tastiere",
+          "de": "Tastaturen",
+          "es": "teclados",
+          "fr": "claviers"
+        }
+      }
+    }
+  },
+  {
+    "en": "mouse",
+    "de": "Maus",
+    "it": "mouse",
+    "es": "ratón",
+    "fr": "souris",
+    "category": "technology",
+    "image": "mouse,computer",
+    "details": {
+      "articles": {
+        "it": "il",
+        "de": "die",
+        "es": "el",
+        "fr": "la"
+      },
+      "sentences": {
+        "en": "I see the mouse.",
+        "es": "Veo el ratón.",
+        "it": "Vedo il topo.",
+        "de": "Ich sehe die Maus.",
+        "fr": "Je vois la souris."
+      },
+      "variations": {
+        "plural": {
+          "en": "mice",
+          "es": "ratones",
+          "fr": "souris",
+          "de": "Mäuse",
+          "it": "topi"
+        }
+      }
+    }
+  },
+  {
+    "en": "internet",
+    "de": "Internet",
+    "it": "internet",
+    "es": "internet",
+    "fr": "internet",
+    "category": "technology",
+    "image": "internet,web",
+    "details": {
+      "articles": {
+        "es": "La",
+        "de": "das",
+        "fr": "",
+        "it": ""
+      },
+      "sentences": {
+        "en": "I see the internet.",
+        "es": "Veo internet.",
+        "de": "Ich sehe das Internet.",
+        "it": "Vedo Internet.",
+        "fr": "Je vois Internet."
+      },
+      "variations": {
+        "plural": {
+          "en": "internets",
+          "es": "internets",
+          "it": "internet",
+          "de": "Internets",
+          "fr": "internets"
+        }
+      }
+    }
+  },
+  {
+    "en": "email",
+    "de": "E-Mail",
+    "it": "e-mail",
+    "es": "correo electrónico",
+    "fr": "e-mail",
+    "category": "technology",
+    "image": "email,inbox",
+    "details": {
+      "articles": {
+        "fr": "",
+        "es": "el",
+        "de": "die",
+        "it": ""
+      },
+      "sentences": {
+        "en": "I see the email.",
+        "es": "Veo el correo electrónico.",
+        "it": "Vedo l'e-mail.",
+        "de": "Ich sehe die E-Mail.",
+        "fr": "Je vois l'e-mail."
+      },
+      "variations": {
+        "plural": {
+          "en": "emails",
+          "de": "E-Mails",
+          "es": "correos electrónicos",
+          "fr": "e-mails",
+          "it": "e-mail"
+        }
+      }
+    }
+  },
+  {
+    "en": "password",
+    "de": "Passwort",
+    "it": "password",
+    "es": "contraseña",
+    "fr": "mot de passe",
+    "category": "technology",
+    "image": "password,security",
+    "details": {
+      "articles": {
+        "it": "la",
+        "es": "la",
+        "fr": "le",
+        "de": "das"
+      },
+      "sentences": {
+        "en": "I see the password.",
+        "es": "Veo la contraseña.",
+        "it": "Vedo la password.",
+        "de": "Ich sehe das Passwort.",
+        "fr": "Je vois le mot de passe."
+      },
+      "variations": {
+        "plural": {
+          "en": "passwords",
+          "it": "password",
+          "de": "Passwörter",
+          "es": "contraseñas",
+          "fr": "mots de passe"
+        }
+      }
+    }
+  },
+  {
+    "en": "website",
+    "de": "Webseite",
+    "it": "sito web",
+    "es": "sitio web",
+    "fr": "site web",
+    "category": "technology",
+    "image": "website,browser",
+    "details": {
+      "articles": {
+        "es": "el",
+        "de": "die",
+        "it": "il",
+        "fr": "le"
+      },
+      "sentences": {
+        "en": "I see the website.",
+        "es": "Veo el sitio web.",
+        "it": "Vedo il sito web.",
+        "de": "Ich sehe die Website.",
+        "fr": "Je vois le site Internet."
+      },
+      "variations": {
+        "plural": {
+          "en": "websites",
+          "de": "Webseiten",
+          "es": "sitios web",
+          "fr": "sites Web",
+          "it": "siti web"
+        }
+      }
+    }
+  },
+  {
+    "en": "application",
+    "de": "Anwendung",
+    "it": "applicazione",
+    "es": "aplicación",
+    "fr": "application",
+    "category": "technology",
+    "image": "app,phone",
+    "details": {
+      "articles": {
+        "fr": "la",
+        "es": "la",
+        "de": "die",
+        "it": ""
+      },
+      "sentences": {
+        "en": "I see the application.",
+        "es": "Veo la aplicación.",
+        "it": "Vedo l'applicazione.",
+        "de": "Ich sehe die Anwendung.",
+        "fr": "Je vois la candidature."
+      },
+      "variations": {
+        "plural": {
+          "en": "applications",
+          "de": "Anwendungen",
+          "es": "aplicaciones",
+          "fr": "candidatures",
+          "it": "applicazioni"
+        }
+      }
+    }
+  },
+  {
+    "en": "file",
+    "de": "Datei",
+    "it": "file",
+    "es": "archivo",
+    "fr": "fichier",
+    "category": "technology",
+    "image": "file,document",
+    "details": {
+      "articles": {
+        "de": "die",
+        "fr": "le",
+        "es": "el",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the file.",
+        "it": "Vedo il file.",
+        "es": "Veo el archivo.",
+        "de": "Ich sehe die Datei.",
+        "fr": "Je vois le fichier."
+      },
+      "variations": {
+        "plural": {
+          "en": "files",
+          "it": "file",
+          "de": "Dateien",
+          "fr": "fichiers",
+          "es": "archivos"
+        }
+      }
+    }
+  },
+  {
+    "en": "folder",
+    "de": "Ordner",
+    "it": "cartella",
+    "es": "carpeta",
+    "fr": "dossier",
+    "category": "technology",
+    "image": "folder,files",
+    "details": {
+      "articles": {
+        "es": "la",
+        "it": "la",
+        "fr": "le",
+        "de": ""
+      },
+      "sentences": {
+        "en": "I see the folder.",
+        "it": "Vedo la cartella.",
+        "es": "Veo la carpeta.",
+        "de": "Ich sehe den Ordner.",
+        "fr": "Je vois le dossier."
+      },
+      "variations": {
+        "plural": {
+          "en": "folders",
+          "it": "cartelle",
+          "de": "Ordner",
+          "fr": "dossiers",
+          "es": "carpetas"
+        }
+      }
+    }
+  },
+  {
+    "en": "connection",
+    "de": "Verbindung",
+    "it": "connessione",
+    "es": "conexión",
+    "fr": "connexion",
+    "category": "technology",
+    "image": "connection,cable",
+    "details": {
+      "articles": {
+        "it": "la",
+        "fr": "la",
+        "es": "la",
+        "de": "die"
+      },
+      "sentences": {
+        "en": "I see the connection.",
+        "es": "Veo la conexión.",
+        "de": "Ich sehe den Zusammenhang.",
+        "fr": "Je vois le lien.",
+        "it": "Vedo la connessione."
+      },
+      "variations": {
+        "plural": {
+          "en": "connections",
+          "es": "conexiones",
+          "it": "connessioni",
+          "de": "Anschlüsse",
+          "fr": "connexions"
+        }
+      }
+    }
+  },
+  {
+    "en": "network",
+    "de": "Netzwerk",
+    "it": "rete",
+    "es": "red",
+    "fr": "réseau",
+    "category": "technology",
+    "image": "network,cables",
+    "details": {
+      "articles": {
+        "it": "la",
+        "es": "la",
+        "de": "das",
+        "fr": "le"
+      },
+      "sentences": {
+        "en": "I see the network.",
+        "es": "Veo la red.",
+        "it": "Vedo la rete.",
+        "de": "Ich sehe das Netzwerk.",
+        "fr": "Je vois le réseau."
+      },
+      "variations": {
+        "plural": {
+          "en": "networks",
+          "de": "Netzwerke",
+          "es": "redes",
+          "it": "reti",
+          "fr": "réseaux"
+        }
+      }
+    }
+  },
+  {
+    "en": "server",
+    "de": "Server",
+    "it": "server",
+    "es": "servidor",
+    "fr": "serveur",
+    "category": "technology",
+    "image": "server,tech",
+    "details": {
+      "articles": {
+        "es": "el",
+        "it": "il",
+        "de": "Der",
+        "fr": "le"
+      },
+      "sentences": {
+        "en": "I see the server.",
+        "es": "Veo el servidor.",
+        "it": "Vedo il server.",
+        "de": "Ich sehe den Server.",
+        "fr": "Je vois le serveur."
+      },
+      "variations": {
+        "plural": {
+          "en": "servers",
+          "fr": "serveurs",
+          "de": "Server",
+          "es": "servidores",
+          "it": "server"
+        }
+      }
+    }
+  },
+  {
+    "en": "software",
+    "de": "Software",
+    "it": "software",
+    "es": "software",
+    "fr": "logiciel",
+    "category": "technology",
+    "image": "software,code",
+    "details": {
+      "articles": {
+        "it": "il",
+        "es": "el",
+        "de": "die",
+        "fr": "le"
+      },
+      "sentences": {
+        "en": "I see the software.",
+        "es": "Veo el software.",
+        "it": "Vedo il software.",
+        "fr": "Je vois le logiciel.",
+        "de": "Ich sehe die Software."
+      },
+      "variations": {
+        "plural": {
+          "en": "softwares",
+          "de": "Software",
+          "es": "programas",
+          "it": "software",
+          "fr": "logiciels"
+        }
+      }
+    }
+  },
+  {
+    "en": "hardware",
+    "de": "Hardware",
+    "it": "hardware",
+    "es": "hardware",
+    "fr": "matériel",
+    "category": "technology",
+    "image": "hardware,components",
+    "details": {
+      "articles": {
+        "es": "el",
+        "fr": "le",
+        "de": "die",
+        "it": ""
+      },
+      "sentences": {
+        "en": "I see the hardware.",
+        "it": "Vedo l'hardware.",
+        "es": "Veo el hardware.",
+        "de": "Ich sehe die Hardware.",
+        "fr": "Je vois le matériel."
+      },
+      "variations": {
+        "plural": {
+          "en": "hardwares",
+          "de": "Hardware",
+          "fr": "matériels",
+          "es": "hardwares",
+          "it": "hardware"
+        }
+      }
+    }
+  },
+  {
+    "en": "phone",
+    "de": "Handy",
+    "it": "telefono",
+    "es": "teléfono",
+    "fr": "téléphone",
+    "category": "technology",
+    "image": "smartphone,mobile",
+    "details": {
+      "articles": {
+        "de": "das",
+        "fr": "le",
+        "es": "el",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the phone.",
+        "it": "Vedo il telefono.",
+        "es": "Veo el teléfono.",
+        "de": "Ich sehe das Telefon.",
+        "fr": "Je vois le téléphone."
+      },
+      "variations": {
+        "plural": {
+          "en": "phones",
+          "de": "Telefone",
+          "fr": "téléphones",
+          "es": "telefonos",
+          "it": "telefoni"
+        }
+      }
+    }
+  },
+  {
+    "en": "camera",
+    "de": "Kamera",
+    "it": "fotocamera",
+    "es": "cámara",
+    "fr": "appareil photo",
+    "category": "technology",
+    "image": "camera,photo",
+    "details": {
+      "articles": {
+        "de": "die",
+        "es": "la",
+        "it": "la",
+        "fr": "la"
+      },
+      "sentences": {
+        "en": "I see the camera.",
+        "es": "Veo la cámara.",
+        "it": "Vedo la telecamera.",
+        "de": "Ich sehe die Kamera.",
+        "fr": "Je vois la caméra."
+      },
+      "variations": {
+        "plural": {
+          "en": "cameras",
+          "fr": "caméras",
+          "de": "Kameras",
+          "es": "camaras",
+          "it": "fotocamere"
+        }
+      }
+    }
+  },
+  {
+    "en": "cable",
+    "de": "Kabel",
+    "it": "cavo",
+    "es": "cable",
+    "fr": "câble",
+    "category": "technology",
+    "image": "cable,wire",
+    "details": {
+      "articles": {
+        "de": "das",
+        "it": "il",
+        "es": "el",
+        "fr": "le"
+      },
+      "sentences": {
+        "en": "I see the cable.",
+        "de": "Ich sehe das Kabel.",
+        "es": "Veo el cable.",
+        "fr": "Je vois le câble.",
+        "it": "Vedo il cavo."
+      },
+      "variations": {
+        "plural": {
+          "en": "cables",
+          "de": "Kabel",
+          "es": "cables",
+          "it": "cavi",
+          "fr": "câbles"
+        }
+      }
+    }
+  },
+  {
+    "en": "code",
+    "de": "Code",
+    "it": "codice",
+    "es": "código",
+    "fr": "code",
+    "category": "technology",
+    "image": "code,developer",
+    "details": {
+      "articles": {
+        "fr": "le",
+        "es": "el",
+        "de": "der",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the code.",
+        "es": "Veo el código.",
+        "it": "Vedo il codice.",
+        "de": "Ich sehe den Code.",
+        "fr": "Je vois le code."
+      },
+      "variations": {
+        "plural": {
+          "en": "codes",
+          "es": "codigos",
+          "de": "Codes",
+          "it": "codici",
+          "fr": "codes"
+        }
+      }
+    }
+  },
+  {
+    "en": "algorithm",
+    "de": "Algorithmus",
+    "it": "algoritmo",
+    "es": "algoritmo",
+    "fr": "algorithme",
+    "category": "technology",
+    "image": "math,code",
+    "details": {
+      "articles": {
+        "it": "",
+        "de": "der",
+        "es": "el",
+        "fr": ""
+      },
+      "sentences": {
+        "en": "I see the algorithm.",
+        "es": "Veo el algoritmo.",
+        "de": "Ich sehe den Algorithmus.",
+        "fr": "Je vois l'algorithme.",
+        "it": "Vedo l'algoritmo."
+      },
+      "variations": {
+        "plural": {
+          "en": "algorithms",
+          "es": "algoritmos",
+          "de": "Algorithmen",
+          "it": "algoritmi",
+          "fr": "algorithmes"
+        }
+      }
+    }
+  },
+  {
+    "en": "data",
+    "de": "Daten",
+    "it": "dati",
+    "es": "datos",
+    "fr": "données",
+    "category": "technology",
+    "image": "data,analytics",
+    "details": {
+      "articles": {
+        "fr": "les",
+        "es": "los",
+        "de": "die",
+        "it": "i"
+      },
+      "sentences": {
+        "en": "I see the data.",
+        "de": "Ich sehe die Daten.",
+        "es": "Veo los datos.",
+        "fr": "Je vois les données.",
+        "it": "Vedo i dati."
+      },
+      "variations": {
+        "plural": {
+          "en": "datas",
+          "de": "Daten",
+          "it": "dati",
+          "es": "datos",
+          "fr": "données"
+        }
+      }
+    }
+  },
+  {
+    "en": "cloud",
+    "de": "Cloud",
+    "it": "cloud",
+    "es": "nube",
+    "fr": "nuage",
+    "category": "technology",
+    "image": "cloud,storage",
+    "details": {
+      "articles": {
+        "fr": "le",
+        "de": "die",
+        "es": "la",
+        "it": "la"
+      },
+      "sentences": {
+        "en": "I see the cloud.",
+        "de": "Ich sehe die Wolke.",
+        "es": "Veo la nube.",
+        "fr": "Je vois le nuage.",
+        "it": "Vedo la nuvola."
+      },
+      "variations": {
+        "plural": {
+          "en": "clouds",
+          "de": "Wolken",
+          "es": "nubes",
+          "it": "nuvole",
+          "fr": "nuages"
+        }
+      }
+    }
+  },
+  {
+    "en": "security",
+    "de": "Sicherheit",
+    "it": "sicurezza",
+    "es": "seguridad",
+    "fr": "sécurité",
+    "category": "technology",
+    "image": "shield,security",
+    "details": {
+      "articles": {
+        "de": "die",
+        "es": "la",
+        "it": "la",
+        "fr": "la"
+      },
+      "sentences": {
+        "en": "I see the security.",
+        "de": "Ich sehe die Sicherheit.",
+        "fr": "Je vois la sécurité.",
+        "it": "Vedo la sicurezza.",
+        "es": "Veo la seguridad."
+      },
+      "variations": {
+        "plural": {
+          "en": "securities",
+          "es": "valores",
+          "it": "titoli",
+          "fr": "titres",
+          "de": "Wertpapiere"
+        }
+      }
+    }
+  },
+  {
+    "en": "encryption",
+    "de": "Verschlüsselung",
+    "it": "crittografia",
+    "es": "cifrado",
+    "fr": "chiffrement",
+    "category": "technology",
+    "image": "lock,security",
+    "details": {
+      "articles": {
+        "de": "die",
+        "es": "el",
+        "fr": "le",
+        "it": "la"
+      },
+      "sentences": {
+        "en": "I see the encryption.",
+        "de": "Ich sehe die Verschlüsselung.",
+        "it": "Vedo la crittografia.",
+        "es": "Veo el cifrado.",
+        "fr": "Je vois le cryptage."
+      },
+      "variations": {
+        "plural": {
+          "en": "encryptions",
+          "fr": "cryptages",
+          "es": "cifrados",
+          "de": "Verschlüsselungen",
+          "it": "crittografie"
+        }
+      }
+    }
+  },
+  {
+    "en": "backup",
+    "de": "Backup",
+    "it": "backup",
+    "es": "copia de seguridad",
+    "fr": "sauvegarde",
+    "category": "technology",
+    "image": "backup,drive",
+    "details": {
+      "articles": {
+        "fr": "la",
+        "de": "die",
+        "es": "la",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the backup.",
+        "it": "Vedo il backup.",
+        "fr": "Je vois la sauvegarde.",
+        "es": "Veo la copia de seguridad.",
+        "de": "Ich sehe das Backup."
+      },
+      "variations": {
+        "plural": {
+          "en": "backups",
+          "fr": "sauvegardes",
+          "es": "copias de seguridad",
+          "de": "Backups",
+          "it": "backup"
+        }
+      }
+    }
+  },
+  {
+    "en": "download",
+    "de": "Download",
+    "it": "download",
+    "es": "descarga",
+    "fr": "téléchargement",
+    "category": "technology",
+    "image": "download,arrow",
+    "details": {
+      "articles": {
+        "fr": "le",
+        "de": "der",
+        "es": "la",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the download.",
+        "de": "Ich sehe den Download.",
+        "it": "Vedo il download.",
+        "es": "Veo la descarga.",
+        "fr": "Je vois le téléchargement."
+      },
+      "variations": {
+        "plural": {
+          "en": "downloads",
+          "es": "descargas",
+          "fr": "téléchargements",
+          "de": "Downloads",
+          "it": "download"
+        }
+      }
+    }
+  },
+  {
+    "en": "upload",
+    "de": "Upload",
+    "it": "upload",
+    "es": "carga",
+    "fr": "chargement",
+    "category": "technology",
+    "image": "upload,arrow",
+    "details": {
+      "articles": {
+        "de": "der",
+        "it": "il",
+        "es": "la",
+        "fr": "le"
+      },
+      "sentences": {
+        "en": "I see the upload.",
+        "de": "Ich sehe den Upload.",
+        "fr": "Je vois le téléchargement.",
+        "it": "Vedo il caricamento.",
+        "es": "Veo la carga."
+      },
+      "variations": {
+        "plural": {
+          "en": "uploads",
+          "es": "cargas",
+          "it": "caricamenti",
+          "fr": "téléchargements",
+          "de": "Uploads"
+        }
+      }
+    }
+  },
+  {
+    "en": "printer",
+    "de": "Drucker",
+    "it": "stampante",
+    "es": "impresora",
+    "fr": "imprimante",
+    "category": "technology",
+    "image": "printer,paper",
+    "details": {
+      "articles": {
+        "de": "",
+        "fr": "",
+        "es": "la",
+        "it": "la"
+      },
+      "sentences": {
+        "en": "I see the printer.",
+        "it": "Vedo la stampante.",
+        "fr": "Je vois l'imprimante.",
+        "es": "Veo la impresora.",
+        "de": "Ich sehe den Drucker."
+      },
+      "variations": {
+        "plural": {
+          "en": "printers",
+          "fr": "imprimantes",
+          "es": "impresoras",
+          "de": "Drucker",
+          "it": "stampanti"
+        }
+      }
+    }
+  },
+  {
+    "en": "cell",
+    "de": "Zelle",
+    "it": "cellula",
+    "es": "célula",
+    "fr": "cellule",
+    "category": "biology",
+    "image": "cell,biology",
+    "details": {
+      "articles": {
+        "it": "la",
+        "es": "la",
+        "fr": "la",
+        "de": "die"
+      },
+      "sentences": {
+        "en": "I see the cell.",
+        "es": "Veo la celda.",
+        "it": "Vedo la cella.",
+        "fr": "Je vois la cellule.",
+        "de": "Ich sehe die Zelle."
+      },
+      "variations": {
+        "plural": {
+          "en": "cells",
+          "es": "celdas",
+          "fr": "cellules",
+          "de": "Zellen",
+          "it": "celle"
+        }
+      }
+    }
+  },
+  {
+    "en": "organism",
+    "de": "Organismus",
+    "it": "organismo",
+    "es": "organismo",
+    "fr": "organisme",
+    "category": "biology",
+    "image": "nature,biology",
+    "details": {
+      "articles": {
+        "es": "el",
+        "de": "der",
+        "fr": "",
+        "it": ""
+      },
+      "sentences": {
+        "en": "I see the organism.",
+        "de": "Ich sehe den Organismus.",
+        "es": "Veo el organismo.",
+        "it": "Vedo l'organismo.",
+        "fr": "Je vois l'organisme."
+      },
+      "variations": {
+        "plural": {
+          "en": "organisms",
+          "es": "organismos",
+          "it": "organismi",
+          "fr": "organismes",
+          "de": "Organismen"
+        }
+      }
+    }
+  },
+  {
+    "en": "plant",
+    "de": "Pflanze",
+    "it": "pianta",
+    "es": "planta",
+    "fr": "plante",
+    "category": "biology",
+    "image": "plant,green",
+    "details": {
+      "articles": {
+        "es": "la",
+        "de": "die",
+        "fr": "la",
+        "it": "la"
+      },
+      "sentences": {
+        "en": "I see the plant.",
+        "es": "Veo la planta.",
+        "de": "Ich sehe die Pflanze.",
+        "fr": "Je vois la plante.",
+        "it": "Vedo la pianta."
+      },
+      "variations": {
+        "plural": {
+          "en": "plants",
+          "fr": "plantes",
+          "es": "plantas",
+          "it": "piante",
+          "de": "Pflanzen"
+        }
+      }
+    }
+  },
+  {
+    "en": "animal",
+    "de": "Tier",
+    "it": "animale",
+    "es": "animal",
+    "fr": "animal",
+    "category": "biology",
+    "image": "animal,wildlife",
+    "details": {
+      "articles": {
+        "it": "",
+        "es": "el",
+        "fr": "",
+        "de": "das"
+      },
+      "sentences": {
+        "en": "I see the animal.",
+        "es": "Veo al animal.",
+        "it": "Vedo l'animale.",
+        "fr": "Je vois l'animal.",
+        "de": "Ich sehe das Tier."
+      },
+      "variations": {
+        "plural": {
+          "en": "animals",
+          "es": "animales",
+          "fr": "animaux",
+          "de": "Tiere",
+          "it": "animali"
+        }
+      }
+    }
+  },
+  {
+    "en": "leaf",
+    "de": "Blatt",
+    "it": "foglia",
+    "es": "hoja",
+    "fr": "feuille",
+    "category": "biology",
+    "image": "leaf,green",
+    "details": {
+      "articles": {
+        "fr": "la",
+        "es": "la",
+        "de": "das",
+        "it": "la"
+      },
+      "sentences": {
+        "en": "I see the leaf.",
+        "es": "Veo la hoja.",
+        "it": "Vedo la foglia.",
+        "fr": "Je vois la feuille.",
+        "de": "Ich sehe das Blatt."
+      },
+      "variations": {
+        "plural": {
+          "en": "leafs",
+          "es": "hojas",
+          "it": "foglie",
+          "fr": "feuilles",
+          "de": "Blätter"
+        }
+      }
+    }
+  },
+  {
+    "en": "root",
+    "de": "Wurzel",
+    "it": "radice",
+    "es": "raíz",
+    "fr": "racine",
+    "category": "biology",
+    "image": "root,tree",
+    "details": {
+      "articles": {
+        "fr": "la",
+        "it": "la",
+        "es": "la",
+        "de": "die"
+      },
+      "sentences": {
+        "en": "I see the root.",
+        "es": "Veo la raíz.",
+        "it": "Vedo la radice.",
+        "fr": "Je vois la racine.",
+        "de": "Ich sehe die Wurzel."
+      },
+      "variations": {
+        "plural": {
+          "en": "roots",
+          "es": "raíces",
+          "fr": "racines",
+          "de": "Wurzeln",
+          "it": "radici"
+        }
+      }
+    }
+  },
+  {
+    "en": "seed",
+    "de": "Samen",
+    "it": "seme",
+    "es": "semilla",
+    "fr": "graine",
+    "category": "biology",
+    "image": "seed,sprout",
+    "details": {
+      "articles": {
+        "it": "il",
+        "es": "la",
+        "fr": "la",
+        "de": "der"
+      },
+      "sentences": {
+        "en": "I see the seed.",
+        "es": "Veo la semilla.",
+        "it": "Vedo il seme.",
+        "fr": "Je vois la graine.",
+        "de": "Ich sehe den Samen."
+      },
+      "variations": {
+        "plural": {
+          "en": "seeds",
+          "es": "semillas",
+          "fr": "graines",
+          "de": "Samen",
+          "it": "semi"
+        }
+      }
+    }
+  },
+  {
+    "en": "heart",
+    "de": "Herz",
+    "it": "cuore",
+    "es": "corazón",
+    "fr": "cœur",
+    "category": "biology",
+    "image": "heart,cardio",
+    "details": {
+      "articles": {
+        "de": "das",
+        "fr": "le",
+        "es": "el",
+        "it": "il"
+      },
+      "sentences": {
+        "en": "I see the heart.",
+        "es": "Veo el corazón.",
+        "de": "Ich sehe das Herz.",
+        "it": "Vedo il cuore.",
+        "fr": "Je vois le coeur."
+      },
+      "variations": {
+        "plural": {
+          "en": "hearts",
+          "de": "Herzen",
+          "it": "cuori",
+          "fr": "coeurs",
+          "es": "corazones"
+        }
+      }
+    }
+  },
+  {
+    "en": "lung",
+    "de": "Lunge",
+    "it": "polmone",
+    "es": "pulmón",
+    "fr": "poumon",
+    "category": "biology",
+    "image": "lung,anatomy",
+    "details": {
+      "articles": {
+        "it": "il",
+        "de": "die",
+        "fr": "le",
+        "es": "el"
+      },
+      "sentences": {
+        "en": "I see the lung.",
+        "es": "Veo el pulmón.",
+        "it": "Vedo il polmone.",
+        "de": "Ich sehe die Lunge.",
+        "fr": "Je vois le poumon."
+      },
+      "variations": {
+        "plural": {
+          "en": "lungs",
+          "es": "pulmones",
+          "fr": "poumons",
+          "de": "Lungen",
+          "it": "polmoni"
+        }
+      }
+    }
+  },
+  {
+    "en": "brain",
+    "de": "Gehirn",
+    "it": "cervello",
+    "es": "cerebro",
+    "fr": "cerveau",
+    "category": "biology",
+    "image": "brain,anatomy",
+    "details": {
+      "articles": {
+        "es": "el",
+        "it": "il",
+        "fr": "le",
+        "de": "das"
+      },
+      "sentences": {
+        "en": "I see the brain.",
+        "es": "Veo el cerebro.",
+        "it": "Vedo il cervello.",
+        "fr": "Je vois le cerveau.",
+        "de": "Ich sehe das Gehirn."
+      },
+      "variations": {
+        "plural": {
+          "en": "brains",
+          "es": "cerebros",
+          "fr": "cerveaux",
+          "de": "Gehirne",
+          "it": "cervelli"
+        }
+      }
+    }
+  },
+  {
+    "en": "bone",
+    "de": "Knochen",
+    "it": "osso",
+    "es": "hueso",
+    "fr": "os",
+    "category": "biology",
+    "image": "bone,skeleton",
+    "details": {
+      "articles": {
+        "de": "der",
+        "it": "",
+        "fr": "",
+        "es": "el"
+      },
+      "sentences": {
+        "en": "I see the bone.",
+        "es": "Veo el hueso.",
+        "de": "Ich sehe den Knochen.",
+        "fr": "Je vois l'os.",
+        "it": "Vedo l'osso."
+      },
+      "variations": {
+        "plural": {
+          "en": "bones",
+          "es": "huesos",
+          "de": "Knochen",
+          "it": "ossa",
+          "fr": "os"
+        }
+      }
+    }
+  },
+  {
+    "en": "skin",
+    "de": "Haut",
+    "it": "pelle",
+    "es": "piel",
+    "fr": "peau",
+    "category": "biology",
+    "image": "skin,touch",
+    "details": {
+      "articles": {
+        "de": "die",
+        "es": "la",
+        "it": "la",
+        "fr": "la"
+      },
+      "sentences": {
+        "en": "I see the skin.",
+        "de": "Ich sehe die Haut.",
+        "it": "Vedo la pelle.",
+        "es": "Veo la piel.",
+        "fr": "Je vois la peau."
+      },
+      "variations": {
+        "plural": {
+          "en": "skins",
+          "es": "pieles",
+          "de": "Felle",
+          "it": "pelli",
+          "fr": "peaux"
+        }
+      }
+    }
+  },
+  {
+    "en": "blood",
+    "de": "Blut",
+    "it": "sangue",
+    "es": "sangre",
+    "fr": "sang",
+    "category": "biology",
+    "image": "blood,red",
+    "details": {
+      "articles": {
+        "it": "il",
+        "es": "la",
+        "fr": "le",
+        "de": "das"
+      },
+      "sentences": {
+        "en": "I see the blood.",
+        "de": "Ich sehe das Blut.",
+        "it": "Vedo il sangue.",
+        "es": "Veo la sangre.",
+        "fr": "Je vois le sang."
+      },
+      "variations": {
+        "plural": {
+          "en": "bloods",
+          "es": "sangres",
+          "it": "sangue",
+          "de": "Blute",
+          "fr": "sangs"
+        }
+      }
+    }
+  },
+  {
+    "en": "forest",
+    "de": "Wald",
+    "it": "foresta",
+    "es": "bosque",
+    "fr": "forêt",
+    "category": "biology",
+    "image": "forest,trees",
+    "details": {
+      "articles": {
+        "es": "el",
+        "fr": "la",
+        "it": "la",
+        "de": "der"
+      },
+      "sentences": {
+        "en": "I see the forest.",
+        "de": "Ich sehe den Wald.",
+        "it": "Vedo la foresta.",
+        "es": "Veo el bosque.",
+        "fr": "Je vois la forêt."
+      },
+      "variations": {
+        "plural": {
+          "en": "forests",
+          "es": "bosques",
+          "it": "foreste",
+          "de": "Wälder",
+          "fr": "forêts"
+        }
+      }
+    }
+  },
+  {
+    "en": "life",
+    "de": "Leben",
+    "it": "vita",
+    "es": "vida",
+    "fr": "vie",
+    "category": "biology",
+    "image": "life,earth",
+    "details": {
+      "articles": {
+        "es": "la",
+        "de": "das",
+        "it": "la",
+        "fr": "la"
+      },
+      "sentences": {
+        "en": "I see the life.",
+        "es": "Veo la vida.",
+        "de": "Ich sehe das Leben.",
+        "it": "Vedo la vita.",
+        "fr": "Je vois la vie."
+      },
+      "variations": {
+        "plural": {
+          "en": "lifes",
+          "es": "vidas",
+          "de": "Leben",
+          "it": "vite",
+          "fr": "vies"
+        }
+      }
+    }
+  },
+  {
+    "en": "nature",
+    "de": "Natur",
+    "it": "natura",
+    "es": "naturaleza",
+    "fr": "nature",
+    "category": "biology",
+    "image": "nature,landscape",
+    "details": {
+      "articles": {
+        "de": "die",
+        "it": "la",
+        "es": "la",
+        "fr": "la"
+      },
+      "sentences": {
+        "en": "I see the nature.",
+        "es": "Veo la naturaleza.",
+        "de": "Ich sehe die Natur.",
+        "it": "Vedo la natura.",
+        "fr": "Je vois la nature."
+      },
+      "variations": {
+        "plural": {
+          "en": "natures",
+          "es": "naturalezas",
+          "de": "Naturen",
+          "it": "nature",
+          "fr": "natures"
+        }
+      }
+    }
+  },
+  {
+    "en": "insect",
+    "de": "Insekt",
+    "it": "insetto",
+    "es": "insecto",
+    "fr": "insecte",
+    "category": "biology",
+    "image": "insect,bug",
+    "details": {
+      "articles": {
+        "de": "das",
+        "it": "",
+        "es": "el",
+        "fr": ""
+      },
+      "sentences": {
+        "en": "I see the insect.",
+        "de": "Ich sehe das Insekt.",
+        "it": "Vedo l'insetto.",
+        "es": "Veo el insecto.",
+        "fr": "Je vois l'insecte."
+      },
+      "variations": {
+        "plural": {
+          "en": "insects",
+          "es": "insectos",
+          "it": "insetti",
+          "de": "Insekten",
+          "fr": "insectes"
+        }
+      }
+    }
+  },
+  {
+    "en": "bacteria",
+    "de": "Bakterium",
+    "it": "batterio",
+    "es": "bacteria",
+    "fr": "bactérie",
+    "category": "biology",
+    "image": "bacteria,microscope",
+    "details": {
+      "articles": {
+        "it": "i",
+        "es": "las",
+        "de": "die",
+        "fr": "les"
+      },
+      "sentences": {
+        "en": "I see the bacteria.",
+        "it": "Vedo i batteri.",
+        "es": "Veo las bacterias.",
+        "de": "Ich sehe die Bakterien.",
+        "fr": "Je vois les bactéries."
+      },
+      "variations": {
+        "plural": {
+          "en": "bacterias",
+          "es": "bacterias",
+          "it": "batteri",
+          "de": "Bakterien",
+          "fr": "bactéries"
+        }
+      }
+    }
+  },
+  {
+    "en": "virus",
+    "de": "Virus",
+    "it": "virus",
+    "es": "virus",
+    "fr": "virus",
+    "category": "biology",
+    "image": "virus,illness",
+    "details": {
+      "articles": {
+        "it": "il",
+        "es": "el",
+        "fr": "le",
+        "de": "das"
+      },
+      "sentences": {
+        "en": "I see the virus.",
+        "es": "Veo el virus.",
+        "de": "Ich sehe den Virus.",
+        "fr": "Je vois le virus.",
+        "it": "Vedo il virus."
+      },
+      "variations": {
+        "plural": {
+          "en": "viruses",
+          "es": "virus",
+          "de": "Viren",
+          "it": "virus",
+          "fr": "virus"
+        }
+      }
+    }
+  },
+  {
+    "en": "species",
+    "de": "Spezies",
+    "it": "specie",
+    "es": "especie",
+    "fr": "espèce",
+    "category": "biology",
+    "image": "animals,group",
+    "details": {
+      "articles": {
+        "it": "la",
+        "es": "la",
+        "de": "die",
+        "fr": ""
+      },
+      "sentences": {
+        "en": "I see the species.",
+        "de": "Ich sehe die Art.",
+        "it": "Vedo la specie.",
+        "es": "Veo la especie.",
+        "fr": "Je vois l'espèce."
+      },
+      "variations": {
+        "plural": {
+          "en": "specieses",
+          "es": "especies",
+          "it": "specie",
+          "de": "Arten",
+          "fr": "espèces"
+        }
+      }
+    }
+  },
+  {
+    "en": "evolution",
+    "de": "Evolution",
+    "it": "evoluzione",
+    "es": "evolución",
+    "fr": "évolution",
+    "category": "biology",
+    "image": "evolution,history",
+    "details": {
+      "articles": {
+        "fr": "",
+        "es": "la",
+        "it": "",
+        "de": "die"
+      },
+      "sentences": {
+        "en": "I see the evolution.",
+        "es": "Veo la evolución.",
+        "it": "Vedo l'evoluzione.",
+        "de": "Ich sehe die Entwicklung.",
+        "fr": "Je vois l'évolution."
+      },
+      "variations": {
+        "plural": {
+          "en": "evolutions",
+          "es": "evoluciones",
+          "fr": "évolutions",
+          "it": "evoluzioni",
+          "de": "Entwicklungen"
+        }
+      }
+    }
+  },
+  {
+    "en": "gene",
+    "de": "Gen",
+    "it": "gene",
+    "es": "gen",
+    "fr": "gène",
+    "category": "biology",
+    "image": "dna,gene",
+    "details": {
+      "articles": {
+        "de": "das",
+        "it": "il",
+        "fr": "le",
+        "es": "el"
+      },
+      "sentences": {
+        "en": "I see the gene.",
+        "es": "Veo el gen.",
+        "it": "Vedo il gene.",
+        "de": "Ich sehe das Gen.",
+        "fr": "Je vois le gène."
+      },
+      "variations": {
+        "plural": {
+          "en": "genes",
+          "es": "genes",
+          "fr": "gènes",
+          "it": "geni",
+          "de": "Gene"
+        }
+      }
+    }
+  },
+  {
+    "en": "dna",
+    "de": "Dna",
+    "it": "dna",
+    "es": "adn",
+    "fr": "adn",
+    "category": "biology",
+    "image": "dna,spiral",
+    "details": {
+      "articles": {
+        "it": "il",
+        "de": "die",
+        "es": "el",
+        "fr": ""
+      },
+      "sentences": {
+        "en": "I see the dna.",
+        "es": "Veo el ADN.",
+        "it": "Vedo il DNA.",
+        "fr": "Je vois l'ADN.",
+        "de": "Ich sehe die DNA."
+      },
+      "variations": {
+        "plural": {
+          "en": "dnas",
+          "it": "dna",
+          "es": "adns",
+          "fr": "ADN",
+          "de": "DNAs"
+        }
+      }
+    }
+  },
+  {
+    "en": "sugar",
+    "de": "Zucker",
+    "it": "zucchero",
+    "es": "azúcar",
+    "fr": "sucre",
+    "category": "biology",
+    "image": "sugar,sweet",
+    "details": {
+      "articles": {
+        "es": "el",
+        "fr": "le",
+        "it": "lo",
+        "de": "der"
+      },
+      "sentences": {
+        "en": "I see the sugar.",
+        "es": "Veo el azúcar.",
+        "it": "Vedo lo zucchero.",
+        "de": "Ich sehe den Zucker.",
+        "fr": "Je vois le sucre."
+      },
+      "variations": {
+        "plural": {
+          "en": "sugars",
+          "es": "azucares",
+          "fr": "sucres",
+          "it": "zuccheri",
+          "de": "Zucker"
+        }
+      }
+    }
+  },
+  {
+    "en": "protein",
+    "de": "Protein",
+    "it": "proteina",
+    "es": "proteína",
+    "fr": "protéine",
+    "category": "biology",
+    "image": "meat,protein",
+    "details": {
+      "articles": {
+        "it": "la",
+        "de": "das",
+        "es": "la",
+        "fr": "la"
+      },
+      "sentences": {
+        "en": "I see the protein.",
+        "it": "Vedo le proteine.",
+        "es": "Veo la proteína.",
+        "fr": "Je vois la protéine.",
+        "de": "Ich sehe das Protein."
+      },
+      "variations": {
+        "plural": {
+          "en": "proteins",
+          "it": "proteine",
+          "es": "proteínas",
+          "de": "Proteine",
+          "fr": "protéines"
+        }
+      }
+    }
+  },
+  {
+    "en": "oxygen",
+    "de": "Sauerstoff",
+    "it": "ossigeno",
+    "es": "oxígeno",
+    "fr": "oxygène",
+    "category": "biology",
+    "image": "air,fresh",
+    "details": {
+      "articles": {
+        "es": "el",
+        "it": "",
+        "de": "der",
+        "fr": ""
+      },
+      "sentences": {
+        "en": "I see the oxygen.",
+        "es": "Veo el oxígeno.",
+        "it": "Vedo l'ossigeno.",
+        "fr": "Je vois l'oxygène.",
+        "de": "Ich sehe den Sauerstoff."
+      },
+      "variations": {
+        "plural": {
+          "en": "oxygens",
+          "it": "ossigeni",
+          "es": "oxigenos",
+          "de": "Sauerstoffatome",
+          "fr": "oxygènes"
+        }
+      }
+    }
+  },
+  {
+    "en": "carbon",
+    "de": "Kohlenstoff",
+    "it": "carbonio",
+    "es": "carbono",
+    "fr": "carbone",
+    "category": "biology",
+    "image": "coal,element",
+    "details": {
+      "articles": {
+        "fr": "le",
+        "it": "il",
+        "de": "der",
+        "es": "el"
+      },
+      "sentences": {
+        "en": "I see the carbon.",
+        "es": "Veo el carbono.",
+        "it": "Vedo il carbonio.",
+        "fr": "Je vois le carbone.",
+        "de": "Ich sehe den Kohlenstoff."
+      },
+      "variations": {
+        "plural": {
+          "en": "carbons",
+          "it": "carboni",
+          "es": "carbonos",
+          "de": "Kohlenstoffe",
+          "fr": "carbones"
+        }
+      }
+    }
+  },
+  {
+    "en": "hydrogen",
+    "de": "Wasserstoff",
+    "it": "idrogeno",
+    "es": "hidrógeno",
+    "fr": "hydrogène",
+    "category": "biology",
+    "image": "gas,balloon",
+    "details": {
+      "articles": {
+        "es": "el",
+        "it": "",
+        "de": "der",
+        "fr": ""
+      },
+      "sentences": {
+        "en": "I see the hydrogen.",
+        "es": "Veo el hidrógeno.",
+        "it": "Vedo l'idrogeno.",
+        "fr": "Je vois l'hydrogène.",
+        "de": "Ich sehe den Wasserstoff."
+      },
+      "variations": {
+        "plural": {
+          "en": "hydrogens",
+          "it": "idrogeni",
+          "es": "hidrógenos",
+          "de": "Wasserstoffatome",
+          "fr": "hydrogènes"
+        }
+      }
+    }
+  },
+  {
+    "en": "soil",
+    "de": "Erde",
+    "it": "terra",
+    "es": "tierra",
+    "fr": "sol",
+    "category": "biology",
+    "image": "soil,ground",
+    "details": {
+      "articles": {
+        "it": "il",
+        "de": "der",
+        "es": "el",
+        "fr": "le"
+      },
+      "sentences": {
+        "en": "I see the soil.",
+        "es": "Veo el suelo.",
+        "it": "Vedo il terreno.",
+        "fr": "Je vois le sol.",
+        "de": "Ich sehe den Boden."
+      },
+      "variations": {
+        "plural": {
+          "en": "soils",
+          "it": "terreni",
+          "es": "suelos",
+          "de": "Böden",
+          "fr": "sols"
+        }
+      }
+    }
+  },
+  {
+    "en": "ecosystem",
+    "de": "Ökosystem",
+    "it": "ecosistema",
+    "es": "ecosistema",
+    "fr": "écosystème",
+    "category": "biology",
+    "image": "nature,earth",
+    "details": {
+      "articles": {
+        "de": "das",
+        "fr": "",
+        "it": "",
+        "es": "el"
+      },
+      "sentences": {
+        "en": "I see the ecosystem.",
+        "es": "Veo el ecosistema.",
+        "it": "Vedo l'ecosistema.",
+        "fr": "Je vois l'écosystème.",
+        "de": "Ich sehe das Ökosystem."
+      },
+      "variations": {
+        "plural": {
+          "en": "ecosystems",
+          "it": "ecosistemi",
+          "es": "ecosistemas",
+          "de": "Ökosysteme",
+          "fr": "écosystèmes"
+        }
+      }
+    }
+  },
+  {
+    "en": "hello",
+    "de": "Hallo",
+    "it": "ciao",
+    "es": "hola",
+    "fr": "bonjour",
+    "category": "phrases",
+    "image": "hello,wave",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "hello",
+        "de": "Hallo",
+        "it": "ciao",
+        "es": "hola",
+        "fr": "bonjour"
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "goodbye",
+    "de": "Auf Wiedersehen",
+    "it": "arrivederci",
+    "es": "adiós",
+    "fr": "au revoir",
+    "category": "phrases",
+    "image": "bye,wave",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "goodbye",
+        "de": "Auf Wiedersehen",
+        "it": "arrivederci",
+        "es": "adiós",
+        "fr": "au revoir"
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "please",
+    "de": "Bitte",
+    "it": "per favore",
+    "es": "por favor",
+    "fr": "s'il vous plaît",
+    "category": "phrases",
+    "image": "please,hands",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "please",
+        "de": "Bitte",
+        "it": "per favore",
+        "es": "por favor",
+        "fr": "s'il vous plaît"
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "thank you",
+    "de": "Danke",
+    "it": "grazie",
+    "es": "gracias",
+    "fr": "merci",
+    "category": "phrases",
+    "image": "thanks,happy",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "thank you",
+        "de": "Danke",
+        "it": "grazie",
+        "es": "gracias",
+        "fr": "merci"
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "yes",
+    "de": "Ja",
+    "it": "sì",
+    "es": "sí",
+    "fr": "oui",
+    "category": "phrases",
+    "image": "yes,checkmark",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "yes",
+        "de": "Ja",
+        "it": "sì",
+        "es": "sí",
+        "fr": "oui"
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "no",
+    "de": "Nein",
+    "it": "no",
+    "es": "no",
+    "fr": "non",
+    "category": "phrases",
+    "image": "no,cross",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "no",
+        "de": "Nein",
+        "it": "no",
+        "es": "no",
+        "fr": "non"
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "excuse me",
+    "de": "Entschuldigung",
+    "it": "scusi",
+    "es": "disculpe",
+    "fr": "excusez-moi",
+    "category": "phrases",
+    "image": "apologize,excuse",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "excuse me",
+        "de": "Entschuldigung",
+        "it": "scusi",
+        "es": "disculpe",
+        "fr": "excusez-moi"
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "sorry",
+    "de": "Es tut mir leid",
+    "it": "mi dispiace",
+    "es": "lo siento",
+    "fr": "désolé",
+    "category": "phrases",
+    "image": "sorry,sad",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "sorry",
+        "de": "Es tut mir leid",
+        "it": "mi dispiace",
+        "es": "lo siento",
+        "fr": "désolé"
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "good morning",
+    "de": "Guten Morgen",
+    "it": "buongiorno",
+    "es": "buenos días",
+    "fr": "bonjour",
+    "category": "phrases",
+    "image": "sunrise,morning",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "good morning",
+        "de": "Guten Morgen",
+        "it": "buongiorno",
+        "es": "buenos días",
+        "fr": "bonjour"
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "good night",
+    "de": "Gute Nacht",
+    "it": "buonanotte",
+    "es": "buenas noches",
+    "fr": "bonne nuit",
+    "category": "phrases",
+    "image": "moon,sleep",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "good night",
+        "de": "Gute Nacht",
+        "it": "buonanotte",
+        "es": "buenas noches",
+        "fr": "bonne nuit"
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "how much is it?",
+    "de": "Wie viel kostet es?",
+    "it": "quanto costa?",
+    "es": "¿cuánto cuesta?",
+    "fr": "combien ça coûte?",
+    "category": "phrases",
+    "image": "price,money",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "how much is it?",
+        "de": "Wie viel kostet es?",
+        "it": "quanto costa?",
+        "es": "¿cuánto cuesta?",
+        "fr": "combien ça coûte?"
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "where is the bathroom?",
+    "de": "Wo ist das Badezimmer?",
+    "it": "dov'è il bagno?",
+    "es": "¿dónde está el baño?",
+    "fr": "où sont les toilettes?",
+    "category": "phrases",
+    "image": "toilet,bathroom",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "where is the bathroom?",
+        "de": "Wo ist das Badezimmer?",
+        "it": "dov'è il bagno?",
+        "es": "¿dónde está el baño?",
+        "fr": "où sont les toilettes?"
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "I don't know",
+    "de": "Ich weiß nicht",
+    "it": "non lo so",
+    "es": "no lo sé",
+    "fr": "je ne sais pas",
+    "category": "phrases",
+    "image": "shrug,confused",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I don't know",
+        "de": "Ich weiß nicht",
+        "it": "non lo so",
+        "es": "no lo sé",
+        "fr": "je ne sais pas"
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "do you speak English?",
+    "de": "Sprechen Sie Englisch?",
+    "it": "parli inglese?",
+    "es": "¿hablas inglés?",
+    "fr": "parlez-vous anglais?",
+    "category": "phrases",
+    "image": "speak,english",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "do you speak English?",
+        "de": "Sprechen Sie Englisch?",
+        "it": "parli inglese?",
+        "es": "¿hablas inglés?",
+        "fr": "parlez-vous anglais?"
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "what is your name?",
+    "de": "Wie heißen Sie?",
+    "it": "come ti chiami?",
+    "es": "¿cómo te llamas?",
+    "fr": "quel est votre nom?",
+    "category": "phrases",
+    "image": "name,ask",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "what is your name?",
+        "de": "Wie heißen Sie?",
+        "it": "come ti chiami?",
+        "es": "¿cómo te llamas?",
+        "fr": "quel est votre nom?"
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "my name is...",
+    "de": "Mein Name ist...",
+    "it": "mi chiamo...",
+    "es": "mi nombre es...",
+    "fr": "mon nom est...",
+    "category": "phrases",
+    "image": "badge,name",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "my name is...",
+        "de": "Mein Name ist...",
+        "it": "mi chiamo...",
+        "es": "mi nombre es...",
+        "fr": "mon nom est..."
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "I love you",
+    "de": "Ich liebe dich",
+    "it": "ti amo",
+    "es": "te amo",
+    "fr": "je t'aime",
+    "category": "phrases",
+    "image": "heart,love",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "I love you",
+        "de": "Ich liebe dich",
+        "it": "ti amo",
+        "es": "te amo",
+        "fr": "je t'aime"
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "help me",
+    "de": "Helfen Sie mir",
+    "it": "aiutami",
+    "es": "ayúdame",
+    "fr": "aidez-moi",
+    "category": "phrases",
+    "image": "help,emergency",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "help me",
+        "de": "Helfen Sie mir",
+        "it": "aiutami",
+        "es": "ayúdame",
+        "fr": "aidez-moi"
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "welcome",
+    "de": "Willkommen",
+    "it": "benvenuto",
+    "es": "bienvenido",
+    "fr": "bienvenue",
+    "category": "phrases",
+    "image": "door,welcome",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "welcome",
+        "de": "Willkommen",
+        "it": "benvenuto",
+        "es": "bienvenido",
+        "fr": "bienvenue"
+      },
+      "variations": {}
+    }
+  },
+  {
+    "en": "cheers",
+    "de": "Prost",
+    "it": "salute",
+    "es": "¡salud!",
+    "fr": "santé!",
+    "category": "phrases",
+    "image": "cheers,glasses",
+    "details": {
+      "articles": {},
+      "sentences": {
+        "en": "cheers",
+        "de": "Prost",
+        "it": "salute",
+        "es": "¡salud!",
+        "fr": "santé!"
+      },
+      "variations": {}
+    }
+  }
+]

@@ -24,19 +24,45 @@
   <div class="app-container">
     <!-- Header with XP, Streak, Hearts, Level -->
     <header class="main-header">
-      <div class="user-badge" id="level-badge">Lvl 1</div>
-      <div class="stat-pill xp-pill">
-        <span class="icon">⚡</span>
-        <span id="xp-count">0</span> XP
+      <div class="header-top-stats">
+        <div class="user-badge" id="level-badge">Lvl 1</div>
+        <div class="stat-pill xp-pill">
+          <span class="icon">⚡</span>
+          <span id="xp-count">0</span> XP
+        </div>
+        <div class="stat-pill streak-pill">
+          <span class="icon">🔥</span>
+          <span id="streak-count">0</span> Days
+        </div>
+        <div class="stat-pill hearts-pill">
+          <span class="icon">❤️</span>
+          <span id="hearts-count">5</span>
+        </div>
       </div>
-      <div class="stat-pill streak-pill">
-        <span class="icon">🔥</span>
-        <span id="streak-count">0</span> Days
-      </div>
-      <div class="stat-pill hearts-pill">
-        <span class="icon">❤️</span>
-        <span id="hearts-count">5</span>
-      </div>
+
+      <!-- Sidebar Navigation for PC/iPad Landscape -->
+      <nav class="sidebar-nav">
+        <div class="sidebar-brand">VocTrainer</div>
+        <button class="nav-item active" onclick="showView('view-dashboard')">
+          <span class="icon">🏠</span> Dashboard
+        </button>
+        <button class="nav-item" onclick="showView('view-browse'); renderBrowseList();">
+          <span class="icon">🔍</span> Browse Vocab
+        </button>
+        <button class="nav-item danger-badge-container" onclick="showView('view-mistakes')">
+          <span class="icon">⚠️</span> Mistakes
+          <span class="badge" id="sidebar-mistakes-badge">0</span>
+        </button>
+        <button class="nav-item" onclick="showView('view-history')">
+          <span class="icon">📈</span> History
+        </button>
+        <button class="nav-item" onclick="showView('view-import')">
+          <span class="icon">📥</span> Import
+        </button>
+        <button class="nav-item" onclick="showView('view-setup')">
+          <span class="icon">⚙️</span> Setup & API
+        </button>
+      </nav>
     </header>
 
     <!-- DASHBOARD VIEW -->
@@ -176,7 +202,38 @@
           <div class="feedback-icon" id="feedback-icon">🎉</div>
           <h3 id="feedback-title">Correct!</h3>
           <p id="feedback-desc"></p>
-          <button id="btn-next-question" class="btn btn-primary btn-block">Continue</button>
+          
+          <!-- Show Details Button -->
+          <button id="btn-show-details" class="btn btn-secondary btn-block" style="margin-top: 10px;">ℹ️ Show Details</button>
+
+          <!-- Word Details Container (Collapsible) -->
+          <div id="word-details-container" style="display: none; text-align: left; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 0.9rem; max-height: 250px; overflow-y: auto;">
+            <div class="detail-section">
+              <strong>Grammar & Articles:</strong>
+              <p id="detail-articles">...</p>
+            </div>
+            <div class="detail-section" style="margin-top: 10px;">
+              <strong>Example Sentence:</strong>
+              <p id="detail-sentence" style="font-style: italic;"></p>
+              <p id="detail-sentence-translation" style="color: var(--text-secondary);"></p>
+            </div>
+            <div class="detail-section" style="margin-top: 10px;">
+              <strong>Plural / Gender / Variations:</strong>
+              <p id="detail-variations">...</p>
+            </div>
+            
+            <!-- Get More Details from Web/LLM -->
+            <button id="btn-get-ai-details" class="btn btn-secondary btn-sm btn-block" style="margin-top: 16px; background: rgba(76, 201, 240, 0.1); color: var(--accent-color); border: 1px solid var(--accent-color);">
+              ✨ Ask AI / Web for more details
+            </button>
+            <div id="ai-details-loading" style="display: none; text-align: center; margin-top: 10px;">
+              <span class="spinner" style="display: inline-block; width: 16px; height: 16px; border: 2px solid var(--accent-color); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></span>
+              <span style="margin-left: 8px; font-size: 0.85rem; color: var(--text-secondary);">Querying LLM/Web...</span>
+            </div>
+            <div id="ai-details-response" style="display: none; margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.85rem; white-space: pre-line;"></div>
+          </div>
+
+          <button id="btn-next-question" class="btn btn-primary btn-block" style="margin-top: 15px;">Continue</button>
         </div>
       </div>
     </section>
