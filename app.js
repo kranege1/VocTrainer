@@ -1274,10 +1274,25 @@ function setupWordDetails(currentWord) {
     }
   };
 
-  // Populate local details
   const details = currentWord.details;
   const base = state.baseLang || "en";
   const lang = state.selectedLang;
+
+  // Populate base and target text
+  const baseWordEl = document.getElementById("detail-base-word");
+  const targetWordEl = document.getElementById("detail-target-word");
+  if (baseWordEl) baseWordEl.textContent = currentWord.en;
+  if (targetWordEl) targetWordEl.textContent = currentWord.target;
+
+  // Speak Base & Target handlers
+  const speakBaseBtn = document.getElementById("btn-speak-detail-base");
+  const speakTargetBtn = document.getElementById("btn-speak-detail-target");
+  if (speakBaseBtn) {
+    speakBaseBtn.onclick = () => speakWord(currentWord.en, base, 1.0);
+  }
+  if (speakTargetBtn) {
+    speakTargetBtn.onclick = () => speakWord(currentWord.target, lang, 1.0);
+  }
 
   const articlesEl = document.getElementById("detail-articles");
   const sentenceEl = document.getElementById("detail-sentence");
