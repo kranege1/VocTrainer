@@ -454,15 +454,67 @@ async function importFromUrl(url, category) {
   }
 }
 
-function addCustomWord(english, translation, lang, category, imageUrl = "", audioBase64 = "") {
-  state.customVocab.push({
-    en: english,
-    target: translation,
-    lang: lang,
+async function addCustomWord(english, translation, lang, category, imageUrl = "", audioBase64 = "") {
+  const base = state.baseLang || "en";
+  
+  const newWord = {
     category: category || "imported",
     image: imageUrl || english,
-    audio: audioBase64
+    audio: audioBase64,
+    details: {
+      articles: {},
+      sentences: {},
+      variations: {},
+      synonyms: { en: [], de: [], it: [], es: [], fr: [] }
+    }
+  };
+  
+  // Assign known values
+  newWord[base] = english;
+  newWord[lang] = translation;
+  
+  // Legacy fields fallback
+  newWord.en = newWord.en || english;
+  newWord.target = newWord.target || translation;
+  newWord.lang = lang;
+
+  state.customVocab.push(newWord);
+  saveState();
+  renderImportedList();
+
+  // Backfill other languages asynchronously
+  await fillMissingTranslations(newWord, base);
+  
+  // Re-save and refresh once complete
+  saveState();
+  renderImportedList();
+  if (document.getElementById("view-browse").classList.contains("active")) {
+    renderBrowseList();
+  }
+}
+
+async function fillMissingTranslations(wordObj, sourceLang) {
+  const langs = ["en", "de", "it", "es", "fr"];
+  const sourceText = wordObj[sourceLang];
+  if (!sourceText) return;
+
+  const promises = langs.map(async (targetLang) => {
+    if (wordObj[targetLang]) return; // Already populated
+    
+    try {
+      const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(sourceText)}&langpair=${sourceLang}|${targetLang}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.responseData && data.responseData.translatedText) {
+          wordObj[targetLang] = data.responseData.translatedText.trim();
+        }
+      }
+    } catch (err) {
+      console.error(`Failed to backfill translation for ${targetLang}`, err);
+    }
   });
+
+  await Promise.all(promises);
 }
 
 function renderImportedList() {
@@ -532,7 +584,16 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
   if (isMistakesOnly) {
     pool = [...state.mistakes];
   } else if (customCategory !== "none") {
-    pool = state.customVocab.filter(v => v.lang === language && v.category === customCategory);
+    const base = state.baseLang || "en";
+    pool = state.customVocab
+      .filter(v => v.category === customCategory)
+      .map(item => ({
+        en: item[base] || item.en || item.target,
+        target: item[language] || item.target,
+        category: item.category,
+        image: item.image,
+        details: item.details || {}
+      }));
   } else {
     const base = state.baseLang || "en";
     const starters = STARTER_VOCAB_RAW.map(item => {
@@ -561,7 +622,13 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
       };
     }).filter(Boolean);
     
-    const customs = state.customVocab.filter(v => v.lang === language);
+    const customs = state.customVocab.map(item => ({
+      en: item[base] || item.en || item.target,
+      target: item[language] || item.target || item.en,
+      category: item.category,
+      image: item.image,
+      details: item.details || {}
+    }));
     pool = [...starters, ...customs];
     
     if (category !== "all") {
@@ -1510,7 +1577,15 @@ function renderBrowseList() {
   let pool = [];
 
   if (selectedCustomCategory !== "none") {
-    pool = state.customVocab.filter(v => v.lang === selectedLang && v.category === selectedCustomCategory);
+    pool = state.customVocab
+      .filter(v => v.category === selectedCustomCategory)
+      .map(item => ({
+        en: item[base] || item.en || item.target,
+        target: item[selectedLang] || item.target,
+        category: item.category,
+        image: item.image,
+        details: item.details || {}
+      }));
   } else {
     const starters = STARTER_VOCAB_RAW.map(item => {
       const origEn = item[base];
@@ -1538,7 +1613,13 @@ function renderBrowseList() {
       };
     }).filter(Boolean);
     
-    const customs = state.customVocab.filter(v => v.lang === selectedLang);
+    const customs = state.customVocab.map(item => ({
+      en: item[base] || item.en || item.target,
+      target: item[selectedLang] || item.target || item.en,
+      category: item.category,
+      image: item.image,
+      details: item.details || {}
+    }));
     pool = [...starters, ...customs];
 
     if (selectedCategory !== "all") {
