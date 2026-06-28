@@ -20,6 +20,8 @@
   <audio id="sound-correct" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-84.wav" preload="auto"></audio>
   <audio id="sound-incorrect" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-84.wav" preload="auto"></audio>
   <audio id="sound-levelup" src="https://assets.mixkit.co/active_storage/sfx/2018/2018-84.wav" preload="auto"></audio>
+  <audio id="sound-click" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav" preload="auto"></audio>
+  <audio id="sound-popup" src="https://assets.mixkit.co/active_storage/sfx/2017/2017-84.wav" preload="auto"></audio>
 
   <div class="app-container">
     <!-- Header with XP, Streak, Hearts, Level -->
@@ -483,6 +485,20 @@
         </ul>
       </div>
     </section>
+  </div>
+
+  <!-- Custom Modal Overlay for Alerts and Confirms -->
+  <div id="custom-modal-overlay" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="modal-icon" id="modal-icon">ℹ️</span>
+        <h3 id="modal-title">Notification</h3>
+      </div>
+      <p id="modal-message">This is a custom message.</p>
+      <div class="modal-actions" id="modal-actions">
+        <!-- Buttons will be injected dynamically -->
+      </div>
+    </div>
   </div>
 
   <script src="app.js"></script>

@@ -773,8 +773,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btn-setup-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-report-home").onclick = () => showView("view-dashboard");
   
-  document.getElementById("btn-quit-test").onclick = () => {
-    if (confirm("Are you sure you want to quit this training session?")) {
+  document.getElementById("btn-quit-test").onclick = async () => {
+    const quitConfirmed = await showCustomConfirm("Are you sure you want to quit this training session?");
+    if (quitConfirmed) {
       showView("view-dashboard");
     }
   };
@@ -1223,4 +1224,90 @@ Example Usage: "${example}"`;
 Could not find dictionary details for "${word}".
 You can read more directly on Wiktionary: https://en.wiktionary.org/wiki/${encodeURIComponent(word)}`;
   }
+}
+
+// ==========================================
+// 10. Custom Modal Overlays (Alert & Confirm) & Global Click Sound
+// ==========================================
+
+// Global Sound Click Listener
+document.addEventListener("click", (e) => {
+  const target = e.target.closest("button, .btn, .lang-btn, .seg-btn, .nav-item, .word-bubble, input[type='file'], select");
+  if (target) {
+    playSound("sound-click");
+  }
+});
+
+// Override window.alert globally
+window.alert = function(message) {
+  showCustomAlert(message);
+};
+
+function showCustomAlert(message) {
+  const overlay = document.getElementById("custom-modal-overlay");
+  const icon = document.getElementById("modal-icon");
+  const title = document.getElementById("modal-title");
+  const msgEl = document.getElementById("modal-message");
+  const actions = document.getElementById("modal-actions");
+
+  // Play popup sound
+  playSound("sound-popup");
+
+  icon.textContent = "ℹ️";
+  title.textContent = "Notice";
+  msgEl.textContent = message;
+  
+  // Create OK button
+  actions.innerHTML = "";
+  const okBtn = document.createElement("button");
+  okBtn.className = "btn btn-primary";
+  okBtn.textContent = "OK";
+  okBtn.onclick = () => {
+    overlay.classList.remove("active");
+  };
+  actions.appendChild(okBtn);
+
+  overlay.classList.add("active");
+}
+
+function showCustomConfirm(message) {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById("custom-modal-overlay");
+    const icon = document.getElementById("modal-icon");
+    const title = document.getElementById("modal-title");
+    const msgEl = document.getElementById("modal-message");
+    const actions = document.getElementById("modal-actions");
+
+    // Play popup sound
+    playSound("sound-popup");
+
+    icon.textContent = "❓";
+    title.textContent = "Confirm Action";
+    msgEl.textContent = message;
+
+    actions.innerHTML = "";
+
+    // Cancel Button
+    const cancelBtn = document.createElement("button");
+    cancelBtn.className = "btn btn-secondary";
+    cancelBtn.textContent = "Cancel";
+    cancelBtn.onclick = () => {
+      overlay.classList.remove("active");
+      resolve(false);
+    };
+
+    // Confirm Button
+    const confirmBtn = document.createElement("button");
+    confirmBtn.className = "btn btn-primary";
+    confirmBtn.textContent = "Confirm";
+    confirmBtn.onclick = () => {
+      overlay.classList.remove("active");
+      resolve(true);
+    };
+
+    actions.appendChild(cancelBtn);
+    actions.appendChild(confirmBtn);
+
+    overlay.classList.add("active");
+  });
 }
