@@ -276,6 +276,11 @@ body {
   border-color: var(--accent-color);
 }
 
+.custom-select option {
+  background-color: #161a25;
+  color: var(--text-primary);
+}
+
 /* Segmented Control */
 .segmented-control {
   display: flex;
