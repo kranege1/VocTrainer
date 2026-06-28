@@ -46,6 +46,7 @@ let state = {
   editedStarters: {}, // Edited starter vocab terms overrides
   customFolders: [], // Custom folder names
   wordStats: {}, // Spaced Repetition / Leitner stats: { wordEn: { attempts, errors, box, lastReview } }
+  testDirection: "forward", // forward (base -> target) or reverse (target -> base)
 
   // Current active test state
   currentTest: {
@@ -85,7 +86,8 @@ function saveState() {
     deletedStarters: state.deletedStarters,
     editedStarters: state.editedStarters,
     customFolders: state.customFolders,
-    wordStats: state.wordStats
+    wordStats: state.wordStats,
+    testDirection: state.testDirection
   }));
   updateHeaderUI();
   populateCustomCategoryDropdown();
@@ -115,6 +117,7 @@ function loadState() {
     state.editedStarters = parsed.editedStarters || {};
     state.customFolders = parsed.customFolders || [];
     state.wordStats = parsed.wordStats || {};
+    state.testDirection = parsed.testDirection || "forward";
 
     // Prefill Setup fields
     document.getElementById("setup-openai-key").value = state.openaiKey;
@@ -135,6 +138,12 @@ function loadState() {
       b.classList.remove("active");
       if (b.dataset.lang === state.selectedLang) b.classList.add("active");
     });
+
+    document.querySelectorAll("#test-direction-selector .seg-btn").forEach(btn => {
+      btn.classList.remove("active");
+      if (btn.dataset.direction === state.testDirection) btn.classList.add("active");
+    });
+    updateDirectionButtonsUI();
   }
   updateHeaderUI();
   renderImportedList();
@@ -656,7 +665,7 @@ window.removeMistake = function(index) {
 // ==========================================
 // 6. Test Runner Engine (Study Session)
 // ==========================================
-function startTestSession(language, category, count, isMistakesOnly = false, customCategory = "none") {
+function startTestSession(language, category, count, isMistakesOnly = false, customCategory = "none", direction = "forward") {
   let pool = [];
   
   if (isMistakesOnly) {
@@ -665,18 +674,23 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
     const base = state.baseLang || "en";
     pool = state.customVocab
       .filter(v => v.category === customCategory)
-      .map(item => ({
-        en: item[base] || item.en || item.target,
-        target: item[language] || item.target,
-        category: item.category,
-        image: item.image,
-        details: item.details || {}
-      }));
+      .map(item => {
+        const qText = item[base] || item.en || item.target;
+        const aText = item[language] || item.target;
+        return {
+          en: direction === "reverse" ? aText : qText,
+          target: direction === "reverse" ? qText : aText,
+          category: item.category,
+          image: item.image,
+          details: item.details || {},
+          answerLang: direction === "reverse" ? base : language
+        };
+      });
   } else {
     const base = state.baseLang || "en";
     const starters = STARTER_VOCAB_RAW.map(item => {
       const origEn = item[base];
-      const origTarget = item[language];
+      const origTarget = item[selectedLang || language];
       
       if (state.deletedStarters.includes(origEn)) {
         return null;
@@ -690,23 +704,29 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
       }
       
       return {
-        en: finalEn,
-        target: finalTarget,
+        en: direction === "reverse" ? finalTarget : finalEn,
+        target: direction === "reverse" ? finalEn : finalTarget,
         category: item.category,
         image: item.image,
         details: item.details,
         isStarter: true,
-        origEn: origEn
+        origEn: origEn,
+        answerLang: direction === "reverse" ? base : language
       };
     }).filter(Boolean);
     
-    const customs = state.customVocab.map(item => ({
-      en: item[base] || item.en || item.target,
-      target: item[language] || item.target || item.en,
-      category: item.category,
-      image: item.image,
-      details: item.details || {}
-    }));
+    const customs = state.customVocab.map(item => {
+      const qText = item[base] || item.en || item.target;
+      const aText = item[language] || item.target || item.en;
+      return {
+        en: direction === "reverse" ? aText : qText,
+        target: direction === "reverse" ? qText : aText,
+        category: item.category,
+        image: item.image,
+        details: item.details || {},
+        answerLang: direction === "reverse" ? base : language
+      };
+    });
     pool = [...starters, ...customs];
     
     if (category !== "all") {
@@ -861,7 +881,11 @@ function toggleListening() {
     recognition.stop();
     btnMic.classList.remove("listening");
   } else {
-    recognition.lang = LANG_LOCALES[state.selectedLang] || "de-DE";
+    const tState = state.currentTest;
+    const currentWord = tState.words[tState.index];
+    const answerLang = currentWord?.answerLang || state.selectedLang;
+    
+    recognition.lang = LANG_LOCALES[answerLang] || "de-DE";
     recognition.start();
     btnMic.classList.add("listening");
   }
@@ -1186,15 +1210,24 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.querySelectorAll(".lang-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       state.selectedLang = btn.dataset.lang;
+      updateDirectionButtonsUI();
     };
   });
 
-
-
-  // Segmented control selectors
-  document.querySelectorAll(".seg-btn").forEach(btn => {
+  // Test direction selector binding
+  document.querySelectorAll("#test-direction-selector .seg-btn").forEach(btn => {
     btn.onclick = () => {
-      document.querySelectorAll(".seg-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll("#test-direction-selector .seg-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.testDirection = btn.dataset.direction;
+      saveState();
+    };
+  });
+
+  // Segmented control selectors (Word count)
+  document.querySelectorAll(".segmented-control:not(#test-direction-selector) .seg-btn").forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll(".segmented-control:not(#test-direction-selector) .seg-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
     };
   });
@@ -1205,11 +1238,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       alert("Please select a target language to learn that is different from your base language.");
       return;
     }
-    const activeSeg = document.querySelector(".seg-btn.active");
+    const activeSeg = document.querySelector(".segmented-control:not(#test-direction-selector) .seg-btn.active");
     const count = activeSeg ? parseInt(activeSeg.dataset.count) : 10;
     const category = document.getElementById("select-category").value;
     const customCategory = document.getElementById("select-custom-category").value;
-    startTestSession(state.selectedLang, category, count, false, customCategory);
+    startTestSession(state.selectedLang, category, count, false, customCategory, state.testDirection);
   };
 
   // Sync category dropdowns: choosing custom clears standard, choosing standard clears custom
@@ -1269,6 +1302,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     state.allowSynonyms = document.getElementById("setup-allow-synonyms").checked;
     state.baseLang = document.getElementById("setup-base-lang").value;
     saveState();
+    updateDirectionButtonsUI();
     
     // Run verification directly
     await Promise.all([
@@ -2641,5 +2675,39 @@ async function callLLM(prompt, systemInstruction = "You are a helpful language t
   } else {
     return data.choices?.[0]?.message?.content || "";
   }
+}
+
+// Update direction button labels dynamically based on selected base and target languages
+function updateDirectionButtonsUI() {
+  const btnForward = document.getElementById("btn-direction-forward");
+  const btnReverse = document.getElementById("btn-direction-reverse");
+  if (!btnForward || !btnReverse) return;
+
+  const baseLang = state.baseLang || "en";
+  const targetLang = state.selectedLang || "de";
+
+  const flags = {
+    en: "🇬🇧",
+    de: "🇩🇪",
+    it: "🇮🇹",
+    es: "🇪🇸",
+    fr: "🇫🇷"
+  };
+
+  const names = {
+    en: "English",
+    de: "German",
+    it: "Italian",
+    es: "Spanish",
+    fr: "French"
+  };
+
+  const baseFlag = flags[baseLang] || "🌐";
+  const baseName = names[baseLang] || baseLang.toUpperCase();
+  const targetFlag = flags[targetLang] || "🌐";
+  const targetName = names[targetLang] || targetLang.toUpperCase();
+
+  btnForward.innerHTML = `➡️ ${baseFlag} ${baseName} &rarr; ${targetFlag} ${targetName}`;
+  btnReverse.innerHTML = `⬅️ ${targetFlag} ${targetName} &rarr; ${baseFlag} ${baseName}`;
 }
 
