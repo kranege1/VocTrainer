@@ -32,6 +32,7 @@ let state = {
   streak: 0,
   hearts: 5,
   level: 1,
+  baseLang: "en",
   selectedLang: "en", 
   customVocab: [], 
   mistakes: [], 
@@ -721,14 +722,15 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
           category: item.category,
           image: item.image,
           details: item.details || {},
-          answerLang: direction === "reverse" ? base : language
+          answerLang: direction === "reverse" ? base : language,
+          questionLang: direction === "reverse" ? language : base
         };
       });
   } else {
     const base = state.baseLang || "en";
     const starters = STARTER_VOCAB_RAW.map(item => {
       const origEn = item[base];
-      const origTarget = item[state.selectedLang || language];
+      const origTarget = item[language];
       
       if (state.deletedStarters.includes(origEn)) {
         return null;
@@ -749,7 +751,8 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
         details: item.details,
         isStarter: true,
         origEn: origEn,
-        answerLang: direction === "reverse" ? base : language
+        answerLang: direction === "reverse" ? base : language,
+        questionLang: direction === "reverse" ? language : base
       };
     }).filter(Boolean);
     
@@ -762,10 +765,14 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
         category: item.category,
         image: item.image,
         details: item.details || {},
-        answerLang: direction === "reverse" ? base : language
+        answerLang: direction === "reverse" ? base : language,
+        questionLang: direction === "reverse" ? language : base
       };
     });
     pool = [...starters, ...customs];
+    
+    // Filter out words where question and answer are identical (broken translations)
+    pool = pool.filter(w => w.en && w.target && w.en.toLowerCase().trim() !== w.target.toLowerCase().trim());
     
     if (category !== "all") {
       pool = pool.filter(v => v.category === category);
@@ -822,8 +829,8 @@ function renderQuestion() {
   }
 
   // Audio Buttons Setup
-  document.getElementById("btn-speak-prompt").onclick = () => speakWord(currentWord.en, state.baseLang || "en", 1.0);
-  document.getElementById("btn-speak-prompt-slow").onclick = () => speakWord(currentWord.en, state.baseLang || "en", 0.5);
+  document.getElementById("btn-speak-prompt").onclick = () => speakWord(currentWord.en, currentWord.questionLang || state.baseLang || "en", 1.0);
+  document.getElementById("btn-speak-prompt-slow").onclick = () => speakWord(currentWord.en, currentWord.questionLang || state.baseLang || "en", 0.5);
 
   const customPlayBtn = document.getElementById("btn-play-custom-recording");
   if (currentWord.audio) {
@@ -1085,6 +1092,15 @@ function submitAnswer() {
 
   setupWordDetails(currentWord);
   saveState();
+
+  // Ensure Continue button is visible by scrolling overlay to bottom
+  requestAnimationFrame(() => {
+    const overlay = document.getElementById("feedback-overlay");
+    if (overlay) {
+      const nextBtn = document.getElementById("btn-next-question");
+      if (nextBtn) nextBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  });
 }
 
 function checkLevelUp() {
@@ -2137,8 +2153,8 @@ function setupWordDetails(currentWord) {
   };
 
   const details = currentWord.details;
-  const base = state.baseLang || "en";
-  const lang = state.selectedLang;
+  const qLang = currentWord.questionLang || state.baseLang || "en";
+  const aLang = currentWord.answerLang || state.selectedLang;
 
   // Populate base and target text
   const baseWordEl = document.getElementById("detail-base-word");
@@ -2150,10 +2166,10 @@ function setupWordDetails(currentWord) {
   const speakBaseBtn = document.getElementById("btn-speak-detail-base");
   const speakTargetBtn = document.getElementById("btn-speak-detail-target");
   if (speakBaseBtn) {
-    speakBaseBtn.onclick = () => speakWord(currentWord.en, base, 1.0);
+    speakBaseBtn.onclick = () => speakWord(currentWord.en, qLang, 1.0);
   }
   if (speakTargetBtn) {
-    speakTargetBtn.onclick = () => speakWord(currentWord.target, lang, 1.0);
+    speakTargetBtn.onclick = () => speakWord(currentWord.target, aLang, 1.0);
   }
 
   const articlesEl = document.getElementById("detail-articles");
