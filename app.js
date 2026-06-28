@@ -158,7 +158,7 @@ function showView(viewId) {
   // Update active state in sidebar navigation
   document.querySelectorAll(".sidebar-nav .nav-item").forEach(btn => {
     btn.classList.remove("active");
-    if (btn.getAttribute("onclick") && btn.getAttribute("onclick").includes(viewId)) {
+    if (btn.dataset.view === viewId) {
       btn.classList.add("active");
     }
   });
@@ -939,6 +939,34 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btn-mistakes-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-setup-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-report-home").onclick = () => showView("view-dashboard");
+
+  // Sidebar Nav Tab Event Listeners (Prompt to quit test session if active)
+  document.querySelectorAll(".sidebar-nav .nav-item").forEach(btn => {
+    btn.onclick = async (e) => {
+      e.preventDefault();
+      const targetView = btn.dataset.view;
+      
+      const testView = document.getElementById("view-test");
+      if (testView && testView.classList.contains("active")) {
+        const quitConfirmed = await showCustomConfirm("Are you sure you want to quit this training session?");
+        if (!quitConfirmed) {
+          return;
+        }
+      }
+      
+      showView(targetView);
+      
+      if (targetView === "view-browse") {
+        renderBrowseList();
+      } else if (targetView === "view-mistakes") {
+        renderMistakesList();
+      } else if (targetView === "view-history") {
+        renderHistoryList();
+      } else if (targetView === "view-import") {
+        renderImportedList();
+      }
+    };
+  });
   
   document.getElementById("btn-quit-test").onclick = async () => {
     const quitConfirmed = await showCustomConfirm("Are you sure you want to quit this training session?");

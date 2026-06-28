@@ -41,23 +41,23 @@
       <!-- Sidebar Navigation for PC/iPad Landscape -->
       <nav class="sidebar-nav">
         <div class="sidebar-brand">VocTrainer</div>
-        <button class="nav-item active" onclick="showView('view-dashboard')">
+        <button class="nav-item active" data-view="view-dashboard">
           <span class="icon">🏠</span> Dashboard
         </button>
-        <button class="nav-item" onclick="showView('view-browse'); renderBrowseList();">
+        <button class="nav-item" data-view="view-browse">
           <span class="icon">🔍</span> Browse Vocab
         </button>
-        <button class="nav-item danger-badge-container" onclick="showView('view-mistakes')">
+        <button class="nav-item danger-badge-container" data-view="view-mistakes">
           <span class="icon">⚠️</span> Mistakes
           <span class="badge" id="sidebar-mistakes-badge">0</span>
         </button>
-        <button class="nav-item" onclick="showView('view-history')">
+        <button class="nav-item" data-view="view-history">
           <span class="icon">📈</span> History
         </button>
-        <button class="nav-item" onclick="showView('view-import')">
+        <button class="nav-item" data-view="view-import">
           <span class="icon">📥</span> Import
         </button>
-        <button class="nav-item" onclick="showView('view-setup')">
+        <button class="nav-item" data-view="view-setup">
           <span class="icon">⚙️</span> Setup & API
         </button>
       </nav>
