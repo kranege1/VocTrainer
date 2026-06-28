@@ -566,22 +566,22 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 10px;
+  margin-bottom: 14px;
 }
 
 .word-image-container {
-  width: 100%;
-  max-width: 240px;
-  height: 160px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border-color);
+  width: 90px;
+  height: 90px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid var(--border-color);
+  padding: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 .word-image-container img {
@@ -604,7 +604,7 @@ body {
 }
 
 .word-card h2 {
-  font-size: 2.5rem;
+  font-size: 2.1rem;
   font-weight: 800;
   word-wrap: break-word;
 }
@@ -672,8 +672,8 @@ body {
 /* Test input area & mode switches */
 .test-input-area {
   width: 100%;
-  min-height: 160px;
-  margin-bottom: 20px;
+  min-height: 110px;
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1204,6 +1204,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
+  padding: 20px !important;
 }
 
 @media (max-height: 680px) {
