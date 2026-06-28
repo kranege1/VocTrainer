@@ -85,6 +85,9 @@ let state = {
   customVocab: [], 
   mistakes: [], 
   openaiKey: "",
+  grokKey: "",
+  geminiKey: "",
+  anthropicKey: "",
   audioEngine: "browser", // browser or openai
 
   // Current active test state
@@ -114,6 +117,9 @@ function saveState() {
     customVocab: state.customVocab,
     mistakes: state.mistakes,
     openaiKey: state.openaiKey,
+    grokKey: state.grokKey,
+    geminiKey: state.geminiKey,
+    anthropicKey: state.anthropicKey,
     audioEngine: state.audioEngine
   }));
   updateHeaderUI();
@@ -131,10 +137,16 @@ function loadState() {
     state.customVocab = parsed.customVocab || [];
     state.mistakes = parsed.mistakes || [];
     state.openaiKey = parsed.openaiKey || "";
+    state.grokKey = parsed.grokKey || "";
+    state.geminiKey = parsed.geminiKey || "";
+    state.anthropicKey = parsed.anthropicKey || "";
     state.audioEngine = parsed.audioEngine || "browser";
 
     // Prefill Setup fields
     document.getElementById("setup-openai-key").value = state.openaiKey;
+    document.getElementById("setup-grok-key").value = state.grokKey;
+    document.getElementById("setup-gemini-key").value = state.geminiKey;
+    document.getElementById("setup-anthropic-key").value = state.anthropicKey;
     document.getElementById("select-audio-engine").value = state.audioEngine;
   }
   updateHeaderUI();
@@ -768,6 +780,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Setup Actions
   document.getElementById("btn-save-setup").onclick = () => {
     state.openaiKey = document.getElementById("setup-openai-key").value.trim();
+    state.grokKey = document.getElementById("setup-grok-key").value.trim();
+    state.geminiKey = document.getElementById("setup-gemini-key").value.trim();
+    state.anthropicKey = document.getElementById("setup-anthropic-key").value.trim();
     state.audioEngine = document.getElementById("select-audio-engine").value;
     saveState();
     alert("Configuration parameters updated!");
