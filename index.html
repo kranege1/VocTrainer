@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>VocTrainer - Learn Languages</title>
+  <!-- Google Fonts: Outfit (Clean, premium, rounded sans-serif following Apple HIG feel) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Background Decorative Blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <!-- Audio elements for feedback -->
+  <audio id="sound-correct" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-84.wav" preload="auto"></audio>
+  <audio id="sound-incorrect" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-84.wav" preload="auto"></audio>
+  <audio id="sound-levelup" src="https://assets.mixkit.co/active_storage/sfx/2018/2018-84.wav" preload="auto"></audio>
+
+  <div class="app-container">
+    <!-- Header with XP, Streak, Hearts, Level -->
+    <header class="main-header">
+      <div class="user-badge" id="level-badge">Lvl 1</div>
+      <div class="stat-pill xp-pill">
+        <span class="icon">⚡</span>
+        <span id="xp-count">0</span> XP
+      </div>
+      <div class="stat-pill streak-pill">
+        <span class="icon">🔥</span>
+        <span id="streak-count">0</span> Days
+      </div>
+      <div class="stat-pill hearts-pill">
+        <span class="icon">❤️</span>
+        <span id="hearts-count">5</span>
+      </div>
+    </header>
+
+    <!-- DASHBOARD VIEW -->
+    <section id="view-dashboard" class="app-view active">
+      <div class="hero-section">
+        <h1>VocTrainer</h1>
+        <p>Master languages with premium gamified learning!</p>
+      </div>
+
+      <div class="card selector-card">
+        <h3>Start a Practice Session</h3>
+        
+        <div class="form-group">
+          <label>Target Language</label>
+          <div class="lang-selector">
+            <button class="lang-btn active" data-lang="en">🇬🇧 English</button>
+            <button class="lang-btn" data-lang="de">🇩🇪 German</button>
+            <button class="lang-btn" data-lang="it">🇮🇹 Italiano</button>
+            <button class="lang-btn" data-lang="es">🇪🇸 Spanish</button>
+            <button class="lang-btn" data-lang="fr">🇫🇷 French</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Category (Pocket)</label>
+          <select id="select-category" class="custom-select">
+            <option value="all">📚 All Categories</option>
+            <option value="verbs">🏃 Verbs</option>
+            <option value="nouns">🍎 Nouns</option>
+            <option value="technology">💻 Technology</option>
+            <option value="biology">🌿 Biology</option>
+            <option value="phrases">💬 Phrases</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Number of Words</label>
+          <div class="segmented-control">
+            <button class="seg-btn active" data-count="10">10</button>
+            <button class="seg-btn" data-count="20">20</button>
+            <button class="seg-btn" data-count="30">30</button>
+          </div>
+        </div>
+
+        <button id="btn-start-session" class="btn btn-primary btn-block btn-lg">Start Learning</button>
+      </div>
+
+      <div class="dashboard-actions">
+        <button id="btn-go-import" class="btn btn-secondary">
+          <span class="icon">📥</span> Import
+        </button>
+        <button id="btn-go-mistakes" class="btn btn-secondary danger-badge-container">
+          <span class="icon">⚠️</span> Mistakes
+          <span class="badge" id="mistakes-badge">0</span>
+        </button>
+        <button id="btn-go-setup" class="btn btn-secondary btn-block" style="grid-column: span 2;">
+          <span class="icon">⚙️</span> Setup & API Keys
+        </button>
+      </div>
+    </section>
+
+    <!-- TESTING VIEW -->
+    <section id="view-test" class="app-view">
+      <div class="test-header">
+        <button id="btn-quit-test" class="btn-close">&times;</button>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="test-progress-fill"></div>
+        </div>
+        <span class="progress-text" id="test-progress-text">Question 1/10</span>
+      </div>
+
+      <div class="question-container">
+        <div class="category-tag" id="test-category-tag">Verbs</div>
+        
+        <!-- Word Card with Dynamic Image Support -->
+        <div class="word-card-wrapper">
+          <div class="word-image-container" id="word-image-container">
+            <!-- Dynamic Picture Placeholder or Scraped Image -->
+            <img id="word-image" src="" alt="Word Illustration" style="display: none;">
+            <div id="word-image-placeholder" class="word-image-placeholder">🖼️</div>
+          </div>
+          
+          <div class="word-card">
+            <h2 id="test-prompt-word">Prompt Word</h2>
+            <div class="audio-controls-row">
+              <button id="btn-speak-prompt" class="btn-audio" title="Listen standard pronunciation">🔊</button>
+              <button id="btn-speak-prompt-slow" class="btn-audio btn-audio-slow" title="Listen at a slow pace">🐢 0.5x</button>
+              <button id="btn-play-custom-recording" class="btn-audio btn-audio-recorded" title="Play my custom voice recording" style="display: none;">👤 Play Mine</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testing modes -->
+        <div class="test-input-area">
+          <!-- Typing Mode -->
+          <div id="test-mode-typing" class="test-mode-section active">
+            <input type="text" id="input-typing-answer" placeholder="Type the translation..." autocomplete="off">
+          </div>
+
+          <!-- Word Bubbles Mode -->
+          <div id="test-mode-bubbles" class="test-mode-section">
+            <div class="bubble-selected-zone" id="bubble-selected-zone">
+              <!-- Assembled pieces will go here -->
+            </div>
+            <div class="bubble-options-zone" id="bubble-options-zone">
+              <!-- Pieces to click will go here -->
+            </div>
+          </div>
+
+          <!-- Speech Mode -->
+          <div id="test-mode-speech" class="test-mode-section">
+            <p class="speech-instruction">Tap the microphone and speak the translation</p>
+            <button id="btn-mic" class="btn-mic-icon">🎙️</button>
+            <div class="speech-transcript" id="speech-transcript">...</div>
+          </div>
+        </div>
+
+        <!-- Mode Toggles in Test -->
+        <div class="test-mode-toggles">
+          <button class="mode-toggle-btn active" data-mode="typing">⌨️ Type</button>
+          <button class="mode-toggle-btn" data-mode="bubbles">🧩 Blocks</button>
+          <button class="mode-toggle-btn" data-mode="speech">🎙️ Speak</button>
+        </div>
+
+        <button id="btn-submit-answer" class="btn btn-primary btn-block btn-lg">Check Answer</button>
+      </div>
+
+      <!-- Feedback Overlay -->
+      <div id="feedback-overlay" class="feedback-overlay">
+        <div class="feedback-content">
+          <div class="feedback-icon" id="feedback-icon">🎉</div>
+          <h3 id="feedback-title">Correct!</h3>
+          <p id="feedback-desc"></p>
+          <button id="btn-next-question" class="btn btn-primary btn-block">Continue</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEST REPORT VIEW -->
+    <section id="view-report" class="app-view">
+      <div class="card report-card">
+        <div class="report-header">
+          <span class="report-icon">🏆</span>
+          <h2>Session Complete!</h2>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span class="stat-val" id="report-xp">+0</span>
+            <span class="stat-lbl">XP Earned</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-val" id="report-accuracy">100%</span>
+            <span class="stat-lbl">Accuracy</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-val" id="report-wrong-count">0</span>
+            <span class="stat-lbl">Mistakes</span>
+          </div>
+        </div>
+
+        <div id="repeat-notice" class="repeat-notice" style="display: none;">
+          <p>🔁 **Repeating Mistakes**: Let's practice the incorrect translations directly to clear them!</p>
+          <button id="btn-start-repeat" class="btn btn-primary btn-block">Repeat Wrong Answers</button>
+        </div>
+
+        <button id="btn-report-home" class="btn btn-secondary btn-block">Back to Dashboard</button>
+      </div>
+    </section>
+
+    <!-- SETUP VIEW -->
+    <section id="view-setup" class="app-view">
+      <div class="view-header">
+        <button id="btn-setup-back" class="btn-back">← Back</button>
+        <h2>Setup & Configuration</h2>
+      </div>
+
+      <div class="card">
+        <h3>AI & External API Configuration</h3>
+        <div class="form-group">
+          <label>OpenAI API Key (Optional)</label>
+          <input type="text" id="setup-openai-key" placeholder="sk-..." type="password">
+          <p class="input-hint">Used for premium AI Text-To-Speech (TTS) / speech recognition.</p>
+        </div>
+        <div class="form-group">
+          <label>Audio Engine Choice</label>
+          <select id="select-audio-engine" class="custom-select">
+            <option value="browser">🌐 Browser Web Speech API (Free)</option>
+            <option value="openai">🤖 OpenAI TTS API (Requires Key)</option>
+          </select>
+        </div>
+        <button id="btn-save-setup" class="btn btn-primary btn-block">Save API Configurations</button>
+      </div>
+
+      <div class="card">
+        <h3>iCloud & Local Backups</h3>
+        <p class="import-help">Backup all words, stats, custom picture links, and audio recordings to a single JSON file or sync them.</p>
+        <div class="backup-actions">
+          <button id="btn-export-data" class="btn btn-secondary">💾 Export Backup</button>
+          <label for="import-backup-file" class="btn btn-secondary" style="cursor: pointer; text-align: center;">
+            📥 Import Backup
+          </label>
+          <input type="file" id="import-backup-file" style="display: none;" accept=".json">
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>On-Device LLM (iPhone/Local)</h3>
+        <p class="import-help">Note: On newer iPhones or laptops, you can run language learning models locally (e.g. WebLLM or Apple's Gemini Nano via Safari Experiments). Toggle standard Local evaluations.</p>
+        <button class="btn btn-secondary btn-block" disabled>On-Device LLM: Ready & Supported</button>
+      </div>
+    </section>
+
+    <!-- IMPORT VIEW -->
+    <section id="view-import" class="app-view">
+      <div class="view-header">
+        <button id="btn-import-back" class="btn-back">← Back</button>
+        <h2>Import Vocabulary</h2>
+      </div>
+
+      <!-- Import Tabs -->
+      <div class="tab-controls">
+        <button class="tab-btn active" data-tab="tab-url">🌐 Import Web URL</button>
+        <button class="tab-btn" data-tab="tab-manual">✏️ Add Custom</button>
+      </div>
+
+      <!-- Web URL Import tab -->
+      <div id="tab-url" class="tab-content active">
+        <div class="card">
+          <p class="import-help">Paste a web page link. We will fetch and automatically extract words and their translations for your training set.</p>
+          <div class="form-group">
+            <label>URL to Scrape</label>
+            <input type="url" id="import-url" placeholder="https://example.com/article" value="https://en.wikipedia.org/wiki/List_of_animal_names">
+          </div>
+          <div class="form-group">
+            <label>Category Tag</label>
+            <input type="text" id="import-url-category" value="biology" placeholder="e.g. biology, technology">
+          </div>
+          <button id="btn-import-url-submit" class="btn btn-primary btn-block">Automatically Import Words</button>
+          
+          <div class="loading-spinner" id="import-spinner" style="display: none;">
+            <div class="spinner"></div>
+            <p>Scanning web page for words...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manual/Custom tab -->
+      <div id="tab-manual" class="tab-content">
+        <div class="card">
+          <div class="form-group">
+            <label>English Word/Phrase</label>
+            <input type="text" id="manual-english" placeholder="e.g. apple">
+          </div>
+          <div class="form-group">
+            <label>Translation</label>
+            <input type="text" id="manual-translation" placeholder="e.g. Apfel">
+          </div>
+          <div class="form-group">
+            <label>Language</label>
+            <select id="manual-lang" class="custom-select">
+              <option value="de">German</option>
+              <option value="it">Italiano</option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Category (Pocket)</label>
+            <input type="text" id="manual-category" placeholder="verbs, nouns, technology...">
+          </div>
+          <div class="form-group">
+            <label>Image URL (Optional)</label>
+            <input type="text" id="manual-image-url" placeholder="https://example.com/image.png">
+          </div>
+          
+          <!-- Custom Audio Recording Block inside Add Custom Word -->
+          <div class="form-group">
+            <label>Pronunciation Recording</label>
+            <div class="audio-record-block">
+              <button id="btn-record-word" class="btn btn-secondary">🎙️ Record Pronunciation</button>
+              <button id="btn-record-play" class="btn btn-secondary" disabled>🔊 Test Playback</button>
+              <span id="record-status-text" class="record-status">No audio recorded</span>
+            </div>
+          </div>
+          
+          <button id="btn-manual-submit" class="btn btn-primary btn-block">Add Word</button>
+        </div>
+      </div>
+
+      <div class="card recent-imports-card">
+        <h3>My Custom & Scraped Words</h3>
+        <ul class="imported-list" id="imported-list">
+          <li class="empty-state">No custom words added yet.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- MISTAKE VAULT VIEW -->
+    <section id="view-mistakes" class="app-view">
+      <div class="view-header">
+        <button id="btn-mistakes-back" class="btn-back">← Back</button>
+        <h2>Mistake Vault</h2>
+      </div>
+
+      <div class="card vault-summary-card">
+        <div class="vault-info">
+          <span class="vault-count" id="vault-count">0</span>
+          <p>Troublesome words collected from all practice sessions.</p>
+        </div>
+        <button id="btn-cleanse-mistakes" class="btn btn-primary btn-block">Cleanse Mistakes (Practice Set)</button>
+      </div>
+
+      <div class="card">
+        <h3>Collected Mistakes</h3>
+        <ul class="mistakes-list" id="mistakes-list">
+          <li class="empty-state">No mistakes recorded! Keep up the good work.</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

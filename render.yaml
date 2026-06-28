@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: voctrainer-app
+    env: static
+    buildCommand: "" # No build step required for raw static html/css/js
+    publishPath: "." # Render the root directory (containing index.html, style.css, app.js)
