@@ -118,6 +118,11 @@ function loadState() {
     document.getElementById("select-audio-engine").value = state.audioEngine;
     document.getElementById("setup-allow-synonyms").checked = state.allowSynonyms;
 
+    if (state.openaiKey) testApiKey("openai", state.openaiKey, "setup-openai-status");
+    if (state.grokKey) testApiKey("grok", state.grokKey, "setup-grok-status");
+    if (state.geminiKey) testApiKey("gemini", state.geminiKey, "setup-gemini-status");
+    if (state.anthropicKey) testApiKey("anthropic", state.anthropicKey, "setup-anthropic-status");
+
     // Prefill dashboard buttons active state
     document.querySelectorAll(".base-lang-btn").forEach(b => {
       b.classList.remove("active");
@@ -1097,7 +1102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   // Setup Actions
-  document.getElementById("btn-save-setup").onclick = () => {
+  document.getElementById("btn-save-setup").onclick = async () => {
     state.openaiKey = document.getElementById("setup-openai-key").value.trim();
     state.grokKey = document.getElementById("setup-grok-key").value.trim();
     state.geminiKey = document.getElementById("setup-gemini-key").value.trim();
@@ -1105,9 +1110,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     state.audioEngine = document.getElementById("select-audio-engine").value;
     state.allowSynonyms = document.getElementById("setup-allow-synonyms").checked;
     saveState();
+    
+    // Run verification directly
+    await Promise.all([
+      testApiKey("openai", state.openaiKey, "setup-openai-status"),
+      testApiKey("grok", state.grokKey, "setup-grok-status"),
+      testApiKey("gemini", state.geminiKey, "setup-gemini-status"),
+      testApiKey("anthropic", state.anthropicKey, "setup-anthropic-status")
+    ]);
+
     alert("Configuration parameters updated!");
     showView("view-dashboard");
   };
+
+  // Live key input verification triggers
+  const setupOpenAiInput = document.getElementById("setup-openai-key");
+  const setupGrokInput = document.getElementById("setup-grok-key");
+  const setupGeminiInput = document.getElementById("setup-gemini-key");
+  const setupAnthropicInput = document.getElementById("setup-anthropic-key");
+
+  if (setupOpenAiInput) {
+    setupOpenAiInput.onchange = () => testApiKey("openai", setupOpenAiInput.value.trim(), "setup-openai-status");
+  }
+  if (setupGrokInput) {
+    setupGrokInput.onchange = () => testApiKey("grok", setupGrokInput.value.trim(), "setup-grok-status");
+  }
+  if (setupGeminiInput) {
+    setupGeminiInput.onchange = () => testApiKey("gemini", setupGeminiInput.value.trim(), "setup-gemini-status");
+  }
+  if (setupAnthropicInput) {
+    setupAnthropicInput.onchange = () => testApiKey("anthropic", setupAnthropicInput.value.trim(), "setup-anthropic-status");
+  }
 
   // Export Backups
   document.getElementById("btn-export-data").onclick = () => {
@@ -1971,4 +2004,53 @@ window.triggerEditWord = function(key, isCustom) {
     showCustomEditModal(key, currentWord, isCustom, selectedLang);
   }
 };
+
+// API Key Validation Helper
+async function testApiKey(engine, key, statusElId) {
+  const statusEl = document.getElementById(statusElId);
+  if (!statusEl) return;
+
+  if (!key) {
+    statusEl.innerHTML = "";
+    return;
+  }
+
+  statusEl.innerHTML = `<span style="color: var(--text-secondary);">⏳ Verifying API key...</span>`;
+
+  try {
+    let url = "";
+    let headers = {};
+
+    if (engine === "openai") {
+      url = "https://api.openai.com/v1/models";
+      headers = { "Authorization": `Bearer ${key}` };
+    } else if (engine === "grok") {
+      url = "https://api.x.ai/v1/models";
+      headers = { "Authorization": `Bearer ${key}` };
+    } else if (engine === "gemini") {
+      url = `https://generativelanguage.googleapis.com/v1beta/models?key=${key}`;
+    } else if (engine === "anthropic") {
+      if (!key.startsWith("sk-ant-")) {
+        statusEl.innerHTML = `<span style="color: var(--error-color);">❌ Invalid format (must start with sk-ant-)</span>`;
+        return;
+      }
+      statusEl.innerHTML = `<span style="color: #4cc9f0;">⚠️ Cannot verify directly in browser (CORS). Format looks valid!</span>`;
+      return;
+    }
+
+    const res = await fetch(url, { headers });
+    if (res.ok) {
+      statusEl.innerHTML = `<span style="color: #4CAF50;">✅ Key is working & valid!</span>`;
+    } else {
+      let errMsg = "Invalid credentials";
+      try {
+        const errData = await res.json();
+        errMsg = errData.error?.message || errData.error || errMsg;
+      } catch (e) {}
+      statusEl.innerHTML = `<span style="color: var(--error-color);">❌ Failed: ${errMsg}</span>`;
+    }
+  } catch (err) {
+    statusEl.innerHTML = `<span style="color: var(--error-color);">❌ Network error: ${err.message}</span>`;
+  }
+}
 

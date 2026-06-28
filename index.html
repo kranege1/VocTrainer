@@ -12,11 +12,6 @@
   <link rel="stylesheet" href="style.css?v=1.2">
 </head>
 <body>
-  <!-- Build Timestamp (Top Left Corner) -->
-  <div id="build-timestamp" style="position: fixed; top: 6px; left: 8px; font-size: 0.65rem; color: var(--text-secondary); opacity: 0.5; z-index: 9999; font-family: monospace; pointer-events: none;">
-    Build: 2026-06-28 13:09:00
-  </div>
-
   <!-- Background Decorative Blobs -->
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
@@ -45,10 +40,7 @@
 
       <!-- Sidebar Navigation for PC/iPad Landscape -->
       <nav class="sidebar-nav">
-        <div class="sidebar-brand" style="margin-bottom: 4px;">VocTrainer</div>
-        <div style="font-size: 0.65rem; color: var(--text-secondary); opacity: 0.6; font-family: monospace; padding-left: 8px; margin-bottom: 12px; pointer-events: none;">
-          Build: 2026-06-28 13:09:00
-        </div>
+        <div class="sidebar-brand">VocTrainer</div>
         <button class="nav-item active" data-view="view-dashboard">
           <span class="icon">🏠</span> Dashboard
         </button>
@@ -68,6 +60,11 @@
         <button class="nav-item" data-view="view-setup">
           <span class="icon">⚙️</span> Setup & API
         </button>
+        
+        <!-- Build Timestamp on the bottom left -->
+        <div id="build-timestamp" style="font-size: 0.65rem; color: var(--text-secondary); opacity: 0.5; font-family: monospace; padding-left: 16px; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.04); pointer-events: none; width: 100%;">
+          Build: 2026-06-28 13:34:00
+        </div>
       </nav>
     </header>
 
@@ -324,18 +321,22 @@
         <div class="form-group">
           <label>OpenAI API Key (Optional)</label>
           <input type="text" id="setup-openai-key" placeholder="sk-..." type="password">
+          <span id="setup-openai-status" style="font-size:0.75rem; font-weight:600; display:block; margin-top:4px;"></span>
         </div>
         <div class="form-group">
           <label>Grok (xAI) API Key (Optional)</label>
           <input type="text" id="setup-grok-key" placeholder="xai-..." type="password">
+          <span id="setup-grok-status" style="font-size:0.75rem; font-weight:600; display:block; margin-top:4px;"></span>
         </div>
         <div class="form-group">
           <label>Google Gemini API Key (Optional)</label>
           <input type="text" id="setup-gemini-key" placeholder="AIzaSy..." type="password">
+          <span id="setup-gemini-status" style="font-size:0.75rem; font-weight:600; display:block; margin-top:4px;"></span>
         </div>
         <div class="form-group">
           <label>Anthropic Claude API Key (Optional)</label>
           <input type="text" id="setup-anthropic-key" placeholder="sk-ant-..." type="password">
+          <span id="setup-anthropic-status" style="font-size:0.75rem; font-weight:600; display:block; margin-top:4px;"></span>
           <p class="input-hint">Used for premium AI Text-To-Speech (TTS), translation or custom evaluations.</p>
         </div>
         <div class="form-group">
