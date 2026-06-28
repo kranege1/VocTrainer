@@ -2684,7 +2684,7 @@ async function callLLM(prompt, systemInstruction = "You are a helpful language t
       "Content-Type": "application/json"
     };
     body = {
-      model: "grok-2",
+      model: await getGrokModel(key),
       messages: [
         { role: "system", content: systemInstruction },
         { role: "user", content: prompt }
@@ -2748,5 +2748,25 @@ function updateDirectionButtonsUI() {
 
   btnForward.innerHTML = `➡️ ${baseFlag} ${baseName} &rarr; ${targetFlag} ${targetName}`;
   btnReverse.innerHTML = `⬅️ ${targetFlag} ${targetName} &rarr; ${baseFlag} ${baseName}`;
+}
+
+// Dynamically fetch available models from xAI to prevent model not found errors
+async function getGrokModel(key) {
+  try {
+    const res = await fetch("https://api.x.ai/v1/models", {
+      headers: { "Authorization": `Bearer ${key}` }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.data && data.data.length > 0) {
+        // Find the first model that contains "grok" (preferring chat/text models)
+        const found = data.data.find(m => m.id.toLowerCase().includes("grok") && !m.id.toLowerCase().includes("vision") && !m.id.toLowerCase().includes("imagine"));
+        if (found) return found.id;
+      }
+    }
+  } catch (e) {
+    console.error("Failed to dynamically resolve grok models:", e);
+  }
+  return "grok-beta"; // Fallback to grok-beta if listing models fails
 }
 
