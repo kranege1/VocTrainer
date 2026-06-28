@@ -2167,13 +2167,23 @@ function setupWordDetails(currentWord) {
   const qLang = currentWord.questionLang || state.baseLang || "en";
   const aLang = currentWord.answerLang || state.selectedLang;
 
+  // Language display helpers
+  const flags = { en: "🇬🇧", de: "🇩🇪", it: "🇮🇹", es: "🇪🇸", fr: "🇫🇷" };
+  const langNames = { en: "English", de: "German", it: "Italian", es: "Spanish", fr: "French" };
+
+  // Set dynamic labels (e.g. "🇩🇪 DE" instead of "Base Word")
+  const baseLabelEl = document.getElementById("detail-base-label");
+  const targetLabelEl = document.getElementById("detail-target-label");
+  if (baseLabelEl) baseLabelEl.textContent = `${flags[qLang] || "🌐"} ${qLang.toUpperCase()}`;
+  if (targetLabelEl) targetLabelEl.textContent = `${flags[aLang] || "🌐"} ${aLang.toUpperCase()}`;
+
   // Populate base and target text
   const baseWordEl = document.getElementById("detail-base-word");
   const targetWordEl = document.getElementById("detail-target-word");
   if (baseWordEl) baseWordEl.textContent = currentWord.en;
   if (targetWordEl) targetWordEl.textContent = currentWord.target;
 
-  // Speak Base & Target handlers
+  // Speak Base & Target handlers — use correct language for voice
   const speakBaseBtn = document.getElementById("btn-speak-detail-base");
   const speakTargetBtn = document.getElementById("btn-speak-detail-target");
   if (speakBaseBtn) {
@@ -2195,36 +2205,59 @@ function setupWordDetails(currentWord) {
   const sectionSynonyms = synonymsEl ? synonymsEl.parentElement : null;
 
   if (details) {
-    // 1. Articles
-    const art = details.articles && details.articles[lang] ? details.articles[lang] : "";
-    if (art && sectionArticles) {
+    // 1. Articles — show for both question and answer languages
+    let articlesHtml = "";
+    if (details.articles) {
+      const qArt = details.articles[qLang] || "";
+      const aArt = details.articles[aLang] || "";
+      if (qArt) articlesHtml += `${flags[qLang] || ""} <strong>${qLang.toUpperCase()}</strong>: <span class="badge" style="background:var(--accent-color); padding: 4px 8px; border-radius: 6px; font-weight: bold; color: #0b0c10;">${qArt}</span> `;
+      if (aArt) articlesHtml += `${flags[aLang] || ""} <strong>${aLang.toUpperCase()}</strong>: <span class="badge" style="background:var(--accent-color); padding: 4px 8px; border-radius: 6px; font-weight: bold; color: #0b0c10;">${aArt}</span>`;
+    }
+    if (articlesHtml && sectionArticles) {
       sectionArticles.style.display = "block";
-      articlesEl.innerHTML = `Article in <strong>${lang.toUpperCase()}</strong>: <span class="badge" style="background:var(--accent-color); padding: 4px 8px; border-radius: 6px; font-weight: bold; color: #0b0c10;">${art}</span>`;
+      articlesEl.innerHTML = articlesHtml;
     } else if (sectionArticles) {
       sectionArticles.style.display = "none";
     }
 
-    // 2. Sentences
-    const baseSentence = details.sentences && details.sentences[base] ? details.sentences[base] : "";
-    const targetSentence = details.sentences && details.sentences[lang] ? details.sentences[lang] : "";
-    if (baseSentence && sectionSentence) {
+    // 2. Sentences — show question language sentence + answer language translation
+    const qSentence = details.sentences && details.sentences[qLang] ? details.sentences[qLang] : "";
+    const aSentence = details.sentences && details.sentences[aLang] ? details.sentences[aLang] : "";
+    if ((qSentence || aSentence) && sectionSentence) {
       sectionSentence.style.display = "block";
-      sentenceEl.textContent = `"${baseSentence}"`;
-      sentenceTransEl.textContent = targetSentence ? `→ "${targetSentence}"` : "";
+      if (qSentence) {
+        sentenceEl.innerHTML = `${flags[qLang] || ""} "${qSentence}"`;
+      } else {
+        sentenceEl.textContent = "";
+      }
+      if (aSentence) {
+        sentenceTransEl.innerHTML = `${flags[aLang] || ""} "${aSentence}"`;
+      } else {
+        sentenceTransEl.textContent = "";
+      }
     } else if (sectionSentence) {
       sectionSentence.style.display = "none";
     }
 
-    // 3. Variations
+    // 3. Variations (plural, conjugation)
     let variationsHtml = "";
     if (details.variations) {
-      if (details.variations.plural && details.variations.plural[lang]) {
-        const basePlural = details.variations.plural[base] || details.variations.plural.en || "";
-        variationsHtml += `Plural: <strong>${basePlural}</strong> &rarr; <strong>${details.variations.plural[lang]}</strong><br>`;
+      if (details.variations.plural && (details.variations.plural[qLang] || details.variations.plural[aLang])) {
+        const qPlural = details.variations.plural[qLang] || "";
+        const aPlural = details.variations.plural[aLang] || "";
+        variationsHtml += `Plural: `;
+        if (qPlural) variationsHtml += `${flags[qLang] || ""} <strong>${qPlural}</strong> `;
+        if (qPlural && aPlural) variationsHtml += `&rarr; `;
+        if (aPlural) variationsHtml += `${flags[aLang] || ""} <strong>${aPlural}</strong>`;
+        variationsHtml += `<br>`;
       }
-      if (details.variations.he && details.variations.he[lang]) {
-        const baseHe = details.variations.he[base] || details.variations.he.en || "";
-        variationsHtml += `Conjugation (He/She): <strong>${baseHe}</strong> &rarr; <strong>${details.variations.he[lang]}</strong>`;
+      if (details.variations.he && (details.variations.he[qLang] || details.variations.he[aLang])) {
+        const qHe = details.variations.he[qLang] || "";
+        const aHe = details.variations.he[aLang] || "";
+        variationsHtml += `Conjugation (He/She): `;
+        if (qHe) variationsHtml += `${flags[qLang] || ""} <strong>${qHe}</strong> `;
+        if (qHe && aHe) variationsHtml += `&rarr; `;
+        if (aHe) variationsHtml += `${flags[aLang] || ""} <strong>${aHe}</strong>`;
       }
     }
     if (variationsHtml && sectionVariations) {
@@ -2234,14 +2267,14 @@ function setupWordDetails(currentWord) {
       sectionVariations.style.display = "none";
     }
 
-    // 4. Synonyms
-    const targetSyns = (details.synonyms && details.synonyms[lang]) ? details.synonyms[lang] : [];
-    const baseSyns = (details.synonyms && details.synonyms[base]) ? details.synonyms[base] : [];
-    if (targetSyns && targetSyns.length > 0 && sectionSynonyms) {
+    // 4. Synonyms — show answer language synonyms with question language equivalents
+    const aSyns = (details.synonyms && details.synonyms[aLang]) ? details.synonyms[aLang] : [];
+    const qSyns = (details.synonyms && details.synonyms[qLang]) ? details.synonyms[qLang] : [];
+    if (aSyns && aSyns.length > 0 && sectionSynonyms) {
       sectionSynonyms.style.display = "block";
-      synonymsEl.innerHTML = targetSyns.map((syn, idx) => {
-        const baseTrans = baseSyns[idx] ? ` (${baseSyns[idx]})` : "";
-        return `<code style="background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; font-family: monospace;">${syn}${baseTrans}</code>`;
+      synonymsEl.innerHTML = aSyns.map((syn, idx) => {
+        const qTrans = qSyns[idx] ? ` (${qSyns[idx]})` : "";
+        return `<code style="background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; font-family: monospace;">${syn}${qTrans}</code>`;
       }).join(", ");
     } else if (sectionSynonyms) {
       sectionSynonyms.style.display = "none";
@@ -2260,7 +2293,7 @@ function setupWordDetails(currentWord) {
     aiBtn.disabled = true;
 
     try {
-      const promptText = `Explain the usage of the word "${currentWord.en}" and its translation "${currentWord.target}" in the language "${lang}". Provide articles, prepositions, example sentences, and cases (like plural, gender, etc.) if applicable. Keep it concise, helpful, and formatted clearly.`;
+      const promptText = `Explain the usage of the word "${currentWord.en}" (${langNames[qLang] || qLang}) and its translation "${currentWord.target}" in ${langNames[aLang] || aLang}. Provide articles, prepositions, example sentences, and cases (like plural, gender, etc.) if applicable. Keep it concise, helpful, and formatted clearly.`;
 
       let responseText = "";
 
@@ -2272,7 +2305,7 @@ function setupWordDetails(currentWord) {
       } else if (state.anthropicKey) {
         responseText = await callAnthropicAPI(state.anthropicKey, promptText);
       } else {
-        responseText = await fetchWebDetailsFallback(currentWord.en, lang);
+        responseText = await fetchWebDetailsFallback(currentWord.en, aLang);
       }
 
       aiResponse.textContent = responseText;
