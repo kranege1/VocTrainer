@@ -42,6 +42,8 @@ let state = {
   audioEngine: "browser", // browser or openai
   allowSynonyms: true, // Allow similar words/synonyms
   history: [], // Completed tests history
+  deletedStarters: [], // Deleted starter vocab terms
+  editedStarters: {}, // Edited starter vocab terms overrides
 
   // Current active test state
   currentTest: {
@@ -77,7 +79,9 @@ function saveState() {
     allowSynonyms: state.allowSynonyms,
     baseLang: state.baseLang,
     selectedLang: state.selectedLang,
-    history: state.history
+    history: state.history,
+    deletedStarters: state.deletedStarters,
+    editedStarters: state.editedStarters
   }));
   updateHeaderUI();
   populateCustomCategoryDropdown();
@@ -103,6 +107,8 @@ function loadState() {
     state.baseLang = parsed.baseLang || "en";
     state.selectedLang = parsed.selectedLang || "de";
     state.history = parsed.history || [];
+    state.deletedStarters = parsed.deletedStarters || [];
+    state.editedStarters = parsed.editedStarters || {};
 
     // Prefill Setup fields
     document.getElementById("setup-openai-key").value = state.openaiKey;
@@ -524,13 +530,31 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
     pool = state.customVocab.filter(v => v.lang === language && v.category === customCategory);
   } else {
     const base = state.baseLang || "en";
-    const starters = STARTER_VOCAB_RAW.map(item => ({
-      en: item[base],
-      target: item[language],
-      category: item.category,
-      image: item.image,
-      details: item.details
-    }));
+    const starters = STARTER_VOCAB_RAW.map(item => {
+      const origEn = item[base];
+      const origTarget = item[language];
+      
+      if (state.deletedStarters.includes(origEn)) {
+        return null;
+      }
+      
+      let finalEn = origEn;
+      let finalTarget = origTarget;
+      if (state.editedStarters[origEn]) {
+        finalEn = state.editedStarters[origEn].en || origEn;
+        finalTarget = state.editedStarters[origEn].target || origTarget;
+      }
+      
+      return {
+        en: finalEn,
+        target: finalTarget,
+        category: item.category,
+        image: item.image,
+        details: item.details,
+        isStarter: true,
+        origEn: origEn
+      };
+    }).filter(Boolean);
     
     const customs = state.customVocab.filter(v => v.lang === language);
     pool = [...starters, ...customs];
@@ -1455,13 +1479,31 @@ function renderBrowseList() {
   if (selectedCustomCategory !== "none") {
     pool = state.customVocab.filter(v => v.lang === selectedLang && v.category === selectedCustomCategory);
   } else {
-    const starters = STARTER_VOCAB_RAW.map(item => ({
-      en: item[base],
-      target: item[selectedLang],
-      category: item.category,
-      image: item.image,
-      details: item.details
-    }));
+    const starters = STARTER_VOCAB_RAW.map(item => {
+      const origEn = item[base];
+      const origTarget = item[selectedLang];
+      
+      if (state.deletedStarters.includes(origEn)) {
+        return null;
+      }
+      
+      let finalEn = origEn;
+      let finalTarget = origTarget;
+      if (state.editedStarters[origEn]) {
+        finalEn = state.editedStarters[origEn].en || origEn;
+        finalTarget = state.editedStarters[origEn].target || origTarget;
+      }
+      
+      return {
+        en: finalEn,
+        target: finalTarget,
+        category: item.category,
+        image: item.image,
+        details: item.details,
+        isStarter: true,
+        origEn: origEn
+      };
+    }).filter(Boolean);
     
     const customs = state.customVocab.filter(v => v.lang === selectedLang);
     pool = [...starters, ...customs];
@@ -1479,13 +1521,26 @@ function renderBrowseList() {
   }
 
   pool.forEach(vocab => {
+    const isCustom = !vocab.isStarter;
+    const key = isCustom ? vocab.en : vocab.origEn;
+    
     const li = document.createElement("li");
+    li.style.display = "flex";
+    li.style.justifyContent = "space-between";
+    li.style.alignItems = "center";
+    li.style.padding = "12px 16px";
+    li.style.marginBottom = "8px";
+    
     li.innerHTML = `
-      <div>
-        <span class="list-word">${vocab.en}</span>
-        <span class="list-translation"> &rarr; ${vocab.target}</span>
+      <div style="flex: 1; text-align: left; display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <span class="list-word" style="font-weight: 700;">${vocab.en}</span>
+        <span class="list-translation" style="color: var(--accent-color); font-weight: 500;">&rarr; ${vocab.target}</span>
+        <span class="category-tag" style="margin: 0; font-size:0.7rem; padding: 2px 6px;">${vocab.category}</span>
       </div>
-      <span class="category-tag" style="margin: 0; font-size:0.75rem; padding: 2px 8px;">${vocab.category}</span>
+      <div style="display: flex; gap: 8px; flex-shrink: 0;">
+        <button class="btn btn-secondary btn-sm" style="padding: 4px 8px; min-height: 28px; border-radius: 8px; font-size: 0.8rem;" onclick="window.triggerEditWord('${key}', ${isCustom})">✏️ Edit</button>
+        <button class="btn btn-secondary btn-sm" style="padding: 4px 8px; min-height: 28px; border-radius: 8px; font-size: 0.8rem; color: var(--error-color); border-color: rgba(239, 71, 111, 0.2);" onclick="window.triggerDeleteWord('${key}', ${isCustom})">❌ Delete</button>
+      </div>
     `;
     container.appendChild(li);
   });
@@ -1807,3 +1862,113 @@ function showCustomConfirm(message) {
     overlay.classList.add("active");
   });
 }
+
+// Custom Modal Edit Dialog
+function showCustomEditModal(key, currentWord, isCustom, selectedLang) {
+  const overlay = document.getElementById("custom-modal-overlay");
+  const icon = document.getElementById("modal-icon");
+  const title = document.getElementById("modal-title");
+  const msgEl = document.getElementById("modal-message");
+  const actions = document.getElementById("modal-actions");
+
+  playSound("sound-popup");
+
+  icon.textContent = "✏️";
+  title.textContent = "Edit Word & Translation";
+  
+  const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+
+  msgEl.innerHTML = `
+    <div class="form-group" style="text-align: left; margin-top: 10px; width: 100%;">
+      <label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-secondary);">Word (Base Language)</label>
+      <input type="text" id="edit-modal-word" value="${esc(currentWord.en)}" class="custom-select" style="width: 100%; min-height: 40px; padding: 8px 12px; background: rgba(255,255,255,0.03); color: #fff; border: 1px solid var(--border-color); border-radius: 10px;">
+    </div>
+    <div class="form-group" style="text-align: left; margin-top: 12px; width: 100%;">
+      <label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-secondary);">Translation (${selectedLang.toUpperCase()})</label>
+      <input type="text" id="edit-modal-translation" value="${esc(currentWord.target)}" class="custom-select" style="width: 100%; min-height: 40px; padding: 8px 12px; background: rgba(255,255,255,0.03); color: #fff; border: 1px solid var(--border-color); border-radius: 10px;">
+    </div>
+  `;
+
+  actions.innerHTML = "";
+
+  const cancelBtn = document.createElement("button");
+  cancelBtn.className = "btn btn-secondary";
+  cancelBtn.textContent = "Cancel";
+  cancelBtn.onclick = () => {
+    overlay.classList.remove("active");
+  };
+
+  const saveBtn = document.createElement("button");
+  saveBtn.className = "btn btn-primary";
+  saveBtn.textContent = "Save Changes";
+  saveBtn.onclick = () => {
+    const newWord = document.getElementById("edit-modal-word").value.trim();
+    const newTrans = document.getElementById("edit-modal-translation").value.trim();
+    
+    if (!newWord || !newTrans) {
+      alert("Fields cannot be empty.");
+      return;
+    }
+
+    if (isCustom) {
+      state.customVocab = state.customVocab.map(v => {
+        if (v.en === key) {
+          return { ...v, en: newWord, target: newTrans };
+        }
+        return v;
+      });
+    } else {
+      state.editedStarters[key] = { en: newWord, target: newTrans };
+    }
+
+    saveState();
+    renderBrowseList();
+    overlay.classList.remove("active");
+  };
+
+  actions.appendChild(cancelBtn);
+  actions.appendChild(saveBtn);
+  overlay.classList.add("active");
+}
+
+window.triggerDeleteWord = async function(key, isCustom) {
+  const confirmDel = await showCustomConfirm(`Are you sure you want to delete "${key}"?`);
+  if (!confirmDel) return;
+
+  if (isCustom) {
+    state.customVocab = state.customVocab.filter(v => v.en !== key);
+  } else {
+    if (!state.deletedStarters.includes(key)) {
+      state.deletedStarters.push(key);
+    }
+  }
+  saveState();
+  renderBrowseList();
+};
+
+window.triggerEditWord = function(key, isCustom) {
+  let currentWord = null;
+  const activeLangBtn = document.querySelector("#browse-lang-selector .lang-btn.active");
+  const selectedLang = activeLangBtn ? activeLangBtn.dataset.lang : "de";
+
+  if (isCustom) {
+    currentWord = state.customVocab.find(v => v.en === key);
+  } else {
+    const base = state.baseLang || "en";
+    const item = STARTER_VOCAB_RAW.find(v => v[base] === key);
+    if (item) {
+      let finalEn = key;
+      let finalTarget = item[selectedLang];
+      if (state.editedStarters[key]) {
+        finalEn = state.editedStarters[key].en || key;
+        finalTarget = state.editedStarters[key].target || finalTarget;
+      }
+      currentWord = { en: finalEn, target: finalTarget };
+    }
+  }
+
+  if (currentWord) {
+    showCustomEditModal(key, currentWord, isCustom, selectedLang);
+  }
+};
+
