@@ -1,19 +1,14 @@
 // ==========================================
 // 1. Initial Starting Vocabulary Datasets
 // ==========================================
-let STARTER_VOCAB = { en: [], de: [], it: [], es: [], fr: [] };
+let STARTER_VOCAB_RAW = [];
 
 // Asynchronously load starter vocabularies from a single unified JSON file
 async function loadStarterVocab() {
   try {
     const res = await fetch("vocab/vocab.json");
     if (res.ok) {
-      const data = await res.json();
-      STARTER_VOCAB.de = data.map(item => ({ en: item.en, target: item.de, category: item.category, image: item.image, details: item.details }));
-      STARTER_VOCAB.it = data.map(item => ({ en: item.en, target: item.it, category: item.category, image: item.image, details: item.details }));
-      STARTER_VOCAB.es = data.map(item => ({ en: item.en, target: item.es, category: item.category, image: item.image, details: item.details }));
-      STARTER_VOCAB.fr = data.map(item => ({ en: item.en, target: item.fr, category: item.category, image: item.image, details: item.details }));
-      STARTER_VOCAB.en = data.map(item => ({ en: item.de, target: item.en, category: item.category, image: item.image, details: item.details }));
+      STARTER_VOCAB_RAW = await res.json();
     }
   } catch (e) {
     console.error("Failed to load starter vocab:", e);
@@ -45,6 +40,7 @@ let state = {
   geminiKey: "",
   anthropicKey: "",
   audioEngine: "browser", // browser or openai
+  allowSynonyms: true, // Allow similar words/synonyms
   history: [], // Completed tests history
 
   // Current active test state
@@ -78,6 +74,9 @@ function saveState() {
     geminiKey: state.geminiKey,
     anthropicKey: state.anthropicKey,
     audioEngine: state.audioEngine,
+    allowSynonyms: state.allowSynonyms,
+    baseLang: state.baseLang,
+    selectedLang: state.selectedLang,
     history: state.history
   }));
   updateHeaderUI();
@@ -99,6 +98,9 @@ function loadState() {
     state.geminiKey = parsed.geminiKey || "";
     state.anthropicKey = parsed.anthropicKey || "";
     state.audioEngine = parsed.audioEngine || "browser";
+    state.allowSynonyms = parsed.allowSynonyms !== undefined ? parsed.allowSynonyms : true;
+    state.baseLang = parsed.baseLang || "en";
+    state.selectedLang = parsed.selectedLang || "de";
     state.history = parsed.history || [];
 
     // Prefill Setup fields
@@ -107,6 +109,17 @@ function loadState() {
     document.getElementById("setup-gemini-key").value = state.geminiKey;
     document.getElementById("setup-anthropic-key").value = state.anthropicKey;
     document.getElementById("select-audio-engine").value = state.audioEngine;
+    document.getElementById("setup-allow-synonyms").checked = state.allowSynonyms;
+
+    // Prefill dashboard buttons active state
+    document.querySelectorAll(".base-lang-btn").forEach(b => {
+      b.classList.remove("active");
+      if (b.dataset.lang === state.baseLang) b.classList.add("active");
+    });
+    document.querySelectorAll(".lang-btn").forEach(b => {
+      b.classList.remove("active");
+      if (b.dataset.lang === state.selectedLang) b.classList.add("active");
+    });
   }
   updateHeaderUI();
   renderImportedList();
@@ -479,7 +492,15 @@ function startTestSession(language, category, count, isMistakesOnly = false) {
   if (isMistakesOnly) {
     pool = [...state.mistakes];
   } else {
-    const starters = STARTER_VOCAB[language] || [];
+    const base = state.baseLang || "en";
+    const starters = STARTER_VOCAB_RAW.map(item => ({
+      en: item[base],
+      target: item[language],
+      category: item.category,
+      image: item.image,
+      details: item.details
+    }));
+    
     const customs = state.customVocab.filter(v => v.lang === language);
     pool = [...starters, ...customs];
     
@@ -538,8 +559,8 @@ function renderQuestion() {
   }
 
   // Audio Buttons Setup
-  document.getElementById("btn-speak-prompt").onclick = () => speakWord(currentWord.en, "en", 1.0);
-  document.getElementById("btn-speak-prompt-slow").onclick = () => speakWord(currentWord.en, "en", 0.5);
+  document.getElementById("btn-speak-prompt").onclick = () => speakWord(currentWord.en, state.baseLang || "en", 1.0);
+  document.getElementById("btn-speak-prompt-slow").onclick = () => speakWord(currentWord.en, state.baseLang || "en", 0.5);
 
   const customPlayBtn = document.getElementById("btn-play-custom-recording");
   if (currentWord.audio) {
@@ -716,7 +737,15 @@ function submitAnswer() {
   const dist = getLevenshteinDistance(cleanAnsNoArticle, cleanTargetNoArticle);
   const isTypo = dist > 0 && dist <= 2; 
 
-  const isCorrect = isExactMatch || isCloseMatch || isTypo;
+  // Synonym verification
+  const syns = (currentWord.details && currentWord.details.synonyms && currentWord.details.synonyms[state.selectedLang]) ? currentWord.details.synonyms[state.selectedLang] : [];
+  const cleanSyns = syns.map(s => {
+    const sLower = s.toLowerCase().replace(/[¿?¡!.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").trim();
+    return stripArticles(sLower, state.selectedLang);
+  });
+  const isSynonymMatch = state.allowSynonyms && cleanSyns.includes(cleanAnsNoArticle);
+
+  const isCorrect = isExactMatch || isCloseMatch || isTypo || isSynonymMatch;
   const overlay = document.getElementById("feedback-overlay");
   const fTitle = document.getElementById("feedback-title");
   const fDesc = document.getElementById("feedback-desc");
@@ -730,6 +759,8 @@ function submitAnswer() {
     
     if (isExactMatch) {
       fDesc.textContent = `Excellent job! "${currentWord.en}" is indeed "${currentWord.target}".`;
+    } else if (isSynonymMatch) {
+      fDesc.textContent = `Correct! "${studentAnswer}" is a similar word/synonym of "${currentWord.target}".`;
     } else if (isCloseMatch) {
       fDesc.textContent = `Correct! (Ignored leading article). "${currentWord.en}" is "${currentWord.target}".`;
     } else if (isTypo) {
@@ -896,12 +927,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   };
 
-  // Language selectors
+  // Language selectors (Target)
   document.querySelectorAll(".lang-btn").forEach(btn => {
     btn.onclick = () => {
       document.querySelectorAll(".lang-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       state.selectedLang = btn.dataset.lang;
+    };
+  });
+
+  // Base Language selectors (Source)
+  document.querySelectorAll(".base-lang-btn").forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll(".base-lang-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.baseLang = btn.dataset.lang;
     };
   });
 
@@ -915,6 +955,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Start learning session button
   document.getElementById("btn-start-session").onclick = () => {
+    if (state.baseLang === state.selectedLang) {
+      alert("Please select a target language to learn that is different from your base language.");
+      return;
+    }
     const activeSeg = document.querySelector(".seg-btn.active");
     const count = activeSeg ? parseInt(activeSeg.dataset.count) : 10;
     const category = document.getElementById("select-category").value;
@@ -961,6 +1005,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     state.geminiKey = document.getElementById("setup-gemini-key").value.trim();
     state.anthropicKey = document.getElementById("setup-anthropic-key").value.trim();
     state.audioEngine = document.getElementById("select-audio-engine").value;
+    state.allowSynonyms = document.getElementById("setup-allow-synonyms").checked;
     saveState();
     alert("Configuration parameters updated!");
     showView("view-dashboard");
@@ -1166,7 +1211,15 @@ function renderBrowseList() {
   const selectedCategory = document.getElementById("select-browse-category").value;
 
   // Gather pool
-  const starters = STARTER_VOCAB[selectedLang] || [];
+  const base = state.baseLang || "en";
+  const starters = STARTER_VOCAB_RAW.map(item => ({
+    en: item[base],
+    target: item[selectedLang],
+    category: item.category,
+    image: item.image,
+    details: item.details
+  }));
+  
   const customs = state.customVocab.filter(v => v.lang === selectedLang);
   let pool = [...starters, ...customs];
 
@@ -1259,11 +1312,24 @@ function setupWordDetails(currentWord) {
       }
     }
     variationsEl.innerHTML = variationsHtml || "No variations recorded.";
+
+    // 4. Synonyms
+    const synonymsEl = document.getElementById("detail-synonyms");
+    if (synonymsEl) {
+      const syns = (details.synonyms && details.synonyms[lang]) ? details.synonyms[lang] : [];
+      if (syns && syns.length > 0) {
+        synonymsEl.innerHTML = syns.map(s => `<code style="background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; font-family: monospace;">${s}</code>`).join(", ");
+      } else {
+        synonymsEl.textContent = "No similar words recorded.";
+      }
+    }
   } else {
     articlesEl.textContent = "No basic details available for this word.";
     sentenceEl.textContent = "";
     sentenceTransEl.textContent = "";
     variationsEl.textContent = "";
+    const synonymsEl = document.getElementById("detail-synonyms");
+    if (synonymsEl) synonymsEl.textContent = "";
   }
 
   // Ask AI / Web button action
