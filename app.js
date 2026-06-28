@@ -156,12 +156,128 @@ function updateHeaderUI() {
   if (vaultCount) vaultCount.textContent = state.mistakes.length;
 }
 
-// Sound effects helpers
+// Sound effects helper using Web Audio API synthesis for zero latency and offline reliability, falling back to HTML Audio if needed
 function playSound(soundId) {
+  const typeMap = {
+    "sound-click": "click",
+    "sound-popup": "popup",
+    "sound-correct": "correct",
+    "sound-incorrect": "incorrect",
+    "sound-levelup": "levelup"
+  };
+
+  const type = typeMap[soundId];
+  if (type) {
+    playSynthesizedSound(type);
+  }
+
   const audio = document.getElementById(soundId);
   if (audio) {
     audio.currentTime = 0;
-    audio.play().catch(e => console.log("Sound autoplay blocked by browser policy"));
+    audio.play().catch(e => console.log("HTML audio fallback blocked or unavailable: " + soundId));
+  }
+}
+
+function playSynthesizedSound(type) {
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return;
+  
+  try {
+    const ctx = new AudioCtx();
+    
+    if (type === "click") {
+      // Short bubble pop
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(400, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.08);
+      
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+      
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.08);
+    } else if (type === "popup") {
+      // Soft sliding chime
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(783.99, ctx.currentTime + 0.15);
+      
+      gain.gain.setValueAtTime(0.1, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+      
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.2);
+    } else if (type === "correct") {
+      // Bright major third double ding (Duolingo style)
+      const now = ctx.currentTime;
+      [
+        { freq: 523.25, time: now }, // C5
+        { freq: 659.25, time: now + 0.08 } // E5
+      ].forEach(note => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.type = "sine";
+        osc.frequency.value = note.freq;
+        
+        gain.gain.setValueAtTime(0.15, note.time);
+        gain.gain.exponentialRampToValueAtTime(0.01, note.time + 0.25);
+        
+        osc.start(note.time);
+        osc.stop(note.time + 0.25);
+      });
+    } else if (type === "incorrect") {
+      // Sad downward buzz
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.linearRampToValueAtTime(147, now + 0.3);
+      
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+      
+      osc.start(now);
+      osc.stop(now + 0.3);
+    } else if (type === "levelup") {
+      // Ascending major arpeggio
+      const now = ctx.currentTime;
+      const notes = [523.25, 659.25, 783.99, 1046.50];
+      notes.forEach((freq, index) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.type = "sine";
+        osc.frequency.value = freq;
+        
+        const noteTime = now + (index * 0.1);
+        gain.gain.setValueAtTime(0.12, noteTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, noteTime + 0.35);
+        
+        osc.start(noteTime);
+        osc.stop(noteTime + 0.35);
+      });
+    }
+  } catch (e) {
+    console.error("Synthesizer failed:", e);
   }
 }
 
