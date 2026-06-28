@@ -1,0 +1,12 @@
+[
+  { "en": "to run", "target": "correr", "category": "verbs", "image": "run,exercise" },
+  { "en": "to speak", "target": "hablar", "category": "verbs", "image": "speak,talking" },
+  { "en": "to learn", "target": "aprender", "category": "verbs", "image": "book,studying" },
+  { "en": "apple", "target": "manzana", "category": "nouns", "image": "apple,fruit" },
+  { "en": "bread", "target": "pan", "category": "nouns", "image": "bread,food" },
+  { "en": "computer", "target": "computadora", "category": "technology", "image": "computer,laptop" },
+  { "en": "database", "target": "base de datos", "category": "technology", "image": "database,server" },
+  { "en": "cell", "target": "célula", "category": "biology", "image": "cell,biology" },
+  { "en": "organism", "target": "organismo", "category": "biology", "image": "nature,biology" },
+  { "en": "How are you?", "target": "¿Cómo estás?", "category": "phrases", "image": "hello,friends" }
+]

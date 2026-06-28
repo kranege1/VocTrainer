@@ -1,68 +1,22 @@
 // ==========================================
 // 1. Initial Starting Vocabulary Datasets
 // ==========================================
-const STARTER_VOCAB = {
-  en: [ // English
-    { en: "rennen", target: "to run", category: "verbs", image: "run,exercise" },
-    { en: "sprechen", target: "to speak", category: "verbs", image: "speak,talking" },
-    { en: "lernen", target: "to learn", category: "verbs", image: "book,studying" },
-    { en: "Apfel", target: "apple", category: "nouns", image: "apple,fruit" },
-    { en: "Brot", target: "bread", category: "nouns", image: "bread,food" },
-    { en: "Computer", target: "computer", category: "technology", image: "computer,laptop" },
-    { en: "Datenbank", target: "database", category: "technology", image: "database,server" },
-    { en: "Zelle", target: "cell", category: "biology", image: "cell,biology" },
-    { en: "Organismus", target: "organism", category: "biology", image: "nature,biology" },
-    { en: "Wie geht es dir?", target: "how are you?", category: "phrases", image: "hello,friends" }
-  ],
-  de: [ // German
-    { en: "to run", target: "rennen", category: "verbs", image: "run,exercise" },
-    { en: "to speak", target: "sprechen", category: "verbs", image: "speak,talking" },
-    { en: "to learn", target: "lernen", category: "verbs", image: "book,studying" },
-    { en: "apple", target: "Apfel", category: "nouns", image: "apple,fruit" },
-    { en: "bread", target: "Brot", category: "nouns", image: "bread,food" },
-    { en: "computer", target: "Computer", category: "technology", image: "computer,laptop" },
-    { en: "database", target: "Datenbank", category: "technology", image: "database,server" },
-    { en: "cell", target: "Zelle", category: "biology", image: "cell,biology" },
-    { en: "organism", target: "Organismus", category: "biology", image: "nature,biology" },
-    { en: "How are you?", target: "Wie geht es dir?", category: "phrases", image: "hello,friends" }
-  ],
-  it: [ // Italiano
-    { en: "to run", target: "correre", category: "verbs", image: "run,exercise" },
-    { en: "to speak", target: "parlare", category: "verbs", image: "speak,talking" },
-    { en: "to learn", target: "imparare", category: "verbs", image: "book,studying" },
-    { en: "apple", target: "mela", category: "nouns", image: "apple,fruit" },
-    { en: "bread", target: "pane", category: "nouns", image: "bread,food" },
-    { en: "computer", target: "computer", category: "technology", image: "computer,laptop" },
-    { en: "database", target: "database", category: "technology", image: "database,server" },
-    { en: "cell", target: "cellula", category: "biology", image: "cell,biology" },
-    { en: "organism", target: "organismo", category: "biology", image: "nature,biology" },
-    { en: "How are you?", target: "Come stai?", category: "phrases", image: "hello,friends" }
-  ],
-  es: [ // Spanish
-    { en: "to run", target: "correr", category: "verbs", image: "run,exercise" },
-    { en: "to speak", target: "hablar", category: "verbs", image: "speak,talking" },
-    { en: "to learn", target: "aprender", category: "verbs", image: "book,studying" },
-    { en: "apple", target: "manzana", category: "nouns", image: "apple,fruit" },
-    { en: "bread", target: "pan", category: "nouns", image: "bread,food" },
-    { en: "computer", target: "computadora", category: "technology", image: "computer,laptop" },
-    { en: "database", target: "base de datos", category: "technology", image: "database,server" },
-    { en: "cell", target: "célula", category: "biology", image: "cell,biology" },
-    { en: "organism", target: "organismo", category: "biology", image: "nature,biology" },
-    { en: "How are you?", target: "¿Cómo estás?", category: "phrases", image: "hello,friends" }
-  ],
-  fr: [ // French
-    { en: "to run", target: "courir", category: "verbs", image: "run,exercise" },
-    { en: "to speak", target: "parler", category: "verbs", image: "speak,talking" },
-    { en: "to learn", target: "apprendre", category: "verbs", image: "book,studying" },
-    { en: "apple", target: "pomme", category: "nouns", image: "apple,fruit" },
-    { en: "bread", target: "pain", category: "nouns", image: "bread,food" },
-    { en: "computer", target: "ordinateur", category: "technology", image: "computer,laptop" },
-    { en: "database", target: "base de données", category: "technology", image: "database,server" },
-    { en: "cell", target: "cellule", category: "biology", image: "cell,biology" },
-    { en: "organism", target: "organisme", category: "biology", image: "nature,biology" },
-    { en: "How are you?", target: "Comment ça va?", category: "phrases", image: "hello,friends" }
-  ]
-};
+let STARTER_VOCAB = { en: [], de: [], it: [], es: [], fr: [] };
+
+// Asynchronously load starter vocabularies from JSON files
+async function loadStarterVocab() {
+  const languages = ["en", "de", "it", "es", "fr"];
+  for (const lang of languages) {
+    try {
+      const res = await fetch(`vocab/${lang}.json`);
+      if (res.ok) {
+        STARTER_VOCAB[lang] = await res.json();
+      }
+    } catch (e) {
+      console.error(`Failed to load starter vocab for ${lang}:`, e);
+    }
+  }
+}
 
 // Language code mappings to Speech Synthesis/Recognition locales
 const LANG_LOCALES = {
@@ -779,7 +733,8 @@ function stopAudioRecording() {
 // ==========================================
 // 8. Event Listeners & Initialization
 // ==========================================
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadStarterVocab();
   loadState();
 
   // Navigation Links
