@@ -1276,60 +1276,77 @@ function setupWordDetails(currentWord) {
 
   // Populate local details
   const details = currentWord.details;
+  const base = state.baseLang || "en";
   const lang = state.selectedLang;
+
+  const sectionArticles = document.getElementById("section-articles");
+  const sectionSentence = document.getElementById("section-sentence");
+  const sectionVariations = document.getElementById("section-variations");
+  const sectionSynonyms = document.getElementById("section-synonyms");
 
   const articlesEl = document.getElementById("detail-articles");
   const sentenceEl = document.getElementById("detail-sentence");
   const sentenceTransEl = document.getElementById("detail-sentence-translation");
   const variationsEl = document.getElementById("detail-variations");
+  const synonymsEl = document.getElementById("detail-synonyms");
 
   if (details) {
     // 1. Articles
     const art = details.articles && details.articles[lang] ? details.articles[lang] : "";
-    if (art) {
+    if (art && sectionArticles) {
+      sectionArticles.style.display = "block";
       articlesEl.innerHTML = `Article in <strong>${lang.toUpperCase()}</strong>: <span class="badge" style="background:var(--accent-color); padding: 4px 8px; border-radius: 6px; font-weight: bold; color: #0b0c10;">${art}</span>`;
-    } else {
-      articlesEl.innerHTML = `No article required for this category.`;
+    } else if (sectionArticles) {
+      sectionArticles.style.display = "none";
     }
 
     // 2. Sentences
-    if (details.sentences && details.sentences.en) {
-      sentenceEl.textContent = `"${details.sentences.en}"`;
-      sentenceTransEl.textContent = details.sentences[lang] ? `→ "${details.sentences[lang]}"` : "";
-    } else {
-      sentenceEl.textContent = "No example sentence available.";
-      sentenceTransEl.textContent = "";
+    const baseSentence = details.sentences && details.sentences[base] ? details.sentences[base] : "";
+    const targetSentence = details.sentences && details.sentences[lang] ? details.sentences[lang] : "";
+    if (baseSentence && sectionSentence) {
+      sectionSentence.style.display = "block";
+      sentenceEl.textContent = `"${baseSentence}"`;
+      sentenceTransEl.textContent = targetSentence ? `→ "${targetSentence}"` : "";
+    } else if (sectionSentence) {
+      sectionSentence.style.display = "none";
     }
 
     // 3. Variations
     let variationsHtml = "";
     if (details.variations) {
       if (details.variations.plural && details.variations.plural[lang]) {
-        variationsHtml += `Plural: <strong>${details.variations.plural.en}</strong> &rarr; <strong>${details.variations.plural[lang]}</strong>`;
+        const basePlural = details.variations.plural[base] || details.variations.plural.en || "";
+        variationsHtml += `Plural: <strong>${basePlural}</strong> &rarr; <strong>${details.variations.plural[lang]}</strong><br>`;
       }
       if (details.variations.he && details.variations.he[lang]) {
-        variationsHtml += `Conjugation (He/She): <strong>${details.variations.he.en}</strong> &rarr; <strong>${details.variations.he[lang]}</strong>`;
+        const baseHe = details.variations.he[base] || details.variations.he.en || "";
+        variationsHtml += `Conjugation (He/She): <strong>${baseHe}</strong> &rarr; <strong>${details.variations.he[lang]}</strong>`;
       }
     }
-    variationsEl.innerHTML = variationsHtml || "No variations recorded.";
+    if (variationsHtml && sectionVariations) {
+      sectionVariations.style.display = "block";
+      variationsEl.innerHTML = variationsHtml;
+    } else if (sectionVariations) {
+      sectionVariations.style.display = "none";
+    }
 
     // 4. Synonyms
-    const synonymsEl = document.getElementById("detail-synonyms");
-    if (synonymsEl) {
-      const syns = (details.synonyms && details.synonyms[lang]) ? details.synonyms[lang] : [];
-      if (syns && syns.length > 0) {
-        synonymsEl.innerHTML = syns.map(s => `<code style="background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; font-family: monospace;">${s}</code>`).join(", ");
-      } else {
-        synonymsEl.textContent = "No similar words recorded.";
-      }
+    const targetSyns = (details.synonyms && details.synonyms[lang]) ? details.synonyms[lang] : [];
+    const baseSyns = (details.synonyms && details.synonyms[base]) ? details.synonyms[base] : [];
+    if (targetSyns && targetSyns.length > 0 && sectionSynonyms) {
+      sectionSynonyms.style.display = "block";
+      synonymsEl.innerHTML = targetSyns.map((syn, idx) => {
+        const baseTrans = baseSyns[idx] ? ` (${baseSyns[idx]})` : "";
+        return `<code style="background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; font-family: monospace;">${syn}${baseTrans}</code>`;
+      }).join(", ");
+    } else if (sectionSynonyms) {
+      sectionSynonyms.style.display = "none";
     }
   } else {
-    articlesEl.textContent = "No basic details available for this word.";
-    sentenceEl.textContent = "";
-    sentenceTransEl.textContent = "";
-    variationsEl.textContent = "";
-    const synonymsEl = document.getElementById("detail-synonyms");
-    if (synonymsEl) synonymsEl.textContent = "";
+    if (sectionArticles) sectionArticles.style.display = "none";
+    if (sectionSentence) sectionSentence.style.display = "none";
+    if (sectionVariations) sectionVariations.style.display = "none";
+    if (sectionSynonyms) sectionSynonyms.style.display = "none";
   }
 
   // Ask AI / Web button action
