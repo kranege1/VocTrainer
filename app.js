@@ -89,6 +89,7 @@ let state = {
   geminiKey: "",
   anthropicKey: "",
   audioEngine: "browser", // browser or openai
+  history: [], // Completed tests history
 
   // Current active test state
   currentTest: {
@@ -120,7 +121,8 @@ function saveState() {
     grokKey: state.grokKey,
     geminiKey: state.geminiKey,
     anthropicKey: state.anthropicKey,
-    audioEngine: state.audioEngine
+    audioEngine: state.audioEngine,
+    history: state.history
   }));
   updateHeaderUI();
 }
@@ -141,6 +143,7 @@ function loadState() {
     state.geminiKey = parsed.geminiKey || "";
     state.anthropicKey = parsed.anthropicKey || "";
     state.audioEngine = parsed.audioEngine || "browser";
+    state.history = parsed.history || [];
 
     // Prefill Setup fields
     document.getElementById("setup-openai-key").value = state.openaiKey;
@@ -152,6 +155,7 @@ function loadState() {
   updateHeaderUI();
   renderImportedList();
   renderMistakesList();
+  renderHistoryList();
 }
 
 // ==========================================
@@ -534,6 +538,49 @@ function toggleListening() {
   }
 }
 
+// Levenshtein Distance to calculate typo matches
+function getLevenshteinDistance(a, b) {
+  const matrix = [];
+  for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1, // substitution
+          matrix[i][j - 1] + 1,     // insertion
+          matrix[i - 1][j] + 1      // deletion
+        );
+      }
+    }
+  }
+  return matrix[b.length][a.length];
+}
+
+// Strip leading articles (e.g. "the book" -> "book")
+function stripArticles(text, lang) {
+  const articles = {
+    en: ["the ", "a ", "an "],
+    de: ["der ", "die ", "das ", "ein ", "eine "],
+    es: ["el ", "la ", "los ", "las ", "un ", "una ", "unos ", "unas "],
+    it: ["il ", "lo ", "la ", "i ", "gli ", "le ", "un ", "uno ", "una ", "un' "],
+    fr: ["le ", "la ", "les ", "un ", "une ", "des ", "l' "]
+  };
+  
+  let cleanText = text.trim().toLowerCase();
+  const list = articles[lang] || [];
+  
+  for (const article of list) {
+    if (cleanText.startsWith(article)) {
+      return cleanText.substring(article.length).trim();
+    }
+  }
+  return cleanText;
+}
+
 // Check the student's answer
 function submitAnswer() {
   const tState = state.currentTest;
@@ -552,10 +599,21 @@ function submitAnswer() {
     studentAnswer = document.getElementById("speech-transcript").textContent.trim();
   }
 
-  const cleanAns = studentAnswer.toLowerCase().replace(/[¿?¡!.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-  const cleanTarget = currentWord.target.toLowerCase().replace(/[¿?¡!.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+  const cleanAns = studentAnswer.toLowerCase().replace(/[¿?¡!.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").trim();
+  const cleanTarget = currentWord.target.toLowerCase().replace(/[¿?¡!.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").trim();
 
-  const isCorrect = cleanAns === cleanTarget;
+  // Strip articles
+  const cleanAnsNoArticle = stripArticles(cleanAns, state.selectedLang);
+  const cleanTargetNoArticle = stripArticles(cleanTarget, state.selectedLang);
+
+  const isExactMatch = cleanAns === cleanTarget;
+  const isCloseMatch = cleanAnsNoArticle === cleanTargetNoArticle;
+  
+  // Calculate Levenshtein distance for typos
+  const dist = getLevenshteinDistance(cleanAnsNoArticle, cleanTargetNoArticle);
+  const isTypo = dist > 0 && dist <= 2; 
+
+  const isCorrect = isExactMatch || isCloseMatch || isTypo;
   const overlay = document.getElementById("feedback-overlay");
   const fTitle = document.getElementById("feedback-title");
   const fDesc = document.getElementById("feedback-desc");
@@ -566,9 +624,16 @@ function submitAnswer() {
     overlay.className = "feedback-overlay active correct-ans";
     fTitle.textContent = "Correct!";
     fIcon.textContent = "🎉";
-    fDesc.textContent = `Excellent job! "${currentWord.en}" is indeed "${currentWord.target}".`;
-    tState.correctCount++;
     
+    if (isExactMatch) {
+      fDesc.textContent = `Excellent job! "${currentWord.en}" is indeed "${currentWord.target}".`;
+    } else if (isCloseMatch) {
+      fDesc.textContent = `Correct! (Ignored leading article). "${currentWord.en}" is "${currentWord.target}".`;
+    } else if (isTypo) {
+      fDesc.textContent = `Correct (with minor typo)! You entered: "${studentAnswer}". Correct word: "${currentWord.target}".`;
+    }
+
+    tState.correctCount++;
     state.xp += 10;
     checkLevelUp();
   } else {
@@ -624,9 +689,23 @@ function finishTestRound() {
   if (tState.correctCount > 0) {
     state.streak = Math.max(1, state.streak); 
   }
-  saveState();
-
+  
   const accuracy = Math.round((tState.correctCount / tState.totalOriginalCount) * 100);
+  
+  // Record history
+  state.history.push({
+    date: new Date().toLocaleDateString(),
+    lang: state.selectedLang.toUpperCase(),
+    category: document.getElementById("select-category").value,
+    total: tState.totalOriginalCount,
+    correct: tState.correctCount,
+    accuracy: accuracy,
+    xp: tState.correctCount * 10
+  });
+
+  saveState();
+  renderHistoryList();
+
   document.getElementById("report-xp").textContent = `+${tState.correctCount * 10}`;
   document.getElementById("report-accuracy").textContent = `${accuracy}%`;
   document.getElementById("report-wrong-count").textContent = tState.wrongAnswers.length;
@@ -883,4 +962,98 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Please enter a valid URL.");
     }
   };
+
+  // Browse & History Navigation & Listeners
+  document.getElementById("btn-go-browse").onclick = () => {
+    showView("view-browse");
+    renderBrowseList();
+  };
+
+  document.getElementById("btn-go-history").onclick = () => {
+    showView("view-history");
+    renderHistoryList();
+  };
+
+  document.getElementById("btn-browse-back").onclick = () => showView("view-dashboard");
+  document.getElementById("btn-history-back").onclick = () => showView("view-dashboard");
+
+  // Browse selection change filters
+  document.querySelectorAll("#browse-lang-selector .lang-btn").forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll("#browse-lang-selector .lang-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderBrowseList();
+    };
+  });
+
+  document.getElementById("select-browse-category").onchange = () => {
+    renderBrowseList();
+  };
 });
+
+// Render the completed sessions in history list
+function renderHistoryList() {
+  const container = document.getElementById("history-sessions-list");
+  container.innerHTML = "";
+  
+  if (!state.history || state.history.length === 0) {
+    container.innerHTML = `<li class="empty-state">No completed tests yet. Start learning to record history!</li>`;
+    return;
+  }
+
+  state.history.slice().reverse().forEach(session => {
+    const li = document.createElement("li");
+    li.style.flexDirection = "column";
+    li.style.alignItems = "stretch";
+    li.style.gap = "4px";
+    li.innerHTML = `
+      <div style="display:flex; justify-content:space-between; font-weight:700;">
+        <span>📅 ${session.date} (${session.lang})</span>
+        <span style="color:var(--accent-color);">+${session.xp} XP</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--text-secondary);">
+        <span>Pocket: ${session.category}</span>
+        <span>Accuracy: ${session.accuracy}% (${session.correct}/${session.total})</span>
+      </div>
+    `;
+    container.appendChild(li);
+  });
+}
+
+// Render the vocabulary list browser
+function renderBrowseList() {
+  const container = document.getElementById("browse-words-list");
+  container.innerHTML = "";
+
+  const activeLangBtn = document.querySelector("#browse-lang-selector .lang-btn.active");
+  const selectedLang = activeLangBtn ? activeLangBtn.dataset.lang : "en";
+  const selectedCategory = document.getElementById("select-browse-category").value;
+
+  // Gather pool
+  const starters = STARTER_VOCAB[selectedLang] || [];
+  const customs = state.customVocab.filter(v => v.lang === selectedLang);
+  let pool = [...starters, ...customs];
+
+  if (selectedCategory !== "all") {
+    pool = pool.filter(v => v.category === selectedCategory);
+  }
+
+  document.getElementById("browse-list-title").textContent = `Vocabulary List (${pool.length} words)`;
+
+  if (pool.length === 0) {
+    container.innerHTML = `<li class="empty-state">No words available in this language and category pocket.</li>`;
+    return;
+  }
+
+  pool.forEach(vocab => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <div>
+        <span class="list-word">${vocab.en}</span>
+        <span class="list-translation"> &rarr; ${vocab.target}</span>
+      </div>
+      <span class="category-tag" style="margin: 0; font-size:0.75rem; padding: 2px 8px;">${vocab.category}</span>
+    `;
+    container.appendChild(li);
+  });
+}

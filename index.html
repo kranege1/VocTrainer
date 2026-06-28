@@ -92,6 +92,12 @@
           <span class="icon">⚠️</span> Mistakes
           <span class="badge" id="mistakes-badge">0</span>
         </button>
+        <button id="btn-go-browse" class="btn btn-secondary">
+          <span class="icon">🔍</span> Browse Vocab
+        </button>
+        <button id="btn-go-history" class="btn btn-secondary">
+          <span class="icon">📈</span> History
+        </button>
         <button id="btn-go-setup" class="btn btn-secondary btn-block" style="grid-column: span 2;">
           <span class="icon">⚙️</span> Setup & API Keys
         </button>
@@ -366,6 +372,61 @@
         <h3>Collected Mistakes</h3>
         <ul class="mistakes-list" id="mistakes-list">
           <li class="empty-state">No mistakes recorded! Keep up the good work.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- BROWSE VOCABULARY VIEW -->
+    <section id="view-browse" class="app-view">
+      <div class="view-header">
+        <button id="btn-browse-back" class="btn-back">← Back</button>
+        <h2>Browse Vocabulary</h2>
+      </div>
+
+      <div class="card selector-card">
+        <div class="form-group">
+          <label>Filter Language</label>
+          <div class="lang-selector" id="browse-lang-selector">
+            <button class="lang-btn active" data-lang="en">🇬🇧 English</button>
+            <button class="lang-btn" data-lang="de">🇩🇪 German</button>
+            <button class="lang-btn" data-lang="it">🇮🇹 Italiano</button>
+            <button class="lang-btn" data-lang="es">🇪🇸 Spanish</button>
+            <button class="lang-btn" data-lang="fr">🇫🇷 French</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Filter Category</label>
+          <select id="select-browse-category" class="custom-select">
+            <option value="all">📚 All Categories</option>
+            <option value="verbs">🏃 Verbs</option>
+            <option value="nouns">🍎 Nouns</option>
+            <option value="technology">💻 Technology</option>
+            <option value="biology">🌿 Biology</option>
+            <option value="phrases">💬 Phrases</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 id="browse-list-title">Vocabulary Word List</h3>
+        <ul class="imported-list" id="browse-words-list">
+          <!-- Populated dynamically -->
+        </ul>
+      </div>
+    </section>
+
+    <!-- HISTORY VIEW -->
+    <section id="view-history" class="app-view">
+      <div class="view-header">
+        <button id="btn-history-back" class="btn-back">← Back</button>
+        <h2>Practice History</h2>
+      </div>
+
+      <div class="card">
+        <h3>Completed Tests & Sessions</h3>
+        <ul class="mistakes-list" id="history-sessions-list">
+          <li class="empty-state">No completed tests yet. Start learning to record history!</li>
         </ul>
       </div>
     </section>
