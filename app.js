@@ -2078,15 +2078,7 @@ function renderDirectoryTree() {
   rootDrop.setAttribute("ondrop", "window.onTreeDrop(event, 'root')");
   treeContainer.appendChild(rootDrop);
 
-  const staticFolders = [
-    { id: "verbs", name: "🏃 Verbs", parentId: null },
-    { id: "nouns", name: "🍎 Nouns", parentId: null },
-    { id: "technology", name: "💻 Technology", parentId: null },
-    { id: "biology", name: "🌿 Biology", parentId: null },
-    { id: "phrases", name: "💬 Phrases", parentId: null }
-  ];
-  
-  const allFolders = [...staticFolders, ...state.customFolders];
+  const allFolders = state.customFolders || [];
   
   const html = buildTreeHTML(allFolders, null, 0);
   
