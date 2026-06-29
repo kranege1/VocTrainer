@@ -1470,6 +1470,19 @@ input:checked + .slider:before {
   transform: rotate(-90deg);
 }
 
+/* Drag and Drop File Upload Zone */
+.file-drop-zone:hover {
+  background: rgba(76, 201, 240, 0.03) !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 15px rgba(76, 201, 240, 0.08);
+}
+
+.file-drop-zone.dragover {
+  background: rgba(76, 201, 240, 0.08) !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 20px rgba(76, 201, 240, 0.15);
+}
+
 
 
 

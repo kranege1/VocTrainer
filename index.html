@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- PDF.js library for client-side PDF parsing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <!-- CSS Stylesheet -->
   <link rel="stylesheet" href="style.css?v=1.2">
 </head>
@@ -476,12 +478,13 @@
         <button class="tab-btn active" data-tab="tab-url">🌐 Import Web URL</button>
         <button class="tab-btn" data-tab="tab-manual">✏️ Add Custom</button>
         <button class="tab-btn" data-tab="tab-bulk">📝 Bulk List</button>
+        <button class="tab-btn" data-tab="tab-file">📄 File Upload</button>
       </div>
 
       <!-- Web URL Import tab -->
       <div id="tab-url" class="tab-content active">
         <div class="card">
-          <p class="import-help">Paste a web page link. We will fetch and automatically extract words and their translations for your training set.</p>
+          <p class="import-help">Paste a web page link. We will fetch, scan tables, or parse all words on the page, letting you preview before importing.</p>
           <div class="form-group">
             <label>URL to Scrape</label>
             <input type="url" id="import-url" placeholder="https://example.com/article" value="https://en.wikipedia.org/wiki/List_of_animal_names">
@@ -490,11 +493,34 @@
             <label>Category Tag</label>
             <input type="text" id="import-url-category" value="biology" placeholder="e.g. biology, technology">
           </div>
-          <button id="btn-import-url-submit" class="btn btn-primary btn-block">Automatically Import Words</button>
+          <button id="btn-import-url-submit" class="btn btn-primary btn-block">🔍 Scan Web Page</button>
           
           <div class="loading-spinner" id="import-spinner" style="display: none;">
             <div class="spinner"></div>
             <p>Scanning web page for words...</p>
+          </div>
+
+          <!-- URL Scraped Preview Area -->
+          <div id="url-preview-area" style="display: none; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px;">
+              <h4 style="margin: 0; color: var(--accent-color); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">✨ Preview Scraped Words</h4>
+              <button id="btn-url-confirm-top" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.85rem; min-height: 32px; border-radius: 10px; margin: 0; width: auto;">🚀 Start Import</button>
+            </div>
+            <div style="overflow-x: auto; max-height: 250px; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 16px; background: rgba(0,0,0,0.15);">
+              <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+                <thead>
+                  <tr style="background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--border-color);">
+                    <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">Word</th>
+                    <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">Translation</th>
+                    <th style="padding: 10px; width: 60px; text-align: center; font-weight: 700; color: var(--text-secondary);">Use</th>
+                  </tr>
+                </thead>
+                <tbody id="url-preview-table-body">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+            <button id="btn-url-confirm" class="btn btn-primary btn-block" style="min-height: 46px;">🚀 Import Selected Words Now!</button>
           </div>
         </div>
       </div>
@@ -646,6 +672,54 @@
               </table>
             </div>
             <button id="btn-bulk-confirm" class="btn btn-primary btn-block" style="min-height: 46px;">🚀 Import Selected Words Now!</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- File Upload Import tab -->
+      <div id="tab-file" class="tab-content">
+        <div class="card">
+          <p class="import-help">Upload a text file (.txt, .csv) or PDF document (.pdf) containing phrases or vocabulary terms. We will automatically parse and extract words for your training set.</p>
+          
+          <div class="file-drop-zone" id="file-drop-zone" style="border: 2px dashed var(--border-color); border-radius: 15px; padding: 30px 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; background: rgba(255,255,255,0.01); margin-bottom: 16px;">
+            <span style="font-size: 2.5rem; display: block; margin-bottom: 10px;">📄</span>
+            <strong style="color: #fff; font-size: 0.95rem; display: block; margin-bottom: 4px;">Drag & Drop File Here</strong>
+            <span style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 12px;">Supports .txt, .csv, and .pdf documents</span>
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('file-import-input').click()" style="width: auto; min-height: 32px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 16px; margin: 0 auto;">Browse Files</button>
+            <input type="file" id="file-import-input" accept=".txt,.csv,.pdf" style="display: none;">
+          </div>
+
+          <div class="form-group">
+            <label>Category Tag</label>
+            <input type="text" id="file-import-category" value="document-import" placeholder="e.g. business, literature">
+          </div>
+
+          <div class="loading-spinner" id="file-spinner" style="display: none;">
+            <div class="spinner"></div>
+            <p id="file-spinner-text">Reading and parsing document contents...</p>
+          </div>
+
+          <!-- File Scraped Preview Area -->
+          <div id="file-preview-area" style="display: none; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px;">
+              <h4 style="margin: 0; color: var(--accent-color); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">✨ Preview Extracted Words</h4>
+              <button id="btn-file-confirm-top" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.85rem; min-height: 32px; border-radius: 10px; margin: 0; width: auto;">🚀 Start Import</button>
+            </div>
+            <div style="overflow-x: auto; max-height: 250px; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 16px; background: rgba(0,0,0,0.15);">
+              <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+                <thead>
+                  <tr style="background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--border-color);">
+                    <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">Word</th>
+                    <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">Translation</th>
+                    <th style="padding: 10px; width: 60px; text-align: center; font-weight: 700; color: var(--text-secondary);">Use</th>
+                  </tr>
+                </thead>
+                <tbody id="file-preview-table-body">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+            <button id="btn-file-confirm" class="btn btn-primary btn-block" style="min-height: 46px;">🚀 Import Selected Words Now!</button>
           </div>
         </div>
       </div>
