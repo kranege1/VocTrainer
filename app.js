@@ -98,6 +98,26 @@ function saveState() {
   populateCustomCategoryDropdown();
 }
 
+// Helper to synchronize custom folders with categories used in customVocab
+function syncCustomFolders() {
+  if (!state.customVocab) return;
+  const vocabCategories = [...new Set(state.customVocab.map(v => v.category).filter(Boolean))];
+  const staticFolders = ["verbs", "nouns", "technology", "biology", "phrases"];
+  
+  vocabCategories.forEach(cat => {
+    if (!staticFolders.includes(cat)) {
+      const exists = state.customFolders.some(f => f.id === cat || f.name === cat);
+      if (!exists) {
+        state.customFolders.push({
+          id: cat,
+          name: cat,
+          parentId: null
+        });
+      }
+    }
+  });
+}
+
 // Load state from LocalStorage
 function loadState() {
   const data = localStorage.getItem("voctrainer_state");
@@ -126,6 +146,10 @@ function loadState() {
       }
       return f;
     });
+    
+    // Auto-recreate missing custom folders from vocab categories
+    syncCustomFolders();
+
     state.expandedFolders = parsed.expandedFolders || {};
     state.selectedBrowseFolderId = parsed.selectedBrowseFolderId || null;
     state.wordStats = parsed.wordStats || {};
@@ -624,6 +648,19 @@ async function addCustomWord(english, translation, lang, category, imageUrl = ""
 
   // Backfill other languages BEFORE pushing/saving to state to ensure complete data availability
   await fillMissingTranslations(newWord, base);
+
+  // Auto-sync folder creation for the new category
+  const staticFolders = ["verbs", "nouns", "technology", "biology", "phrases"];
+  if (category && !staticFolders.includes(category)) {
+    const exists = state.customFolders.some(f => f.id === category || f.name === category);
+    if (!exists) {
+      state.customFolders.push({
+        id: category,
+        name: category,
+        parentId: null
+      });
+    }
+  }
 
   state.customVocab.push(newWord);
   saveState();
