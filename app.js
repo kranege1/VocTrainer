@@ -1115,6 +1115,9 @@ function sanitizeWordTranslation(text, lang) {
   if (!text) return "";
   let clean = text.trim();
   
+  // Strip any HTML/XML/SVG tags (such as <g x=1 id="5823"/>) that leak from scrapers/PDFs
+  clean = clean.replace(/<[^>]*>?/gm, '').trim();
+  
   // Remove trailing periods and commas if they are unnecessary (short words/phrases)
   if (clean.length > 1 && (clean.endsWith(".") || clean.endsWith(",")) && !clean.endsWith("...") && !/[?!]/.test(clean)) {
     clean = clean.substring(0, clean.length - 1).trim();
