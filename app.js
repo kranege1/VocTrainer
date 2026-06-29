@@ -1019,6 +1019,7 @@ async function addCustomWord(english, translation, lang, category, imageUrl = ""
   }
 
   state.customVocab.push(newWord);
+  sessionImportedList.push(newWord);
   saveState();
   renderImportedList();
   if (document.getElementById("view-browse").classList.contains("active")) {
@@ -1050,20 +1051,26 @@ async function fillMissingTranslations(wordObj, sourceLang) {
   await Promise.all(promises);
 }
 
+let sessionImportedList = [];
+
 function renderImportedList() {
   const container = document.getElementById("imported-list");
   container.innerHTML = "";
   
-  if (state.customVocab.length === 0) {
-    container.innerHTML = `<li class="empty-state">No custom words added yet.</li>`;
+  if (sessionImportedList.length === 0) {
+    container.innerHTML = `<li class="empty-state">No words imported in this session yet.</li>`;
     return;
   }
 
-  state.customVocab.slice(-10).reverse().forEach(vocab => {
+  sessionImportedList.slice().reverse().forEach(vocab => {
     const li = document.createElement("li");
+    // Show EN/base word and first non-empty translation slot (DE, IT, ES, FR)
+    const baseWord = vocab.en || vocab.origEn || Object.values(vocab).find(v => typeof v === 'string' && v.length > 0) || "Word";
+    const targetLangs = ["de", "it", "es", "fr", "en"];
+    const targetTrans = targetLangs.map(l => vocab[l]).filter(Boolean)[0] || "";
     li.innerHTML = `
-      <span class="list-word">${vocab.en}</span>
-      <span class="list-translation">${vocab.target} (${vocab.lang.toUpperCase()})</span>
+      <span class="list-word">${baseWord}</span>
+      <span class="list-translation">${targetTrans}</span>
     `;
     container.appendChild(li);
   });
@@ -1984,6 +1991,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     newWord.target = newWord[state.selectedLang];
 
     state.customVocab.push(newWord);
+    sessionImportedList.push(newWord);
     saveState();
     renderImportedList();
     alert(`Word "${en}" added directly to your custom set!`);
@@ -2155,6 +2163,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     newWord.target = newWord[state.selectedLang];
 
     state.customVocab.push(newWord);
+    sessionImportedList.push(newWord);
     saveState();
     renderImportedList();
 
@@ -2836,21 +2845,18 @@ function setupWordDetails(currentWord) {
 
       let responseText = "";
 
-      // Check keys
-      if (state.geminiKey) {
-        responseText = await callGeminiAPI(state.geminiKey, promptText);
-      } else if (state.openaiKey) {
-        responseText = await callOpenAIAPI(state.openaiKey, promptText);
-      } else if (state.anthropicKey) {
-        responseText = await callAnthropicAPI(state.anthropicKey, promptText);
+      // Check keys using unified callLLM helper
+      if (state.geminiKey || state.openaiKey || state.grokKey) {
+        responseText = await callLLM(promptText, "You are a helpful language teacher explaining vocabulary details.");
       } else {
-        responseText = await fetchWebDetailsFallback(currentWord.en, aLang);
+        const fallbackText = await fetchWebDetailsFallback(currentWord.en, aLang);
+        responseText = `⚠️ [No API Key configured. Showing web dictionary fallback details instead of AI explanation]\n\n${fallbackText}`;
       }
 
       aiResponse.textContent = responseText;
       aiResponse.style.display = "block";
     } catch (err) {
-      aiResponse.textContent = `Could not fetch more details: ${err.message}`;
+      aiResponse.textContent = `Could not fetch details: ${err.message}`;
       aiResponse.style.display = "block";
     } finally {
       aiLoading.style.display = "none";
