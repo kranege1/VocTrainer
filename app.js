@@ -945,6 +945,22 @@ async function detectLanguage(text) {
   return null;
 }
 
+async function translateAndDetectWithAI(word) {
+  const prompt = `Identify the source language (en, de, it, es, or fr) of the phrase "${word}" and translate it into all 5 languages: English (en), German (de), Italian (it), Spanish (es), and French (fr).
+  Output your response ONLY as a clean, parseable JSON object with keys "detectedLang" (the 2-letter code), "en", "de", "it", "es", "fr". Do not wrap in markdown code blocks. Do not write extra commentary.
+  Example: {"detectedLang": "it", "en": "the book is on the table", "de": "das Buch ist auf dem Tisch", "it": "il libro è sul tavolo", "es": "el libro está en la mesa", "fr": "le livre est sur la table"}`;
+  
+  try {
+    const resText = await callLLM(prompt, "You are a multi-language translation assistant.");
+    const cleanJson = resText.replace(/```json/g, "").replace(/```/g, "").trim();
+    const parsed = JSON.parse(cleanJson);
+    return parsed;
+  } catch (e) {
+    console.error("AI translation/detection failed:", e);
+    return null;
+  }
+}
+
 async function addCustomWord(english, translation, lang, category, imageUrl = "", audioBase64 = "") {
   const base = state.baseLang || "en";
   const cleanEnglish = english.trim().toLowerCase();
@@ -978,13 +994,45 @@ async function addCustomWord(english, translation, lang, category, imageUrl = ""
     }
   };
 
-  // Autodetect languages of the first column word (english)
+  const hasKey = state.openaiKey || state.grokKey || state.geminiKey;
+  if (hasKey) {
+    // Perform AI detection and translations in one single call!
+    const aiResult = await translateAndDetectWithAI(english);
+    if (aiResult) {
+      newWord.en = sanitizeWordTranslation(aiResult.en, "en");
+      newWord.de = sanitizeWordTranslation(aiResult.de, "de");
+      newWord.it = sanitizeWordTranslation(aiResult.it, "it");
+      newWord.es = sanitizeWordTranslation(aiResult.es, "es");
+      newWord.fr = sanitizeWordTranslation(aiResult.fr, "fr");
+      newWord.lang = aiResult.detectedLang || lang;
+      newWord.target = newWord[state.selectedLang] || "";
+      
+      const staticFolders = ["verbs", "nouns", "technology", "biology", "phrases"];
+      if (category && !staticFolders.includes(category)) {
+        const exists = state.customFolders.some(f => f.id === category || f.name === category);
+        if (!exists) {
+          state.customFolders.push({ id: category, name: category, parentId: null });
+        }
+      }
+
+      state.customVocab.push(newWord);
+      sessionImportedList.push(newWord);
+      saveState();
+      renderImportedList();
+      if (document.getElementById("view-browse").classList.contains("active")) {
+        renderBrowseList();
+      }
+      return;
+    }
+  }
+
+  // Fallback to MyMemory:
+  // Add a small delay to avoid rate limits when doing multiple imports in parallel
+  await new Promise(r => setTimeout(r, 600));
+
   const detectedBase = await detectLanguage(english) || base;
-  
-  // Assign known values to their actual language codes
   newWord[detectedBase] = sanitizeWordTranslation(english, detectedBase);
   
-  // Initialize other language slots to empty so backfill translates them
   const langs = ["en", "de", "it", "es", "fr"];
   langs.forEach(l => {
     if (l !== detectedBase) {
@@ -992,20 +1040,16 @@ async function addCustomWord(english, translation, lang, category, imageUrl = ""
     }
   });
 
-  // Legacy fields fallback
   newWord.en = detectedBase === "en" ? sanitizeWordTranslation(english, "en") : "";
   newWord.target = "";
   newWord.lang = lang;
 
-  // Backfill all other languages from the single detected base word
   await fillMissingTranslations(newWord, detectedBase);
   
-  // Set fallback English to the translated English slot, or base word if none
   if (!newWord.en) {
     newWord.en = sanitizeWordTranslation(newWord.en || newWord[detectedBase] || english, "en");
   }
 
-  // Auto-sync folder creation for the new category
   const staticFolders = ["verbs", "nouns", "technology", "biology", "phrases"];
   if (category && !staticFolders.includes(category)) {
     const exists = state.customFolders.some(f => f.id === category || f.name === category);
@@ -1041,7 +1085,6 @@ function sanitizeWordTranslation(text, lang) {
     const w = words[0].toLowerCase();
     
     if (lang === "de") {
-      // Capitalize nouns. Skip common lowercase German words (verbs, adjectives, articles, prepositions)
       const lowercaseGermanWords = [
         "ich", "du", "er", "sie", "es", "wir", "ihr", "und", "oder", "aber", "auf", "unter", "in", 
         "aus", "mit", "von", "zu", "nach", "bei", "für", "gegen", "ohne", "um", "durch", "über", 
@@ -1056,7 +1099,6 @@ function sanitizeWordTranslation(text, lang) {
         clean = clean.charAt(0).toUpperCase() + clean.slice(1);
       }
     } else {
-      // Proper nouns capitalization for other languages
       const properNouns = [
         "english", "german", "italian", "spanish", "french", "deutsch", "italiano", "español", 
         "français", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche", 
@@ -1071,15 +1113,6 @@ function sanitizeWordTranslation(text, lang) {
         clean = clean.toLowerCase();
       }
     }
-  } else if (words.length > 1) {
-    // If it's a phrase, check if it starts with a capital letter (capitalize first word of sentences)
-    // but keep simple phrases lowercase unless it starts with proper nouns or it is German
-    if (lang === "de") {
-      // Capitalize any noun-like word in a German phrase (words starting with capitals in original)
-      // We keep original casing for German phrases since translation engines handle it well.
-    } else {
-      // Keep general phrases lowercase unless proper nouns are present
-    }
   }
   
   return clean;
@@ -1090,8 +1123,11 @@ async function fillMissingTranslations(wordObj, sourceLang) {
   const sourceText = wordObj[sourceLang];
   if (!sourceText) return;
 
-  const promises = langs.map(async (targetLang) => {
-    if (wordObj[targetLang]) return; // Already populated
+  for (const targetLang of langs) {
+    if (wordObj[targetLang]) continue; // Already populated
+    
+    // Add 450ms sequential delay to pace requests to MyMemory API to prevent rate limits
+    await new Promise(r => setTimeout(r, 450));
     
     try {
       const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(sourceText)}&langpair=${sourceLang}|${targetLang}`);
@@ -1104,9 +1140,7 @@ async function fillMissingTranslations(wordObj, sourceLang) {
     } catch (err) {
       console.error(`Failed to backfill translation for ${targetLang}`, err);
     }
-  });
-
-  await Promise.all(promises);
+  }
 }
 
 let sessionImportedList = [];
