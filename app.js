@@ -202,6 +202,10 @@ function showView(viewId) {
       btn.classList.add("active");
     }
   });
+
+  if (viewId === "view-setup") {
+    loadOnDeviceVoices();
+  }
 }
 
 function updateHeaderUI() {
@@ -3027,10 +3031,19 @@ window.testSelectedVoice = function(lang) {
   window.speechSynthesis.speak(utterance);
 };
 
-// Bind speech voices updated events
+// Bind speech voices updated events and handle async voice loading in desktop browsers
 if ('speechSynthesis' in window) {
+  // Pre-trigger to initialize voice retrieval in Chrome/Edge
+  window.speechSynthesis.getVoices();
+  
   window.speechSynthesis.onvoiceschanged = () => {
     loadOnDeviceVoices();
   };
+
+  // Multiple safety timers to handle lazy loaded voices
+  setTimeout(loadOnDeviceVoices, 100);
+  setTimeout(loadOnDeviceVoices, 500);
+  setTimeout(loadOnDeviceVoices, 1000);
+  setTimeout(loadOnDeviceVoices, 2500);
 }
 
