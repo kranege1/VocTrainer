@@ -2397,6 +2397,64 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
+    const isEditMode = !!state.editingWordKey;
+    if (isEditMode) {
+      const originalKey = state.editingWordKey;
+      const isCustom = state.isEditingCustom;
+      
+      const cleanEn = sanitizeWordTranslation(en, "en");
+      const cleanDe = sanitizeWordTranslation(de, "de");
+      const cleanIt = sanitizeWordTranslation(it, "it");
+      const cleanEs = sanitizeWordTranslation(es, "es");
+      const cleanFr = sanitizeWordTranslation(fr, "fr");
+      
+      if (isCustom) {
+        const idx = state.customVocab.findIndex(v => v.en === originalKey || v.origEn === originalKey);
+        if (idx !== -1) {
+          state.customVocab[idx].en = cleanEn;
+          state.customVocab[idx].de = cleanDe;
+          state.customVocab[idx].it = cleanIt;
+          state.customVocab[idx].es = cleanEs;
+          state.customVocab[idx].fr = cleanFr;
+          state.customVocab[idx].category = category;
+          state.customVocab[idx].image = imageUrl || cleanEn;
+        }
+      } else {
+        state.editedStarters[originalKey] = {
+          en: cleanEn,
+          de: cleanDe,
+          it: cleanIt,
+          es: cleanEs,
+          fr: cleanFr,
+          category,
+          image: imageUrl || cleanEn
+        };
+      }
+      
+      saveState();
+      
+      state.editingWordKey = null;
+      state.isEditingCustom = null;
+      document.getElementById("btn-manual-submit").textContent = "🚀 Save Word";
+      const header = document.querySelector("#tab-manual h3");
+      if (header) header.textContent = "✏️ Add Custom (Manual)";
+      
+      // Reset input fields
+      document.getElementById("manual-lang-en").value = "";
+      document.getElementById("manual-lang-de").value = "";
+      document.getElementById("manual-lang-it").value = "";
+      document.getElementById("manual-lang-es").value = "";
+      document.getElementById("manual-lang-fr").value = "";
+      document.getElementById("manual-image-url").value = "";
+      
+      alert("Word updated successfully!");
+      showView("view-browse");
+      if (state.selectedBrowseFolderId) {
+        renderBrowseWordsList(state.selectedBrowseFolderId);
+      }
+      return;
+    }
+
     const base = state.baseLang || "en";
     const cleanWord = (base === "en" ? en : base === "de" ? de : base === "it" ? it : base === "es" ? es : fr).trim().toLowerCase();
 
