@@ -624,6 +624,31 @@ async function importFromUrl(url, category) {
   }
 }
 
+async function detectLanguage(text) {
+  if (!text || text.trim().length === 0) return null;
+  try {
+    const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text.trim())}&langpair=autodetect|en`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.matches && data.matches.length > 0) {
+        // Find a match with a valid source language
+        for (const match of data.matches) {
+          const source = match.source;
+          if (source && source.length >= 2) {
+            const lang = source.substring(0, 2).toLowerCase();
+            if (["en", "de", "it", "es", "fr"].includes(lang)) {
+              return lang;
+            }
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.error("Language detection failed for: " + text, err);
+  }
+  return null;
+}
+
 async function addCustomWord(english, translation, lang, category, imageUrl = "", audioBase64 = "") {
   const base = state.baseLang || "en";
   const cleanEnglish = english.trim().toLowerCase();
@@ -656,30 +681,42 @@ async function addCustomWord(english, translation, lang, category, imageUrl = ""
       synonyms: { en: [], de: [], it: [], es: [], fr: [] }
     }
   };
+
+  // Autodetect languages of the imported words
+  const detectedBase = await detectLanguage(english);
+  const detectedTrans = await detectLanguage(translation);
+  
+  let finalBaseLang = detectedBase || base;
+  let finalTransLang = detectedTrans || lang;
+  
+  if (finalBaseLang === finalTransLang) {
+    finalBaseLang = base;
+    finalTransLang = lang;
+  }
   
   // Assign known values to their actual language codes
-  newWord[base] = english.trim();
-  newWord[lang] = translation.trim();
+  newWord[finalBaseLang] = english.trim();
+  newWord[finalTransLang] = translation.trim();
   
   // Initialize other language slots to empty so backfill translates them
   const langs = ["en", "de", "it", "es", "fr"];
   langs.forEach(l => {
-    if (l !== base && l !== lang) {
+    if (l !== finalBaseLang && l !== finalTransLang) {
       newWord[l] = "";
     }
   });
 
   // Legacy fields fallback
-  newWord.en = base === "en" ? english.trim() : lang === "en" ? translation.trim() : "";
+  newWord.en = finalBaseLang === "en" ? english.trim() : finalTransLang === "en" ? translation.trim() : "";
   newWord.target = translation.trim();
-  newWord.lang = lang;
+  newWord.lang = finalTransLang;
 
   // Backfill other languages BEFORE pushing/saving to state to ensure complete data availability
-  await fillMissingTranslations(newWord, base);
+  await fillMissingTranslations(newWord, finalBaseLang);
   
   // Set fallback English to the translated English slot, or base word if none
   if (!newWord.en) {
-    newWord.en = newWord.en || newWord[base] || english.trim();
+    newWord.en = newWord.en || newWord[finalBaseLang] || english.trim();
   }
 
   // Auto-sync folder creation for the new category
