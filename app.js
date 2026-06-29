@@ -657,17 +657,30 @@ async function addCustomWord(english, translation, lang, category, imageUrl = ""
     }
   };
   
-  // Assign known values
-  newWord[base] = english;
-  newWord[lang] = translation;
+  // Assign known values to their actual language codes
+  newWord[base] = english.trim();
+  newWord[lang] = translation.trim();
   
+  // Initialize other language slots to empty so backfill translates them
+  const langs = ["en", "de", "it", "es", "fr"];
+  langs.forEach(l => {
+    if (l !== base && l !== lang) {
+      newWord[l] = "";
+    }
+  });
+
   // Legacy fields fallback
-  newWord.en = newWord.en || english;
-  newWord.target = newWord.target || translation;
+  newWord.en = base === "en" ? english.trim() : lang === "en" ? translation.trim() : "";
+  newWord.target = translation.trim();
   newWord.lang = lang;
 
   // Backfill other languages BEFORE pushing/saving to state to ensure complete data availability
   await fillMissingTranslations(newWord, base);
+  
+  // Set fallback English to the translated English slot, or base word if none
+  if (!newWord.en) {
+    newWord.en = newWord.en || newWord[base] || english.trim();
+  }
 
   // Auto-sync folder creation for the new category
   const staticFolders = ["verbs", "nouns", "technology", "biology", "phrases"];
@@ -702,7 +715,7 @@ async function fillMissingTranslations(wordObj, sourceLang) {
       const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(sourceText)}&langpair=${sourceLang}|${targetLang}`);
       if (res.ok) {
         const data = await res.json();
-        if (data.responseData && data.responseData.translatedText) {
+        if (data.responseStatus === 200 && data.responseData && data.responseData.translatedText) {
           wordObj[targetLang] = data.responseData.translatedText.trim();
         }
       }
