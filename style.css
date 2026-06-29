@@ -1483,6 +1483,31 @@ input:checked + .slider:before {
   box-shadow: 0 0 20px rgba(76, 201, 240, 0.15);
 }
 
+/* iOS device specifics to maximize screen size, remove backgrounds and floating card borders */
+body.device-ios {
+  background: var(--bg-color) !important;
+  overflow: auto !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: stretch !important;
+}
+
+body.device-ios .blob {
+  display: none !important;
+}
+
+body.device-ios .app-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 16px !important;
+}
+
 
 
 

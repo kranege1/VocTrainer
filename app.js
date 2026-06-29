@@ -1652,6 +1652,13 @@ function stopAudioRecording() {
 // 8. Event Listeners & Initialization
 // ==========================================
 document.addEventListener("DOMContentLoaded", async () => {
+  // Add iOS class to body if running on iPhone/iPad/iPod
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (isIOS) {
+    document.body.classList.add('device-ios');
+  }
+
   await loadStarterVocab();
   loadState();
 
