@@ -1992,7 +1992,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // AI translate, classify & suggest synonyms
   document.getElementById("btn-manual-ai-process").onclick = async () => {
     const word = document.getElementById("manual-input-word").value.trim();
-    const lang = document.getElementById("manual-input-lang").value;
     const btn = document.getElementById("btn-manual-ai-process");
 
     if (!word) {
@@ -2005,7 +2004,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     btn.disabled = true;
 
     try {
-      const prompt = `Classify and translate the vocabulary word/phrase "${word}" written in input language key "${lang}".
+      const detectedBase = await detectLanguage(word) || "en";
+      const prompt = `Classify and translate the vocabulary word/phrase "${word}" written in source language key "${detectedBase}".
       Output your response ONLY as a clean, parseable JSON object with the exact keys described below. Do not wrap in markdown code blocks. Do not write extra commentary.
       
       JSON schema:
@@ -2345,7 +2345,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function executeBulkImport() {
-    const lang = document.getElementById("bulk-lang").value;
+    const lang = state.selectedLang || "en";
     const cat = document.getElementById("bulk-category").value.trim() || "imported";
     let count = 0;
     
