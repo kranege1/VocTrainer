@@ -205,6 +205,7 @@ function showView(viewId) {
 
   if (viewId === "view-setup") {
     loadOnDeviceVoices();
+    renderHistoryList();
   }
 }
 
@@ -1272,8 +1273,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderBrowseList();
       } else if (targetView === "view-mistakes") {
         renderMistakesList();
-      } else if (targetView === "view-history") {
-        renderHistoryList();
       } else if (targetView === "view-import") {
         renderImportedList();
       }
@@ -1904,13 +1903,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderBrowseList();
   };
 
-  document.getElementById("btn-go-history").onclick = () => {
-    showView("view-history");
-    renderHistoryList();
-  };
-
   document.getElementById("btn-browse-back").onclick = () => showView("view-dashboard");
-  document.getElementById("btn-history-back").onclick = () => showView("view-dashboard");
 
   // Browse selection change filters
   document.querySelectorAll("#browse-lang-selector .lang-btn").forEach(btn => {

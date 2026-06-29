@@ -50,10 +50,6 @@
         <button class="nav-item danger-badge-container" data-view="view-mistakes">
           <span class="icon">⚠️</span> Mistakes
           <span class="badge" id="sidebar-mistakes-badge">0</span>
-        </button>
-        <button class="nav-item" data-view="view-history">
-          <span class="icon">📈</span> History
-        </button>
         <button class="nav-item" data-view="view-import">
           <span class="icon">📥</span> Import
         </button>
@@ -143,10 +139,6 @@
         </button>
         <button id="btn-go-browse" class="btn btn-secondary">
           <span class="icon">🔍</span> Browse Vocab
-        </button>
-        <button id="btn-go-history" class="btn btn-secondary">
-          <span class="icon">📈</span> History
-        </button>
         <button id="btn-go-setup" class="btn btn-secondary" style="margin: 0;">
           <span class="icon">⚙️</span> Preferences
         </button>
@@ -419,6 +411,15 @@
         <h3>On-Device LLM (iPhone/Local)</h3>
         <p class="import-help">Note: On newer iPhones or laptops, you can run language learning models locally (e.g. WebLLM or Apple's Gemini Nano via Safari Experiments). Toggle standard Local evaluations.</p>
         <button class="btn btn-secondary btn-block" disabled>On-Device LLM: Ready & Supported</button>
+      </div>
+
+      <!-- PRACTICE HISTORY CARD -->
+      <div class="card">
+        <h3>Practice History</h3>
+        <p class="import-help">Review your completed practice sessions and study history.</p>
+        <ul class="mistakes-list" id="history-sessions-list">
+          <li class="empty-state">No completed tests yet. Start learning to record history!</li>
+        </ul>
       </div>
     </section>
 
@@ -764,20 +765,6 @@
       </div>
     </section>
 
-    <!-- HISTORY VIEW -->
-    <section id="view-history" class="app-view">
-      <div class="view-header">
-        <button id="btn-history-back" class="btn-back">← Back</button>
-        <h2>Practice History</h2>
-      </div>
-
-      <div class="card">
-        <h3>Completed Tests & Sessions</h3>
-        <ul class="mistakes-list" id="history-sessions-list">
-          <li class="empty-state">No completed tests yet. Start learning to record history!</li>
-        </ul>
-      </div>
-    </section>
   </div>
 
   <!-- Custom Modal Overlay for Alerts and Confirms -->
