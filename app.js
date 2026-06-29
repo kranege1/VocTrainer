@@ -622,14 +622,10 @@ async function addCustomWord(english, translation, lang, category, imageUrl = ""
   newWord.target = newWord.target || translation;
   newWord.lang = lang;
 
-  state.customVocab.push(newWord);
-  saveState();
-  renderImportedList();
-
-  // Backfill other languages asynchronously
+  // Backfill other languages BEFORE pushing/saving to state to ensure complete data availability
   await fillMissingTranslations(newWord, base);
-  
-  // Re-save and refresh once complete
+
+  state.customVocab.push(newWord);
   saveState();
   renderImportedList();
   if (document.getElementById("view-browse").classList.contains("active")) {
@@ -1884,24 +1880,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     const cat = document.getElementById("bulk-category").value.trim() || "imported";
     let count = 0;
     
-    parsedRows.forEach(row => {
-      if (row.active && row.word.trim()) {
-        addCustomWord(row.word.trim(), row.trans.trim(), lang, cat);
-        count++;
-      }
-    });
+    const btnConfirm = document.getElementById("btn-bulk-confirm");
+    const btnConfirmTop = document.getElementById("btn-bulk-confirm-top");
+    const originalText = btnConfirm ? btnConfirm.textContent : "Confirm Import";
     
-    if (count > 0) {
-      saveState();
-      renderImportedList();
-      alert(`Successfully imported ${count} custom words!`);
-      document.getElementById("bulk-import-text").value = "";
-      bulkPreviewArea.style.display = "none";
-      btnBulkSwap.style.display = "none";
-      parsedRows = [];
-    } else {
-      alert("No words selected to import.");
-    }
+    if (btnConfirm) { btnConfirm.textContent = "⏳ Translating & Importing..."; btnConfirm.disabled = true; }
+    if (btnConfirmTop) { btnConfirmTop.textContent = "⏳ Importing..."; btnConfirmTop.disabled = true; }
+
+    (async () => {
+      try {
+        for (const row of parsedRows) {
+          if (row.active && row.word.trim()) {
+            await addCustomWord(row.word.trim(), row.trans.trim(), lang, cat);
+            count++;
+          }
+        }
+        
+        if (count > 0) {
+          saveState();
+          renderImportedList();
+          alert(`Successfully imported and fully translated ${count} custom words!`);
+          document.getElementById("bulk-import-text").value = "";
+          bulkPreviewArea.style.display = "none";
+          btnBulkSwap.style.display = "none";
+          parsedRows = [];
+        } else {
+          alert("No words selected to import.");
+        }
+      } catch (err) {
+        console.error("Bulk import failed:", err);
+        alert("Bulk import failed during translation process: " + err.message);
+      } finally {
+        if (btnConfirm) { btnConfirm.textContent = originalText; btnConfirm.disabled = false; }
+        if (btnConfirmTop) { btnConfirmTop.textContent = "Confirm Import"; btnConfirmTop.disabled = false; }
+      }
+    })();
   }
 
   if (btnBulkConfirm) {
