@@ -682,41 +682,31 @@ async function addCustomWord(english, translation, lang, category, imageUrl = ""
     }
   };
 
-  // Autodetect languages of the imported words
-  const detectedBase = await detectLanguage(english);
-  const detectedTrans = await detectLanguage(translation);
-  
-  let finalBaseLang = detectedBase || base;
-  let finalTransLang = detectedTrans || lang;
-  
-  if (finalBaseLang === finalTransLang) {
-    finalBaseLang = base;
-    finalTransLang = lang;
-  }
+  // Autodetect languages of the first column word (english)
+  const detectedBase = await detectLanguage(english) || base;
   
   // Assign known values to their actual language codes
-  newWord[finalBaseLang] = english.trim();
-  newWord[finalTransLang] = translation.trim();
+  newWord[detectedBase] = english.trim();
   
   // Initialize other language slots to empty so backfill translates them
   const langs = ["en", "de", "it", "es", "fr"];
   langs.forEach(l => {
-    if (l !== finalBaseLang && l !== finalTransLang) {
+    if (l !== detectedBase) {
       newWord[l] = "";
     }
   });
 
   // Legacy fields fallback
-  newWord.en = finalBaseLang === "en" ? english.trim() : finalTransLang === "en" ? translation.trim() : "";
-  newWord.target = translation.trim();
-  newWord.lang = finalTransLang;
+  newWord.en = detectedBase === "en" ? english.trim() : "";
+  newWord.target = "";
+  newWord.lang = lang;
 
-  // Backfill other languages BEFORE pushing/saving to state to ensure complete data availability
-  await fillMissingTranslations(newWord, finalBaseLang);
+  // Backfill all other languages from the single detected base word
+  await fillMissingTranslations(newWord, detectedBase);
   
   // Set fallback English to the translated English slot, or base word if none
   if (!newWord.en) {
-    newWord.en = newWord.en || newWord[finalBaseLang] || english.trim();
+    newWord.en = newWord.en || newWord[detectedBase] || english.trim();
   }
 
   // Auto-sync folder creation for the new category
