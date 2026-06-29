@@ -29,7 +29,7 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
 
 ### 2.2 Translation Pipeline (All-Languages Backfill)
 - **Unified 5-Language Schema:** Every word registered in the system must hold translations across all 5 supported languages: **English (EN), German (DE), Italian (IT), Spanish (ES), and French (FR)**.
-- **Autodetect & Import:** When importing single words, the pipeline automatically detects the source language and uses MyMemory translation API to translate the word into all 4 other languages.
+- **Autodetect & Import:** When importing single words, the pipeline automatically detects the source language and uses the Google Translate GTX Web API to translate the word into all 4 other languages.
 - **Automated Text Sanitizer:**
   - **Punctuation Stripping:** Automatically removes trailing periods (`.`) or trailing commas (`,`) from vocabulary words/translations.
   - **German Capitalization:** Capitalizes single German words/nouns by default, excluding common verbs, adjectives, prepositions, and articles.

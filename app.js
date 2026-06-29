@@ -923,24 +923,20 @@ async function executeFileImport() {
 async function detectLanguage(text) {
   if (!text || text.trim().length === 0) return null;
   try {
-    const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text.trim())}&langpair=autodetect|en`);
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(text.trim())}`;
+    const res = await fetch(url);
     if (res.ok) {
       const data = await res.json();
-      if (data.matches && data.matches.length > 0) {
-        // Find a match with a valid source language
-        for (const match of data.matches) {
-          const source = match.source;
-          if (source && source.length >= 2) {
-            const lang = source.substring(0, 2).toLowerCase();
-            if (["en", "de", "it", "es", "fr"].includes(lang)) {
-              return lang;
-            }
-          }
+      const lang = data[2];
+      if (lang) {
+        const cleanLang = lang.toLowerCase().substring(0, 2);
+        if (["en", "de", "it", "es", "fr"].includes(cleanLang)) {
+          return cleanLang;
         }
       }
     }
   } catch (err) {
-    console.error("Language detection failed for: " + text, err);
+    console.error("Google language detection failed for: " + text, err);
   }
   return null;
 }
@@ -1123,24 +1119,24 @@ async function fillMissingTranslations(wordObj, sourceLang) {
   const sourceText = wordObj[sourceLang];
   if (!sourceText) return;
 
-  for (const targetLang of langs) {
-    if (wordObj[targetLang]) continue; // Already populated
-    
-    // Add 450ms sequential delay to pace requests to MyMemory API to prevent rate limits
-    await new Promise(r => setTimeout(r, 450));
+  const promises = langs.map(async (targetLang) => {
+    if (wordObj[targetLang]) return; // Already populated
     
     try {
-      const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(sourceText)}&langpair=${sourceLang}|${targetLang}`);
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(sourceText)}`;
+      const res = await fetch(url);
       if (res.ok) {
         const data = await res.json();
-        if (data.responseStatus === 200 && data.responseData && data.responseData.translatedText) {
-          wordObj[targetLang] = sanitizeWordTranslation(data.responseData.translatedText, targetLang);
+        if (data && data[0] && data[0][0] && data[0][0][0]) {
+          wordObj[targetLang] = sanitizeWordTranslation(data[0][0][0], targetLang);
         }
       }
     } catch (err) {
-      console.error(`Failed to backfill translation for ${targetLang}`, err);
+      console.error(`Failed to backfill translation for ${targetLang} via Google`, err);
     }
-  }
+  });
+
+  await Promise.all(promises);
 }
 
 let sessionImportedList = [];
