@@ -1142,6 +1142,7 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
           category: item.category,
           image: item.image,
           details: item.details || {},
+          origEn: item.en || qText,
           answerLang: direction === "reverse" ? base : language,
           questionLang: direction === "reverse" ? language : base
         };
@@ -1187,6 +1188,7 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
           category: item.category,
           image: item.image,
           details: item.details || {},
+          origEn: item.en || qText,
           answerLang: direction === "reverse" ? base : language,
           questionLang: direction === "reverse" ? language : base
         };
@@ -1483,10 +1485,12 @@ function submitAnswer() {
     checkLevelUp();
 
     // Spaced Repetition Stats: correct progression
-    if (!state.wordStats[currentWord.en]) {
-      state.wordStats[currentWord.en] = { attempts: 0, errors: 0, box: 1, lastReview: null };
+    // Spaced Repetition Stats: correct progression
+    const wordKey = currentWord.origEn || currentWord.en;
+    if (!state.wordStats[wordKey]) {
+      state.wordStats[wordKey] = { attempts: 0, errors: 0, box: 1, lastReview: null };
     }
-    const stats = state.wordStats[currentWord.en];
+    const stats = state.wordStats[wordKey];
     stats.attempts = (stats.attempts || 0) + 1;
     stats.lastReview = Date.now();
     if (!stats.box) stats.box = 1;
@@ -1505,10 +1509,11 @@ function submitAnswer() {
     recordMistake(currentWord);
 
     // Spaced Repetition Stats: incorrect penalty
-    if (!state.wordStats[currentWord.en]) {
-      state.wordStats[currentWord.en] = { attempts: 0, errors: 0, box: 1, lastReview: null };
+    const wordKey = currentWord.origEn || currentWord.en;
+    if (!state.wordStats[wordKey]) {
+      state.wordStats[wordKey] = { attempts: 0, errors: 0, box: 1, lastReview: null };
     }
-    const stats = state.wordStats[currentWord.en];
+    const stats = state.wordStats[wordKey];
     stats.attempts = (stats.attempts || 0) + 1;
     stats.errors = (stats.errors || 0) + 1;
     stats.lastReview = Date.now();
@@ -1664,6 +1669,30 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btn-statistics-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-report-home").onclick = () => showView("view-dashboard");
 
+  function quitAndSaveTestSession() {
+    const tState = state.currentTest;
+    if (tState && tState.index > 0 && !tState.isRepeatRound) {
+      const completedCount = tState.index;
+      const accuracy = Math.round((tState.correctCount / completedCount) * 100);
+      const selCatEl = document.getElementById("select-category");
+      const category = selCatEl ? selCatEl.value : "custom";
+      
+      state.history.push({
+        date: new Date().toLocaleDateString(),
+        lang: state.selectedLang.toUpperCase(),
+        category: category,
+        total: completedCount,
+        correct: tState.correctCount,
+        accuracy: accuracy,
+        xp: tState.correctCount * 10,
+        isPartial: true
+      });
+      
+      saveState();
+      renderHistoryList();
+    }
+  }
+
   // Sidebar Nav Tab Event Listeners (Prompt to quit test session if active)
   document.querySelectorAll(".sidebar-nav .nav-item").forEach(btn => {
     btn.onclick = async (e) => {
@@ -1676,6 +1705,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!quitConfirmed) {
           return;
         }
+        quitAndSaveTestSession();
       }
       
       showView(targetView);
@@ -1693,6 +1723,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btn-quit-test").onclick = async () => {
     const quitConfirmed = await showCustomConfirm("Are you sure you want to quit this training session?");
     if (quitConfirmed) {
+      quitAndSaveTestSession();
       showView("view-dashboard");
     }
   };
