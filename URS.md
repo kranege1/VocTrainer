@@ -56,6 +56,10 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
 - Internal starter vocabularies are hidden from directory trees since they are read-only.
 - **Visual Design:** Actions for folders/categories use clean, minimal icons (`✏️`, `❌`) instead of plain text buttons.
 - Sequence of translation columns in tables must always show: **EN, DE, IT, ES, FR**.
+- **Translation Fix (Selection Tool):**
+  - Includes a checkbox selector column to select multiple words (with a Select All toggle in the header).
+  - Highlights empty translations in red `(empty)`.
+  - Includes a **🔄 Fix Translations** button allowing users to re-run selected rows through the translation pipeline (via LLM if key is set, or Google Translate GTX fallback) to automatically backfill empty or broken translations in the database.
 
 ### 3.2 Display Maximization (iOS & iPad)
 - **Detection:** Auto-detects iPhone, iPad, or iPod devices on startup.

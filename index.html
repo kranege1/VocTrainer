@@ -788,12 +788,14 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
           <h3 id="browse-list-title" style="margin: 0; font-size: 1rem; color: var(--accent-color); font-weight: bold;">Vocabulary Word List</h3>
           <div style="display: flex; gap: 8px;">
+            <button id="btn-fix-selected-translations" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0; display: inline-flex; align-items: center; gap: 6px;">🔄 Fix Translations</button>
             <button id="btn-add-word-to-folder" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0;">➕ Add Word</button>
           </div>
         </div>
         <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; min-width: 600px;">
           <thead>
             <tr style="border-bottom: 1px solid rgba(255,255,255,0.08); text-transform: uppercase;">
+              <th style="padding: 8px; width: 40px; text-align: center;"><input type="checkbox" id="chk-select-all-browse" style="cursor: pointer; width: 16px; height: 16px;"></th>
               <th style="padding: 8px; color: var(--text-secondary); font-weight: 600;">🇬🇧 EN</th>
               <th style="padding: 8px; color: var(--text-secondary); font-weight: 600;">🇩🇪 DE</th>
               <th style="padding: 8px; color: var(--text-secondary); font-weight: 600;">🇮🇹 IT</th>

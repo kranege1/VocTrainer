@@ -2940,8 +2940,106 @@ function renderBrowseWordsList(folderId) {
   titleEl.textContent = `Words in Folder: ${folderName} (${pool.length})`;
   
   if (pool.length === 0) {
-    wordsTableBody.innerHTML = `<tr><td colspan="8" class="empty-state" style="padding: 16px; text-align: center; color: var(--text-secondary);">No words in this folder yet. Drag and drop words here or manually add.</td></tr>`;
+    wordsTableBody.innerHTML = `<tr><td colspan="9" class="empty-state" style="padding: 16px; text-align: center; color: var(--text-secondary);">No words in this folder yet. Drag and drop words here or manually add.</td></tr>`;
     return;
+  }
+
+  // Select All Checkbox logic
+  const chkAll = document.getElementById("chk-select-all-browse");
+  if (chkAll) {
+    chkAll.checked = false;
+    chkAll.onclick = (e) => {
+      document.querySelectorAll(".chk-select-browse").forEach(chk => {
+        chk.checked = e.target.checked;
+      });
+    };
+  }
+
+  // Fix Selected Translations action
+  const btnFixTrans = document.getElementById("btn-fix-selected-translations");
+  if (btnFixTrans) {
+    btnFixTrans.onclick = async () => {
+      const selected = document.querySelectorAll(".chk-select-browse:checked");
+      if (selected.length === 0) {
+        alert("Please select at least one word to translate/fix.");
+        return;
+      }
+
+      const origText = btnFixTrans.textContent;
+      btnFixTrans.disabled = true;
+      btnFixTrans.textContent = `⏳ Fixing 0/${selected.length}...`;
+
+      let count = 0;
+      for (const chk of selected) {
+        const key = chk.dataset.key;
+        const isCustom = chk.dataset.custom === "true";
+        
+        let item = null;
+        if (isCustom) {
+          item = state.customVocab.find(v => v.en === key);
+        } else {
+          const override = state.editedStarters[key] || {};
+          const starter = STARTER_VOCAB_RAW.find(v => v.en === key || v.de === key || v.it === key || v.es === key || v.fr === key || v.origEn === key);
+          if (starter) {
+            item = {
+              en: override.en || starter.en || key,
+              de: override.de || starter.de || "",
+              it: override.it || starter.it || "",
+              es: override.es || starter.es || "",
+              fr: override.fr || starter.fr || "",
+              category: starter.category,
+              image: starter.image,
+              details: override.details || starter.details || {},
+              isStarter: true,
+              origEn: key
+            };
+          }
+        }
+
+        if (item) {
+          const baseLang = item.en ? "en" : item.de ? "de" : item.it ? "it" : item.es ? "es" : "fr";
+          const baseText = item[baseLang];
+
+          const hasKey = state.openaiKey || state.grokKey || state.geminiKey;
+          if (hasKey) {
+            const aiResult = await translateAndDetectWithAI(baseText);
+            if (aiResult) {
+              item.en = sanitizeWordTranslation(aiResult.en, "en");
+              item.de = sanitizeWordTranslation(aiResult.de, "de");
+              item.it = sanitizeWordTranslation(aiResult.it, "it");
+              item.es = sanitizeWordTranslation(aiResult.es, "es");
+              item.fr = sanitizeWordTranslation(aiResult.fr, "fr");
+            }
+          } else {
+            await fillMissingTranslations(item, baseLang);
+          }
+
+          if (isCustom) {
+            const idx = state.customVocab.findIndex(v => v.en === key);
+            if (idx !== -1) {
+              state.customVocab[idx] = { ...state.customVocab[idx], ...item };
+            }
+          } else {
+            state.editedStarters[key] = {
+              en: item.en,
+              de: item.de,
+              it: item.it,
+              es: item.es,
+              fr: item.fr
+            };
+          }
+        }
+
+        count++;
+        btnFixTrans.textContent = `⏳ Fixing ${count}/${selected.length}...`;
+      }
+
+      saveState();
+      renderBrowseWordsList(folderId);
+      btnFixTrans.disabled = false;
+      btnFixTrans.textContent = origText;
+      alert(`Successfully updated translations for ${selected.length} items!`);
+    };
   }
   
   pool.forEach(vocab => {
@@ -2955,7 +3053,6 @@ function renderBrowseWordsList(folderId) {
     const tr = document.createElement("tr");
     tr.style.borderBottom = "1px solid rgba(255,255,255,0.04)";
     
-    // Draggable word rows
     tr.setAttribute("draggable", "true");
     tr.ondragstart = (e) => {
       e.dataTransfer.setData("text/word-key", key);
@@ -2964,13 +3061,18 @@ function renderBrowseWordsList(folderId) {
     tr.ondragend = () => {
       tr.style.opacity = "1";
     };
+
+    const emptySpan = '<span style="color:var(--error-color);opacity:0.6;font-style:italic;">(empty)</span>';
     
     tr.innerHTML = `
-      <td style="padding: 10px 8px; color: #fff; font-weight: 700;">${vocab.en}</td>
-      <td style="padding: 10px 8px;">${vocab.de}</td>
-      <td style="padding: 10px 8px;">${vocab.it}</td>
-      <td style="padding: 10px 8px;">${vocab.es}</td>
-      <td style="padding: 10px 8px;">${vocab.fr}</td>
+      <td style="padding: 10px 8px; text-align: center;">
+        <input type="checkbox" class="chk-select-browse" data-key="${key.replace(/'/g, "\\'")}" data-custom="${isCustom}" style="cursor: pointer; width: 16px; height: 16px;">
+      </td>
+      <td style="padding: 10px 8px; color: #fff; font-weight: 700;">${vocab.en || emptySpan}</td>
+      <td style="padding: 10px 8px;">${vocab.de || emptySpan}</td>
+      <td style="padding: 10px 8px;">${vocab.it || emptySpan}</td>
+      <td style="padding: 10px 8px;">${vocab.es || emptySpan}</td>
+      <td style="padding: 10px 8px;">${vocab.fr || emptySpan}</td>
       <td style="padding: 10px 8px; text-align: center;"><span class="badge" style="background: rgba(255,255,255,0.05); color: var(--text-secondary); font-size: 0.7rem; border-radius: 6px;">Box ${box}</span></td>
       <td style="padding: 10px 8px; text-align: center;">${errors > 0 ? `<span class="badge" style="background: rgba(239, 71, 111, 0.1); color: var(--error-color); font-size: 0.7rem; border-radius: 6px;">⚠️ ${errors}</span>` : `<span style="color:var(--text-secondary); opacity: 0.3;">0</span>`}</td>
       <td style="padding: 10px 8px; text-align: center;">
