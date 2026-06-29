@@ -758,6 +758,13 @@ body {
   pointer-events: none;
 }
 
+.word-bubble.dragging {
+  opacity: 0.5;
+  background: var(--primary-color) !important;
+  border-color: var(--accent-color) !important;
+  transform: scale(1.05);
+}
+
 /* Speech mode Styles */
 .speech-instruction {
   color: var(--text-secondary);

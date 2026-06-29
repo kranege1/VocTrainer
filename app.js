@@ -1472,6 +1472,19 @@ function buildBubbleOptions(targetPhrase) {
 
   const shuffled = [...pieces].sort(() => 0.5 - Math.random());
 
+  // Enable desktop drag-over reordering on the selected zone container
+  selectedZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    const draggingEl = selectedZone.querySelector(".dragging");
+    if (!draggingEl) return;
+    const siblings = Array.from(selectedZone.querySelectorAll(".word-bubble:not(.dragging)"));
+    const nextSibling = siblings.find(sibling => {
+      const box = sibling.getBoundingClientRect();
+      return e.clientX < box.left + box.width / 2;
+    });
+    selectedZone.insertBefore(draggingEl, nextSibling);
+  });
+
   shuffled.forEach((piece, index) => {
     const bubble = document.createElement("button");
     bubble.className = "word-bubble";
@@ -1487,12 +1500,50 @@ function buildBubbleOptions(targetPhrase) {
       const selBubble = document.createElement("button");
       selBubble.className = "word-bubble";
       selBubble.textContent = piece;
+      
+      // Make it reorderable
+      selBubble.draggable = true;
+      selBubble.style.cursor = "move";
+
+      // HTML5 Drag and Drop events (Desktop)
+      selBubble.addEventListener("dragstart", (e) => {
+        selBubble.classList.add("dragging");
+      });
+      selBubble.addEventListener("dragend", () => {
+        selBubble.classList.remove("dragging");
+      });
+
+      // Touch Events (Mobile - iOS/iPad)
+      let touchActiveElement = null;
+      selBubble.addEventListener("touchstart", (e) => {
+        touchActiveElement = selBubble;
+        selBubble.classList.add("dragging");
+      });
+      selBubble.addEventListener("touchmove", (e) => {
+        if (!touchActiveElement) return;
+        const touch = e.touches[0];
+        const siblings = Array.from(selectedZone.querySelectorAll(".word-bubble:not(.dragging)"));
+        const nextSibling = siblings.find(sibling => {
+          const box = sibling.getBoundingClientRect();
+          return touch.clientX < box.left + box.width / 2;
+        });
+        selectedZone.insertBefore(touchActiveElement, nextSibling);
+      });
+      selBubble.addEventListener("touchend", () => {
+        if (touchActiveElement) {
+          touchActiveElement.classList.remove("dragging");
+          touchActiveElement = null;
+        }
+      });
+
+      // Clicking returns the bubble to options
       selBubble.onclick = () => {
         // Restore option button visibility
         bubble.style.visibility = "visible";
         bubble.style.pointerEvents = "auto";
         selBubble.remove();
       };
+      
       selectedZone.appendChild(selBubble);
     };
     optionsZone.appendChild(bubble);

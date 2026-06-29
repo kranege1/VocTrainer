@@ -26,6 +26,7 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
 - **Word Blocks (Bubbles) Mode:**
   - **Single Words:** Automatically splits words of length >= 3 into at least 3 separate selectable block pieces. Short words (< 3 characters) are split into letters and padded with prefix/suffix distractor blocks to ensure a minimum of 3 blocks are always displayed.
   - **Phrases:** Splits multi-word phrases word-by-word (one block per word). If a phrase contains fewer than 3 words, it is padded with decoy word blocks to maintain a minimum of 3 option options.
+  - **Flexible Drag Reordering:** Selected blocks can be dynamically reordered inside the selection zone. Users can drag and drop (desktop mouse) or touch-drag (iOS/iPad finger touch) block elements between words or to any position in the sentence to modify the word order before submitting.
 
 ### 2.2 Translation Pipeline (All-Languages Backfill)
 - **Unified 5-Language Schema:** Every word registered in the system must hold translations across all 5 supported languages: **English (EN), German (DE), Italian (IT), Spanish (ES), and French (FR)**.
