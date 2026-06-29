@@ -702,16 +702,30 @@
       </div>
 
       <!-- Word List Card -->
-      <div class="card" id="browse-words-card" style="display: none; margin-top: 16px;">
+      <div class="card" id="browse-words-card" style="display: none; margin-top: 16px; overflow-x: auto;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
           <h3 id="browse-list-title" style="margin: 0; font-size: 1rem; color: var(--accent-color); font-weight: bold;">Vocabulary Word List</h3>
           <div style="display: flex; gap: 8px;">
             <button id="btn-add-word-to-folder" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0;">➕ Add Word</button>
           </div>
         </div>
-        <ul class="imported-list" id="browse-words-list" style="margin: 0; padding: 0;">
-          <!-- Populated dynamically -->
-        </ul>
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; min-width: 600px;">
+          <thead>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.08); text-transform: uppercase;">
+              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600;">🇬🇧 EN</th>
+              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600;">🇩🇪 DE</th>
+              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600;">🇮🇹 IT</th>
+              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600;">🇪🇸 ES</th>
+              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600;">🇫🇷 FR</th>
+              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600; text-align: center;">Box</th>
+              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600; text-align: center;">Errors</th>
+              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600; text-align: center;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="browse-words-table-body">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
       </div>
     </section>
 

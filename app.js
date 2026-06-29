@@ -48,6 +48,8 @@ let state = {
   customFolders: [], // Custom folder objects: [{ id, name, parentId }]
   expandedFolders: {}, // Toggle expand/collapse states for custom directories: { [id]: boolean }
   selectedBrowseFolderId: null, // Selected folder id to view
+  editingWordKey: null, // Holds key of word currently being edited
+  isEditingCustom: null, // Tracks if currently edited word is custom
   wordStats: {}, // Spaced Repetition / Leitner stats: { wordEn: { attempts, errors, box, lastReview } }
   testDirection: "forward", // forward (base -> target) or reverse (target -> base)
   customVoices: {}, // Selected free local system voices for each language key: { en: "Voice Name", ... }
@@ -2195,12 +2197,12 @@ function renderDirectoryTree() {
 
 function renderBrowseWordsList(folderId) {
   const wordsCard = document.getElementById("browse-words-card");
-  const wordsList = document.getElementById("browse-words-list");
+  const wordsTableBody = document.getElementById("browse-words-table-body");
   const titleEl = document.getElementById("browse-list-title");
-  if (!wordsCard || !wordsList) return;
+  if (!wordsCard || !wordsTableBody) return;
   
   wordsCard.style.display = "block";
-  wordsList.innerHTML = "";
+  wordsTableBody.innerHTML = "";
   
   const allFolders = [
     { id: "verbs", name: "Verbs" },
@@ -2221,15 +2223,13 @@ function renderBrowseWordsList(folderId) {
   
   if (isStandard) {
     pool = STARTER_VOCAB_RAW.filter(v => v.category === folderId && !state.deletedStarters.includes(v[base])).map(item => {
-      let finalEn = item[base];
-      let finalTarget = item[selectedLang];
-      if (state.editedStarters[item[base]]) {
-        finalEn = state.editedStarters[item[base]].en || item[base];
-        finalTarget = state.editedStarters[item[base]].target || item[selectedLang];
-      }
+      const override = state.editedStarters[item[base]] || {};
       return {
-        en: finalEn,
-        target: finalTarget,
+        en: override.en || item.en || item[base] || "",
+        de: override.de || item.de || "",
+        it: override.it || item.it || "",
+        es: override.es || item.es || "",
+        fr: override.fr || item.fr || "",
         category: item.category,
         image: item.image,
         details: item.details || {},
@@ -2239,18 +2239,22 @@ function renderBrowseWordsList(folderId) {
     });
   } else {
     pool = state.customVocab.filter(v => v.category === folderId).map(item => ({
-      en: item[base] || item.en || item.target,
-      target: item[selectedLang] || item.target || item.en,
+      en: item.en || "",
+      de: item.de || "",
+      it: item.it || "",
+      es: item.es || "",
+      fr: item.fr || "",
       category: item.category,
       image: item.image,
-      details: item.details || {}
+      details: item.details || {},
+      isStarter: false
     }));
   }
   
   titleEl.textContent = `Words in Folder: ${folderName} (${pool.length})`;
   
   if (pool.length === 0) {
-    wordsList.innerHTML = `<li class="empty-state" style="padding: 16px; list-style: none; text-align: center; color: var(--text-secondary);">No words in this folder yet. Drag and drop words here or manually add.</li>`;
+    wordsTableBody.innerHTML = `<tr><td colspan="8" class="empty-state" style="padding: 16px; text-align: center; color: var(--text-secondary);">No words in this folder yet. Drag and drop words here or manually add.</td></tr>`;
     return;
   }
   
@@ -2262,45 +2266,36 @@ function renderBrowseWordsList(folderId) {
     const box = stats.box || 1;
     const errors = stats.errors || 0;
     
-    const li = document.createElement("li");
-    li.className = "imported-word-item";
-    li.style.padding = "10px 14px";
-    li.style.marginBottom = "6px";
-    li.style.background = "rgba(255,255,255,0.02)";
-    li.style.borderRadius = "10px";
-    li.style.border = "1px solid var(--border-color)";
-    li.style.display = "flex";
-    li.style.justifyContent = "space-between";
-    li.style.alignItems = "center";
+    const tr = document.createElement("tr");
+    tr.style.borderBottom = "1px solid rgba(255,255,255,0.04)";
     
-    // Draggable word lists
-    li.setAttribute("draggable", "true");
-    li.ondragstart = (e) => {
+    // Draggable word rows
+    tr.setAttribute("draggable", "true");
+    tr.ondragstart = (e) => {
       e.dataTransfer.setData("text/word-key", key);
-      li.style.opacity = "0.4";
+      tr.style.opacity = "0.4";
     };
-    li.ondragend = () => {
-      li.style.opacity = "1";
+    tr.ondragend = () => {
+      tr.style.opacity = "1";
     };
     
-    li.innerHTML = `
-      <div style="text-align: left; flex: 1;">
-        <strong style="color: #fff; font-size: 1rem;">${vocab.en}</strong>
-        <span style="color: var(--accent-color); font-weight: 600; margin: 0 8px;">&rarr;</span>
-        <span style="color: var(--text-primary); font-size: 0.95rem;">${vocab.target}</span>
-        
-        <div style="margin-top: 4px; display: flex; gap: 8px; align-items: center;">
-          <span class="badge" style="background: rgba(255,255,255,0.05); color: var(--text-secondary); font-size: 0.7rem;">Box ${box}</span>
-          ${errors > 0 ? `<span class="badge" style="background: rgba(239, 71, 111, 0.1); color: var(--error-color); font-size: 0.7rem;">⚠️ ${errors} errors</span>` : ""}
+    tr.innerHTML = `
+      <td style="padding: 10px 8px; color: #fff; font-weight: 700;">${vocab.en}</td>
+      <td style="padding: 10px 8px;">${vocab.de}</td>
+      <td style="padding: 10px 8px;">${vocab.it}</td>
+      <td style="padding: 10px 8px;">${vocab.es}</td>
+      <td style="padding: 10px 8px;">${vocab.fr}</td>
+      <td style="padding: 10px 8px; text-align: center;"><span class="badge" style="background: rgba(255,255,255,0.05); color: var(--text-secondary); font-size: 0.7rem; border-radius: 6px;">Box ${box}</span></td>
+      <td style="padding: 10px 8px; text-align: center;">${errors > 0 ? `<span class="badge" style="background: rgba(239, 71, 111, 0.1); color: var(--error-color); font-size: 0.7rem; border-radius: 6px;">⚠️ ${errors}</span>` : `<span style="color:var(--text-secondary); opacity: 0.3;">0</span>`}</td>
+      <td style="padding: 10px 8px; text-align: center;">
+        <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
+          <button class="tree-action-btn" title="Edit" onclick="window.triggerEditWord('${key.replace(/'/g, "\\'")}', ${isCustom})">✏️</button>
+          <button class="tree-action-btn" title="Delete" style="color: var(--error-color);" onclick="window.triggerDeleteWord('${key.replace(/'/g, "\\'")}', ${isCustom})">❌</button>
         </div>
-      </div>
-      <div style="display: flex; gap: 8px; flex-shrink: 0; align-items: center;">
-        <button class="tree-action-btn" title="Edit" onclick="window.triggerEditWord('${key.replace(/'/g, "\\'")}', ${isCustom})">✏️</button>
-        <button class="tree-action-btn" title="Delete" style="color: var(--error-color);" onclick="window.triggerDeleteWord('${key.replace(/'/g, "\\'")}', ${isCustom})">❌</button>
-      </div>
+      </td>
     `;
     
-    wordsList.appendChild(li);
+    wordsTableBody.appendChild(tr);
   });
 }
 
@@ -2654,73 +2649,53 @@ function showCustomConfirm(message) {
   });
 }
 
-// Custom Modal Edit Dialog
-function showCustomEditModal(key, currentWord, isCustom, selectedLang) {
-  const overlay = document.getElementById("custom-modal-overlay");
-  const icon = document.getElementById("modal-icon");
-  const title = document.getElementById("modal-title");
-  const msgEl = document.getElementById("modal-message");
-  const actions = document.getElementById("modal-actions");
+window.triggerEditWord = function(key, isCustom) {
+  let currentWord = null;
+  if (isCustom) {
+    currentWord = state.customVocab.find(v => v.en === key || v.origEn === key);
+  } else {
+    const base = state.baseLang || "en";
+    const item = STARTER_VOCAB_RAW.find(v => v[base] === key);
+    if (item) {
+      const override = state.editedStarters[key] || {};
+      currentWord = {
+        en: override.en || item.en || item[base] || "",
+        de: override.de || item.de || "",
+        it: override.it || item.it || "",
+        es: override.es || item.es || "",
+        fr: override.fr || item.fr || "",
+        category: override.category || item.category || "",
+        image: override.image || item.image || ""
+      };
+    }
+  }
 
-  playSound("sound-popup");
-
-  icon.textContent = "✏️";
-  title.textContent = "Edit Word & Translation";
-  
-  const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-
-  msgEl.innerHTML = `
-    <div class="form-group" style="text-align: left; margin-top: 10px; width: 100%;">
-      <label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-secondary);">Word (Base Language)</label>
-      <input type="text" id="edit-modal-word" value="${esc(currentWord.en)}" class="custom-select" style="width: 100%; min-height: 40px; padding: 8px 12px; background: rgba(255,255,255,0.03); color: #fff; border: 1px solid var(--border-color); border-radius: 10px;">
-    </div>
-    <div class="form-group" style="text-align: left; margin-top: 12px; width: 100%;">
-      <label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-secondary);">Translation (${selectedLang.toUpperCase()})</label>
-      <input type="text" id="edit-modal-translation" value="${esc(currentWord.target)}" class="custom-select" style="width: 100%; min-height: 40px; padding: 8px 12px; background: rgba(255,255,255,0.03); color: #fff; border: 1px solid var(--border-color); border-radius: 10px;">
-    </div>
-  `;
-
-  actions.innerHTML = "";
-
-  const cancelBtn = document.createElement("button");
-  cancelBtn.className = "btn btn-secondary";
-  cancelBtn.textContent = "Cancel";
-  cancelBtn.onclick = () => {
-    overlay.classList.remove("active");
-  };
-
-  const saveBtn = document.createElement("button");
-  saveBtn.className = "btn btn-primary";
-  saveBtn.textContent = "Save Changes";
-  saveBtn.onclick = () => {
-    const newWord = document.getElementById("edit-modal-word").value.trim();
-    const newTrans = document.getElementById("edit-modal-translation").value.trim();
+  if (currentWord) {
+    state.editingWordKey = key;
+    state.isEditingCustom = isCustom;
     
-    if (!newWord || !newTrans) {
-      alert("Fields cannot be empty.");
-      return;
-    }
-
-    if (isCustom) {
-      state.customVocab = state.customVocab.map(v => {
-        if (v.en === key) {
-          return { ...v, en: newWord, target: newTrans };
-        }
-        return v;
-      });
-    } else {
-      state.editedStarters[key] = { en: newWord, target: newTrans };
-    }
-
-    saveState();
-    renderBrowseList();
-    overlay.classList.remove("active");
-  };
-
-  actions.appendChild(cancelBtn);
-  actions.appendChild(saveBtn);
-  overlay.classList.add("active");
-}
+    // Switch to import view
+    showView("view-import");
+    
+    // Activate manual tab
+    const tabBtn = document.querySelector('[data-tab="tab-manual"]');
+    if (tabBtn) tabBtn.click();
+    
+    // Pre-fill fields
+    document.getElementById("manual-lang-en").value = currentWord.en || "";
+    document.getElementById("manual-lang-de").value = currentWord.de || "";
+    document.getElementById("manual-lang-it").value = currentWord.it || "";
+    document.getElementById("manual-lang-es").value = currentWord.es || "";
+    document.getElementById("manual-lang-fr").value = currentWord.fr || "";
+    document.getElementById("manual-category").value = currentWord.category || "";
+    document.getElementById("manual-image-url").value = currentWord.image || "";
+    
+    // Change button text and title
+    document.getElementById("btn-manual-submit").textContent = "💾 Save Changes";
+    const header = document.querySelector("#tab-manual h3");
+    if (header) header.textContent = "✏️ Edit Word";
+  }
+};
 
 window.triggerDeleteWord = async function(key, isCustom) {
   const confirmDel = await showCustomConfirm(`Are you sure you want to delete "${key}"?`);
@@ -2735,32 +2710,6 @@ window.triggerDeleteWord = async function(key, isCustom) {
   }
   saveState();
   renderBrowseList();
-};
-
-window.triggerEditWord = function(key, isCustom) {
-  let currentWord = null;
-  const activeLangBtn = document.querySelector("#browse-lang-selector .lang-btn.active");
-  const selectedLang = activeLangBtn ? activeLangBtn.dataset.lang : "de";
-
-  if (isCustom) {
-    currentWord = state.customVocab.find(v => v.en === key);
-  } else {
-    const base = state.baseLang || "en";
-    const item = STARTER_VOCAB_RAW.find(v => v[base] === key);
-    if (item) {
-      let finalEn = key;
-      let finalTarget = item[selectedLang];
-      if (state.editedStarters[key]) {
-        finalEn = state.editedStarters[key].en || key;
-        finalTarget = state.editedStarters[key].target || finalTarget;
-      }
-      currentWord = { en: finalEn, target: finalTarget };
-    }
-  }
-
-  if (currentWord) {
-    showCustomEditModal(key, currentWord, isCustom, selectedLang);
-  }
 };
 
 // API Key Validation Helper
