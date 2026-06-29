@@ -711,6 +711,21 @@ async function executeUrlImport() {
   const btnConfirmTop = document.getElementById("btn-url-confirm-top");
   const originalText = btnConfirm ? btnConfirm.textContent : "Import Selected Words Now!";
   
+  const progressContainer = document.getElementById("url-import-progress-container");
+  const progressBar = document.getElementById("url-import-progress-bar");
+  const progressStatus = document.getElementById("url-import-progress-status");
+  const progressPercent = document.getElementById("url-import-progress-percent");
+
+  const activeRows = urlScrapedRows.filter(r => r.active && r.word.trim());
+  const total = activeRows.length;
+  
+  if (total > 0 && progressContainer) {
+    progressContainer.style.display = "block";
+    progressBar.style.width = "0%";
+    progressPercent.textContent = "0%";
+    progressStatus.textContent = "Starting translation & import...";
+  }
+
   let count = 0;
   
   if (btnConfirm) { btnConfirm.textContent = "⏳ Translating & Importing..."; btnConfirm.disabled = true; }
@@ -721,6 +736,12 @@ async function executeUrlImport() {
       if (row.active && row.word.trim()) {
         await addCustomWord(row.word.trim(), row.trans.trim(), state.selectedLang, category);
         count++;
+        if (progressContainer) {
+          const pct = Math.round((count / total) * 100);
+          progressBar.style.width = `${pct}%`;
+          progressPercent.textContent = `${pct}%`;
+          progressStatus.textContent = `Translating & importing ${count} of ${total}...`;
+        }
       }
     }
     
@@ -741,6 +762,7 @@ async function executeUrlImport() {
   } finally {
     if (btnConfirm) { btnConfirm.textContent = originalText; btnConfirm.disabled = false; }
     if (btnConfirmTop) { btnConfirmTop.textContent = "🚀 Start Import"; btnConfirmTop.disabled = false; }
+    if (progressContainer) progressContainer.style.display = "none";
   }
 }
 
@@ -887,6 +909,21 @@ async function executeFileImport() {
   const btnConfirmTop = document.getElementById("btn-file-confirm-top");
   const originalText = btnConfirm ? btnConfirm.textContent : "Import Selected Words Now!";
   
+  const progressContainer = document.getElementById("file-import-progress-container");
+  const progressBar = document.getElementById("file-import-progress-bar");
+  const progressStatus = document.getElementById("file-import-progress-status");
+  const progressPercent = document.getElementById("file-import-progress-percent");
+
+  const activeRows = fileScrapedRows.filter(r => r.active && r.word.trim());
+  const total = activeRows.length;
+  
+  if (total > 0 && progressContainer) {
+    progressContainer.style.display = "block";
+    progressBar.style.width = "0%";
+    progressPercent.textContent = "0%";
+    progressStatus.textContent = "Starting translation & import...";
+  }
+
   let count = 0;
   
   if (btnConfirm) { btnConfirm.textContent = "⏳ Translating & Importing..."; btnConfirm.disabled = true; }
@@ -897,6 +934,12 @@ async function executeFileImport() {
       if (row.active && row.word.trim()) {
         await addCustomWord(row.word.trim(), row.trans.trim(), state.selectedLang, category);
         count++;
+        if (progressContainer) {
+          const pct = Math.round((count / total) * 100);
+          progressBar.style.width = `${pct}%`;
+          progressPercent.textContent = `${pct}%`;
+          progressStatus.textContent = `Translating & importing ${count} of ${total}...`;
+        }
       }
     }
     
@@ -917,6 +960,7 @@ async function executeFileImport() {
   } finally {
     if (btnConfirm) { btnConfirm.textContent = originalText; btnConfirm.disabled = false; }
     if (btnConfirmTop) { btnConfirmTop.textContent = "🚀 Start Import"; btnConfirmTop.disabled = false; }
+    if (progressContainer) progressContainer.style.display = "none";
   }
 }
 
@@ -2543,6 +2587,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     const btnConfirmTop = document.getElementById("btn-bulk-confirm-top");
     const originalText = btnConfirm ? btnConfirm.textContent : "Confirm Import";
     
+    const progressContainer = document.getElementById("bulk-import-progress-container");
+    const progressBar = document.getElementById("bulk-import-progress-bar");
+    const progressStatus = document.getElementById("bulk-import-progress-status");
+    const progressPercent = document.getElementById("bulk-import-progress-percent");
+
+    const activeRows = parsedRows.filter(r => r.active && r.word.trim());
+    const total = activeRows.length;
+    
+    if (total > 0 && progressContainer) {
+      progressContainer.style.display = "block";
+      progressBar.style.width = "0%";
+      progressPercent.textContent = "0%";
+      progressStatus.textContent = "Starting translation & import...";
+    }
+
     if (btnConfirm) { btnConfirm.textContent = "⏳ Translating & Importing..."; btnConfirm.disabled = true; }
     if (btnConfirmTop) { btnConfirmTop.textContent = "⏳ Importing..."; btnConfirmTop.disabled = true; }
 
@@ -2552,6 +2611,12 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (row.active && row.word.trim()) {
             await addCustomWord(row.word.trim(), row.trans.trim(), lang, cat);
             count++;
+            if (progressContainer) {
+              const pct = Math.round((count / total) * 100);
+              progressBar.style.width = `${pct}%`;
+              progressPercent.textContent = `${pct}%`;
+              progressStatus.textContent = `Translating & importing ${count} of ${total}...`;
+            }
           }
         }
         
@@ -2572,6 +2637,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       } finally {
         if (btnConfirm) { btnConfirm.textContent = originalText; btnConfirm.disabled = false; }
         if (btnConfirmTop) { btnConfirmTop.textContent = "Confirm Import"; btnConfirmTop.disabled = false; }
+        if (progressContainer) progressContainer.style.display = "none";
       }
     })();
   }
