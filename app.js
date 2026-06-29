@@ -982,7 +982,7 @@ async function addCustomWord(english, translation, lang, category, imageUrl = ""
   const detectedBase = await detectLanguage(english) || base;
   
   // Assign known values to their actual language codes
-  newWord[detectedBase] = english.trim();
+  newWord[detectedBase] = sanitizeWordTranslation(english, detectedBase);
   
   // Initialize other language slots to empty so backfill translates them
   const langs = ["en", "de", "it", "es", "fr"];
@@ -993,7 +993,7 @@ async function addCustomWord(english, translation, lang, category, imageUrl = ""
   });
 
   // Legacy fields fallback
-  newWord.en = detectedBase === "en" ? english.trim() : "";
+  newWord.en = detectedBase === "en" ? sanitizeWordTranslation(english, "en") : "";
   newWord.target = "";
   newWord.lang = lang;
 
@@ -1002,7 +1002,7 @@ async function addCustomWord(english, translation, lang, category, imageUrl = ""
   
   // Set fallback English to the translated English slot, or base word if none
   if (!newWord.en) {
-    newWord.en = newWord.en || newWord[detectedBase] || english.trim();
+    newWord.en = sanitizeWordTranslation(newWord.en || newWord[detectedBase] || english, "en");
   }
 
   // Auto-sync folder creation for the new category
@@ -1027,6 +1027,64 @@ async function addCustomWord(english, translation, lang, category, imageUrl = ""
   }
 }
 
+function sanitizeWordTranslation(text, lang) {
+  if (!text) return "";
+  let clean = text.trim();
+  
+  // Remove trailing periods and commas if they are unnecessary (short words/phrases)
+  if (clean.length > 1 && (clean.endsWith(".") || clean.endsWith(",")) && !clean.endsWith("...") && !/[?!]/.test(clean)) {
+    clean = clean.substring(0, clean.length - 1).trim();
+  }
+  
+  const words = clean.split(/\s+/);
+  if (words.length === 1) {
+    const w = words[0].toLowerCase();
+    
+    if (lang === "de") {
+      // Capitalize nouns. Skip common lowercase German words (verbs, adjectives, articles, prepositions)
+      const lowercaseGermanWords = [
+        "ich", "du", "er", "sie", "es", "wir", "ihr", "und", "oder", "aber", "auf", "unter", "in", 
+        "aus", "mit", "von", "zu", "nach", "bei", "für", "gegen", "ohne", "um", "durch", "über", 
+        "vor", "hinter", "neben", "zwischen", "der", "die", "das", "ein", "eine", "einer", "eines", 
+        "einem", "einen", "mein", "dein", "sein", "ihr", "unser", "euer", "schön", "gut", "groß", 
+        "klein", "neu", "alt", "jung", "alt", "schnell", "langsam", "gehen", "laufen", "kommen", 
+        "sehen", "hören", "sprechen", "schreiben", "lesen", "lernen", "essen", "trinken", "schlafen", 
+        "arbeiten", "spielen", "machen", "tun", "haben", "sein", "werden", "können", "müssen", 
+        "sollen", "wollen", "dürfen", "mögen", "nicht", "kein", "sehr", "viel", "wenig", "mehr", "weniger"
+      ];
+      if (!lowercaseGermanWords.includes(w)) {
+        clean = clean.charAt(0).toUpperCase() + clean.slice(1);
+      }
+    } else {
+      // Proper nouns capitalization for other languages
+      const properNouns = [
+        "english", "german", "italian", "spanish", "french", "deutsch", "italiano", "español", 
+        "français", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche", 
+        "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", 
+        "january", "february", "march", "april", "may", "june", "july", "august", "september", 
+        "october", "november", "december", "januar", "februar", "märz", "mai", "juni", "juli", 
+        "oktober", "dezember"
+      ];
+      if (properNouns.includes(w)) {
+        clean = clean.charAt(0).toUpperCase() + clean.slice(1);
+      } else {
+        clean = clean.toLowerCase();
+      }
+    }
+  } else if (words.length > 1) {
+    // If it's a phrase, check if it starts with a capital letter (capitalize first word of sentences)
+    // but keep simple phrases lowercase unless it starts with proper nouns or it is German
+    if (lang === "de") {
+      // Capitalize any noun-like word in a German phrase (words starting with capitals in original)
+      // We keep original casing for German phrases since translation engines handle it well.
+    } else {
+      // Keep general phrases lowercase unless proper nouns are present
+    }
+  }
+  
+  return clean;
+}
+
 async function fillMissingTranslations(wordObj, sourceLang) {
   const langs = ["en", "de", "it", "es", "fr"];
   const sourceText = wordObj[sourceLang];
@@ -1040,7 +1098,7 @@ async function fillMissingTranslations(wordObj, sourceLang) {
       if (res.ok) {
         const data = await res.json();
         if (data.responseStatus === 200 && data.responseData && data.responseData.translatedText) {
-          wordObj[targetLang] = data.responseData.translatedText.trim();
+          wordObj[targetLang] = sanitizeWordTranslation(data.responseData.translatedText, targetLang);
         }
       }
     } catch (err) {
@@ -2012,10 +2070,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
+    const cleanEn = sanitizeWordTranslation(en, "en");
+    const cleanDe = sanitizeWordTranslation(de, "de");
+    const cleanIt = sanitizeWordTranslation(it, "it");
+    const cleanEs = sanitizeWordTranslation(es, "es");
+    const cleanFr = sanitizeWordTranslation(fr, "fr");
+
     const newWord = {
-      en, de, it, es, fr,
+      en: cleanEn,
+      de: cleanDe,
+      it: cleanIt,
+      es: cleanEs,
+      fr: cleanFr,
       category: category || "imported",
-      image: en,
+      image: cleanEn,
       audio: "",
       details: {
         articles: {},
@@ -2184,10 +2252,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
+    const cleanEn = sanitizeWordTranslation(en, "en");
+    const cleanDe = sanitizeWordTranslation(de, "de");
+    const cleanIt = sanitizeWordTranslation(it, "it");
+    const cleanEs = sanitizeWordTranslation(es, "es");
+    const cleanFr = sanitizeWordTranslation(fr, "fr");
+
     const newWord = {
-      en, de, it, es, fr,
+      en: cleanEn,
+      de: cleanDe,
+      it: cleanIt,
+      es: cleanEs,
+      fr: cleanFr,
       category,
-      image: imageUrl || en,
+      image: imageUrl || cleanEn,
       audio: currentRecordingBase64,
       details: {
         articles: {},
