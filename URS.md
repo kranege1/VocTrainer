@@ -23,14 +23,16 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
 - **Partial Session Logging:**
   - If a study session is quit early (either via clicking **Quit Test** or navigating away through the sidebar menu), the session is not lost.
   - If at least 1 question is completed, the partial session is saved in the user's history and metrics (XP, session count, accuracy) are immediately updated.
+- **Word Blocks (Bubbles) Mode:**
+  - **Single Words:** Automatically splits words of length >= 3 into at least 3 separate selectable block pieces. Short words (< 3 characters) are split into letters and padded with prefix/suffix distractor blocks to ensure a minimum of 3 blocks are always displayed.
+  - **Phrases:** Splits multi-word phrases word-by-word (one block per word). If a phrase contains fewer than 3 words, it is padded with decoy word blocks to maintain a minimum of 3 option options.
 
-### 2.2 Translation & Sanitization Pipeline
+### 2.2 Translation Pipeline (All-Languages Backfill)
 - **Unified 5-Language Schema:** Every word registered in the system must hold translations across all 5 supported languages: **English (EN), German (DE), Italian (IT), Spanish (ES), and French (FR)**.
 - **Autodetect & Import:** When importing single words, the pipeline automatically detects the source language and uses MyMemory translation API to translate the word into all 4 other languages.
-- **No Redundant Selectors:** Language selector dropdowns are removed from the manual/bulk import views as language detection and backfill are fully automated.
 - **Automated Text Sanitizer:**
   - **Punctuation Stripping:** Automatically removes trailing periods (`.`) or trailing commas (`,`) from vocabulary words/translations.
-  - **German Capitalization:** Capitalizes single German words/nouns by default, excluding common verbs, adjectives, articles, and prepositions.
+  - **German Capitalization:** Capitalizes single German words/nouns by default, excluding common verbs, adjectives, prepositions, and articles.
   - **Other Languages Casing:** Enforces lowercase for single words in EN, IT, ES, FR unless they represent proper nouns (language names, days of week, months).
 
 ### 2.3 Import Workflows
@@ -43,18 +45,16 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
 - **File Upload Scraper:**
   - Allows drag-and-drop or browsing of text files (`.txt`, `.csv`) or PDF documents (`.pdf`).
   - Uses client-side **PDF.js** to extract page text, parses delimiter pairs, or tokenizes words, presenting them in an editable preview grid.
-- **Session-Only History Feed:** The "My Custom & Scraped Words" history feed in the import view is session-only, resetting to empty on reload to prevent clunky lists from showing stale history, while actual vocabulary words remain saved in local storage.
 
 ---
 
 ## 3. UI/UX & Layout Requirements
 
-### 3.1 Directory Trees & Details View
+### 3.1 Directory Trees (Browse Vocabulary)
 - Displays custom wordlists nested in a folder directory tree.
 - Internal starter vocabularies are hidden from directory trees since they are read-only.
 - **Visual Design:** Actions for folders/categories use clean, minimal icons (`✏️`, `❌`) instead of plain text buttons.
 - Sequence of translation columns in tables must always show: **EN, DE, IT, ES, FR**.
-- **Unified Ask AI Explanation Drawer:** The Ask AI drawer dynamically queries the unified LLM backend (supporting Gemini, OpenAI, or Grok keys), and displays a clear fallback notification if no keys are configured.
 
 ### 3.2 Display Maximization (iOS & iPad)
 - **Detection:** Auto-detects iPhone, iPad, or iPod devices on startup.

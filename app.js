@@ -1355,10 +1355,45 @@ function buildBubbleOptions(targetPhrase) {
   selectedZone.innerHTML = "";
 
   let pieces = targetPhrase.split(/\s+/);
+  
   if (pieces.length === 1) {
     const word = pieces[0];
-    const mid = Math.ceil(word.length / 2);
-    pieces = [word.substring(0, mid), word.substring(mid)];
+    const len = word.length;
+    
+    if (len >= 3) {
+      // Split word into 3 parts
+      const p1 = Math.floor(len / 3);
+      const p2 = Math.floor(2 * len / 3);
+      pieces = [
+        word.substring(0, p1),
+        word.substring(p1, p2),
+        word.substring(p2)
+      ];
+    } else {
+      // Very short word (1-2 chars): split into letters and add distractor parts
+      pieces = word.split("");
+      const distractors = ["en", "er", "te", "la", "de", "un", "es", "on"];
+      while (pieces.length < 3) {
+        const rand = distractors[Math.floor(Math.random() * distractors.length)];
+        if (!pieces.includes(rand)) {
+          pieces.push(rand);
+        }
+      }
+    }
+  } else {
+    // Phrases: use one block per word. Add distractor words if less than 3 words.
+    if (pieces.length < 3) {
+      const distractors = ["the", "and", "with", "house", "time", "day", "please", "today", "tomorrow"];
+      const vocabWords = typeof STARTER_VOCAB_RAW !== "undefined" ? STARTER_VOCAB_RAW.map(v => v.en).filter(Boolean) : [];
+      const sourcePool = vocabWords.length > 0 ? vocabWords : distractors;
+      
+      while (pieces.length < 3) {
+        const randWord = sourcePool[Math.floor(Math.random() * sourcePool.length)].toLowerCase();
+        if (!pieces.map(p => p.toLowerCase()).includes(randWord)) {
+          pieces.push(randWord);
+        }
+      }
+    }
   }
 
   const shuffled = [...pieces].sort(() => 0.5 - Math.random());
