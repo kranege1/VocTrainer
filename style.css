@@ -1349,6 +1349,127 @@ input:checked + .slider:before {
   border-color: rgba(255,255,255,0.06);
 }
 
+/* Directory Tree Styles */
+.directory-tree-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.01);
+  border-radius: 12px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.tree-node {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  position: relative;
+  border: 1px solid transparent;
+}
+
+.tree-node:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tree-node.selected {
+  background: rgba(76, 201, 240, 0.1);
+  border-color: rgba(76, 201, 240, 0.2);
+}
+
+.tree-node.drag-over {
+  background: rgba(76, 201, 240, 0.25) !important;
+  border: 1px dashed var(--accent-color) !important;
+}
+
+.tree-indent {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.tree-icon {
+  font-size: 1.1rem;
+  margin-right: 8px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+}
+
+.tree-name {
+  flex: 1;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tree-count {
+  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 6px;
+  border-radius: 10px;
+  color: var(--text-secondary);
+  font-weight: bold;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.tree-actions {
+  display: flex;
+  gap: 6px;
+  margin-left: 8px;
+  opacity: 0.3;
+  transition: opacity 0.15s ease;
+  flex-shrink: 0;
+}
+
+.tree-node:hover .tree-actions {
+  opacity: 1.0;
+}
+
+.tree-action-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  line-height: 1;
+  transition: background 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.tree-action-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tree-toggle-arrow {
+  font-size: 0.65rem;
+  margin-right: 6px;
+  transition: transform 0.15s ease;
+  color: var(--text-secondary);
+  width: 12px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.tree-toggle-arrow.collapsed {
+  transform: rotate(-90deg);
+}
+
 
 
 

@@ -45,7 +45,9 @@ let state = {
   history: [], // Completed tests history
   deletedStarters: [], // Deleted starter vocab terms
   editedStarters: {}, // Edited starter vocab terms overrides
-  customFolders: [], // Custom folder names
+  customFolders: [], // Custom folder objects: [{ id, name, parentId }]
+  expandedFolders: {}, // Toggle expand/collapse states for custom directories: { [id]: boolean }
+  selectedBrowseFolderId: null, // Selected folder id to view
   wordStats: {}, // Spaced Repetition / Leitner stats: { wordEn: { attempts, errors, box, lastReview } }
   testDirection: "forward", // forward (base -> target) or reverse (target -> base)
   customVoices: {}, // Selected free local system voices for each language key: { en: "Voice Name", ... }
@@ -118,7 +120,14 @@ function loadState() {
     state.history = parsed.history || [];
     state.deletedStarters = parsed.deletedStarters || [];
     state.editedStarters = parsed.editedStarters || {};
-    state.customFolders = parsed.customFolders || [];
+    state.customFolders = (parsed.customFolders || []).map(f => {
+      if (typeof f === "string") {
+        return { id: f, name: f, parentId: null };
+      }
+      return f;
+    });
+    state.expandedFolders = parsed.expandedFolders || {};
+    state.selectedBrowseFolderId = parsed.selectedBrowseFolderId || null;
     state.wordStats = parsed.wordStats || {};
     state.testDirection = parsed.testDirection || "forward";
     state.customVoices = parsed.customVoices || {};
@@ -157,30 +166,30 @@ function loadState() {
   populateCustomCategoryDropdown();
 }
 
+function getFolderFullPath(folderId) {
+  const folder = state.customFolders.find(f => f.id === folderId);
+  if (!folder) return folderId;
+  if (folder.parentId) {
+    return getFolderFullPath(folder.parentId) + " › " + folder.name;
+  }
+  return folder.name;
+}
+
 function populateCustomCategoryDropdown() {
   const dropdown = document.getElementById("select-custom-category");
-  const browseDropdown = document.getElementById("select-browse-custom-category");
-  
-  const vocabCategories = state.customVocab.map(v => v.category).filter(Boolean);
-  const combined = [...new Set([...vocabCategories, ...state.customFolders])];
-  
   if (dropdown) {
     dropdown.innerHTML = '<option value="none">✨ -- Select Custom Set --</option>';
-    combined.forEach(cat => {
-      const opt = document.createElement("option");
-      opt.value = cat;
-      opt.textContent = `👤 ${cat}`;
-      dropdown.appendChild(opt);
-    });
-  }
+    
+    const sorted = (state.customFolders || []).map(f => ({
+      id: f.id,
+      path: getFolderFullPath(f.id)
+    })).sort((a, b) => a.path.localeCompare(b.path));
 
-  if (browseDropdown) {
-    browseDropdown.innerHTML = '<option value="none">✨ -- Select Custom Set --</option>';
-    combined.forEach(cat => {
+    sorted.forEach(folder => {
       const opt = document.createElement("option");
-      opt.value = cat;
-      opt.textContent = `👤 ${cat}`;
-      browseDropdown.appendChild(opt);
+      opt.value = folder.id;
+      opt.textContent = `📁 ${folder.path}`;
+      dropdown.appendChild(opt);
     });
   }
 }
@@ -206,6 +215,10 @@ function showView(viewId) {
   if (viewId === "view-setup") {
     loadOnDeviceVoices();
     renderHistoryList();
+  } else if (viewId === "view-statistics") {
+    renderStatisticsView();
+  } else if (viewId === "view-browse") {
+    renderBrowseList();
   }
 }
 
@@ -1246,11 +1259,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btn-go-mistakes").onclick = () => showView("view-mistakes");
   document.getElementById("btn-go-setup").onclick = () => showView("view-setup");
   document.getElementById("btn-go-api").onclick = () => showView("view-api");
+  document.getElementById("btn-go-statistics").onclick = () => showView("view-statistics");
   
   document.getElementById("btn-import-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-mistakes-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-setup-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-api-back").onclick = () => showView("view-dashboard");
+  document.getElementById("btn-statistics-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-report-home").onclick = () => showView("view-dashboard");
 
   // Sidebar Nav Tab Event Listeners (Prompt to quit test session if active)
@@ -1967,13 +1982,14 @@ document.addEventListener("DOMContentLoaded", async () => {
           return;
         }
         
-        if (!state.customFolders.includes(name)) {
-          state.customFolders.push(name);
-          saveState();
-          renderBrowseList();
-        } else {
-          alert("A folder with this name already exists.");
-        }
+        const folderId = "folder_" + Date.now();
+        const parentId = state.selectedBrowseFolderId && !["verbs", "nouns", "technology", "biology", "phrases"].includes(state.selectedBrowseFolderId) 
+          ? state.selectedBrowseFolderId 
+          : null;
+        
+        state.customFolders.push({ id: folderId, name: name, parentId: parentId });
+        saveState();
+        renderBrowseList();
         overlay.classList.remove("active");
       };
 
@@ -2015,121 +2031,180 @@ function renderHistoryList() {
 
 // Render the vocabulary list browser
 function renderBrowseList() {
-  const container = document.getElementById("browse-words-list");
-  container.innerHTML = "";
-
-  const activeLangBtn = document.querySelector("#browse-lang-selector .lang-btn.active");
-  const selectedLang = activeLangBtn ? activeLangBtn.dataset.lang : "en";
-  const selectedCategory = document.getElementById("select-browse-category").value;
-  const selectedCustomCategory = document.getElementById("select-browse-custom-category") ? document.getElementById("select-browse-custom-category").value : "none";
-
-  // Gather pool
-  const base = state.baseLang || "en";
-  let pool = [];
-
-  if (selectedCustomCategory !== "none") {
-    pool = state.customVocab
-      .filter(v => v.category === selectedCustomCategory)
-      .map(item => ({
-        en: item[base] || item.en || item.target,
-        target: item[selectedLang] || item.target,
-        category: item.category,
-        image: item.image,
-        details: item.details || {}
-      }));
+  // Render Directory Tree
+  renderDirectoryTree();
+  
+  // If a folder/category is currently selected, render its words
+  if (state.selectedBrowseFolderId) {
+    renderBrowseWordsList(state.selectedBrowseFolderId);
   } else {
-    const starters = STARTER_VOCAB_RAW.map(item => {
-      const origEn = item[base];
-      const origTarget = item[selectedLang];
+    const wordsCard = document.getElementById("browse-words-card");
+    if (wordsCard) wordsCard.style.display = "none";
+  }
+}
+
+function renderDirectoryTree() {
+  const treeContainer = document.getElementById("browse-directory-tree");
+  if (!treeContainer) return;
+  
+  treeContainer.innerHTML = "";
+  
+  // Add Drop target for root level
+  const rootDrop = document.createElement("div");
+  rootDrop.className = "tree-node";
+  rootDrop.style.border = "1.5px dashed rgba(76, 201, 240, 0.3)";
+  rootDrop.style.background = "rgba(76, 201, 240, 0.03)";
+  rootDrop.style.justifyContent = "center";
+  rootDrop.style.fontStyle = "italic";
+  rootDrop.style.fontSize = "0.85rem";
+  rootDrop.style.color = "var(--accent-color)";
+  rootDrop.style.marginBottom = "8px";
+  rootDrop.innerHTML = "📂 Drop folder here to move to Root";
+  rootDrop.setAttribute("ondragover", "window.onTreeDragOver(event)");
+  rootDrop.setAttribute("ondragleave", "window.onTreeDragLeave(event)");
+  rootDrop.setAttribute("ondrop", "window.onTreeDrop(event, 'root')");
+  treeContainer.appendChild(rootDrop);
+
+  const staticFolders = [
+    { id: "verbs", name: "🏃 Verbs", parentId: null },
+    { id: "nouns", name: "🍎 Nouns", parentId: null },
+    { id: "technology", name: "💻 Technology", parentId: null },
+    { id: "biology", name: "🌿 Biology", parentId: null },
+    { id: "phrases", name: "💬 Phrases", parentId: null }
+  ];
+  
+  const allFolders = [...staticFolders, ...state.customFolders];
+  
+  const html = buildTreeHTML(allFolders, null, 0);
+  
+  const treeWrapper = document.createElement("div");
+  treeWrapper.innerHTML = html || `<p class="empty-state" style="padding: 16px; margin: 0;">No custom folders created yet. Click "New Folder" to start!</p>`;
+  treeContainer.appendChild(treeWrapper);
+  
+  // Setup standard list button action inside directory tree context if needed
+  const btnAddWord = document.getElementById("btn-add-word-to-folder");
+  if (btnAddWord) {
+    btnAddWord.onclick = () => {
+      showView("view-import");
+      const importTabBtn = document.querySelector('[data-tab="tab-manual"]');
+      if (importTabBtn) importTabBtn.click();
       
-      if (state.deletedStarters.includes(origEn)) {
-        return null;
+      const manualCatInput = document.getElementById("manual-category");
+      if (manualCatInput && state.selectedBrowseFolderId) {
+        manualCatInput.value = state.selectedBrowseFolderId;
       }
-      
-      let finalEn = origEn;
-      let finalTarget = origTarget;
-      if (state.editedStarters[origEn]) {
-        finalEn = state.editedStarters[origEn].en || origEn;
-        finalTarget = state.editedStarters[origEn].target || origTarget;
+    };
+  }
+}
+
+function renderBrowseWordsList(folderId) {
+  const wordsCard = document.getElementById("browse-words-card");
+  const wordsList = document.getElementById("browse-words-list");
+  const titleEl = document.getElementById("browse-list-title");
+  if (!wordsCard || !wordsList) return;
+  
+  wordsCard.style.display = "block";
+  wordsList.innerHTML = "";
+  
+  const allFolders = [
+    { id: "verbs", name: "Verbs" },
+    { id: "nouns", name: "Nouns" },
+    { id: "technology", name: "Technology" },
+    { id: "biology", name: "Biology" },
+    { id: "phrases", name: "Phrases" },
+    ...state.customFolders
+  ];
+  const folder = allFolders.find(f => f.id === folderId);
+  const folderName = folder ? folder.name : folderId;
+  
+  const base = state.baseLang || "en";
+  const selectedLang = state.selectedLang || "de";
+  
+  let pool = [];
+  const isStandard = ["verbs", "nouns", "technology", "biology", "phrases"].includes(folderId);
+  
+  if (isStandard) {
+    pool = STARTER_VOCAB_RAW.filter(v => v.category === folderId && !state.deletedStarters.includes(v[base])).map(item => {
+      let finalEn = item[base];
+      let finalTarget = item[selectedLang];
+      if (state.editedStarters[item[base]]) {
+        finalEn = state.editedStarters[item[base]].en || item[base];
+        finalTarget = state.editedStarters[item[base]].target || item[selectedLang];
       }
-      
       return {
         en: finalEn,
         target: finalTarget,
         category: item.category,
         image: item.image,
-        details: item.details,
+        details: item.details || {},
         isStarter: true,
-        origEn: origEn
+        origEn: item[base]
       };
-    }).filter(Boolean);
-    
-    const customs = state.customVocab.map(item => ({
+    });
+  } else {
+    pool = state.customVocab.filter(v => v.category === folderId).map(item => ({
       en: item[base] || item.en || item.target,
       target: item[selectedLang] || item.target || item.en,
       category: item.category,
       image: item.image,
       details: item.details || {}
     }));
-    pool = [...starters, ...customs];
-
-    if (selectedCategory !== "all") {
-      pool = pool.filter(v => v.category === selectedCategory);
-    }
   }
-
-  // Render Spaced Repetition stats and folder lists
-  renderFoldersList();
-  renderBrowseStats(pool);
-
-  document.getElementById("browse-list-title").textContent = `Vocabulary List (${pool.length} words)`;
-
+  
+  titleEl.textContent = `Words in Folder: ${folderName} (${pool.length})`;
+  
   if (pool.length === 0) {
-    container.innerHTML = `<li class="empty-state">No words available in this language and category pocket.</li>`;
+    wordsList.innerHTML = `<li class="empty-state" style="padding: 16px; list-style: none; text-align: center; color: var(--text-secondary);">No words in this folder yet. Drag and drop words here or manually add.</li>`;
     return;
   }
-
+  
   pool.forEach(vocab => {
     const isCustom = !vocab.isStarter;
     const key = isCustom ? vocab.en : vocab.origEn;
     
-    // Fetch Leitner / Spaced Repetition stats
     const stats = state.wordStats[vocab.en] || { attempts: 0, errors: 0, box: 1 };
     const box = stats.box || 1;
     const errors = stats.errors || 0;
     
-    const boxLabels = {
-      1: "🆕 Box 1",
-      2: "📚 Box 2",
-      3: "📈 Box 3",
-      4: "⭐ Box 4",
-      5: "🏆 Box 5"
-    };
-    
     const li = document.createElement("li");
+    li.className = "imported-word-item";
+    li.style.padding = "10px 14px";
+    li.style.marginBottom = "6px";
+    li.style.background = "rgba(255,255,255,0.02)";
+    li.style.borderRadius = "10px";
+    li.style.border = "1px solid var(--border-color)";
     li.style.display = "flex";
     li.style.justifyContent = "space-between";
     li.style.alignItems = "center";
-    li.style.padding = "12px 16px";
-    li.style.marginBottom = "8px";
+    
+    // Draggable word lists
+    li.setAttribute("draggable", "true");
+    li.ondragstart = (e) => {
+      e.dataTransfer.setData("text/word-key", key);
+      li.style.opacity = "0.4";
+    };
+    li.ondragend = () => {
+      li.style.opacity = "1";
+    };
     
     li.innerHTML = `
-      <div style="flex: 1; text-align: left; display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
-        <span class="list-word" style="font-weight: 700;">${vocab.en}</span>
-        <span class="list-translation" style="color: var(--accent-color); font-weight: 500;">&rarr; ${vocab.target}</span>
-        <span class="category-tag" style="margin: 0; font-size:0.7rem; padding: 2px 6px;">${vocab.category}</span>
+      <div style="text-align: left; flex: 1;">
+        <strong style="color: #fff; font-size: 1rem;">${vocab.en}</strong>
+        <span style="color: var(--accent-color); font-weight: 600; margin: 0 8px;">&rarr;</span>
+        <span style="color: var(--text-primary); font-size: 0.95rem;">${vocab.target}</span>
         
-        <!-- Leitner Spaced Repetition Level Badge -->
-        <span class="badge" style="background: rgba(255,255,255,0.05); color: var(--text-secondary); font-size:0.7rem; border: 1px solid var(--border-color); padding: 2px 6px; border-radius: 6px;">${boxLabels[box]}</span>
-        
-        ${errors > 0 ? `<span style="font-size:0.7rem; color: var(--error-color); font-weight:600;">⚠️ ${errors} errors</span>` : ""}
+        <div style="margin-top: 4px; display: flex; gap: 8px; align-items: center;">
+          <span class="badge" style="background: rgba(255,255,255,0.05); color: var(--text-secondary); font-size: 0.7rem;">Box ${box}</span>
+          ${errors > 0 ? `<span class="badge" style="background: rgba(239, 71, 111, 0.1); color: var(--error-color); font-size: 0.7rem;">⚠️ ${errors} errors</span>` : ""}
+        </div>
       </div>
-      <div style="display: flex; gap: 8px; flex-shrink: 0;">
-        <button class="btn btn-secondary btn-sm" style="padding: 4px 8px; min-height: 28px; border-radius: 8px; font-size: 0.8rem;" onclick="window.triggerEditWord('${key}', ${isCustom})">✏️ Edit</button>
-        <button class="btn btn-secondary btn-sm" style="padding: 4px 8px; min-height: 28px; border-radius: 8px; font-size: 0.8rem; color: var(--error-color); border-color: rgba(239, 71, 111, 0.2);" onclick="window.triggerDeleteWord('${key}', ${isCustom})">❌ Delete</button>
+      <div style="display: flex; gap: 8px; flex-shrink: 0; align-items: center;">
+        <button class="tree-action-btn" title="Edit" onclick="window.triggerEditWord('${key.replace(/'/g, "\\'")}', ${isCustom})">✏️</button>
+        <button class="tree-action-btn" title="Delete" style="color: var(--error-color);" onclick="window.triggerDeleteWord('${key.replace(/'/g, "\\'")}', ${isCustom})">❌</button>
       </div>
     `;
-    container.appendChild(li);
+    
+    wordsList.appendChild(li);
   });
 }
 
@@ -2641,51 +2716,211 @@ async function testApiKey(engine, key, statusElId) {
   }
 }
 
-// Folders Management Render list
+// Folders Management - Hierarchical Tree Render
 function renderFoldersList() {
-  const container = document.getElementById("browse-folders-list");
-  if (!container) return;
+  renderDirectoryTree();
+}
+
+function buildTreeHTML(nodes, parentId, depth = 0) {
+  const children = nodes.filter(n => n.parentId === parentId);
+  if (children.length === 0) return "";
   
-  container.innerHTML = "";
-  
-  const vocabCategories = state.customVocab.map(v => v.category).filter(Boolean);
-  const combined = [...new Set([...vocabCategories, ...state.customFolders])];
-  
-  if (combined.length === 0) {
-    container.innerHTML = `<li class="empty-state">No custom folders created yet.</li>`;
-    return;
-  }
-  
-  combined.forEach(folder => {
-    const li = document.createElement("li");
-    li.style.display = "flex";
-    li.style.justifyContent = "space-between";
-    li.style.alignItems = "center";
-    li.style.padding = "10px 14px";
-    li.style.marginBottom = "6px";
-    li.style.background = "rgba(255,255,255,0.02)";
-    li.style.borderRadius = "10px";
-    li.style.border = "1px solid var(--border-color)";
+  let html = "";
+  children.forEach(node => {
+    const folderWordCount = getFolderWordCountRecursive(node.id, nodes);
+    const isExpanded = state.expandedFolders[node.id] !== false; 
+    const isSelected = state.selectedBrowseFolderId === node.id;
+    const isStandard = ["verbs", "nouns", "technology", "biology", "phrases"].includes(node.id);
     
-    const count = state.customVocab.filter(v => v.category === folder).length;
+    const dragAttr = !isStandard ? `draggable="true" ondragstart="window.onTreeDragStart(event, '${node.id}')"` : "";
+    const dropAttr = `ondragover="window.onTreeDragOver(event)" ondragleave="window.onTreeDragLeave(event)" ondrop="window.onTreeDrop(event, '${node.id}')"`;
     
-    li.innerHTML = `
-      <div style="flex: 1; text-align: left;">
-        <span style="font-weight: 700; color: #fff;">📁 ${folder}</span>
-        <span style="font-size: 0.75rem; color: var(--text-secondary); margin-left: 8px;">(${count} words)</span>
-      </div>
-      <div style="display: flex; gap: 8px; flex-shrink: 0;">
-        <button class="btn btn-secondary btn-sm" style="padding: 4px 8px; min-height: 28px; border-radius: 8px; font-size: 0.75rem; width: auto;" onclick="window.triggerRenameFolder('${folder.replace(/'/g, "\\'")}')">✏️ Rename</button>
-        <button class="btn btn-secondary btn-sm" style="padding: 4px 8px; min-height: 28px; border-radius: 8px; font-size: 0.75rem; color: var(--error-color); border-color: rgba(239, 71, 111, 0.2); width: auto;" onclick="window.triggerDeleteFolder('${folder.replace(/'/g, "\\'")}')">❌ Delete</button>
+    const subChildren = nodes.filter(n => n.parentId === node.id);
+    const hasSub = subChildren.length > 0;
+    const arrowClass = isExpanded ? "" : "collapsed";
+
+    html += `
+      <div class="tree-node ${isSelected ? 'selected' : ''}" 
+           data-id="${node.id}" 
+           style="padding-left: ${depth * 20 + 12}px;"
+           ${dragAttr}
+           ${dropAttr}
+           onclick="window.onTreeFolderClick(event, '${node.id}')">
+        
+        ${hasSub ? `<span class="tree-toggle-arrow ${arrowClass}" onclick="window.onTreeToggleExpand(event, '${node.id}')">▼</span>` : `<span style="width: 18px; display: inline-block;"></span>`}
+        
+        <span class="tree-icon">${isStandard ? '📚' : '📁'}</span>
+        <span class="tree-name">${node.name}</span>
+        <span class="tree-count">${folderWordCount}</span>
+        
+        ${!isStandard ? `
+          <div class="tree-actions">
+            <button class="tree-action-btn" title="Rename" onclick="window.onTreeRenameFolder(event, '${node.id}')">✏️</button>
+            <button class="tree-action-btn" title="Delete" style="color: var(--error-color);" onclick="window.onTreeDeleteFolder(event, '${node.id}')">❌</button>
+          </div>
+        ` : ""}
       </div>
     `;
     
-    container.appendChild(li);
+    if (isExpanded && hasSub) {
+      html += buildTreeHTML(nodes, node.id, depth + 1);
+    }
   });
+  return html;
 }
 
-// Global Folder Actions
-window.triggerRenameFolder = async function(oldName) {
+function getFolderWordCountRecursive(folderId, allFolders) {
+  let count = state.customVocab.filter(v => v.category === folderId).length;
+  const isStandard = ["verbs", "nouns", "technology", "biology", "phrases"].includes(folderId);
+  if (isStandard) {
+    const base = state.baseLang || "en";
+    count += STARTER_VOCAB_RAW.filter(v => v.category === folderId && !state.deletedStarters.includes(v[base])).length;
+  }
+  
+  const children = allFolders.filter(f => f.parentId === folderId);
+  children.forEach(child => {
+    count += getFolderWordCountRecursive(child.id, allFolders);
+  });
+  
+  return count;
+}
+
+function getFolderWordsRecursive(folderId) {
+  const base = state.baseLang || "en";
+  const selectedLang = state.selectedLang || "de";
+  const staticFolders = ["verbs", "nouns", "technology", "biology", "phrases"];
+  
+  let words = [];
+  if (staticFolders.includes(folderId)) {
+    words = STARTER_VOCAB_RAW.filter(v => v.category === folderId && !state.deletedStarters.includes(v[base])).map(item => {
+      let finalEn = item[base];
+      let finalTarget = item[selectedLang];
+      if (state.editedStarters[item[base]]) {
+        finalEn = state.editedStarters[item[base]].en || item[base];
+        finalTarget = state.editedStarters[item[base]].target || item[selectedLang];
+      }
+      return { en: finalEn, target: finalTarget, category: item.category };
+    });
+  } else {
+    words = state.customVocab.filter(v => v.category === folderId).map(item => ({
+      en: item[base] || item.en || item.target,
+      target: item[selectedLang] || item.target || item.en,
+      category: item.category
+    }));
+    
+    const childFolders = state.customFolders.filter(f => f.parentId === folderId);
+    childFolders.forEach(child => {
+      words = [...words, ...getFolderWordsRecursive(child.id)];
+    });
+  }
+  return words;
+}
+
+function getAllWordsCombined() {
+  const base = state.baseLang || "en";
+  const selectedLang = state.selectedLang || "de";
+  
+  const starters = STARTER_VOCAB_RAW.filter(v => !state.deletedStarters.includes(v[base])).map(item => {
+    let finalEn = item[base];
+    let finalTarget = item[selectedLang];
+    if (state.editedStarters[item[base]]) {
+      finalEn = state.editedStarters[item[base]].en || item[base];
+      finalTarget = state.editedStarters[item[base]].target || item[selectedLang];
+    }
+    return { en: finalEn, target: finalTarget, category: item.category };
+  });
+  
+  const customs = state.customVocab.map(item => ({
+    en: item[base] || item.en || item.target,
+    target: item[selectedLang] || item.target || item.en,
+    category: item.category
+  }));
+  
+  return [...starters, ...customs];
+}
+
+// Drag & Drop Tree handlers
+window.onTreeDragOver = function(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add("drag-over");
+};
+
+window.onTreeDragLeave = function(e) {
+  e.currentTarget.classList.remove("drag-over");
+};
+
+window.onTreeDragStart = function(e, folderId) {
+  e.dataTransfer.setData("text/plain", folderId);
+};
+
+window.onTreeDrop = function(e, targetId) {
+  e.preventDefault();
+  e.currentTarget.classList.remove("drag-over");
+  
+  const draggedFolderId = e.dataTransfer.getData("text/plain");
+  const wordKey = e.dataTransfer.getData("text/word-key");
+  
+  if (draggedFolderId) {
+    if (draggedFolderId === targetId) return;
+    if (isDescendantFolder(draggedFolderId, targetId)) {
+      alert("Cannot drag a folder into its own subfolder.");
+      return;
+    }
+    
+    const folder = state.customFolders.find(f => f.id === draggedFolderId);
+    if (folder) {
+      folder.parentId = targetId === "root" ? null : targetId;
+      saveState();
+      renderBrowseList();
+    }
+  } else if (wordKey) {
+    const word = state.customVocab.find(v => v.en === wordKey || v.origEn === wordKey);
+    if (word) {
+      word.category = targetId;
+      saveState();
+      renderBrowseList();
+    } else {
+      const base = state.baseLang || "en";
+      const starter = STARTER_VOCAB_RAW.find(v => v[base] === wordKey);
+      if (starter) {
+        const newWord = JSON.parse(JSON.stringify(starter));
+        newWord.category = targetId;
+        newWord.isStarter = false;
+        state.customVocab.push(newWord);
+        state.deletedStarters.push(starter[base]);
+        saveState();
+        renderBrowseList();
+      }
+    }
+  }
+};
+
+window.onTreeToggleExpand = function(e, folderId) {
+  e.preventDefault();
+  e.stopPropagation();
+  if (state.expandedFolders[folderId] === undefined) {
+    state.expandedFolders[folderId] = false;
+  } else {
+    state.expandedFolders[folderId] = !state.expandedFolders[folderId];
+  }
+  saveState();
+  renderDirectoryTree();
+};
+
+window.onTreeFolderClick = function(e, folderId) {
+  state.selectedBrowseFolderId = folderId;
+  saveState();
+  renderDirectoryTree();
+  renderBrowseWordsList(folderId);
+};
+
+window.onTreeRenameFolder = function(e, folderId) {
+  e.preventDefault();
+  e.stopPropagation();
+  
+  const folder = state.customFolders.find(f => f.id === folderId);
+  if (!folder) return;
+  
   const overlay = document.getElementById("custom-modal-overlay");
   const icon = document.getElementById("modal-icon");
   const title = document.getElementById("modal-title");
@@ -2699,7 +2934,7 @@ window.triggerRenameFolder = async function(oldName) {
   msgEl.innerHTML = `
     <div class="form-group" style="text-align: left; margin-top: 10px; width: 100%;">
       <label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-secondary);">New Folder Name</label>
-      <input type="text" id="rename-folder-input" value="${oldName.replace(/"/g, '&quot;')}" class="custom-select" style="width: 100%; min-height: 40px; padding: 8px 12px; background: rgba(255,255,255,0.03); color: #fff; border: 1px solid var(--border-color); border-radius: 10px;">
+      <input type="text" id="rename-folder-input" value="${folder.name.replace(/"/g, '&quot;')}" class="custom-select" style="width: 100%; min-height: 40px; padding: 8px 12px; background: rgba(255,255,255,0.03); color: #fff; border: 1px solid var(--border-color); border-radius: 10px;">
     </div>
   `;
 
@@ -2718,20 +2953,7 @@ window.triggerRenameFolder = async function(oldName) {
       alert("Folder name cannot be empty.");
       return;
     }
-    
-    state.customFolders = state.customFolders.map(f => f === oldName ? newName : f);
-    if (!state.customFolders.includes(newName)) {
-      state.customFolders.push(newName);
-    }
-    state.customFolders = state.customFolders.filter(f => f !== oldName);
-
-    state.customVocab = state.customVocab.map(v => {
-      if (v.category === oldName) {
-        return { ...v, category: newName };
-      }
-      return v;
-    });
-
+    folder.name = newName;
     saveState();
     renderBrowseList();
     overlay.classList.remove("active");
@@ -2742,31 +2964,130 @@ window.triggerRenameFolder = async function(oldName) {
   overlay.classList.add("active");
 };
 
-window.triggerDeleteFolder = async function(folderName) {
-  const confirmDel = await showCustomConfirm(`Are you sure you want to delete the folder "${folderName}"? All words inside this folder will also be deleted!`);
+window.onTreeDeleteFolder = async function(e, folderId) {
+  e.preventDefault();
+  e.stopPropagation();
+  
+  const folder = state.customFolders.find(f => f.id === folderId);
+  if (!folder) return;
+  
+  const confirmDel = await showCustomConfirm(`Are you sure you want to delete the folder "${folder.name}"? All subfolders and words inside it will also be deleted!`);
   if (!confirmDel) return;
 
-  state.customFolders = state.customFolders.filter(f => f !== folderName);
-  state.customVocab = state.customVocab.filter(v => v.category !== folderName);
+  deleteFolderRecursive(folderId);
+  
+  if (state.selectedBrowseFolderId === folderId) {
+    state.selectedBrowseFolderId = null;
+    const wordsCard = document.getElementById("browse-words-card");
+    if (wordsCard) wordsCard.style.display = "none";
+  }
 
   saveState();
   renderBrowseList();
 };
 
-// Spaced Repetition stats computation
-function renderBrowseStats(pool) {
-  const accuracyEl = document.getElementById("browse-stats-accuracy");
-  const masteryEl = document.getElementById("browse-stats-mastery");
-  const bar = document.getElementById("leitner-bar");
-  const hardestList = document.getElementById("browse-hardest-words-list");
+function deleteFolderRecursive(folderId) {
+  state.customVocab = state.customVocab.filter(v => v.category !== folderId);
+  const children = state.customFolders.filter(f => f.parentId === folderId);
+  children.forEach(child => {
+    deleteFolderRecursive(child.id);
+  });
+  state.customFolders = state.customFolders.filter(f => f.id !== folderId);
+}
+
+function isDescendantFolder(parentFolderId, potentialChildFolderId) {
+  let current = state.customFolders.find(f => f.id === potentialChildFolderId);
+  while (current && current.parentId) {
+    if (current.parentId === parentFolderId) return true;
+    current = state.customFolders.find(f => f.id === current.parentId);
+  }
+  return false;
+}
+
+// Statistics View Controller
+function renderStatisticsView() {
+  // 1. Render Global Stats
+  document.getElementById("stats-total-sessions").textContent = state.history.length;
+  
+  let globalAccuracy = 0;
+  if (state.history.length > 0) {
+    const totalScore = state.history.reduce((sum, h) => sum + (h.score || 0), 0);
+    const totalTested = state.history.reduce((sum, h) => sum + (h.total || 0), 0);
+    if (totalTested > 0) {
+      globalAccuracy = Math.round((totalScore / totalTested) * 100);
+    }
+  }
+  document.getElementById("stats-avg-accuracy").textContent = `${globalAccuracy}%`;
+  document.getElementById("stats-streak-count").textContent = state.streak;
+  document.getElementById("stats-xp-points").textContent = state.xp;
+
+  // 2. Populate folder selection dropdown
+  const select = document.getElementById("stats-select-folder");
+  if (select) {
+    select.innerHTML = '<option value="all">📚 All Words Combined</option>';
+    
+    // Add standard categories
+    const staticFolders = [
+      { id: "verbs", name: "🏃 Verbs" },
+      { id: "nouns", name: "🍎 Nouns" },
+      { id: "technology", name: "💻 Technology" },
+      { id: "biology", name: "🌿 Biology" },
+      { id: "phrases", name: "💬 Phrases" }
+    ];
+    staticFolders.forEach(sf => {
+      const opt = document.createElement("option");
+      opt.value = sf.id;
+      opt.textContent = sf.name;
+      select.appendChild(opt);
+    });
+
+    // Add custom folders sorted by path
+    const sorted = (state.customFolders || []).map(f => ({
+      id: f.id,
+      path: getFolderFullPath(f.id)
+    })).sort((a, b) => a.path.localeCompare(b.path));
+
+    sorted.forEach(folder => {
+      const opt = document.createElement("option");
+      opt.value = folder.id;
+      opt.textContent = `📁 ${folder.path}`;
+      select.appendChild(opt);
+    });
+    
+    // Bind selection change
+    select.onchange = () => {
+      renderFolderStatistics();
+    };
+  }
+
+  // Calculate default selected folder stats
+  renderFolderStatistics();
+}
+
+function renderFolderStatistics() {
+  const select = document.getElementById("stats-select-folder");
+  if (!select) return;
+  
+  const val = select.value;
+  let pool = [];
+  if (val === "all") {
+    pool = getAllWordsCombined();
+  } else {
+    pool = getFolderWordsRecursive(val);
+  }
+  
+  const accuracyEl = document.getElementById("stats-folder-accuracy");
+  const masteryEl = document.getElementById("stats-folder-mastery");
+  const bar = document.getElementById("stats-leitner-bar");
+  const hardestList = document.getElementById("stats-hardest-words-list");
   
   if (!accuracyEl || !masteryEl || !bar || !hardestList) return;
-
+  
   let totalAttempts = 0;
   let totalErrors = 0;
   let boxCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
   let hardest = [];
-
+  
   pool.forEach(word => {
     const stats = state.wordStats[word.en] || { attempts: 0, errors: 0, box: 1 };
     totalAttempts += stats.attempts || 0;
@@ -2774,12 +3095,12 @@ function renderBrowseStats(pool) {
     
     const box = stats.box || 1;
     boxCounts[box] = (boxCounts[box] || 0) + 1;
-
+    
     if (stats.errors && stats.errors > 0) {
       hardest.push({ en: word.en, target: word.target, errors: stats.errors });
     }
   });
-
+  
   if (totalAttempts > 0) {
     const accuracy = Math.round(((totalAttempts - totalErrors) / totalAttempts) * 100);
     accuracyEl.textContent = `${accuracy}%`;
@@ -2788,7 +3109,7 @@ function renderBrowseStats(pool) {
     accuracyEl.textContent = "N/A";
     accuracyEl.style.color = "var(--text-secondary)";
   }
-
+  
   const totalWords = pool.length;
   if (totalWords > 0) {
     const masteredCount = (boxCounts[4] || 0) + (boxCounts[5] || 0);
@@ -2797,7 +3118,7 @@ function renderBrowseStats(pool) {
   } else {
     masteryEl.textContent = "N/A";
   }
-
+  
   bar.innerHTML = "";
   if (totalWords > 0) {
     const p1 = (boxCounts[1] / totalWords) * 100;
@@ -2805,7 +3126,7 @@ function renderBrowseStats(pool) {
     const p3 = (boxCounts[3] / totalWords) * 100;
     const p4 = (boxCounts[4] / totalWords) * 100;
     const p5 = (boxCounts[5] / totalWords) * 100;
-
+    
     bar.innerHTML = `
       <div style="width: ${p1}%; background: #ff4b4b; height: 100%; transition: width 0.3s;" title="Box 1: ${boxCounts[1]} words"></div>
       <div style="width: ${p2}%; background: #ff9f43; height: 100%; transition: width 0.3s;" title="Box 2: ${boxCounts[2]} words"></div>
@@ -2814,13 +3135,14 @@ function renderBrowseStats(pool) {
       <div style="width: ${p5}%; background: #00b894; height: 100%; transition: width 0.3s;" title="Box 5: ${boxCounts[5]} words"></div>
     `;
   }
-
+  
   hardestList.innerHTML = "";
   if (hardest.length > 0) {
     hardest.sort((a, b) => b.errors - a.errors);
-    const top3 = hardest.slice(0, 3);
-    top3.forEach(w => {
+    const top5 = hardest.slice(0, 5);
+    top5.forEach(w => {
       const li = document.createElement("li");
+      li.style.marginBottom = "4px";
       li.innerHTML = `<strong>${w.en}</strong> (${w.target}) &mdash; <span style="color:var(--error-color); font-weight:600;">${w.errors} errors</span>`;
       hardestList.appendChild(li);
     });
@@ -2828,6 +3150,7 @@ function renderBrowseStats(pool) {
     hardestList.innerHTML = `<li style="list-style:none; margin-left:-18px; color:var(--text-secondary);">No errors recorded yet! Keep it up.</li>`;
   }
 }
+
 
 // Unified LLM Requester Helper (Gemini, OpenAI, Grok)
 async function callLLM(prompt, systemInstruction = "You are a helpful language translation assistant.") {

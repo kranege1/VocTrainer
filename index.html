@@ -53,6 +53,9 @@
         <button class="nav-item" data-view="view-import">
           <span class="icon">📥</span> Import
         </button>
+        <button class="nav-item" data-view="view-statistics">
+          <span class="icon">📊</span> Statistics
+        </button>
         <button class="nav-item" data-view="view-setup">
           <span class="icon">⚙️</span> Preferences
         </button>
@@ -139,6 +142,10 @@
         </button>
         <button id="btn-go-browse" class="btn btn-secondary">
           <span class="icon">🔍</span> Browse Vocab
+        </button>
+        <button id="btn-go-statistics" class="btn btn-secondary">
+          <span class="icon">📊</span> Statistics
+        </button>
         <button id="btn-go-setup" class="btn btn-secondary" style="margin: 0;">
           <span class="icon">⚙️</span> Preferences
         </button>
@@ -681,55 +688,87 @@
         <h2>Browse Vocabulary</h2>
       </div>
 
-      <div class="card selector-card">
-        <div class="form-group">
-          <label>Filter Language</label>
-          <div class="lang-selector" id="browse-lang-selector">
-            <button class="lang-btn active" data-lang="en">🇬🇧 English</button>
-            <button class="lang-btn" data-lang="de">🇩🇪 German</button>
-            <button class="lang-btn" data-lang="it">🇮🇹 Italiano</button>
-            <button class="lang-btn" data-lang="es">🇪🇸 Spanish</button>
-            <button class="lang-btn" data-lang="fr">🇫🇷 French</button>
-          </div>
+      <!-- Folder Manager Card & Directory Tree -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h3 style="margin: 0; color: #fff; font-weight: 700; font-size: 1.1rem;">📁 Folders & Lists</h3>
+          <button id="btn-create-folder" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0;">➕ New Folder</button>
         </div>
-
-        <div class="form-group">
-          <label>Filter Category</label>
-          <select id="select-browse-category" class="custom-select">
-            <option value="all">📚 All Categories</option>
-            <option value="verbs">🏃 Verbs</option>
-            <option value="nouns">🍎 Nouns</option>
-            <option value="technology">💻 Technology</option>
-            <option value="biology">🌿 Biology</option>
-            <option value="phrases">💬 Phrases</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Or Filter User-Specific Sets</label>
-          <select id="select-browse-custom-category" class="custom-select">
-            <option value="none">✨ -- Select Custom Set --</option>
-          </select>
+        
+        <!-- Folder Directory Tree -->
+        <div id="browse-directory-tree" class="directory-tree-container">
+          <!-- Populated dynamically via JS -->
         </div>
       </div>
 
-      <!-- Spaced Repetition & Folder Performance Stats Card -->
-      <div class="card" id="browse-stats-card" style="margin-top: 16px;">
-        <h3 style="margin-bottom: 12px; color: var(--accent-color); font-weight: 700; font-size: 1rem;">📊 Folder Performance Insights</h3>
+      <!-- Word List Card -->
+      <div class="card" id="browse-words-card" style="display: none; margin-top: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 id="browse-list-title" style="margin: 0; font-size: 1rem; color: var(--accent-color); font-weight: bold;">Vocabulary Word List</h3>
+          <div style="display: flex; gap: 8px;">
+            <button id="btn-add-word-to-folder" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0;">➕ Add Word</button>
+          </div>
+        </div>
+        <ul class="imported-list" id="browse-words-list" style="margin: 0; padding: 0;">
+          <!-- Populated dynamically -->
+        </ul>
+      </div>
+    </section>
+
+    <!-- STATISTICS VIEW -->
+    <section id="view-statistics" class="app-view">
+      <div class="view-header">
+        <button id="btn-statistics-back" class="btn-back">← Back</button>
+        <h2>Practice Statistics</h2>
+      </div>
+
+      <!-- Global Stats Card -->
+      <div class="card">
+        <h3 style="margin-bottom: 12px; color: #fff; font-weight: 700; font-size: 1.1rem;">📈 Global Progress</h3>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px;">
+          <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
+            <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Total Sessions</span>
+            <strong id="stats-total-sessions" style="font-size: 1.3rem; color: var(--accent-color); display: block; margin-top: 4px;">0</strong>
+          </div>
+          <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
+            <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Avg Accuracy</span>
+            <strong id="stats-avg-accuracy" style="font-size: 1.3rem; color: #4CAF50; display: block; margin-top: 4px;">0%</strong>
+          </div>
+          <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
+            <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Current Streak</span>
+            <strong id="stats-streak-count" style="font-size: 1.3rem; color: #FF9800; display: block; margin-top: 4px;">0</strong>
+          </div>
+          <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
+            <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Total XP Earned</span>
+            <strong id="stats-xp-points" style="font-size: 1.3rem; color: #E91E63; display: block; margin-top: 4px;">0</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Folder Performance Insights Card -->
+      <div class="card" id="statistics-insights-card" style="margin-top: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="margin: 0; color: var(--accent-color); font-weight: 700; font-size: 1rem;">📊 Folder Performance Insights</h3>
+          <select id="stats-select-folder" class="custom-select" style="width: auto; margin: 0; min-height: 32px; padding: 4px 8px; font-size: 0.85rem; background: #1f2335; border-color: rgba(255,255,255,0.1); color: #fff;">
+            <option value="all">📚 All Words Combined</option>
+            <!-- Categories / Folders populated dynamically -->
+          </select>
+        </div>
+        
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
           <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
             <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Average Accuracy</span>
-            <strong id="browse-stats-accuracy" style="font-size: 1.3rem; color: #4CAF50; display: block; margin-top: 4px;">N/A</strong>
+            <strong id="stats-folder-accuracy" style="font-size: 1.3rem; color: #4CAF50; display: block; margin-top: 4px;">N/A</strong>
           </div>
           <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
             <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Set Mastery Level</span>
-            <strong id="browse-stats-mastery" style="font-size: 1.3rem; color: var(--accent-color); display: block; margin-top: 4px;">N/A</strong>
+            <strong id="stats-folder-mastery" style="font-size: 1.3rem; color: var(--accent-color); display: block; margin-top: 4px;">N/A</strong>
           </div>
         </div>
         
         <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; margin-bottom: 16px; border: 1px solid var(--border-color);">
           <span style="font-size: 0.8rem; font-weight: bold; color: var(--text-secondary); display: block; margin-bottom: 8px;">Leitner Boxes Mastery distribution</span>
-          <div style="display: flex; gap: 6px; height: 16px; border-radius: 8px; overflow: hidden; background: rgba(255,255,255,0.05);" id="leitner-bar">
+          <div style="display: flex; gap: 6px; height: 16px; border-radius: 8px; overflow: hidden; background: rgba(255,255,255,0.05);" id="stats-leitner-bar">
             <!-- Box colors distribution bar -->
           </div>
           <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-secondary); margin-top: 6px;">
@@ -738,30 +777,12 @@
           </div>
         </div>
 
-        <div style="background: rgba(239, 71, 111, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(239, 71, 111, 0.15);" id="hardest-words-section">
+        <div style="background: rgba(239, 71, 111, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(239, 71, 111, 0.15);" id="stats-hardest-words-section">
           <span style="font-size: 0.8rem; font-weight: bold; color: var(--error-color); display: block; margin-bottom: 6px;">🔥 Hardest Words (Need Practice)</span>
-          <ul id="browse-hardest-words-list" style="margin: 0; padding-left: 18px; font-size: 0.8rem; color: var(--text-primary); line-height: 1.5;">
+          <ul id="stats-hardest-words-list" style="margin: 0; padding-left: 18px; font-size: 0.8rem; color: var(--text-primary); line-height: 1.5; text-align: left;">
             <!-- Hardest words listed here -->
           </ul>
         </div>
-      </div>
-
-      <!-- Folder Manager Card -->
-      <div class="card" style="margin-top: 16px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <h3 style="margin: 0; color: #fff; font-weight: 700; font-size: 1rem;">📁 Manage Custom Folders</h3>
-          <button id="btn-create-folder" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0;">➕ New Folder</button>
-        </div>
-        <ul id="browse-folders-list" class="imported-list" style="max-height: 180px; overflow-y: auto; margin: 0; padding: 0;">
-          <!-- Folders listed dynamically -->
-        </ul>
-      </div>
-
-      <div class="card">
-        <h3 id="browse-list-title">Vocabulary Word List</h3>
-        <ul class="imported-list" id="browse-words-list">
-          <!-- Populated dynamically -->
-        </ul>
       </div>
     </section>
 
