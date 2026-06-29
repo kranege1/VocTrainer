@@ -624,6 +624,24 @@ async function importFromUrl(url, category) {
 
 async function addCustomWord(english, translation, lang, category, imageUrl = "", audioBase64 = "") {
   const base = state.baseLang || "en";
+  const cleanEnglish = english.trim().toLowerCase();
+
+  // Check if word already exists in customVocab
+  const existsInCustom = (state.customVocab || []).some(v => {
+    const vBase = (v[base] || v.en || "").trim().toLowerCase();
+    return vBase === cleanEnglish;
+  });
+
+  // Check if word already exists in starter vocab
+  const existsInStarter = STARTER_VOCAB_RAW.some(v => {
+    const vBase = (v[base] || v.en || "").trim().toLowerCase();
+    return vBase === cleanEnglish;
+  });
+
+  if (existsInCustom || existsInStarter) {
+    console.log(`Word "${english}" already exists in wordlist. Skipping duplicate registration.`);
+    return;
+  }
   
   const newWord = {
     category: category || "imported",
@@ -1593,6 +1611,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Helper to save synonym directly
   window.addSynonymDirectly = function(en, de, it, es, fr, category) {
+    const base = state.baseLang || "en";
+    const cleanWord = (base === "en" ? en : base === "de" ? de : base === "it" ? it : base === "es" ? es : fr).trim().toLowerCase();
+
+    const existsInCustom = (state.customVocab || []).some(v => {
+      const vBase = (v[base] || v.en || "").trim().toLowerCase();
+      return vBase === cleanWord;
+    });
+
+    const existsInStarter = STARTER_VOCAB_RAW.some(v => {
+      const vBase = (v[base] || v.en || "").trim().toLowerCase();
+      return vBase === cleanWord;
+    });
+
+    if (existsInCustom || existsInStarter) {
+      alert(`Word is already present in your wordlist.`);
+      return;
+    }
+
     const newWord = {
       en, de, it, es, fr,
       category: category || "imported",
@@ -1743,6 +1779,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!en || !de || !it || !es || !fr) {
       alert("Please ensure all translation fields are filled before saving.");
+      return;
+    }
+
+    const base = state.baseLang || "en";
+    const cleanWord = (base === "en" ? en : base === "de" ? de : base === "it" ? it : base === "es" ? es : fr).trim().toLowerCase();
+
+    const existsInCustom = (state.customVocab || []).some(v => {
+      const vBase = (v[base] || v.en || "").trim().toLowerCase();
+      return vBase === cleanWord;
+    });
+
+    const existsInStarter = STARTER_VOCAB_RAW.some(v => {
+      const vBase = (v[base] || v.en || "").trim().toLowerCase();
+      return vBase === cleanWord;
+    });
+
+    if (existsInCustom || existsInStarter) {
+      alert(`The word already exists in your custom list.`);
       return;
     }
 
