@@ -3748,6 +3748,9 @@ ${relevantSections.substring(0, 3000)}
 
 Act as an expert language teacher. Formulate a personalized grammar hint (in German) explaining 1 or 2 relevant grammar rules for the word "${studyWord}" (${studyLangName}), which is translated as "${baseWord}" (Category: "${categoryName}"). 
 
+CRITICAL WARNING ON GENDER AGREEMENT: 
+Grammatical genders often differ between languages. For instance, "la neve" is feminine in Italian, but the German translation "Schnee" is masculine ("der Schnee"). You MUST use correct German articles for German translations (e.g. "der Schnee", NOT "die Schnee"). Explicitly point out to the student if the grammatical genders differ between the target language word and its German translation (e.g., "Achtung: Im Italienischen weiblich (la neve), im Deutschen aber männlich (der Schnee)").
+
 Adjust the rule strictly to this specific case. For example:
 - If it is a noun, explain which article (like il, lo, la, l', i, gli, le) it uses and why (pointing to the starting letters/sounds).
 - If it is a verb, explain its auxiliary verb (essere vs avere) or tense conjugation rule.
