@@ -150,11 +150,11 @@
     "details": {
       "articles": {},
       "sentences": {
-        "en": "I like to see.",
-        "es": "Me gusta ver.",
-        "de": "Ich sehe gern.",
-        "it": "Mi piace vedere.",
-        "fr": "J'aime voir."
+        "en": "I see the beautiful sunset over the hills.",
+        "de": "Ich sehe den schönen Sonnenuntergang über den Hügeln.",
+        "it": "Vedo il bellissimo tramonto sulle colline.",
+        "es": "Veo el hermoso atardecer sobre las colineas.",
+        "fr": "Je vois le beau coucher de soleil sur les collines."
       },
       "variations": {
         "he": {
@@ -1135,11 +1135,11 @@
         "es": "la"
       },
       "sentences": {
-        "en": "I see the apple.",
-        "de": "Ich sehe den Apfel.",
-        "es": "Veo la manzana.",
-        "fr": "Je vois la pomme.",
-        "it": "Vedo la mela."
+        "en": "He eats a fresh red apple.",
+        "de": "Er isst einen frischen roten Apfel.",
+        "it": "Mangia una mela rossa fresca.",
+        "es": "Él come una manzana roja fresca.",
+        "fr": "Il mange une pomme rouge fraîche."
       },
       "variations": {
         "plural": {
@@ -1168,11 +1168,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the bread.",
-        "de": "Ich sehe das Brot.",
-        "it": "Vedo il pane.",
-        "fr": "Je vois le pain.",
-        "es": "Veo el pan."
+        "en": "We buy fresh bread from the bakery.",
+        "de": "Wir kaufen frisches Brot beim Bäcker.",
+        "it": "Compriamo il pane fresco dal panificio.",
+        "es": "Compramos pan fresco en la panadería.",
+        "fr": "Nous achetons du pain frais à la boulangerie."
       },
       "variations": {
         "plural": {
@@ -1201,11 +1201,11 @@
         "fr": "la"
       },
       "sentences": {
-        "en": "I see the house.",
-        "de": "Ich sehe das Haus.",
-        "es": "Veo la casa.",
-        "fr": "Je vois la maison.",
-        "it": "Vedo la casa."
+        "en": "The big house stands on the hill.",
+        "de": "Das große Haus steht auf dem Hügel.",
+        "it": "La grande casa si trova sulla collina.",
+        "es": "La casa grande está en la colina.",
+        "fr": "La grande maison se trouve sur la colline."
       },
       "variations": {
         "plural": {
@@ -1234,11 +1234,11 @@
         "it": "la"
       },
       "sentences": {
-        "en": "I see the car.",
-        "es": "Veo el auto.",
-        "de": "Ich sehe das Auto.",
-        "it": "Vedo la macchina.",
-        "fr": "Je vois la voiture."
+        "en": "The modern blue car is very fast.",
+        "de": "Das moderne blaue Auto ist sehr schnell.",
+        "it": "L'auto blu moderna è molto veloce.",
+        "es": "El coche azul moderno es muy rápido.",
+        "fr": "La voiture bleue moderne est très rapide."
       },
       "variations": {
         "plural": {
@@ -1267,11 +1267,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the cat.",
-        "de": "Ich sehe die Katze.",
-        "it": "Vedo il gatto.",
-        "es": "Veo el gato.",
-        "fr": "Je vois le chat."
+        "en": "The cat is sleeping on the warm sofa.",
+        "de": "Die Katze schläft auf dem warmen Sofa.",
+        "it": "Il gatto dorme sul divano caldo.",
+        "es": "El gato duerme en el sofá cálido.",
+        "fr": "Le chat dort sur le canapé chaud."
       },
       "variations": {
         "plural": {
@@ -1300,11 +1300,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the dog.",
-        "es": "Veo al perro.",
-        "de": "Ich sehe den Hund.",
-        "it": "Vedo il cane.",
-        "fr": "Je vois le chien."
+        "en": "The friendly dog runs in the green park.",
+        "de": "Der freundliche Hund rennt im grünen Park.",
+        "it": "Il cane amichevole corre nel parco verde.",
+        "es": "El perro amigable corre en el parque verde.",
+        "fr": "Le chien amical court dans le parc vert."
       },
       "variations": {
         "plural": {
@@ -1333,11 +1333,11 @@
         "fr": "le"
       },
       "sentences": {
-        "en": "I see the table.",
-        "it": "Vedo il tavolo.",
-        "de": "Ich sehe die Tabelle.",
-        "es": "Veo la mesa.",
-        "fr": "Je vois le tableau."
+        "en": "A glass of water is on the wooden table.",
+        "de": "Ein Glas Wasser steht auf dem Holztisch.",
+        "it": "Un bicchiere d'acqua è sul tavolo di legno.",
+        "es": "Un vaso de agua está sobre la mesa de madera.",
+        "fr": "Un verre d'eau est sur la table en bois."
       },
       "variations": {
         "plural": {
@@ -1366,11 +1366,11 @@
         "fr": "la"
       },
       "sentences": {
-        "en": "I see the chair.",
-        "it": "Vedo la sedia.",
-        "de": "Ich sehe den Stuhl.",
-        "es": "Veo la silla.",
-        "fr": "Je vois la chaise."
+        "en": "Please take a seat on this comfortable chair.",
+        "de": "Bitte nehmen Sie Platz auf diesem bequemen Stuhl.",
+        "it": "Prego, si sieda su questa sedia comoda.",
+        "es": "Por favor, siéntese en esta silla cómoda.",
+        "fr": "Veuillez vous asseoir sur cette chaise confortable."
       },
       "variations": {
         "plural": {
@@ -1399,11 +1399,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the book.",
-        "it": "Vedo il libro.",
-        "de": "Ich sehe das Buch.",
-        "es": "Veo el libro.",
-        "fr": "Je vois le livre."
+        "en": "I am reading an interesting book tonight.",
+        "de": "Ich lese heute Abend ein interessantes Buch.",
+        "it": "Sto leggendo un libro interessante stasera.",
+        "es": "Estoy leyendo un libro interesante esta noche.",
+        "fr": "Je lis un livre intéressant ce soir."
       },
       "variations": {
         "plural": {
@@ -1432,11 +1432,11 @@
         "it": "la"
       },
       "sentences": {
-        "en": "I see the window.",
-        "it": "Vedo la finestra.",
-        "es": "Veo la ventana.",
-        "fr": "Je vois la fenêtre.",
-        "de": "Ich sehe das Fenster."
+        "en": "Can you please open the window?",
+        "de": "Kannst du bitte das Fenster öffnen?",
+        "it": "Puoi aprire la finestra, per favore?",
+        "es": "¿Puedes abrir la ventana, por favor?",
+        "fr": "Peux-tu ouvrir la fenêtre, s'il te plaît?"
       },
       "variations": {
         "plural": {
@@ -1465,11 +1465,11 @@
         "es": "la"
       },
       "sentences": {
-        "en": "I see the door.",
-        "de": "Ich sehe die Tür.",
-        "es": "Veo la puerta.",
-        "fr": "Je vois la porte.",
-        "it": "Vedo la porta."
+        "en": "The front door is closed and locked.",
+        "de": "Die Haustür ist geschlossen und abgeschlossen.",
+        "it": "La porta d'ingresso è chiusa a chiave.",
+        "es": "La puerta de entrada está cerrada con llave.",
+        "fr": "La porte d'entrée est fermée à clé."
       },
       "variations": {
         "plural": {
@@ -1498,11 +1498,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the sun.",
-        "es": "Veo el sol.",
-        "fr": "Je vois le soleil.",
-        "de": "Ich sehe die Sonne.",
-        "it": "Vedo il sole."
+        "en": "The warm sun shines brightly in the sky.",
+        "de": "Die warme Sonne scheint hell am Himmel.",
+        "it": "Il sole caldo splende nel cielo.",
+        "es": "El sol cálido brilla en el cielo.",
+        "fr": "Le soleil chaud brille dans le ciel."
       },
       "variations": {
         "plural": {
@@ -1531,11 +1531,11 @@
         "it": "la"
       },
       "sentences": {
-        "en": "I see the moon.",
-        "de": "Ich sehe den Mond.",
-        "fr": "Je vois la lune.",
-        "es": "Veo la luna.",
-        "it": "Vedo la luna."
+        "en": "The bright moon is visible tonight.",
+        "de": "Der helle Mond ist heute Nacht sichtbar.",
+        "it": "La luna luminosa è visibile stasera.",
+        "es": "La luna brillante es visible esta noche.",
+        "fr": "La lune brillante est visible ce soir."
       },
       "variations": {
         "plural": {
@@ -1564,11 +1564,11 @@
         "fr": ""
       },
       "sentences": {
-        "en": "I see the tree.",
-        "es": "Veo el árbol.",
-        "fr": "Je vois l'arbre.",
-        "de": "Ich sehe den Baum.",
-        "it": "Vedo l'albero."
+        "en": "An old green tree grows in our garden.",
+        "de": "Ein alter grüner Baum wächst in unserem Garten.",
+        "it": "Un vecchio albero verde cresce nel nostro giardino.",
+        "es": "Un viejo árbol verde crece en nuestro jardín.",
+        "fr": "Un vieil albre vert pousse dans notre jardin."
       },
       "variations": {
         "plural": {
@@ -1597,11 +1597,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the flower.",
-        "de": "Ich sehe die Blume.",
-        "fr": "Je vois la fleur.",
-        "es": "Veo la flor.",
-        "it": "Vedo il fiore."
+        "en": "She placed a yellow flower in the vase.",
+        "de": "Sie stellte eine gelbe Blume in die Vase.",
+        "it": "Ha messo un fiore giallo nel vaso.",
+        "es": "Ella puso una flor amarilla en el jarrón.",
+        "fr": "Elle a mis une fleur jaune dans le vase."
       },
       "variations": {
         "plural": {
@@ -1630,11 +1630,11 @@
         "fr": ""
       },
       "sentences": {
-        "en": "I see the water.",
-        "de": "Ich sehe das Wasser.",
-        "es": "Veo el agua.",
-        "fr": "Je vois l'eau.",
-        "it": "Vedo l'acqua."
+        "en": "Drinking clean water is good for your health.",
+        "de": "Sauberes Wasser zu trinken ist gut für die Gesundheit.",
+        "it": "Bere acqua pulita fa bene alla salute.",
+        "es": "Beber agua limpia es bueno para la salud.",
+        "fr": "Boire de l'eau propre est bon pour la santé."
       },
       "variations": {
         "plural": {
@@ -1663,11 +1663,11 @@
         "fr": "le"
       },
       "sentences": {
-        "en": "I see the milk.",
-        "de": "Ich sehe die Milch.",
-        "es": "Veo la leche.",
-        "fr": "Je vois le lait.",
-        "it": "Vedo il latte."
+        "en": "We need to buy a carton of milk.",
+        "de": "Wir müssen eine Packung Milch kaufen.",
+        "it": "Dobbiamo comprare un cartone di latte.",
+        "es": "Necesitamos comprar un cartón de leche.",
+        "fr": "Nous devons acheter une brique de lait."
       },
       "variations": {
         "plural": {
@@ -1696,11 +1696,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the coffee.",
-        "de": "Ich sehe den Kaffee.",
-        "fr": "Je vois le café.",
-        "es": "Veo el café.",
-        "it": "Vedo il caffè."
+        "en": "I drink hot coffee every morning.",
+        "de": "Ich trinke jeden Morgen heißen Kaffee.",
+        "it": "Bevo caffè caldo ogni mattina.",
+        "es": "Bebo café caliente cada mañana.",
+        "fr": "Je bois du café chaud tous les matins."
       },
       "variations": {
         "plural": {
@@ -1729,11 +1729,11 @@
         "es": "el"
       },
       "sentences": {
-        "en": "I see the tea.",
-        "es": "Veo el té.",
-        "de": "Ich sehe den Tee.",
-        "it": "Vedo il tè.",
-        "fr": "Je vois le thé."
+        "en": "Green tea is very popular in Asia.",
+        "de": "Grüner Tee ist in Asien sehr beliebt.",
+        "it": "Il tè verde è molto popolare in Asia.",
+        "es": "El té verde es muy popular en Asia.",
+        "fr": "Le thé vert est très populaire en Asie."
       },
       "variations": {
         "plural": {
@@ -1762,11 +1762,11 @@
         "es": "la"
       },
       "sentences": {
-        "en": "I see the mother.",
-        "es": "Veo a la madre.",
-        "de": "Ich sehe die Mutter.",
-        "it": "Vedo la madre.",
-        "fr": "Je vois la mère."
+        "en": "My mother cooked a delicious dinner.",
+        "de": "Meine Mutter hat ein leckeres Abendessen gekocht.",
+        "it": "Mia madre ha cucinato una cena deliziosa.",
+        "es": "Mi madre cocinó una cena deliciosa.",
+        "fr": "Ma mère a cuisiné un délicieux dîner."
       },
       "variations": {
         "plural": {
@@ -1795,11 +1795,11 @@
         "es": "el"
       },
       "sentences": {
-        "en": "I see the father.",
-        "es": "Veo al padre.",
-        "it": "Vedo il padre.",
-        "fr": "Je vois le père.",
-        "de": "Ich sehe den Vater."
+        "en": "His father works as an engineer.",
+        "de": "Sein Vater arbeitet als Ingenieur.",
+        "it": "Suo padre lavora come ingegnere.",
+        "es": "Su padre trabaja como ingeniero.",
+        "fr": "Son père travaille comme ingénieur."
       },
       "variations": {
         "plural": {
@@ -1828,11 +1828,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the brother.",
-        "es": "Veo al hermano.",
-        "de": "Ich sehe den Bruder.",
-        "it": "Vedo il fratello.",
-        "fr": "Je vois le frère."
+        "en": "My little brother plays soccer.",
+        "de": "Mein kleiner Bruder spielt Fußball.",
+        "it": "Mio fratello minore gioca a calcio.",
+        "es": "Mi hermano menor juega al fútbol.",
+        "fr": "Mon petit frère joue au football."
       },
       "variations": {
         "plural": {
@@ -1861,11 +1861,11 @@
         "it": "la"
       },
       "sentences": {
-        "en": "I see the sister.",
-        "es": "Veo a la hermana.",
-        "de": "Ich sehe die Schwester.",
-        "it": "Vedo la sorella.",
-        "fr": "Je vois la sœur."
+        "en": "Her older sister studies at university.",
+        "de": "Ihre ältere Schwester studiert an der Universität.",
+        "it": "Sua sorella maggiore studia all'università.",
+        "es": "Su hermana mayor estudia en la universidad.",
+        "fr": "Sa sœur aînée étudie à l'université."
       },
       "variations": {
         "plural": {
@@ -1894,11 +1894,11 @@
         "fr": ""
       },
       "sentences": {
-        "en": "I see the child.",
-        "de": "Ich sehe das Kind.",
-        "it": "Vedo il bambino.",
-        "fr": "Je vois l'enfant.",
-        "es": "Veo al niño."
+        "en": "The child is playing with a colorful toy.",
+        "de": "Das Kind spielt mit einem bunten Spielzeug.",
+        "it": "Il bambino gioca con un giocattolo colorato.",
+        "es": "El niño juega con un juguete colorido.",
+        "fr": "L'enfant joue avec un jouet coloré."
       },
       "variations": {
         "plural": {
@@ -1927,11 +1927,11 @@
         "es": "la"
       },
       "sentences": {
-        "en": "I see the school.",
-        "es": "Veo la escuela.",
-        "fr": "Je vois l'école.",
-        "de": "Ich sehe die Schule.",
-        "it": "Vedo la scuola."
+        "en": "The new school starts in September.",
+        "de": "Die neue Schule beginnt im September.",
+        "it": "La nuova scuola inizia a settembre.",
+        "es": "La nueva escuela comienza en septiembre.",
+        "fr": "La nouvelle école commence en septembre."
       },
       "variations": {
         "plural": {
@@ -1960,11 +1960,11 @@
         "it": "l'"
       },
       "sentences": {
-        "en": "I see the friend.",
-        "es": "Veo al amigo.",
-        "de": "Ich sehe den Freund.",
-        "it": "Vedo l'amico.",
-        "fr": "Je vois l'ami."
+        "en": "A true friend is always there for you.",
+        "de": "Ein wahrer Freund ist immer für dich da.",
+        "it": "Un vero amico è sempre lì per te.",
+        "es": "Un verdadero amigo siempre está ahí para ti.",
+        "fr": "Un véritable ami est toujours là pour toi."
       },
       "variations": {
         "plural": {
@@ -1993,11 +1993,11 @@
         "it": "la"
       },
       "sentences": {
-        "en": "I see the street.",
-        "es": "Veo la calle.",
-        "de": "Ich sehe die Straße.",
-        "it": "Vedo la strada.",
-        "fr": "Je vois la rue."
+        "en": "The quiet street is lined with trees.",
+        "de": "Die ruhige Straße ist von Bäumen gesäumt.",
+        "it": "La strada tranquilla è fiancheggiata da alberi.",
+        "es": "La calle tranquila está bordeada de árboles.",
+        "fr": "La rue calme est bordée d'arbres."
       },
       "variations": {
         "plural": {
@@ -2026,11 +2026,11 @@
         "fr": "la"
       },
       "sentences": {
-        "en": "I see the city.",
-        "es": "Veo la ciudad.",
-        "fr": "Je vois la ville.",
-        "de": "Ich sehe die Stadt.",
-        "it": "Vedo la città."
+        "en": "Rome is a beautiful historic city.",
+        "de": "Rom ist eine wunderschöne historische Stadt.",
+        "it": "Roma è una bellissima città storica.",
+        "es": "Roma es una hermosa ciudad histórica.",
+        "fr": "Rome est une belle ville historique."
       },
       "variations": {
         "plural": {
@@ -2059,11 +2059,11 @@
         "fr": "le"
       },
       "sentences": {
-        "en": "I see the country.",
-        "es": "Veo el país.",
-        "fr": "Je vois le pays.",
-        "de": "Ich sehe das Land.",
-        "it": "Vedo il paese."
+        "en": "Italy is a country in southern Europe.",
+        "de": "Italien ist ein Land in Südeuropa.",
+        "it": "L'Italia è un paese del sud Europa.",
+        "es": "Italia es un país del sur de Europa.",
+        "fr": "L'Italie est un pays du sud de l'Europe."
       },
       "variations": {
         "plural": {
@@ -2092,11 +2092,11 @@
         "es": "el"
       },
       "sentences": {
-        "en": "I see the sky.",
-        "es": "Veo el cielo.",
-        "de": "Ich sehe den Himmel.",
-        "it": "Vedo il cielo.",
-        "fr": "Je vois le ciel."
+        "en": "The blue sky is clear without any clouds.",
+        "de": "Der blaue Himmel ist klar ohne Wolken.",
+        "it": "Il cielo azzurro è limpido senza nuvole.",
+        "es": "El cielo azul está despejado sin nubes.",
+        "fr": "Le ciel bleu est dégagé sans nuages."
       },
       "variations": {
         "plural": {
@@ -2125,11 +2125,11 @@
         "fr": "la"
       },
       "sentences": {
-        "en": "I see the rain.",
-        "it": "Vedo la pioggia.",
-        "es": "Veo la lluvia.",
-        "fr": "Je vois la pluie.",
-        "de": "Ich sehe den Regen."
+        "en": "We need the rain for the plants to grow.",
+        "de": "Wir brauchen den Regen, damit die Pflanzen wachsen.",
+        "it": "Abbiamo bisogno della pioggia per far crescere le piante.",
+        "es": "Necesitamos la lluvia para que crezcan las plantas.",
+        "fr": "Nous avons besoin de la pluie pour faire pousser les plantes."
       },
       "variations": {
         "plural": {
@@ -2158,11 +2158,11 @@
         "de": "der"
       },
       "sentences": {
-        "en": "I see the snow.",
-        "fr": "Je vois la neige.",
-        "de": "Ich sehe den Schnee.",
-        "it": "Vedo la neve.",
-        "es": "Veo la nieve."
+        "en": "The mountains are covered with white snow.",
+        "de": "Die Berge sind mit weißem Schnee bedeckt.",
+        "it": "Le montagne sono coperte di neve bianca.",
+        "es": "Las montañas están cubiertas de nieve blanca.",
+        "fr": "Les montagnes sont couvertes de neige blanche."
       },
       "variations": {
         "plural": {
@@ -2191,11 +2191,11 @@
         "it": ""
       },
       "sentences": {
-        "en": "I see the watch.",
-        "it": "Vedo l'orologio.",
-        "es": "Veo el reloj.",
-        "de": "Ich sehe die Uhr.",
-        "fr": "Je vois la montre."
+        "en": "The clock on the wall shows five o'clock.",
+        "de": "Die Uhr an der Wand zeigt fünf Uhr.",
+        "it": "L'orologio sulla parete mostra le cinque.",
+        "es": "El reloj de la pared marca las cinco.",
+        "fr": "L'horloge au mur indique cinq heures."
       },
       "variations": {
         "plural": {
@@ -2224,11 +2224,11 @@
         "fr": ""
       },
       "sentences": {
-        "en": "I see the money.",
-        "it": "Vedo i soldi.",
-        "es": "Veo el dinero.",
-        "de": "Ich sehe das Geld.",
-        "fr": "Je vois l'argent."
+        "en": "Money cannot buy happiness.",
+        "de": "Geld kann kein Glück kaufen.",
+        "it": "I soldi non possono comprare la felicità.",
+        "es": "El dinero no puede comprar la felicidad.",
+        "fr": "L'argent ne peut pas acheter le bonheur."
       },
       "variations": {
         "plural": {
@@ -2257,11 +2257,11 @@
         "es": "la"
       },
       "sentences": {
-        "en": "I see the bag.",
-        "de": "Ich sehe die Tasche.",
-        "it": "Vedo la borsa.",
-        "es": "Veo la bolsa.",
-        "fr": "Je vois le sac."
+        "en": "She carried a heavy leather bag.",
+        "de": "Sie trug eine schwere Ledertasche.",
+        "it": "Portava una pesante borsa di pelle.",
+        "es": "Llevaba una pesada bolsa de cuero.",
+        "fr": "Elle portait un sac en cuir lourd."
       },
       "variations": {
         "plural": {
@@ -2290,11 +2290,11 @@
         "it": "la"
       },
       "sentences": {
-        "en": "I see the head.",
-        "de": "Ich sehe den Kopf.",
-        "it": "Vedo la testa.",
-        "es": "Veo la cabeza.",
-        "fr": "Je vois la tête."
+        "en": "He shook his head in disagreement.",
+        "de": "Er schüttelte uneinig den Kopf.",
+        "it": "Scosse la testa in segno di disaccordo.",
+        "es": "Sacudió la cabeza en señal de desacuerdo.",
+        "fr": "Il secoua la tête en signe de désaccord."
       },
       "variations": {
         "plural": {
@@ -2323,11 +2323,11 @@
         "es": "la"
       },
       "sentences": {
-        "en": "I see the hand.",
-        "de": "Ich sehe die Hand.",
-        "it": "Vedo la mano.",
-        "es": "Veo la mano.",
-        "fr": "Je vois la main."
+        "en": "Raise your hand if you know the answer.",
+        "de": "Heben Sie die Hand, wenn Sie die Antwort wissen.",
+        "it": "Alza la mano se conosci la risposta.",
+        "es": "Levanta la mano si sabes la respuesta.",
+        "fr": "Levez la main si vous connaissez la réponse."
       },
       "variations": {
         "plural": {
@@ -2356,11 +2356,11 @@
         "it": ""
       },
       "sentences": {
-        "en": "I see the eye.",
-        "it": "Vedo l'occhio.",
-        "es": "Veo el ojo.",
-        "de": "Ich sehe das Auge.",
-        "fr": "Je vois l'oeil."
+        "en": "The doctor examined her left eye.",
+        "de": "Der Arzt untersuchte ihr linkes Auge.",
+        "it": "Il dottore ha esaminato il suo occhio sinistro.",
+        "es": "El médico examinó su ojo izquierdo.",
+        "fr": "Le médecin a examiné son œil gauche."
       },
       "variations": {
         "plural": {
@@ -2389,11 +2389,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the foot.",
-        "it": "Vedo il piede.",
-        "es": "Veo el pie.",
-        "de": "Ich sehe den Fuß.",
-        "fr": "Je vois le pied."
+        "en": "I hurt my foot while running yesterday.",
+        "de": "Ich habe mir gestern beim Laufen den Fuß verletzt.",
+        "it": "Mi sono fatto male al piede mentre correvo ieri.",
+        "es": "Me lastimé el pie mientras corría ayer.",
+        "fr": "Je me suis blessé au pied en courant hier."
       },
       "variations": {
         "plural": {
@@ -2422,11 +2422,11 @@
         "es": "el"
       },
       "sentences": {
-        "en": "I see the shoe.",
-        "es": "Veo el zapato.",
-        "de": "Ich sehe den Schuh.",
-        "it": "Vedo la scarpa.",
-        "fr": "Je vois la chaussure."
+        "en": "He tied the laces of his new shoe.",
+        "de": "Er band die Schnürsenkel seines neuen Schuhs zu.",
+        "it": "Allacciò le stringhe della sua nuova scarpa.",
+        "es": "Se ató los cordones de su zapato nuevo.",
+        "fr": "Il a attaché les lacets de sa nouvelle chaussure."
       },
       "variations": {
         "plural": {
@@ -2455,11 +2455,11 @@
         "de": "das"
       },
       "sentences": {
-        "en": "I see the dress.",
-        "es": "Veo el vestido.",
-        "de": "Ich sehe das Kleid.",
-        "it": "Vedo il vestito.",
-        "fr": "Je vois la robe."
+        "en": "She bought a beautiful summer dress.",
+        "de": "Sie hat ein wunderschönes Sommerkleid gekauft.",
+        "it": "Ha comprato un bellissimo vestito estivo.",
+        "es": "Ella compró un hermoso vestido de verano.",
+        "fr": "Elle a acheté une belle robe d'été."
       },
       "variations": {
         "plural": {
@@ -2488,11 +2488,11 @@
         "fr": "la"
       },
       "sentences": {
-        "en": "I see the shirt.",
-        "it": "Vedo la maglietta.",
-        "fr": "Je vois la chemise.",
-        "es": "Veo la camisa.",
-        "de": "Ich sehe das Hemd."
+        "en": "He wore a white shirt to the interview.",
+        "de": "Er trug ein weißes Hemd zum Vorstellungsgespräch.",
+        "it": "Indossava una camicia bianca per l'intervista.",
+        "es": "Llevaba una camisa blanca para la entrevista.",
+        "fr": "Il portait une chemise blanche pour l'entretien."
       },
       "variations": {
         "plural": {
@@ -2521,11 +2521,11 @@
         "it": "i"
       },
       "sentences": {
-        "en": "I see the pants.",
-        "es": "Veo los pantalones.",
-        "de": "Ich sehe die Hose.",
-        "it": "Vedo i pantaloni.",
-        "fr": "Je vois le pantalon."
+        "en": "These pants are too long for me.",
+        "de": "Diese Hose ist mir zu lang.",
+        "it": "Questi pantaloni sono troppo lunghi per me.",
+        "es": "Estos pantalones son demasiado largos para mí.",
+        "fr": "Ce pantalon est trop long pour moi."
       },
       "variations": {
         "plural": {
@@ -2554,11 +2554,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the bed.",
-        "es": "Veo la cama.",
-        "de": "Ich sehe das Bett.",
-        "it": "Vedo il letto.",
-        "fr": "Je vois le lit."
+        "en": "It is late, I am going to bed now.",
+        "de": "Es ist spät, ich gehe jetzt ins Bett.",
+        "it": "È tardi, vado a letto ora.",
+        "es": "Es tarde, me voy a la cama ahora.",
+        "fr": "Il est tard, je vais au lit maintenant."
       },
       "variations": {
         "plural": {
@@ -2587,11 +2587,11 @@
         "de": "die"
       },
       "sentences": {
-        "en": "I see the kitchen.",
-        "fr": "Je vois la cuisine.",
-        "es": "Veo la cocina.",
-        "de": "Ich sehe die Küche.",
-        "it": "Vedo la cucina."
+        "en": "The kitchen is equipped with a new stove.",
+        "de": "Die Küche ist mit einem neuen Herd ausgestattet.",
+        "it": "La cucina è dotata di una nuova stufa.",
+        "es": "La cocina está equipada con una estufa nueva.",
+        "fr": "La cuisine est équipée d'une nouvelle cuisinière."
       },
       "variations": {
         "plural": {
@@ -2620,11 +2620,11 @@
         "it": "la"
       },
       "sentences": {
-        "en": "I see the room.",
-        "es": "Veo la habitación.",
-        "de": "Ich sehe den Raum.",
-        "it": "Vedo la stanza.",
-        "fr": "Je vois la pièce."
+        "en": "My room has a window facing the garden.",
+        "de": "Mein Zimmer hat ein Fenster zum Garten.",
+        "it": "La mia stanza ha una finestra che dà sul giardino.",
+        "es": "Mi habitación tiene una ventana que da al jardín.",
+        "fr": "Ma chambre a une fenêtre donnant sur le jardin."
       },
       "variations": {
         "plural": {
@@ -2653,11 +2653,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the cheese.",
-        "fr": "Je vois le fromage.",
-        "it": "Vedo il formaggio.",
-        "es": "Veo el queso.",
-        "de": "Ich sehe den Käse."
+        "en": "Parmesan is a hard Italian cheese.",
+        "de": "Parmesan ist ein harter italienischer Käse.",
+        "it": "Il parmigiano è un formaggio italiano stagionato.",
+        "es": "El parmesano es un queso italiano curado.",
+        "fr": "Le parmesan est un fromage italien à pâte dure."
       },
       "variations": {
         "plural": {
@@ -2686,11 +2686,11 @@
         "it": "la"
       },
       "sentences": {
-        "en": "I see the meat.",
-        "es": "Veo la carne.",
-        "de": "Ich sehe das Fleisch.",
-        "it": "Vedo la carne.",
-        "fr": "Je vois la viande."
+        "en": "Some people do not eat red meat.",
+        "de": "Manche Menschen essen kein rotes Fleisch.",
+        "it": "Alcune persone non mangiano carne rossa.",
+        "es": "Algunas personas no comen carne roja.",
+        "fr": "Certaines personnes ne mangent pas de viande rouge."
       },
       "variations": {
         "plural": {
@@ -2719,11 +2719,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the fish.",
-        "fr": "Je vois le poisson.",
-        "it": "Vedo il pesce.",
-        "es": "Veo el pez.",
-        "de": "Ich sehe den Fisch."
+        "en": "The fish swims gracefully in the aquarium.",
+        "de": "Der Fisch schwimmt anmutig im Aquarium.",
+        "it": "Il pesce nuota con grazia nell'acquario.",
+        "es": "El pez nada con gracia en el acuario.",
+        "fr": "Le poisson nage gracieusement dans l'aquarium."
       },
       "variations": {
         "plural": {
@@ -2752,11 +2752,11 @@
         "de": "der"
       },
       "sentences": {
-        "en": "I see the bird.",
-        "es": "Veo el pájaro.",
-        "de": "Ich sehe den Vogel.",
-        "it": "Vedo l'uccello.",
-        "fr": "Je vois l'oiseau."
+        "en": "The colorful bird is singing on the branch.",
+        "de": "Der bunte Vogel singt auf dem Ast.",
+        "it": "L'uccello colorato canta sul ramo.",
+        "es": "El pájaro de colores canta en la rama.",
+        "fr": "L'oiseau coloré chante sur la branche."
       },
       "variations": {
         "plural": {
@@ -2785,11 +2785,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the computer.",
-        "es": "Veo la computadora.",
-        "it": "Vedo il computer.",
-        "de": "Ich sehe den Computer.",
-        "fr": "Je vois l'ordinateur."
+        "en": "I use the computer for my daily work.",
+        "de": "Ich benutze den Computer für meine tägliche Arbeit.",
+        "it": "Uso il computer per il mio lavoro quotidiano.",
+        "es": "Uso la computadora para mi trabajo diario.",
+        "fr": "J'utilise l'ordinateur pour mon travail quotidien."
       },
       "variations": {
         "plural": {
@@ -2818,11 +2818,11 @@
         "de": "die"
       },
       "sentences": {
-        "en": "I see the database.",
-        "es": "Veo la base de datos.",
-        "it": "Vedo il database.",
-        "de": "Ich sehe die Datenbank.",
-        "fr": "Je vois la base de données."
+        "en": "All user data is stored in the database.",
+        "de": "Alle Benutzerdaten werden in der Datenbank gespeichert.",
+        "it": "Tutti i dati dell'utente sono memorizzati nel database.",
+        "es": "Todos los datos del usuario se almacenan en la base de datos.",
+        "fr": "Toutes les données utilisateur sont stockées dans la base de données."
       },
       "variations": {
         "plural": {
@@ -2851,11 +2851,11 @@
         "de": ""
       },
       "sentences": {
-        "en": "I see the screen.",
-        "es": "Veo la pantalla.",
-        "it": "Vedo lo schermo.",
-        "de": "Ich sehe den Bildschirm.",
-        "fr": "Je vois l'écran."
+        "en": "The high-resolution screen displays bright colors.",
+        "de": "Der hochauflösende Bildschirm zeigt helle Farben.",
+        "it": "Lo schermo ad alta risoluzione mostra colori brillanti.",
+        "es": "La pantalla de alta resolución muestra colores brillantes.",
+        "fr": "L'écran haute résolution affiche des couleurs vives."
       },
       "variations": {
         "plural": {
@@ -2884,11 +2884,11 @@
         "de": "die"
       },
       "sentences": {
-        "en": "I see the keyboard.",
-        "es": "Veo el teclado.",
-        "it": "Vedo la tastiera.",
-        "de": "Ich sehe die Tastatur.",
-        "fr": "Je vois le clavier."
+        "en": "I typed the message on my keyboard.",
+        "de": "Ich habe die Nachricht auf meiner Tastatur getippt.",
+        "it": "Ho digitato il messaggio sulla mia tastiera.",
+        "es": "Escribí el mensaje en mi teclado.",
+        "fr": "J'ai tapé le message sur mon clavier."
       },
       "variations": {
         "plural": {
@@ -2917,11 +2917,11 @@
         "fr": "la"
       },
       "sentences": {
-        "en": "I see the mouse.",
-        "es": "Veo el ratón.",
-        "it": "Vedo il topo.",
-        "de": "Ich sehe die Maus.",
-        "fr": "Je vois la souris."
+        "en": "The wireless mouse is very easy to use.",
+        "de": "Die kabellose Maus ist sehr einfach zu bedienen.",
+        "it": "Il mouse wireless è molto facile da usare.",
+        "es": "El mouse inalámbrico es muy fácil de usar.",
+        "fr": "La souris sans fil est très facile à utiliser."
       },
       "variations": {
         "plural": {
@@ -2950,11 +2950,11 @@
         "it": ""
       },
       "sentences": {
-        "en": "I see the internet.",
-        "es": "Veo internet.",
-        "de": "Ich sehe das Internet.",
-        "it": "Vedo Internet.",
-        "fr": "Je vois Internet."
+        "en": "The internet connects people from all over the world.",
+        "de": "Das Internet verbindet Menschen auf der ganzen Welt.",
+        "it": "Internet connette persone da tutto il mondo.",
+        "es": "El internet conecta a personas de todo el mundo.",
+        "fr": "L'internet connecte les gens du monde entier."
       },
       "variations": {
         "plural": {
@@ -2983,11 +2983,11 @@
         "it": ""
       },
       "sentences": {
-        "en": "I see the email.",
-        "es": "Veo el correo electrónico.",
-        "it": "Vedo l'e-mail.",
-        "de": "Ich sehe die E-Mail.",
-        "fr": "Je vois l'e-mail."
+        "en": "Please check your inbox for my e-mail.",
+        "de": "Bitte überprüfen Sie Ihren Posteingang auf meine E-Mail.",
+        "it": "Controlla la tua casella di posta per la mia e-mail.",
+        "es": "Por favor, revise su bandeja de entrada para mi correo electrónico.",
+        "fr": "Veuillez vérifier votre boîte de réception pour mon e-mail."
       },
       "variations": {
         "plural": {
@@ -3016,11 +3016,11 @@
         "de": "das"
       },
       "sentences": {
-        "en": "I see the password.",
-        "es": "Veo la contraseña.",
-        "it": "Vedo la password.",
-        "de": "Ich sehe das Passwort.",
-        "fr": "Je vois le mot de passe."
+        "en": "Your password should be strong and secure.",
+        "de": "Ihr Passwort sollte stark und sicher sein.",
+        "it": "La tua password dovrebbe essere forte e sicura.",
+        "es": "Su contraseña debe ser fuerte y segura.",
+        "fr": "Votre mot de passe doit être fort et sécurisé."
       },
       "variations": {
         "plural": {
@@ -3049,11 +3049,11 @@
         "fr": "le"
       },
       "sentences": {
-        "en": "I see the website.",
-        "es": "Veo el sitio web.",
-        "it": "Vedo il sito web.",
-        "de": "Ich sehe die Website.",
-        "fr": "Je vois le site Internet."
+        "en": "This website offers free language lessons.",
+        "de": "Diese Webseite bietet kostenlose Sprachlektionen an.",
+        "it": "Questo sito web offre lezioni di lingua gratuite.",
+        "es": "Este sitio web ofrece lecciones de idiomas gratuitas.",
+        "fr": "Ce site web propose des cours de langue gratuits."
       },
       "variations": {
         "plural": {
@@ -3082,11 +3082,11 @@
         "it": ""
       },
       "sentences": {
-        "en": "I see the application.",
-        "es": "Veo la aplicación.",
-        "it": "Vedo l'applicazione.",
-        "de": "Ich sehe die Anwendung.",
-        "fr": "Je vois la candidature."
+        "en": "The mobile application is updated regularly.",
+        "de": "Die mobile Anwendung wird regelmäßig aktualisiert.",
+        "it": "L'applicazione mobile viene aggiornata regolarmente.",
+        "es": "La aplicación móvil se actualiza regularmente.",
+        "fr": "L'application mobile est mise à jour régulièrement."
       },
       "variations": {
         "plural": {
@@ -3115,11 +3115,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the file.",
-        "it": "Vedo il file.",
-        "es": "Veo el archivo.",
-        "de": "Ich sehe die Datei.",
-        "fr": "Je vois le fichier."
+        "en": "You can download the PDF file here.",
+        "de": "Sie können die PDF-Datei hier herunterladen.",
+        "it": "È possibile scaricare il file PDF qui.",
+        "es": "Puede descargar el archivo PDF aquí.",
+        "fr": "Vous pouvez télécharger le fichier PDF ici."
       },
       "variations": {
         "plural": {
@@ -3148,11 +3148,11 @@
         "de": ""
       },
       "sentences": {
-        "en": "I see the folder.",
-        "it": "Vedo la cartella.",
-        "es": "Veo la carpeta.",
-        "de": "Ich sehe den Ordner.",
-        "fr": "Je vois le dossier."
+        "en": "Please save the documents in this folder.",
+        "de": "Bitte speichern Sie die Dokumente in diesem Ordner.",
+        "it": "Si prega di salvare i documenti in questa cartella.",
+        "es": "Por favor, guarde los documentos en esta carpeta.",
+        "fr": "Veuillez enregistrer les documents dans ce dossier."
       },
       "variations": {
         "plural": {
@@ -3181,11 +3181,11 @@
         "de": "die"
       },
       "sentences": {
-        "en": "I see the connection.",
-        "es": "Veo la conexión.",
-        "de": "Ich sehe den Zusammenhang.",
-        "fr": "Je vois le lien.",
-        "it": "Vedo la connessione."
+        "en": "The network connection is very unstable today.",
+        "de": "Die Netzwerkverbindung ist heute sehr instabil.",
+        "it": "La connessione di rete è molto instabile oggi.",
+        "es": "La conexión de red es muy inestable hoy.",
+        "fr": "La connexion réseau est très instable aujourd'hui."
       },
       "variations": {
         "plural": {
@@ -3214,11 +3214,11 @@
         "fr": "le"
       },
       "sentences": {
-        "en": "I see the network.",
-        "es": "Veo la red.",
-        "it": "Vedo la rete.",
-        "de": "Ich sehe das Netzwerk.",
-        "fr": "Je vois le réseau."
+        "en": "The computer network connects all offices.",
+        "de": "Das Computernetzwerk verbindet alle Büros.",
+        "it": "La rete informatica collega tutti gli uffici.",
+        "es": "La red de computadoras conecta todas las oficinas.",
+        "fr": "Le réseau informatique relie tous les bureaux."
       },
       "variations": {
         "plural": {
@@ -3247,11 +3247,11 @@
         "fr": "le"
       },
       "sentences": {
-        "en": "I see the server.",
-        "es": "Veo el servidor.",
-        "it": "Vedo il server.",
-        "de": "Ich sehe den Server.",
-        "fr": "Je vois le serveur."
+        "en": "The database server is running smoothly.",
+        "de": "Der Datenbankserver läuft reibungslos.",
+        "it": "Il server del database funziona senza problemi.",
+        "es": "El servidor de la base de datos funciona sin problemas.",
+        "fr": "Le serveur de base de données fonctionne correctement."
       },
       "variations": {
         "plural": {
@@ -3280,11 +3280,11 @@
         "fr": "le"
       },
       "sentences": {
-        "en": "I see the software.",
-        "es": "Veo el software.",
-        "it": "Vedo il software.",
-        "fr": "Je vois le logiciel.",
-        "de": "Ich sehe die Software."
+        "en": "We need to install the latest software update.",
+        "de": "Wir müssen das neueste Software-Update installieren.",
+        "it": "Dobbiamo installare l'ultimo aggiornamento software.",
+        "es": "Necesitamos instalar la última actualización de software.",
+        "fr": "Nous devons installer la dernière mise à jour logicielle."
       },
       "variations": {
         "plural": {
@@ -3313,11 +3313,11 @@
         "it": ""
       },
       "sentences": {
-        "en": "I see the hardware.",
-        "it": "Vedo l'hardware.",
-        "es": "Veo el hardware.",
-        "de": "Ich sehe die Hardware.",
-        "fr": "Je vois le matériel."
+        "en": "The computer hardware needs to be upgraded.",
+        "de": "Die Computer-Hardware muss aktualisiert werden.",
+        "it": "L'hardware del computer deve essere aggiornato.",
+        "es": "El hardware de la computadora necesita ser actualizado.",
+        "fr": "Le matériel informatique doit être mis à niveau."
       },
       "variations": {
         "plural": {
@@ -3346,11 +3346,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the phone.",
-        "it": "Vedo il telefono.",
-        "es": "Veo el teléfono.",
-        "de": "Ich sehe das Telefon.",
-        "fr": "Je vois le téléphone."
+        "en": "I forgot my mobile phone at home.",
+        "de": "Ich habe mein Handy zu Hause vergessen.",
+        "it": "Ho dimenticato il cellulare a casa.",
+        "es": "Olvidé mi teléfono móvil en casa.",
+        "fr": "J'ai oublié mon téléphone portable à la maison."
       },
       "variations": {
         "plural": {
@@ -3379,11 +3379,11 @@
         "fr": "la"
       },
       "sentences": {
-        "en": "I see the camera.",
-        "es": "Veo la cámara.",
-        "it": "Vedo la telecamera.",
-        "de": "Ich sehe die Kamera.",
-        "fr": "Je vois la caméra."
+        "en": "The digital camera takes beautiful photos.",
+        "de": "Die Digitalkamera macht wunderschöne Fotos.",
+        "it": "La fotocamera digitale fa bellissime foto.",
+        "es": "La cámara digital toma hermosas fotos.",
+        "fr": "L'appareil photo numérique prend de belles photos."
       },
       "variations": {
         "plural": {
@@ -3412,11 +3412,11 @@
         "fr": "le"
       },
       "sentences": {
-        "en": "I see the cable.",
-        "de": "Ich sehe das Kabel.",
-        "es": "Veo el cable.",
-        "fr": "Je vois le câble.",
-        "it": "Vedo il cavo."
+        "en": "Connect the monitor with this HDMI cable.",
+        "de": "Verbinden Sie den Monitor mit diesem HDMI-Kabel.",
+        "it": "Collega il monitor con questo cavo HDMI.",
+        "es": "Conecte el monitor con este cable HDMI.",
+        "fr": "Connectez le moniteur avec ce câble HDMI."
       },
       "variations": {
         "plural": {
@@ -3445,11 +3445,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the code.",
-        "es": "Veo el código.",
-        "it": "Vedo il codice.",
-        "de": "Ich sehe den Code.",
-        "fr": "Je vois le code."
+        "en": "The programmer wrote clean source code.",
+        "de": "Der Programmierer schrieb sauberen Quellcode.",
+        "it": "Il programmatore ha scritto codice sorgente pulito.",
+        "es": "El programador escribió un código fuente limpio.",
+        "fr": "Le programmeur a écrit du code source propre."
       },
       "variations": {
         "plural": {
@@ -3478,11 +3478,11 @@
         "fr": ""
       },
       "sentences": {
-        "en": "I see the algorithm.",
-        "es": "Veo el algoritmo.",
-        "de": "Ich sehe den Algorithmus.",
-        "fr": "Je vois l'algorithme.",
-        "it": "Vedo l'algoritmo."
+        "en": "This search algorithm is highly efficient.",
+        "de": "Dieser Suchalgorithmus ist äußerst effizient.",
+        "it": "Questo algoritmo di ricerca è altamente efficiente.",
+        "es": "Este algoritmo de búsqueda es altamente eficiente.",
+        "fr": "Cet algorithme de recherche est très efficace."
       },
       "variations": {
         "plural": {
@@ -3511,11 +3511,11 @@
         "it": "i"
       },
       "sentences": {
-        "en": "I see the data.",
-        "de": "Ich sehe die Daten.",
-        "es": "Veo los datos.",
-        "fr": "Je vois les données.",
-        "it": "Vedo i dati."
+        "en": "All personal data is encrypted safely.",
+        "de": "Alle persönlichen Daten sind sicher verschlüsselt.",
+        "it": "Tutti i dati personali sono crittografati in modo sicuro.",
+        "es": "Todos los datos personales están encriptados de forma segura.",
+        "fr": "Toutes les données personnelles sont cryptées en toute sécurité."
       },
       "variations": {
         "plural": {
@@ -3544,11 +3544,11 @@
         "it": "la"
       },
       "sentences": {
-        "en": "I see the cloud.",
-        "de": "Ich sehe die Wolke.",
-        "es": "Veo la nube.",
-        "fr": "Je vois le nuage.",
-        "it": "Vedo la nuvola."
+        "en": "We store our backups in the cloud.",
+        "de": "Wir speichern unsere Backups in der Cloud.",
+        "it": "Salviamo i nostri backup nel cloud.",
+        "es": "Almacenamos nuestras copias de seguridad en la nube.",
+        "fr": "Nous stockons nos sauvegardes dans le cloud."
       },
       "variations": {
         "plural": {
@@ -3577,11 +3577,11 @@
         "fr": "la"
       },
       "sentences": {
-        "en": "I see the security.",
-        "de": "Ich sehe die Sicherheit.",
-        "fr": "Je vois la sécurité.",
-        "it": "Vedo la sicurezza.",
-        "es": "Veo la seguridad."
+        "en": "Security is the highest priority for our team.",
+        "de": "Sicherheit hat für unser Team höchste Priorität.",
+        "it": "La sicurezza è la massima priorità per il nostro team.",
+        "es": "La seguridad es la máxima prioridad para nuestro equipo.",
+        "fr": "La sécurité est la priorité absolue pour notre équipe."
       },
       "variations": {
         "plural": {
@@ -3610,11 +3610,11 @@
         "it": "la"
       },
       "sentences": {
-        "en": "I see the encryption.",
-        "de": "Ich sehe die Verschlüsselung.",
-        "it": "Vedo la crittografia.",
-        "es": "Veo el cifrado.",
-        "fr": "Je vois le cryptage."
+        "en": "Data encryption prevents unauthorized access.",
+        "de": "Datenverschlüsselung verhindert unbefugten Zugriff.",
+        "it": "La crittografia dei dati impedisce l'accesso non autorizzato.",
+        "es": "El cifrado de datos evita el acceso no autorizado.",
+        "fr": "Le cryptage des données empêche tout accès non autorisé."
       },
       "variations": {
         "plural": {
@@ -3643,11 +3643,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the backup.",
-        "it": "Vedo il backup.",
-        "fr": "Je vois la sauvegarde.",
-        "es": "Veo la copia de seguridad.",
-        "de": "Ich sehe das Backup."
+        "en": "Always create a backup of your important files.",
+        "de": "Erstellen Sie immer ein Backup Ihrer wichtigen Dateien.",
+        "it": "Crea sempre un backup dei tuoi file importanti.",
+        "es": "Siempre cree una copia de seguridad de sus archivos importantes.",
+        "fr": "Créez toujours une sauvegarde de vos fichiers importants."
       },
       "variations": {
         "plural": {
@@ -3676,11 +3676,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the download.",
-        "de": "Ich sehe den Download.",
-        "it": "Vedo il download.",
-        "es": "Veo la descarga.",
-        "fr": "Je vois le téléchargement."
+        "en": "The file download will take two minutes.",
+        "de": "Der Datei-Download dauert zwei Minuten.",
+        "it": "Il download del file richiederà due minuti.",
+        "es": "La descarga del archivo tardará dos minutos.",
+        "fr": "Le téléchargement du fichier prendra deux minutes."
       },
       "variations": {
         "plural": {
@@ -3709,11 +3709,11 @@
         "fr": "le"
       },
       "sentences": {
-        "en": "I see the upload.",
-        "de": "Ich sehe den Upload.",
-        "fr": "Je vois le téléchargement.",
-        "it": "Vedo il caricamento.",
-        "es": "Veo la carga."
+        "en": "The upload speed is faster than before.",
+        "de": "Die Upload-Geschwindigkeit ist schneller als zuvor.",
+        "it": "La velocità di caricamento è più veloce di prima.",
+        "es": "La velocidad de carga es más rápida que antes.",
+        "fr": "La vitesse de téléchargement est plus rapide qu'avant."
       },
       "variations": {
         "plural": {
@@ -3742,11 +3742,11 @@
         "it": "la"
       },
       "sentences": {
-        "en": "I see the printer.",
-        "it": "Vedo la stampante.",
-        "fr": "Je vois l'imprimante.",
-        "es": "Veo la impresora.",
-        "de": "Ich sehe den Drucker."
+        "en": "The office printer is out of paper.",
+        "de": "Der Bürodrucker hat kein Papier mehr.",
+        "it": "La stampante dell'ufficio ha finito la carta.",
+        "es": "La impresora de la oficina se quedó sin papel.",
+        "fr": "L'imprimante de bureau n'a plus de papier."
       },
       "variations": {
         "plural": {
@@ -3775,11 +3775,11 @@
         "de": "die"
       },
       "sentences": {
-        "en": "I see the cell.",
-        "es": "Veo la celda.",
-        "it": "Vedo la cella.",
-        "fr": "Je vois la cellule.",
-        "de": "Ich sehe die Zelle."
+        "en": "The cell is the basic unit of life.",
+        "de": "Die Zelle ist die Grundeinheit des Lebens.",
+        "it": "La cellula è l'unità base della vita.",
+        "es": "La célula es la unidad básica de la vida.",
+        "fr": "La cellule est l'unité de base de la vie."
       },
       "variations": {
         "plural": {
@@ -3808,11 +3808,11 @@
         "it": ""
       },
       "sentences": {
-        "en": "I see the organism.",
-        "de": "Ich sehe den Organismus.",
-        "es": "Veo el organismo.",
-        "it": "Vedo l'organismo.",
-        "fr": "Je vois l'organisme."
+        "en": "Every living organism adapts to its environment.",
+        "de": "Jeder lebende Organismus passt sich an seine Umwelt an.",
+        "it": "Ogni organismo vivente si adatta al suo ambiente.",
+        "es": "Cada organismo vivo se adapta a su entorno.",
+        "fr": "Chaque organisme vivant s'adapte à son environnement."
       },
       "variations": {
         "plural": {
@@ -3841,11 +3841,11 @@
         "it": "la"
       },
       "sentences": {
-        "en": "I see the plant.",
-        "es": "Veo la planta.",
-        "de": "Ich sehe die Pflanze.",
-        "fr": "Je vois la plante.",
-        "it": "Vedo la pianta."
+        "en": "This green plant needs sunlight to grow.",
+        "de": "Diese grüne Pflanze braucht Sonnenlicht zum Wachsen.",
+        "it": "Questa pianta verde ha bisogno di luce solare per crescere.",
+        "es": "Esta planta verde necesita luz solar para crecer.",
+        "fr": "Cette plante verte a besoin de la lumière du soleil pour pousser."
       },
       "variations": {
         "plural": {
@@ -3874,11 +3874,11 @@
         "de": "das"
       },
       "sentences": {
-        "en": "I see the animal.",
-        "es": "Veo al animal.",
-        "it": "Vedo l'animale.",
-        "fr": "Je vois l'animal.",
-        "de": "Ich sehe das Tier."
+        "en": "The wild animal runs fast in the forest.",
+        "de": "Das wilde Tier rennt schnell im Wald.",
+        "it": "L'animale selvatico corre veloce nella foresta.",
+        "es": "El animal salvaje corre rápido en el bosque.",
+        "fr": "L'animal sauvage court vite dans la forêt."
       },
       "variations": {
         "plural": {
@@ -3907,11 +3907,11 @@
         "it": "la"
       },
       "sentences": {
-        "en": "I see the leaf.",
-        "es": "Veo la hoja.",
-        "it": "Vedo la foglia.",
-        "fr": "Je vois la feuille.",
-        "de": "Ich sehe das Blatt."
+        "en": "A single green leaf fell from the tree.",
+        "de": "Ein einzelnes grünes Blatt fiel vom Baum.",
+        "it": "Una singola foglia verde è caduta dall'albero.",
+        "es": "Una sola hoja verde cayó del árbol.",
+        "fr": "Une seule feuille verte est tombée de l'arbre."
       },
       "variations": {
         "plural": {
@@ -3940,11 +3940,11 @@
         "de": "die"
       },
       "sentences": {
-        "en": "I see the root.",
-        "es": "Veo la raíz.",
-        "it": "Vedo la radice.",
-        "fr": "Je vois la racine.",
-        "de": "Ich sehe die Wurzel."
+        "en": "The root absorbs water from the soil.",
+        "de": "Die Wurzel nimmt Wasser aus dem Boden auf.",
+        "it": "La radice assorbe l'acqua dal terreno.",
+        "es": "La raíz absorbe el agua del suelo.",
+        "fr": "La racine absorbe l'eau du sol."
       },
       "variations": {
         "plural": {
@@ -3973,11 +3973,11 @@
         "de": "der"
       },
       "sentences": {
-        "en": "I see the seed.",
-        "es": "Veo la semilla.",
-        "it": "Vedo il seme.",
-        "fr": "Je vois la graine.",
-        "de": "Ich sehe den Samen."
+        "en": "Plant the flower seed in early spring.",
+        "de": "Pflanzen Sie den Blumensamen im frühen Frühling.",
+        "it": "Semina il seme del fiore all'inizio della primavera.",
+        "es": "Plante la semilla de la flor a principios de primavera.",
+        "fr": "Plantez la graine de fleur au début du printemps."
       },
       "variations": {
         "plural": {
@@ -4006,11 +4006,11 @@
         "it": "il"
       },
       "sentences": {
-        "en": "I see the heart.",
-        "es": "Veo el corazón.",
-        "de": "Ich sehe das Herz.",
-        "it": "Vedo il cuore.",
-        "fr": "Je vois le coeur."
+        "en": "His heart is beating fast after the run.",
+        "de": "Sein Herz schlägt nach dem Lauf schnell.",
+        "it": "Il suo cuore batte forte dopo la corsa.",
+        "es": "Su corazón late rápido después de correr.",
+        "fr": "Son cœur bat vite après la course."
       },
       "variations": {
         "plural": {
@@ -4039,11 +4039,11 @@
         "es": "el"
       },
       "sentences": {
-        "en": "I see the lung.",
-        "es": "Veo el pulmón.",
-        "it": "Vedo il polmone.",
-        "de": "Ich sehe die Lunge.",
-        "fr": "Je vois le poumon."
+        "en": "The human lung absorbs oxygen from the air.",
+        "de": "Die menschliche Lunge nimmt Sauerstoff aus der Luft auf.",
+        "it": "Il polmone umano assorbe l'ossigeno dall'aria.",
+        "es": "El pulmón humano absorbe oxígeno del aire.",
+        "fr": "Le poumon humain absorbe l'oxygène de l'air."
       },
       "variations": {
         "plural": {
@@ -4072,11 +4072,11 @@
         "de": "das"
       },
       "sentences": {
-        "en": "I see the brain.",
-        "es": "Veo el cerebro.",
-        "it": "Vedo il cervello.",
-        "fr": "Je vois le cerveau.",
-        "de": "Ich sehe das Gehirn."
+        "en": "The human brain processes complex thoughts.",
+        "de": "Das menschliche Gehirn verarbeitet komplexe Gedanken.",
+        "it": "Il cervello umano elabora pensieri complessi.",
+        "es": "El cerebro humano procesa pensamientos complejos.",
+        "fr": "Le cerveau humain traite des pensées complexes."
       },
       "variations": {
         "plural": {
@@ -4105,11 +4105,11 @@
         "es": "el"
       },
       "sentences": {
-        "en": "I see the bone.",
-        "es": "Veo el hueso.",
-        "de": "Ich sehe den Knochen.",
-        "fr": "Je vois l'os.",
-        "it": "Vedo l'osso."
+        "en": "Calcium helps to build strong bones.",
+        "de": "Kalzium hilft, starke Knochen aufzubauen.",
+        "it": "Il calcio aiuta a costruire ossa forti.",
+        "es": "El calcio ayuda a construir huesos fuertes.",
+        "fr": "Le calcium aide à construire des os solides."
       },
       "variations": {
         "plural": {
@@ -4138,11 +4138,11 @@
         "fr": "la"
       },
       "sentences": {
-        "en": "I see the skin.",
-        "de": "Ich sehe die Haut.",
-        "it": "Vedo la pelle.",
-        "es": "Veo la piel.",
-        "fr": "Je vois la peau."
+        "en": "Use sunscreen to protect your skin.",
+        "de": "Verwenden Sie Sonnencreme, um Ihre Haut zu schützen.",
+        "it": "Usa la protezione solare per proteggere la pelle.",
+        "es": "Use protector solar para proteger su piel.",
+        "fr": "Utilisez de la crème solaire pour protéger votre peau."
       },
       "variations": {
         "plural": {
@@ -4171,11 +4171,11 @@
         "de": "das"
       },
       "sentences": {
-        "en": "I see the blood.",
-        "de": "Ich sehe das Blut.",
-        "it": "Vedo il sangue.",
-        "es": "Veo la sangre.",
-        "fr": "Je vois le sang."
+        "en": "Red blood cells carry oxygen.",
+        "de": "Rote Blutkörperchen transportieren Sauerstoff.",
+        "it": "I globuli rossi trasportano l'ossigeno.",
+        "es": "Los glóbulos rojos transportan oxígeno.",
+        "fr": "Les globules rouges transportent l'oxygène."
       },
       "variations": {
         "plural": {
@@ -4204,11 +4204,11 @@
         "de": "der"
       },
       "sentences": {
-        "en": "I see the forest.",
-        "de": "Ich sehe den Wald.",
-        "it": "Vedo la foresta.",
-        "es": "Veo el bosque.",
-        "fr": "Je vois la forêt."
+        "en": "We walked through a dense green forest.",
+        "de": "Wir gingen durch einen dichten grünen Wald.",
+        "it": "Abbiamo camminato in una fitta foresta verde.",
+        "es": "Caminamos por un denso bosque verde.",
+        "fr": "Nous avons marché à travers une forêt verte et dense."
       },
       "variations": {
         "plural": {
@@ -4237,11 +4237,11 @@
         "fr": "la"
       },
       "sentences": {
-        "en": "I see the life.",
-        "es": "Veo la vida.",
-        "de": "Ich sehe das Leben.",
-        "it": "Vedo la vita.",
-        "fr": "Je vois la vie."
+        "en": "There is life on other planets.",
+        "de": "Es gibt Leben auf anderen Planeten.",
+        "it": "C'è vita su altri pianeti.",
+        "es": "Hay vida en otros planetas.",
+        "fr": "Il y a de la vie sur d'autres planètes."
       },
       "variations": {
         "plural": {
@@ -4270,11 +4270,11 @@
         "fr": "la"
       },
       "sentences": {
-        "en": "I see the nature.",
-        "es": "Veo la naturaleza.",
-        "de": "Ich sehe die Natur.",
-        "it": "Vedo la natura.",
-        "fr": "Je vois la nature."
+        "en": "I love spending time in nature.",
+        "de": "Ich liebe es, Zeit in der Natur zu verbringen.",
+        "it": "Amo passare il tempo nella natura.",
+        "es": "Me encanta pasar tiempo en la naturaleza.",
+        "fr": "J'aime passer du temps dans la nature."
       },
       "variations": {
         "plural": {
@@ -4303,11 +4303,11 @@
         "fr": ""
       },
       "sentences": {
-        "en": "I see the insect.",
-        "de": "Ich sehe das Insekt.",
-        "it": "Vedo l'insetto.",
-        "es": "Veo el insecto.",
-        "fr": "Je vois l'insecte."
+        "en": "The small insect landed on the leaf.",
+        "de": "Das kleine Insekt landete auf dem Blatt.",
+        "it": "Il piccolo insetto si è posato sulla foglia.",
+        "es": "El pequeño insecto se posó en la hoja.",
+        "fr": "Le petit insecte s'est posé sur la feuille."
       },
       "variations": {
         "plural": {
@@ -4336,11 +4336,11 @@
         "fr": "les"
       },
       "sentences": {
-        "en": "I see the bacteria.",
-        "it": "Vedo i batteri.",
-        "es": "Veo las bacterias.",
-        "de": "Ich sehe die Bakterien.",
-        "fr": "Je vois les bactéries."
+        "en": "Penicillin kills harmful bacteria.",
+        "de": "Penicillin tötet schädliche Bakterien ab.",
+        "it": "La penicillina uccide i batteri nocivi.",
+        "es": "La penicilina mata las bacterias dañinas.",
+        "fr": "La pénicilline tue les bactéries nocives."
       },
       "variations": {
         "plural": {
@@ -4369,11 +4369,11 @@
         "de": "das"
       },
       "sentences": {
-        "en": "I see the virus.",
-        "es": "Veo el virus.",
-        "de": "Ich sehe den Virus.",
-        "fr": "Je vois le virus.",
-        "it": "Vedo il virus."
+        "en": "A virus can spread quickly in winter.",
+        "de": "Ein Virus kann sich im Winter schnell ausbreiten.",
+        "it": "Un virus può diffondersi rapidamente in inverno.",
+        "es": "Un virus puede propagarse rápidamente en invierno.",
+        "fr": "Un virus peut se propager rapidement en hiver."
       },
       "variations": {
         "plural": {
@@ -4402,11 +4402,11 @@
         "fr": ""
       },
       "sentences": {
-        "en": "I see the species.",
-        "de": "Ich sehe die Art.",
-        "it": "Vedo la specie.",
-        "es": "Veo la especie.",
-        "fr": "Je vois l'espèce."
+        "en": "This rare species is protected by law.",
+        "de": "Diese seltene Art ist gesetzlich geschützt.",
+        "it": "Questa specie rara è protetta dalla legge.",
+        "es": "Esta especie rara está protegida por la ley.",
+        "fr": "Cette espèce rare est protégée par la loi."
       },
       "variations": {
         "plural": {
@@ -4435,11 +4435,11 @@
         "de": "die"
       },
       "sentences": {
-        "en": "I see the evolution.",
-        "es": "Veo la evolución.",
-        "it": "Vedo l'evoluzione.",
-        "de": "Ich sehe die Entwicklung.",
-        "fr": "Je vois l'évolution."
+        "en": "Charles Darwin wrote about the evolution of species.",
+        "de": "Charles Darwin schrieb über die Evolution der Arten.",
+        "it": "Charles Darwin ha scritto sull'evoluzione delle specie.",
+        "es": "Charles Darwin escribió sobre la evolución de las especies.",
+        "fr": "Charles Darwin a écrit sur l'évolution des espèces."
       },
       "variations": {
         "plural": {
@@ -4468,11 +4468,11 @@
         "es": "el"
       },
       "sentences": {
-        "en": "I see the gene.",
-        "es": "Veo el gen.",
-        "it": "Vedo il gene.",
-        "de": "Ich sehe das Gen.",
-        "fr": "Je vois le gène."
+        "en": "Genes determine the color of your eyes.",
+        "de": "Gene bestimmen die Farbe Ihrer Augen.",
+        "it": "I geni determinano il colore dei tuoi occhi.",
+        "es": "Los genes determinan el color de tus ojos.",
+        "fr": "Les gènes déterminent la couleur de vos yeux."
       },
       "variations": {
         "plural": {
@@ -4501,11 +4501,11 @@
         "fr": ""
       },
       "sentences": {
-        "en": "I see the dna.",
-        "es": "Veo el ADN.",
-        "it": "Vedo il DNA.",
-        "fr": "Je vois l'ADN.",
-        "de": "Ich sehe die DNA."
+        "en": "DNA contains our genetic information.",
+        "de": "Die DNA enthält unsere genetischen Informationen.",
+        "it": "Il DNA contiene le nostre informazioni genetiche.",
+        "es": "El ADN contiene nuestra información genética.",
+        "fr": "L'ADN contient nos informations génétiques."
       },
       "variations": {
         "plural": {
@@ -4534,11 +4534,11 @@
         "de": "der"
       },
       "sentences": {
-        "en": "I see the sugar.",
-        "es": "Veo el azúcar.",
-        "it": "Vedo lo zucchero.",
-        "de": "Ich sehe den Zucker.",
-        "fr": "Je vois le sucre."
+        "en": "Too much sugar is bad for your teeth.",
+        "de": "Zu viel Zucker ist schlecht für die Zähne.",
+        "it": "Troppo zucchero fa male ai denti.",
+        "es": "Demasiado azúcar es malo para los dientes.",
+        "fr": "Trop de sucre est mauvais pour les dents."
       },
       "variations": {
         "plural": {
@@ -4567,11 +4567,11 @@
         "fr": "la"
       },
       "sentences": {
-        "en": "I see the protein.",
-        "it": "Vedo le proteine.",
-        "es": "Veo la proteína.",
-        "fr": "Je vois la protéine.",
-        "de": "Ich sehe das Protein."
+        "en": "Eggs are a great source of protein.",
+        "de": "Eier sind eine hervorragende Proteinquelle.",
+        "it": "Le uova sono un'ottima fonte di proteine.",
+        "es": "Los huevos son una excelente fuente de proteínas.",
+        "fr": "Les œufs sont une excellente source de protéines."
       },
       "variations": {
         "plural": {
@@ -4600,11 +4600,11 @@
         "fr": ""
       },
       "sentences": {
-        "en": "I see the oxygen.",
-        "es": "Veo el oxígeno.",
-        "it": "Vedo l'ossigeno.",
-        "fr": "Je vois l'oxygène.",
-        "de": "Ich sehe den Sauerstoff."
+        "en": "Humans need oxygen to breathe.",
+        "de": "Menschen brauchen Sauerstoff zum Atmen.",
+        "it": "Gli esseri umani hanno bisogno di ossigeno per respirare.",
+        "es": "Los seres humanos necesitan oxígeno para respirar.",
+        "fr": "Les humains ont besoin d'oxygène pour respirer."
       },
       "variations": {
         "plural": {
@@ -4633,11 +4633,11 @@
         "es": "el"
       },
       "sentences": {
-        "en": "I see the carbon.",
-        "es": "Veo el carbono.",
-        "it": "Vedo il carbonio.",
-        "fr": "Je vois le carbone.",
-        "de": "Ich sehe den Kohlenstoff."
+        "en": "Carbon is a key element of organic chemistry.",
+        "de": "Kohlenstoff ist ein Schlüsselelement der organischen Chemie.",
+        "it": "Il carbonio è un elemento chiave della chimica organica.",
+        "es": "El carbono es un elemento clave de la química orgánica.",
+        "fr": "Le carbone est un élément clé de la chimie organique."
       },
       "variations": {
         "plural": {
@@ -4666,11 +4666,11 @@
         "fr": ""
       },
       "sentences": {
-        "en": "I see the hydrogen.",
-        "es": "Veo el hidrógeno.",
-        "it": "Vedo l'idrogeno.",
-        "fr": "Je vois l'hydrogène.",
-        "de": "Ich sehe den Wasserstoff."
+        "en": "Water consists of hydrogen and oxygen.",
+        "de": "Wasser besteht aus Wasserstoff und Sauerstoff.",
+        "it": "L'acqua è composta da idrogeno e ossigeno.",
+        "es": "El agua consiste en hidrógeno y oxígeno.",
+        "fr": "L'eau est composée d'hydrogène et d'oxygène."
       },
       "variations": {
         "plural": {
@@ -4699,11 +4699,11 @@
         "fr": "le"
       },
       "sentences": {
-        "en": "I see the soil.",
-        "es": "Veo el suelo.",
-        "it": "Vedo il terreno.",
-        "fr": "Je vois le sol.",
-        "de": "Ich sehe den Boden."
+        "en": "We must protect the earth for future generations.",
+        "de": "Wir müssen die Erde für zukünftige Generationen schützen.",
+        "it": "Dobbiamo proteggere la terra per le generazioni future.",
+        "es": "Debemos proteger la tierra para las generaciones futuras.",
+        "fr": "Nous devons protéger la terre pour les générations futures."
       },
       "variations": {
         "plural": {
@@ -4732,11 +4732,11 @@
         "es": "el"
       },
       "sentences": {
-        "en": "I see the ecosystem.",
-        "es": "Veo el ecosistema.",
-        "it": "Vedo l'ecosistema.",
-        "fr": "Je vois l'écosystème.",
-        "de": "Ich sehe das Ökosystem."
+        "en": "A coral reef is a complex marine ecosystem.",
+        "de": "Ein Korallenriff ist ein komplexes Meeresökosystem.",
+        "it": "Una barriera corallina è un complesso ecosistema marino.",
+        "es": "Un arrecife de coral es un ecosistema marino complejo.",
+        "fr": "Un récif corallien est un écosystème marin complexe."
       },
       "variations": {
         "plural": {
