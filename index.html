@@ -788,12 +788,19 @@
         <!-- Section 1: Upload Active Custom Words -->
         <div class="card">
           <h3>☁️ Share Current Custom Set to Cloud</h3>
-          <p class="import-help">Upload your active custom vocabulary list to the shared cloud server so other devices or users can download it.</p>
+          <p class="import-help">Select a local custom set or folder to upload to the shared cloud server.</p>
+          <div class="form-group">
+            <label>Choose Word-Set to Upload</label>
+            <select id="select-cloud-upload-category" class="custom-select">
+              <option value="all">📚 Entire Custom Vocabulary</option>
+              <!-- Dynamically populated with local folders -->
+            </select>
+          </div>
           <div class="form-group">
             <label>Shared Word Set Name</label>
             <input type="text" id="cloud-upload-name" placeholder="e.g. My_Italian_Verbs">
           </div>
-          <button id="btn-cloud-upload" class="btn btn-primary btn-block">⬆️ Upload Active Vocabulary</button>
+          <button id="btn-cloud-upload" class="btn btn-primary btn-block">⬆️ Upload Selected Vocabulary</button>
         </div>
 
         <!-- Section 2: Shared Sets List -->

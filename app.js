@@ -301,6 +301,23 @@ function updateCategoryCounts() {
       selectCustomCategory.appendChild(opt);
     });
   }
+
+  // Update Cloud Upload Category dropdown
+  const selectCloudUploadCategory = document.getElementById("select-cloud-upload-category");
+  if (selectCloudUploadCategory) {
+    selectCloudUploadCategory.innerHTML = '<option value="all">📚 Entire Custom Vocabulary</option>';
+    const sortedCloud = (state.customFolders || []).map(f => ({
+      id: f.id,
+      path: getFolderFullPath(f.id)
+    })).sort((a, b) => a.path.localeCompare(b.path));
+
+    sortedCloud.forEach(folder => {
+      const opt = document.createElement("option");
+      opt.value = folder.id;
+      opt.textContent = `📁 ${folder.path}`;
+      selectCloudUploadCategory.appendChild(opt);
+    });
+  }
 };
 
 // ==========================================
@@ -2603,6 +2620,23 @@ document.addEventListener("DOMContentLoaded", async () => {
   const refreshCloudBtn = document.getElementById("btn-refresh-cloud");
   if (refreshCloudBtn) {
     refreshCloudBtn.onclick = loadCloudWordSets;
+  }
+
+  // Auto-fill filename when selecting a custom folder to upload
+  const selectCloudUploadCategory = document.getElementById("select-cloud-upload-category");
+  const cloudUploadName = document.getElementById("cloud-upload-name");
+  if (selectCloudUploadCategory && cloudUploadName) {
+    selectCloudUploadCategory.onchange = () => {
+      const val = selectCloudUploadCategory.value;
+      if (val === "all") {
+        cloudUploadName.value = "";
+      } else {
+        const folder = state.customFolders.find(f => f.id === val);
+        if (folder) {
+          cloudUploadName.value = folder.name.replace(/[^a-zA-Z0-9_\-\s]/g, "");
+        }
+      }
+    };
   }
 
   // Helper to load synonym data into editor inputs
@@ -5209,7 +5243,8 @@ async function loadCloudWordSets() {
 
 async function uploadActiveVocabToCloud() {
   const nameInput = document.getElementById("cloud-upload-name");
-  if (!nameInput) return;
+  const selectCloudUploadCategory = document.getElementById("select-cloud-upload-category");
+  if (!nameInput || !selectCloudUploadCategory) return;
 
   const setName = nameInput.value.trim().replace(/[^a-zA-Z0-9_\-\s]/g, "");
   if (!setName) {
@@ -5217,8 +5252,32 @@ async function uploadActiveVocabToCloud() {
     return;
   }
 
-  if (!state.customVocab || state.customVocab.length === 0) {
-    alert("Your custom vocabulary list is empty. Add or import some words first!");
+  const selectedVal = selectCloudUploadCategory.value;
+  let uploadVocab = [];
+  let uploadFolders = [];
+
+  if (selectedVal === "all") {
+    uploadVocab = state.customVocab || [];
+    uploadFolders = state.customFolders || [];
+  } else {
+    // Filter custom vocab to include only words matching category === folderId
+    uploadVocab = (state.customVocab || []).filter(v => v.category === selectedVal);
+    // Find all custom folders in the hierarchy of the selected folder so structure is preserved
+    const getFolderHierarchy = (folderId, list = []) => {
+      const f = (state.customFolders || []).find(x => x.id === folderId);
+      if (f) {
+        list.push(f);
+        if (f.parentId) {
+          getFolderHierarchy(f.parentId, list);
+        }
+      }
+      return list;
+    };
+    uploadFolders = getFolderHierarchy(selectedVal);
+  }
+
+  if (uploadVocab.length === 0) {
+    alert("The selected vocabulary set is empty. Add or select a set with words first!");
     return;
   }
 
@@ -5230,8 +5289,8 @@ async function uploadActiveVocabToCloud() {
 
   // Package custom vocab + folders
   const exportData = {
-    vocab: state.customVocab,
-    folders: state.customFolders || []
+    vocab: uploadVocab,
+    folders: uploadFolders
   };
 
   const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
@@ -5248,13 +5307,14 @@ async function uploadActiveVocabToCloud() {
     
     alert(`🎉 Set "${setName}" uploaded successfully to the cloud!`);
     nameInput.value = "";
+    selectCloudUploadCategory.value = "all";
     loadCloudWordSets();
   } catch (err) {
     alert(`❌ Failed to upload set: ${err.message}`);
   } finally {
     if (uploadBtn) {
       uploadBtn.disabled = false;
-      uploadBtn.textContent = "⬆️ Upload Active Vocabulary";
+      uploadBtn.textContent = "⬆️ Upload Selected Vocabulary";
     }
   }
 }
