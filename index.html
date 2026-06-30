@@ -52,6 +52,7 @@
         <button class="nav-item danger-badge-container" data-view="view-mistakes">
           <span class="icon">⚠️</span> Mistakes
           <span class="badge" id="sidebar-mistakes-badge">0</span>
+        </button>
         <button class="nav-item" data-view="view-import">
           <span class="icon">📥</span> Import
         </button>
@@ -63,6 +64,9 @@
         </button>
         <button class="nav-item" data-view="view-api">
           <span class="icon">🔑</span> API Keys
+        </button>
+        <button class="nav-item" data-view="view-grammar">
+          <span class="icon">📖</span> Grammar Guide
         </button>
         
         <!-- Build Timestamp on the bottom left -->
@@ -153,6 +157,9 @@
         </button>
         <button id="btn-go-api" class="btn btn-secondary" style="margin: 0;">
           <span class="icon">🔑</span> API Keys
+        </button>
+        <button id="btn-go-grammar" class="btn btn-secondary" style="margin: 0;">
+          <span class="icon">📖</span> Grammar Guide
         </button>
       </div>
     </section>
@@ -269,6 +276,9 @@
             <button id="btn-get-ai-details" class="btn btn-secondary btn-sm btn-block" style="margin-top: 16px; background: rgba(76, 201, 240, 0.1); color: var(--accent-color); border: 1px solid var(--accent-color);">
               ✨ Ask AI / Web for more details
             </button>
+            <button id="btn-show-grammar-hint" class="btn btn-secondary btn-sm btn-block" style="margin-top: 10px; background: rgba(114, 9, 183, 0.15); color: var(--primary-color); border: 1px solid var(--primary-color);">
+              📖 Show Relevant Grammar Rule
+            </button>
             <div id="ai-details-loading" style="display: none; text-align: center; margin-top: 10px;">
               <span class="spinner" style="display: inline-block; width: 16px; height: 16px; border: 2px solid var(--accent-color); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></span>
               <span style="margin-left: 8px; font-size: 0.85rem; color: var(--text-secondary);">Querying LLM/Web...</span>
@@ -278,9 +288,8 @@
 
           <button id="btn-next-question" class="btn btn-primary btn-block" style="margin-top: 15px;">Continue</button>
         </div>
-          </div>
-        </div>
       </div>
+    </div>
     </section>
 
     <!-- TEST REPORT VIEW -->
@@ -933,6 +942,29 @@
       </div>
     </section>
 
+    <!-- GRAMMAR GUIDE VIEW -->
+    <section id="view-grammar" class="app-view">
+      <div class="view-header">
+        <button id="btn-grammar-back" class="btn-back">← Back</button>
+        <h2>📖 Grammar Guide</h2>
+      </div>
+
+      <div class="card" style="margin-bottom: 16px;">
+        <div style="display: flex; gap: 8px; margin-bottom: 0;">
+          <input type="text" id="grammar-search" placeholder="Search grammar topics (e.g. Artikel, Pronomina)..." style="flex: 1;" />
+          <button id="btn-clear-grammar-search" class="btn btn-secondary" style="margin: 0; min-height: 48px; border-radius: 14px;">Clear</button>
+        </div>
+      </div>
+
+      <div class="card" style="flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0;">
+        <div id="grammar-content" class="markdown-body" style="padding: 24px; overflow-y: auto; max-height: calc(100vh - 300px); line-height: 1.6; font-size: 0.95rem; text-align: left;">
+          <div style="text-align: center; color: var(--text-secondary); padding: 40px;">
+            <span class="spinner" style="display: inline-block; width: 24px; height: 24px; border: 2px solid var(--accent-color); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 12px;"></span>
+            <p>Loading grammar guide...</p>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 
   <!-- Custom Modal Overlay for Alerts and Confirms -->
@@ -945,6 +977,22 @@
       <p id="modal-message">This is a custom message.</p>
       <div class="modal-actions" id="modal-actions">
         <!-- Buttons will be injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Grammar Hint Modal -->
+  <div id="grammar-hint-modal" class="modal-overlay" style="z-index: 1100;">
+    <div class="modal-card" style="max-width: 600px; width: 90%; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden;">
+      <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="modal-icon" style="font-size: 1.5rem; margin-right: 0;">📖</span>
+          <h3 id="grammar-hint-title" style="margin: 0; font-size: 1.25rem;">Grammar Hint</h3>
+        </div>
+        <button id="btn-close-grammar-hint" class="btn-close" style="position: static; font-size: 1.8rem; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; line-height: 1; padding: 0;">&times;</button>
+      </div>
+      <div id="grammar-hint-body" class="markdown-body" style="overflow-y: auto; flex-grow: 1; padding-right: 8px; text-align: left;">
+        <!-- Content will be injected dynamically -->
       </div>
     </div>
   </div>

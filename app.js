@@ -262,7 +262,108 @@ function showView(viewId) {
     renderStatisticsView();
   } else if (viewId === "view-browse") {
     renderBrowseList();
+  } else if (viewId === "view-grammar") {
+    loadGrammarGuide();
   }
+}
+
+// ==========================================
+// 3a. Grammar Guide Integration
+// ==========================================
+let grammarGuideData = null;
+
+function renderMarkdownToHtml(markdown) {
+  let html = markdown;
+  
+  // Escape HTML characters
+  html = html
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+  
+  // Parse Headings
+  html = html.replace(/^#\s+(.+)$/gm, "<h1>$1</h1>");
+  html = html.replace(/^##\s+(.+)$/gm, "<h2>$1</h2>");
+  html = html.replace(/^###\s+(.+)$/gm, "<h3>$1</h3>");
+  
+  // Parse Bold (**text** or __text__)
+  html = html.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  html = html.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+  
+  // Parse Italics (*text* or _text_)
+  html = html.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+  html = html.replace(/_([^_]+)_/g, "<em>$1</em>");
+
+  // Parse horizontal rules
+  html = html.replace(/^---\s*$/gm, "<hr style='border: none; border-top: 1px solid var(--border-color); margin: 24px 0;' />");
+
+  // Parse paragraphs/lines (treating lines ending with two spaces as line breaks)
+  const blocks = html.split("\n\n");
+  const processedBlocks = blocks.map(block => {
+    block = block.trim();
+    if (!block) return "";
+    if (block.startsWith("<h") || block.startsWith("<hr")) {
+      return block;
+    }
+    // Handle double-space line breaks
+    const lines = block.split("\n").map(l => {
+      if (l.endsWith("  ")) {
+        return l.substring(0, l.length - 2) + "<br/>";
+      }
+      return l;
+    }).join(" ");
+    return `<p style="margin-bottom: 12px; color: var(--text-secondary);">${lines}</p>`;
+  });
+  
+  return processedBlocks.join("\n");
+}
+
+async function loadGrammarGuide() {
+  const container = document.getElementById("grammar-content");
+  if (!container) return;
+
+  if (grammarGuideData) {
+    renderGrammarGuide(grammarGuideData);
+    return;
+  }
+
+  try {
+    const response = await fetch("vocab/Grammatikmerkblaetter.md");
+    if (!response.ok) throw new Error("Failed to load grammar guide");
+    
+    grammarGuideData = await response.text();
+    renderGrammarGuide(grammarGuideData);
+  } catch (err) {
+    container.innerHTML = `<div style="color: var(--error-color); padding: 20px; text-align: center;">Error loading grammar guide: ${err.message}</div>`;
+  }
+}
+
+function renderGrammarGuide(markdown, filterQuery = "") {
+  const container = document.getElementById("grammar-content");
+  if (!container) return;
+
+  if (!markdown) {
+    container.innerHTML = `<div style="color: var(--text-secondary); text-align: center; padding: 40px;">No grammar content available.</div>`;
+    return;
+  }
+
+  let contentToRender = markdown;
+
+  if (filterQuery.trim()) {
+    const query = filterQuery.toLowerCase().trim();
+    // Split by horizontal rules
+    const sections = markdown.split(/\n---\n/);
+    const matchedSections = sections.filter(sec => sec.toLowerCase().includes(query));
+    
+    if (matchedSections.length === 0) {
+      container.innerHTML = `<div style="color: var(--text-secondary); text-align: center; padding: 40px;">No matching grammar sections found for "${filterQuery}".</div>`;
+      return;
+    }
+    
+    contentToRender = matchedSections.join("\n\n---\n\n");
+  }
+
+  container.innerHTML = renderMarkdownToHtml(contentToRender);
 }
 
 function updateHeaderUI() {
@@ -1924,13 +2025,40 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btn-go-setup").onclick = () => showView("view-setup");
   document.getElementById("btn-go-api").onclick = () => showView("view-api");
   document.getElementById("btn-go-statistics").onclick = () => showView("view-statistics");
+  if (document.getElementById("btn-go-grammar")) {
+    document.getElementById("btn-go-grammar").onclick = () => showView("view-grammar");
+  }
   
   document.getElementById("btn-import-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-mistakes-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-setup-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-api-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-statistics-back").onclick = () => showView("view-dashboard");
+  if (document.getElementById("btn-grammar-back")) {
+    document.getElementById("btn-grammar-back").onclick = () => showView("view-dashboard");
+  }
   document.getElementById("btn-report-home").onclick = () => showView("view-dashboard");
+
+  // Grammar Search listeners
+  const searchInput = document.getElementById("grammar-search");
+  const clearBtn = document.getElementById("btn-clear-grammar-search");
+  if (searchInput) {
+    searchInput.oninput = (e) => {
+      if (grammarGuideData) {
+        renderGrammarGuide(grammarGuideData, e.target.value);
+      }
+    };
+  }
+  if (clearBtn) {
+    clearBtn.onclick = () => {
+      if (searchInput) {
+        searchInput.value = "";
+        if (grammarGuideData) {
+          renderGrammarGuide(grammarGuideData);
+        }
+      }
+    };
+  }
 
   function quitAndSaveTestSession() {
     const tState = state.currentTest;
@@ -3545,6 +3673,107 @@ function setupWordDetails(currentWord) {
       aiBtn.disabled = false;
     }
   };
+
+  // Grammar Hint overlay trigger
+  const grammarBtn = document.getElementById("btn-show-grammar-hint");
+  if (grammarBtn) {
+    grammarBtn.onclick = async () => {
+      const modal = document.getElementById("grammar-hint-modal");
+      const modalTitle = document.getElementById("grammar-hint-title");
+      const modalBody = document.getElementById("grammar-hint-body");
+      const closeBtn = document.getElementById("btn-close-grammar-hint");
+      
+      if (!modal || !modalBody) return;
+      
+      modalTitle.textContent = `Grammar Hint: ${currentWord.target || currentWord.en}`;
+      modalBody.innerHTML = `
+        <div style="text-align: center; color: var(--text-secondary); padding: 40px;">
+          <span class="spinner" style="display: inline-block; width: 24px; height: 24px; border: 2px solid var(--accent-color); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 12px;"></span>
+          <p>Analyzing matching grammar rules for "${currentWord.target || currentWord.en}"...</p>
+        </div>
+      `;
+      modal.classList.add("active");
+      
+      if (closeBtn) {
+        closeBtn.onclick = () => modal.classList.remove("active");
+      }
+      
+      // Load grammar markdown guide data if not cached
+      if (!grammarGuideData) {
+        try {
+          const response = await fetch("vocab/Grammatikmerkblaetter.md");
+          if (response.ok) {
+            grammarGuideData = await response.text();
+          }
+        } catch (e) {
+          console.error("Failed to load grammar guide for hint:", e);
+        }
+      }
+
+      // Filter guide data by category for prompt/fallback relevance
+      let relevantSections = "";
+      if (grammarGuideData) {
+        const sections = grammarGuideData.split(/\n---\n/);
+        const cat = (currentWord.category || "").toLowerCase();
+        let matchedSections = [];
+        
+        if (cat.includes("noun") || (details && details.articles)) {
+          matchedSections = sections.filter(sec => sec.includes("Der Artikel") || sec.includes("l'articolo"));
+        } else if (cat.includes("verb") || (details && details.variations && details.variations.he)) {
+          matchedSections = sections.filter(sec => sec.includes("Perfekt") || sec.includes("passato prossimo") || sec.includes("Passato remoto") || sec.includes("Futur"));
+        } else if (cat.includes("adj")) {
+          matchedSections = sections.filter(sec => sec.includes("Adjektiv") || sec.includes("l'aggettivo"));
+        }
+        
+        if (matchedSections.length === 0) {
+          matchedSections = sections.slice(0, 3);
+        }
+        relevantSections = matchedSections.join("\n\n---\n\n");
+      }
+
+      const baseWord = currentWord[state.baseLang || "en"] || currentWord.en;
+      const studyWord = currentWord[state.selectedLang || aLang] || currentWord.target;
+      const studyLangName = langNames[state.selectedLang || aLang] || state.selectedLang || aLang;
+      const categoryName = currentWord.category || "General";
+
+      try {
+        let explanationText = "";
+        
+        if (state.geminiKey || state.openaiKey || state.grokKey) {
+          const promptText = `
+Given the following sections of the reference grammar guide:
+"""
+${relevantSections.substring(0, 3000)}
+"""
+
+Act as an expert language teacher. Formulate a personalized grammar hint (in German) explaining 1 or 2 relevant grammar rules for the word "${studyWord}" (${studyLangName}), which is translated as "${baseWord}" (Category: "${categoryName}"). 
+
+Adjust the rule strictly to this specific case. For example:
+- If it is a noun, explain which article (like il, lo, la, l', i, gli, le) it uses and why (pointing to the starting letters/sounds).
+- If it is a verb, explain its auxiliary verb (essere vs avere) or tense conjugation rule.
+- If it is an adjective, explain how its ending changes.
+
+You MUST write the explanation in German. Keep it concise, clear, and format it nicely with bold labels. Do NOT include introduction or meta-comments.
+          `;
+          
+          explanationText = await callLLM(promptText, "You are a helpful language teacher. Write all grammar tips and explanations in German.");
+        } else {
+          // Fallback: Local rule matching
+          explanationText = `### 📖 Lokaler Grammatik-Hinweis: **${studyWord}** (${studyLangName})\n\n`;
+          if (relevantSections) {
+            explanationText += `*Hier sind relevante Abschnitte aus den Grammatikmerkblättern, die zu der Kategorie **${categoryName}** passen:*\n\n---\n\n`;
+            explanationText += relevantSections;
+          } else {
+            explanationText += `*Keine passenden Grammatikregeln im Guide gefunden.*`;
+          }
+        }
+        
+        modalBody.innerHTML = parseMarkdownToHTML(explanationText);
+      } catch (err) {
+        modalBody.innerHTML = `<div style="color: var(--error-color); padding: 20px; text-align: center;">Konnte Grammatikregel nicht anpassen: ${err.message}</div>`;
+      }
+    };
+  }
 }
 
 function parseMarkdownToHTML(md) {
