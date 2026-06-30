@@ -27,7 +27,7 @@ const LANG_LOCALES = {
 function getFlagHtml(lang) {
   const map = { en: "gb", de: "de", it: "it", es: "es", fr: "fr" };
   const code = map[lang] || "gb";
-  return `<img src="https://flagcdn.com/16x12/${code}.png" width="16" height="12" alt="${lang}" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">`;
+  return `<img src="https://flagcdn.com/16x12/${code}.png" width="16" height="12" alt="${lang}" data-lang="${lang}" class="flag-icon-tts" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5); cursor: pointer;" title="Click to listen">`;
 }
 
 function getLangColor(lang) {
@@ -2059,6 +2059,56 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     };
   }
+
+  // Global Flag Icon Click -> Speak TTS
+  document.addEventListener("click", (e) => {
+    const target = e.target;
+    if (target && target.tagName === "IMG" && target.src && target.src.includes("flagcdn.com")) {
+      const lang = target.dataset.lang || target.getAttribute("alt");
+      if (!lang) return;
+
+      let text = "";
+
+      // 1. Check if there's a strong/span/em/text next sibling
+      let sibling = target.nextElementSibling || target.nextSibling;
+      if (sibling) {
+        const sibText = sibling.textContent.trim();
+        if (sibText) {
+          text = sibText;
+        }
+      }
+
+      // 2. If sibling text is empty, check parent text content (and clean it)
+      if (!text) {
+        const parent = target.parentElement;
+        if (parent) {
+          if (parent.classList.contains("sidebar-brand") || parent.classList.contains("user-badge")) {
+            return;
+          }
+          const clone = parent.cloneNode(true);
+          // Remove images, badges, icons, buttons, voice helpers
+          clone.querySelectorAll("img, .badge, .icon, button, .btn-close, .voice-btn-inline").forEach(el => el.remove());
+          text = clone.textContent.trim();
+        }
+      }
+
+      if (text) {
+        // Clean up formatting
+        text = text.replace(/^[→\s\-\u2192]+/, ""); // Remove arrow indicators
+        text = text.split("(")[0].split("[")[0].split("/")[0].trim(); // Remove translations/alternatives
+        text = text.replace(/[“”"']/g, "").trim(); // Remove quotes
+
+        const skipWords = ["en", "de", "it", "es", "fr", "gb", "english", "german", "italiano", "italian", "spanish", "french"];
+        if (skipWords.includes(text.toLowerCase())) {
+          return;
+        }
+
+        if (text) {
+          speakWord(text, lang, 1.0);
+        }
+      }
+    }
+  });
 
   function quitAndSaveTestSession() {
     const tState = state.currentTest;
