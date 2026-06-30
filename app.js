@@ -3460,9 +3460,12 @@ function setupWordDetails(currentWord) {
 
     const baseLang = state.baseLang || "en";
     const baseLangName = langNames[baseLang] || baseLang;
+    const baseWord = currentWord[baseLang] || currentWord.en;
+    const studyLang = state.selectedLang || aLang;
+    const studyWord = currentWord[studyLang] || currentWord.target;
 
     try {
-      const promptText = `Explain the usage of the word "${currentWord.en}" (${langNames[qLang] || qLang}) and its translation "${currentWord.target}" in ${langNames[aLang] || aLang}. Provide articles, prepositions, example sentences, and grammatical cases if applicable. You MUST write your explanation, commentary, and descriptions in ${baseLangName}.`;
+      const promptText = `Explain the usage of the vocabulary word "${studyWord}" (${langNames[studyLang] || studyLang}) and its translation "${baseWord}" (${baseLangName}). Provide articles (such as der/die/das in German, il/la/lo in Italian), prepositions, example sentences, and grammatical variations where applicable. You MUST write all explanations, commentaries, descriptions, and translations in ${baseLangName}.`;
 
       let responseText = "";
 
