@@ -825,6 +825,12 @@ body {
   align-items: stretch;
 }
 
+@media (min-width: 768px) {
+  .test-split-layout:has(.test-right-pane.active) .test-left-pane {
+    display: none;
+  }
+}
+
 .test-left-pane {
   flex: 1;
   display: flex;
