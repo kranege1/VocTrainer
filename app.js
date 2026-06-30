@@ -24,6 +24,12 @@ const LANG_LOCALES = {
   fr: "fr-FR"
 };
 
+function getFlagHtml(lang) {
+  const map = { en: "gb", de: "de", it: "it", es: "es", fr: "fr" };
+  const code = map[lang] || "gb";
+  return `<img src="https://flagcdn.com/16x12/${code}.png" width="16" height="12" alt="${lang}" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">`;
+}
+
 function getLangColor(lang) {
   const colors = {
     de: "var(--lang-de, #4cc9f0)",
@@ -3341,18 +3347,18 @@ function setupWordDetails(currentWord) {
   const aLang = currentWord.answerLang || state.selectedLang;
 
   // Language display helpers
-  const flags = { en: "🇬🇧", de: "🇩🇪", it: "🇮🇹", es: "🇪🇸", fr: "🇫🇷" };
+  const flags = { en: getFlagHtml("en"), de: getFlagHtml("de"), it: getFlagHtml("it"), es: getFlagHtml("es"), fr: getFlagHtml("fr") };
   const langNames = { en: "English", de: "German", it: "Italian", es: "Spanish", fr: "French" };
 
   // Set dynamic labels (e.g. "🇩🇪 DE" instead of "Base Word")
   const baseLabelEl = document.getElementById("detail-base-label");
   const targetLabelEl = document.getElementById("detail-target-label");
   if (baseLabelEl) {
-    baseLabelEl.textContent = `${flags[qLang] || "🌐"} ${qLang.toUpperCase()}`;
+    baseLabelEl.innerHTML = `${flags[qLang] || "🌐"} ${qLang.toUpperCase()}`;
     baseLabelEl.style.color = getLangColor(qLang);
   }
   if (targetLabelEl) {
-    targetLabelEl.textContent = `${flags[aLang] || "🌐"} ${aLang.toUpperCase()}`;
+    targetLabelEl.innerHTML = `${flags[aLang] || "🌐"} ${aLang.toUpperCase()}`;
     targetLabelEl.style.color = getLangColor(aLang);
   }
 
@@ -3472,10 +3478,10 @@ function setupWordDetails(currentWord) {
     }
     if (details.genderForms && (details.genderForms.de || details.genderForms.it)) {
       if (details.genderForms.de && (details.genderForms.de.m || details.genderForms.de.f)) {
-        variationsHtml += `🇩🇪 <strong>Genders (DE)</strong>: ♂️ ${details.genderForms.de.m || "-"} / ♀️ ${details.genderForms.de.f || "-"}<br>`;
+        variationsHtml += `${flags.de} <strong>Genders (DE)</strong>: ♂️ ${details.genderForms.de.m || "-"} / ♀️ ${details.genderForms.de.f || "-"}<br>`;
       }
       if (details.genderForms.it && (details.genderForms.it.m || details.genderForms.it.f)) {
-        variationsHtml += `🇮🇹 <strong>Genders (IT)</strong>: ♂️ ${details.genderForms.it.m || "-"} / ♀️ ${details.genderForms.it.f || "-"}<br>`;
+        variationsHtml += `${flags.it} <strong>Genders (IT)</strong>: ♂️ ${details.genderForms.it.m || "-"} / ♀️ ${details.genderForms.it.f || "-"}<br>`;
       }
     }
     if (variationsHtml && sectionVariations) {
@@ -4512,11 +4518,11 @@ function updateDirectionButtonsUI() {
   const targetLang = state.selectedLang || "de";
 
   const flags = {
-    en: "🇬🇧",
-    de: "🇩🇪",
-    it: "🇮🇹",
-    es: "🇪🇸",
-    fr: "🇫🇷"
+    en: getFlagHtml("en"),
+    de: getFlagHtml("de"),
+    it: getFlagHtml("it"),
+    es: getFlagHtml("es"),
+    fr: getFlagHtml("fr")
   };
 
   const names = {
