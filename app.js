@@ -3412,14 +3412,32 @@ function setupWordDetails(currentWord) {
       if (details.variations.plural && (details.variations.plural[qLang] || details.variations.plural[aLang])) {
         let qPlural = details.variations.plural[qLang] || "";
         let aPlural = details.variations.plural[aLang] || "";
-        
-        if (qLang === "de" && qPlural && !qPlural.toLowerCase().startsWith("die ")) {
-          qPlural = "die " + qPlural;
-        }
-        if (aLang === "de" && aPlural && !aPlural.toLowerCase().startsWith("die ")) {
-          aPlural = "die " + aPlural;
-        }
+        const guessPluralArticle = (lang, singArt, word) => {
+          if (!singArt) return "";
+          const s = singArt.toLowerCase().trim();
+          if (lang === "de") return "die";
+          if (lang === "es") return s === "el" ? "los" : (s === "la" ? "las" : "");
+          if (lang === "fr") return "les";
+          if (lang === "it") {
+            if (s === "il") return "i";
+            if (s === "la") return "le";
+            if (s === "lo") return "gli";
+            if (s === "l'") return word.endsWith("i") ? "gli" : "le";
+          }
+          return "";
+        };
 
+        const prependArticle = (plur, lang, singArt) => {
+          if (!plur || !singArt) return plur;
+          const art = guessPluralArticle(lang, singArt, plur);
+          if (art && !plur.toLowerCase().startsWith(art + " ") && !plur.toLowerCase().startsWith(art + "'")) {
+            return art + (art.endsWith("'") ? "" : " ") + plur;
+          }
+          return plur;
+        };
+
+        qPlural = prependArticle(qPlural, qLang, qArt);
+        aPlural = prependArticle(aPlural, aLang, aArt);
         variationsHtml += `Plural: `;
         if (qPlural) variationsHtml += `${flags[qLang] || ""} <strong style="color:${getLangColor(qLang)};">${qPlural}</strong> `;
         if (qPlural && aPlural) variationsHtml += `&rarr; `;
