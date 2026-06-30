@@ -1595,6 +1595,65 @@ body.device-ios .app-container {
   font-style: italic;
 }
 
+/* Word Insights Responsive Grid Layout */
+.insights-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  overflow: hidden;
+  flex-grow: 1;
+}
+
+.insights-left-pane {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--border-color);
+  padding-right: 16px;
+}
+
+.insights-right-pane {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .insights-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .insights-container {
+    grid-template-rows: 1fr 1fr;
+    height: 100%;
+  }
+  .insights-left-pane {
+    border-right: none !important;
+    border-bottom: 1px solid var(--border-color);
+    padding-right: 0 !important;
+    padding-bottom: 16px;
+  }
+}
+
+/* Hover effect on clickable insights content */
+#insights-ai-content p, #insights-ai-content li, #insights-ai-content h3, #insights-ai-content strong,
+#insights-grammar-content p, #insights-grammar-content li, #insights-grammar-content h3, #insights-grammar-content strong {
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin-left: -8px;
+  margin-right: -8px;
+}
+
+#insights-ai-content p:hover, #insights-ai-content li:hover, #insights-ai-content h3:hover, #insights-ai-content strong:hover,
+#insights-grammar-content p:hover, #insights-grammar-content li:hover, #insights-grammar-content h3:hover, #insights-grammar-content strong:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
 
 
 

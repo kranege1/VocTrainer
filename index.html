@@ -272,18 +272,10 @@
               <p id="detail-synonyms">...</p>
             </div>
             
-            <!-- Get More Details from Web/LLM -->
-            <button id="btn-get-ai-details" class="btn btn-secondary btn-sm btn-block" style="margin-top: 16px; background: rgba(76, 201, 240, 0.1); color: var(--accent-color); border: 1px solid var(--accent-color);">
-              ✨ Ask AI / Web for more details
+            <!-- Combined Word Insights & Grammar Rules -->
+            <button id="btn-show-word-insights" class="btn btn-primary btn-sm btn-block" style="margin-top: 16px;">
+              ✨ Word Insights & Grammar Rules
             </button>
-            <button id="btn-show-grammar-hint" class="btn btn-secondary btn-sm btn-block" style="margin-top: 10px; background: rgba(114, 9, 183, 0.15); color: var(--primary-color); border: 1px solid var(--primary-color);">
-              📖 Show Relevant Grammar Rule
-            </button>
-            <div id="ai-details-loading" style="display: none; text-align: center; margin-top: 10px;">
-              <span class="spinner" style="display: inline-block; width: 16px; height: 16px; border: 2px solid var(--accent-color); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></span>
-              <span style="margin-left: 8px; font-size: 0.85rem; color: var(--text-secondary);">Querying LLM/Web...</span>
-            </div>
-            <div id="ai-details-response" style="display: none; margin-top: 10px; padding: 16px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid var(--border-color); font-size: 0.85rem; line-height: 1.6;"></div>
           </div>
 
           <button id="btn-next-question" class="btn btn-primary btn-block" style="margin-top: 15px;">Continue</button>
@@ -981,18 +973,37 @@
     </div>
   </div>
 
-  <!-- Grammar Hint Modal -->
-  <div id="grammar-hint-modal" class="modal-overlay" style="z-index: 1100;">
-    <div class="modal-card" style="max-width: 600px; width: 90%; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden;">
+  <!-- Word Insights & Grammar Rules Modal -->
+  <div id="word-insights-modal" class="modal-overlay" style="z-index: 1100;">
+    <div class="modal-card" style="max-width: 960px; width: 95%; height: 90vh; display: flex; flex-direction: column; overflow: hidden; padding: 24px;">
       <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
         <div style="display: flex; align-items: center; gap: 8px;">
-          <span class="modal-icon" style="font-size: 1.5rem; margin-right: 0;">📖</span>
-          <h3 id="grammar-hint-title" style="margin: 0; font-size: 1.25rem;">Grammar Hint</h3>
+          <span class="modal-icon" style="font-size: 1.5rem; margin-right: 0;">✨</span>
+          <h3 id="insights-modal-title" style="margin: 0; font-size: 1.25rem;">Word Insights & Grammar Rules</h3>
         </div>
-        <button id="btn-close-grammar-hint" class="btn-close" style="position: static; font-size: 1.8rem; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; line-height: 1; padding: 0;">&times;</button>
+        <button id="btn-close-insights" class="btn-close" style="position: static; font-size: 1.8rem; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; line-height: 1; padding: 0;">&times;</button>
       </div>
-      <div id="grammar-hint-body" class="markdown-body" style="overflow-y: auto; flex-grow: 1; padding-right: 8px; text-align: left;">
-        <!-- Content will be injected dynamically -->
+      
+      <div class="insights-container">
+        <!-- Left Pane: AI Usage Insights -->
+        <div class="insights-left-pane">
+          <h4 style="margin-top: 0; margin-bottom: 12px; color: var(--accent-color); font-size: 1.05rem; display: flex; align-items: center; gap: 6px;">
+            <span>🤖</span> AI Vocabulary Insights
+          </h4>
+          <div id="insights-ai-content" class="markdown-body" style="overflow-y: auto; flex-grow: 1; padding-right: 8px; max-height: 100%;">
+            <!-- Loading state -->
+          </div>
+        </div>
+        
+        <!-- Right Pane: Grammar Reference Sheets -->
+        <div class="insights-right-pane">
+          <h4 style="margin-top: 0; margin-bottom: 12px; color: var(--primary-color); font-size: 1.05rem; display: flex; align-items: center; gap: 6px;">
+            <span>📖</span> Relevant Grammar Rules
+          </h4>
+          <div id="insights-grammar-content" class="markdown-body" style="overflow-y: auto; flex-grow: 1; padding-right: 8px; max-height: 100%;">
+            <!-- Loading state -->
+          </div>
+        </div>
       </div>
     </div>
   </div>

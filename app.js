@@ -565,6 +565,114 @@ function speakWord(text, langCode, rate = 1.0) {
   }
 }
 
+let currentSpeechIndex = 0;
+let globalSpeechQueue = [];
+
+function speakWordWithCallback(text, langCode, rate = 1.0, callback) {
+  if (state.audioEngine === "openai" && state.openaiKey) {
+    speakOpenAI(text, rate).finally(() => {
+      if (callback) callback();
+    });
+    return;
+  }
+  
+  if ('speechSynthesis' in window) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = LANG_LOCALES[langCode] || "en-US";
+    utterance.rate = rate; 
+    
+    let selectedVoice = null;
+    const customVoiceName = state.customVoices?.[langCode];
+    if (customVoiceName && customVoiceName !== "default") {
+      const voices = window.speechSynthesis.getVoices();
+      selectedVoice = voices.find(v => v.name === customVoiceName);
+    }
+    
+    const finalVoice = selectedVoice || getBestVoice(langCode);
+    if (finalVoice) {
+      utterance.voice = finalVoice;
+    }
+    
+    utterance.onend = () => {
+      if (callback) callback();
+    };
+    utterance.onerror = () => {
+      if (callback) callback();
+    };
+    window.speechSynthesis.speak(utterance);
+  } else {
+    if (callback) callback();
+  }
+}
+
+function playNextInQueue() {
+  if (currentSpeechIndex >= globalSpeechQueue.length) {
+    globalSpeechQueue = [];
+    currentSpeechIndex = 0;
+    return;
+  }
+  
+  const chunk = globalSpeechQueue[currentSpeechIndex];
+  currentSpeechIndex++;
+  
+  speakWordWithCallback(chunk.text, chunk.lang, 1.0, () => {
+    setTimeout(playNextInQueue, 300);
+  });
+}
+
+function playSpeechQueue(queue) {
+  if (window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+  }
+  globalSpeechQueue = queue;
+  currentSpeechIndex = 0;
+  playNextInQueue();
+}
+
+function speakMultilingualText(text, targetLang) {
+  const baseLang = state.baseLang || "en";
+  const germanStopwords = ["der", "die", "das", "ein", "eine", "einer", "einem", "einen", "und", "ist", "sind", "mit", "vor", "nach", "für", "bei", "oder", "wird", "werden", "von", "zu", "im", "in", "dem", "den", "des", "das", "als", "wie", "an", "zur", "zum", "zur", "formen", "verwendung", "beispiele", "beispiel", "merke", "achtung", "regel", "regeln", "grammatik", "artikel", "nomen", "verb", "verben", "adjektiv", "pronomina", "pronomen", "vorwort", "inhaltsverzeichnis"];
+  
+  const lines = text.split("\n");
+  let speechQueue = [];
+
+  lines.forEach(line => {
+    let cleanLine = line.trim();
+    if (!cleanLine) return;
+
+    // Split by parentheses, colons, dashes
+    const parts = cleanLine.split(/([\(\)\–\-\:])/);
+    
+    parts.forEach(part => {
+      const p = part.trim();
+      if (!p || p === "(" || p === ")" || p === "–" || p === "-" || p === ":") return;
+      
+      const words = p.toLowerCase().split(/[\s,;\.\?!]+/);
+      const hasGerman = words.some(w => germanStopwords.includes(w));
+      
+      let partLang = targetLang;
+      if (hasGerman) {
+        partLang = baseLang;
+      }
+      
+      if (speechQueue.length > 0 && speechQueue[speechQueue.length - 1].lang === partLang) {
+        speechQueue[speechQueue.length - 1].text += " " + p;
+      } else {
+        speechQueue.push({ text: p, lang: partLang });
+      }
+    });
+  });
+
+  speechQueue = speechQueue.map(q => {
+    q.text = q.text.replace(/[“”"'\(\)]/g, "").trim();
+    return q;
+  }).filter(q => q.text.length > 1);
+
+  if (speechQueue.length > 0) {
+    playSpeechQueue(speechQueue);
+  }
+}
+
 // Speak using OpenAI API
 async function speakOpenAI(text, rate) {
   try {
@@ -3688,109 +3796,117 @@ function setupWordDetails(currentWord) {
     if (sectionSynonyms) sectionSynonyms.style.display = "none";
   }
 
-  // Ask AI / Web button action
-  aiBtn.onclick = async () => {
-    aiLoading.style.display = "block";
-    aiResponse.style.display = "none";
-    aiBtn.disabled = true;
-
-    const baseLang = state.baseLang || "en";
-    const baseLangName = langNames[baseLang] || baseLang;
-    const baseWord = currentWord[baseLang] || currentWord.en;
-    const studyLang = state.selectedLang || aLang;
-    const studyWord = currentWord[studyLang] || currentWord.target;
-
-    try {
-      const promptText = `Explain the usage of the vocabulary word "${studyWord}" (${langNames[studyLang] || studyLang}) and its translation "${baseWord}" (${baseLangName}). Provide articles (such as der/die/das in German, il/la/lo in Italian), prepositions, example sentences, and grammatical variations where applicable. You MUST write all explanations, commentaries, descriptions, and translations in ${baseLangName}.`;
-
-      let responseText = "";
-
-      // Check keys using unified callLLM helper
-      if (state.geminiKey || state.openaiKey || state.grokKey) {
-        responseText = await callLLM(promptText, `You are a helpful language teacher. Explain all vocabulary details in ${baseLangName}.`);
-      } else {
-        const fallbackText = await fetchWebDetailsFallback(currentWord.en, aLang);
-        responseText = `⚠️ [No API Key configured. Showing web dictionary fallback details instead of AI explanation]\n\n${fallbackText}`;
-      }
-
-      aiResponse.innerHTML = parseMarkdownToHTML(responseText);
-      aiResponse.style.display = "block";
-    } catch (err) {
-      aiResponse.textContent = `Could not fetch details: ${err.message}`;
-      aiResponse.style.display = "block";
-    } finally {
-      aiLoading.style.display = "none";
-      aiBtn.disabled = false;
-    }
-  };
-
-  // Grammar Hint overlay trigger
-  const grammarBtn = document.getElementById("btn-show-grammar-hint");
-  if (grammarBtn) {
-    grammarBtn.onclick = async () => {
-      const modal = document.getElementById("grammar-hint-modal");
-      const modalTitle = document.getElementById("grammar-hint-title");
-      const modalBody = document.getElementById("grammar-hint-body");
-      const closeBtn = document.getElementById("btn-close-grammar-hint");
+  // Combined Word Insights & Grammar Rules trigger
+  const insightsBtn = document.getElementById("btn-show-word-insights");
+  if (insightsBtn) {
+    insightsBtn.onclick = async () => {
+      const modal = document.getElementById("word-insights-modal");
+      const modalTitle = document.getElementById("insights-modal-title");
+      const aiContent = document.getElementById("insights-ai-content");
+      const grammarContent = document.getElementById("insights-grammar-content");
+      const closeBtn = document.getElementById("btn-close-insights");
       
-      if (!modal || !modalBody) return;
+      if (!modal || !aiContent || !grammarContent) return;
       
-      modalTitle.textContent = `Grammar Hint: ${currentWord.target || currentWord.en}`;
-      modalBody.innerHTML = `
+      const studyWord = currentWord[state.selectedLang || aLang] || currentWord.target;
+      modalTitle.textContent = `Insights & Grammar: ${studyWord}`;
+      
+      // Show loading spinners in both columns
+      const spinnerHtml = `
         <div style="text-align: center; color: var(--text-secondary); padding: 40px;">
           <span class="spinner" style="display: inline-block; width: 24px; height: 24px; border: 2px solid var(--accent-color); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 12px;"></span>
-          <p>Analyzing matching grammar rules for "${currentWord.target || currentWord.en}"...</p>
+          <p>Loading...</p>
         </div>
       `;
+      aiContent.innerHTML = spinnerHtml;
+      grammarContent.innerHTML = spinnerHtml;
+      
       modal.classList.add("active");
       
       if (closeBtn) {
-        closeBtn.onclick = () => modal.classList.remove("active");
-      }
-      
-      // Load grammar markdown guide data if not cached
-      if (!grammarGuideData) {
-        try {
-          const response = await fetch("vocab/Grammatikmerkblaetter.md");
-          if (response.ok) {
-            grammarGuideData = await response.text();
+        closeBtn.onclick = () => {
+          modal.classList.remove("active");
+          if (window.speechSynthesis) {
+            window.speechSynthesis.cancel();
           }
-        } catch (e) {
-          console.error("Failed to load grammar guide for hint:", e);
-        }
+        };
       }
 
-      // Filter guide data by category for prompt/fallback relevance
-      let relevantSections = "";
-      if (grammarGuideData) {
-        const sections = grammarGuideData.split(/\n---\n/);
-        const cat = (currentWord.category || "").toLowerCase();
-        let matchedSections = [];
-        
-        if (cat.includes("noun") || (details && details.articles)) {
-          matchedSections = sections.filter(sec => sec.includes("Der Artikel") || sec.includes("l'articolo"));
-        } else if (cat.includes("verb") || (details && details.variations && details.variations.he)) {
-          matchedSections = sections.filter(sec => sec.includes("Perfekt") || sec.includes("passato prossimo") || sec.includes("Passato remoto") || sec.includes("Futur"));
-        } else if (cat.includes("adj")) {
-          matchedSections = sections.filter(sec => sec.includes("Adjektiv") || sec.includes("l'aggettivo"));
+      // Bind paragraph / element click reading logic on this modal
+      modal.onclick = (e) => {
+        const target = e.target.closest("p, li, h1, h2, h3, h4, strong, blockquote, code");
+        if (target) {
+          if (target.tagName === "BUTTON" || target.closest("button") || target.closest(".modal-header")) {
+            return;
+          }
+          const text = target.textContent.trim();
+          if (text) {
+            const studyLang = state.selectedLang || "it";
+            speakMultilingualText(text, studyLang);
+          }
         }
-        
-        if (matchedSections.length === 0) {
-          matchedSections = sections.slice(0, 3);
+      };
+
+      // 1. Fetch AI details in parallel/async
+      const baseLang = state.baseLang || "en";
+      const baseLangName = langNames[baseLang] || baseLang;
+      const baseWord = currentWord[baseLang] || currentWord.en;
+      const studyLang = state.selectedLang || aLang;
+      const studyLangName = langNames[studyLang] || studyLang;
+
+      // Trigger AI query
+      (async () => {
+        try {
+          const promptText = `Explain the usage of the vocabulary word "${studyWord}" (${studyLangName}) and its translation "${baseWord}" (${baseLangName}). Provide articles (such as der/die/das in German, il/la/lo in Italian), prepositions, example sentences, and grammatical variations where applicable. You MUST write all explanations, commentaries, descriptions, and translations in ${baseLangName}.`;
+
+          let responseText = "";
+          if (state.geminiKey || state.openaiKey || state.grokKey) {
+            responseText = await callLLM(promptText, `You are a helpful language teacher. Explain all vocabulary details in ${baseLangName}.`);
+          } else {
+            const fallbackText = await fetchWebDetailsFallback(currentWord.en, aLang);
+            responseText = `⚠️ [No API Key configured. Showing web dictionary fallback details instead of AI explanation]\n\n${fallbackText}`;
+          }
+          aiContent.innerHTML = parseMarkdownToHTML(responseText);
+        } catch (err) {
+          aiContent.innerHTML = `<div style="color: var(--error-color); padding: 20px;">Could not fetch AI details: ${err.message}</div>`;
         }
-        relevantSections = matchedSections.join("\n\n---\n\n");
-      }
+      })();
 
-      const baseWord = currentWord[state.baseLang || "en"] || currentWord.en;
-      const studyWord = currentWord[state.selectedLang || aLang] || currentWord.target;
-      const studyLangName = langNames[state.selectedLang || aLang] || state.selectedLang || aLang;
-      const categoryName = currentWord.category || "General";
+      // 2. Fetch/Load grammar reference sheets in parallel/async
+      (async () => {
+        try {
+          if (!grammarGuideData) {
+            const response = await fetch("vocab/Grammatikmerkblaetter.md");
+            if (response.ok) {
+              grammarGuideData = await response.text();
+            }
+          }
 
-      try {
-        let explanationText = "";
-        
-        if (state.geminiKey || state.openaiKey || state.grokKey) {
-          const promptText = `
+          let relevantSections = "";
+          if (grammarGuideData) {
+            const sections = grammarGuideData.split(/\n---\n/);
+            const cat = (currentWord.category || "").toLowerCase();
+            let matchedSections = [];
+            
+            if (cat.includes("noun") || (details && details.articles)) {
+              matchedSections = sections.filter(sec => sec.includes("Der Artikel") || sec.includes("l'articolo"));
+            } else if (cat.includes("verb") || (details && details.variations && details.variations.he)) {
+              matchedSections = sections.filter(sec => sec.includes("Perfekt") || sec.includes("passato prossimo") || sec.includes("Passato remoto") || sec.includes("Futur"));
+            } else if (cat.includes("adj")) {
+              matchedSections = sections.filter(sec => sec.includes("Adjektiv") || sec.includes("l'aggettivo"));
+            }
+            
+            if (matchedSections.length === 0) {
+              matchedSections = sections.slice(0, 3);
+            }
+            relevantSections = matchedSections.join("\n\n---\n\n");
+          }
+
+          const categoryName = currentWord.category || "General";
+          let explanationText = "";
+          
+          if (state.geminiKey || state.openaiKey || state.grokKey) {
+            const promptText = `
 Given the following sections of the reference grammar guide:
 """
 ${relevantSections.substring(0, 3000)}
@@ -3807,24 +3923,24 @@ Adjust the rule strictly to this specific case. For example:
 - If it is an adjective, explain how its ending changes.
 
 You MUST write the explanation in German. Keep it concise, clear, and format it nicely with bold labels. Do NOT include introduction or meta-comments.
-          `;
-          
-          explanationText = await callLLM(promptText, "You are a helpful language teacher. Write all grammar tips and explanations in German.");
-        } else {
-          // Fallback: Local rule matching
-          explanationText = `### 📖 Lokaler Grammatik-Hinweis: **${studyWord}** (${studyLangName})\n\n`;
-          if (relevantSections) {
-            explanationText += `*Hier sind relevante Abschnitte aus den Grammatikmerkblättern, die zu der Kategorie **${categoryName}** passen:*\n\n---\n\n`;
-            explanationText += relevantSections;
+            `;
+            
+            explanationText = await callLLM(promptText, "You are a helpful language teacher. Write all grammar tips and explanations in German.");
           } else {
-            explanationText += `*Keine passenden Grammatikregeln im Guide gefunden.*`;
+            explanationText = `### 📖 Lokaler Grammatik-Hinweis: **${studyWord}** (${studyLangName})\n\n`;
+            if (relevantSections) {
+              explanationText += `*Hier sind relevante Abschnitte aus den Grammatikmerkblättern, die zu der Kategorie **${categoryName}** passen:*\n\n---\n\n`;
+              explanationText += relevantSections;
+            } else {
+              explanationText += `*Keine passenden Grammatikregeln im Guide gefunden.*`;
+            }
           }
+          
+          grammarContent.innerHTML = parseMarkdownToHTML(explanationText);
+        } catch (err) {
+          grammarContent.innerHTML = `<div style="color: var(--error-color); padding: 20px;">Could not fetch grammar rules: ${err.message}</div>`;
         }
-        
-        modalBody.innerHTML = parseMarkdownToHTML(explanationText);
-      } catch (err) {
-        modalBody.innerHTML = `<div style="color: var(--error-color); padding: 20px; text-align: center;">Konnte Grammatikregel nicht anpassen: ${err.message}</div>`;
-      }
+      })();
     };
   }
 }
