@@ -1,0 +1,503 @@
+sta piovendo
+regnet
+
+l'
+die, der, das
+
+ombrello
+Schirm, regenschirm
+
+centro commerciale
+Einkaufszentrum
+
+impermeabile
+Wasserfeste, regenschutz, Regenmantel
+
+biscotto
+Keks, Gebäckstück
+
+torta
+kuchen, torte, Torte
+
+conto
+konten, Rechnung (f), konto
+
+dolce
+Langsam, Süße, zartes
+
+carne
+Fleisch
+
+freddo
+kühlem, gekühlter, eiskalter
+
+pizza
+Pizza, pizza
+
+bibita
+Getränk, Getränk (n), Erfrischungsgetränke
+
+pollo
+Hühnchen
+
+panino
+sandwich, Pausenbrot, brötchen
+
+fagiolo
+Bohne, bohne
+
+buono
+gutschein, solider, guten
+
+vorrei
+Ich möchte, Würde, ich möchte
+
+le
+die, der, sie
+
+patata
+Kartoffel, kartoffel
+
+polpetta
+Frikadelle, Frikadellen
+
+ecco
+hier ist
+
+i
+die
+
+sono
+ich bin, bin, sind sie
+
+città
+Städte, Städten, Stadt
+
+centro
+Mittelpunkt, zentrum, Schwerpunkt
+
+piccolo
+kleiner, kleinen, geringfügig
+
+ma
+aber, sondern, Jedoch
+
+guarda
+Schau
+
+casa
+hauses, haus, Haus
+
+moderno
+modernes, zeitgenössischen, fortschrittlicher
+
+palazzo
+Wohnhaus, Schlosses, Palast
+
+solo
+nur
+
+male
+schlecht
+
+arabo
+Arabisch
+
+vicino
+nahe, in der Nähe, Nachbar
+
+mi dispiace
+es tut mir leid
+
+non
+nicht
+
+lontano
+entfernten, Fern, entfernter
+
+moschea
+Moschee, moschee
+
+posta
+post, Post (f, senza plurale), postet
+
+aiuto
+Hilfe
+
+chiesa
+Kirche, kirche
+
+stazione
+Bahnhöfen, Stationen, bahnstation
+
+prego
+Bitte, bitte
+
+va bene
+in Ordnung
+
+giallo
+gelben, gelb, krimi
+
+caro
+liebstes, überhöht, liebes
+
+giacca
+Jacke, Sakko, jacke
+
+economico
+Wirtschaftlich, günstigste, günstiges
+
+bianco
+weiß, weißer, weißen
+
+maglione
+Pullovers, Pulli, Pullover
+
+dov'è
+wo ist, wo befindet sich, wo gibt es
+
+scusi
+Entschuldigen Sie
+
+cassa
+Kasse
+
+camerino
+Umkleideraum, Kabinen, Umkleidekabine
+
+scarpa
+Schuh, schuh
+
+la
+die
+
+gonna
+Rock
+
+nero
+Nero, schwarze, schwarz
+
+maglietta
+oberteile, T-Shirt, Oberteile
+
+il
+der
+
+rosso
+rotes, Roten, rot
+
+carino
+Hübsches, freundliches, Nettes
+
+cappello
+Hut, Kappen, Hutes
+
+vestito
+kleidung, Kleid, anzug
+
+ci sono
+sind, gibt es, es gibt
+
+anche
+auch
+
+fragola
+Erdbeere, erdbeere
+
+mirtillo
+Heidelbeersaft, Blaubeeren
+
+poi
+dann
+
+tre
+drei
+
+pera
+Birne, birne
+
+carota
+Karotte
+
+ora
+jetzt
+
+due
+zwei
+
+pompelmo
+Grapefruit
+
+cetriolo
+Gurke, gurke
+
+certo
+sicher
+
+hai bisogno di
+Brauchst
+
+banana
+Banane
+
+mela
+Apfel, apfel
+
+ho bisogno di
+brauche, ich brauche
+
+mandarino
+die Mandarine
+
+mercato
+Markt, Marktes, marktes
+
+pomodoro
+Tomate, Tomaten, tomate
+
+arte
+Kunst
+
+studi
+Studiums, studiums, lernst
+
+musica
+Musik
+
+in
+in den, auf, in
+
+tedesco
+Deutsch
+
+wow
+Wow
+
+parli
+sprichst, Redest, sprichst du
+
+spagnolo
+spanisch, Spanisch
+
+inglese
+Englisch
+
+francese
+Französisch
+
+parlo
+ich spreche, Spreche, unterhalte
+
+fantastico
+fantastisch
+
+cinese
+chinesisch, Chinesisch
+
+italiano
+Italienisch
+
+studio
+praxis, lerne ich, studiere
+
+con
+mit, auf, zu
+
+panificio
+Bäckerei
+
+gelateria
+eisdiele, Eisdiele, Eiskiosk
+
+hotel
+hotel, Hotel, Hotels
+
+ristorante
+Ristorante, restaurant, Restaurants
+
+piazza
+Platzes, platzes, Platz
+
+farmacia
+apotheke, Apotheke, Pharmazie
+
+negozio
+Geschäft
+
+museo
+museum, museums, Museums
+
+lì
+da, Da, Dorthin
+
+biblioteca
+Bibliothek, bibliothek, Büchersammlung
+
+banca
+Bank
+
+scuola
+Schule, schule
+
+c'è
+es gibt, da ist, es befindet sich
+
+qui
+hier
+
+teatro
+Theaters, Theater, theater
+
+parco
+park, Parco, sparsam
+
+lei
+sie, Ihnen, ihr
+
+seria
+ernst, ernste, ernsthaft
+
+allegra
+fröhliche, fröhlich, lustig
+
+allora
+also
+
+simpatica
+sympathisch, sympathische
+
+timida
+schüchtern
+
+lui
+er
+
+allegro
+muntere, heitere, fröhlich
+
+serio
+ernsthafter, ernst, seriöses
+
+è
+das ist, hat, es ist
+
+simpatico
+freundliches, Nettes, sympathisches
+
+timido
+zurückhaltender, scheuer, schüchtern
+
+e tu
+und du
+
+ragazzo
+Bengel, lad, Bübchen
+
+ragazza
+Freundin, Mädchen, mädchen
+
+una
+eine
+
+sorella
+Schwester, schwester
+
+figlia
+Tochter
+
+ho
+ich habe, Ich habe, habe
+
+figlio
+Sohns, Sohn, Kind
+
+fratello
+Bruders, bruder, Bruder
+
+ah
+Ah, Ach
+
+è di
+gehört
+
+no
+nein
+
+sì
+ja
+
+tu
+du
+
+vero
+nicht wahr
+
+sei di
+bist aus
+
+io
+ich
+
+buonasera
+guten Abend, Guten Abend
+
+sono di
+bin aus
+
+bene
+gut
+
+a presto
+bis bald
+
+piacere
+Freut mich, sehr erfreut
+
+come va
+wie geht's
+
+io sono
+bin
+
+buongiorno
+Guten Tag, guten Tag
+
+perfetto
+perfekt
+
+arrivederci
+auf Wiedersehen, Auf Wiedersehen
+
+e
+und
+
+gelato
+eis, Eiscremes, Eis
+
+grazie
+danke
+
+o
+oder
+
+cornetto
+Hörnchen
+
+cappuccino
+Cappuccino
+
+per favore
+bitte
+
+caffè
+Kaffee
+
+tè
+Tee
+
+un
+ein
+
+salve
+Hallo

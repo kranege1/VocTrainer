@@ -2586,9 +2586,24 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
       
       btn.classList.add("active");
-      document.getElementById(btn.dataset.tab).classList.add("active");
+      const targetTab = btn.dataset.tab;
+      document.getElementById(targetTab).classList.add("active");
+      
+      if (targetTab === "tab-cloud") {
+        loadCloudWordSets();
+      }
     };
   });
+
+  // Cloud Share Event Listeners
+  const uploadCloudBtn = document.getElementById("btn-cloud-upload");
+  if (uploadCloudBtn) {
+    uploadCloudBtn.onclick = uploadActiveVocabToCloud;
+  }
+  const refreshCloudBtn = document.getElementById("btn-refresh-cloud");
+  if (refreshCloudBtn) {
+    refreshCloudBtn.onclick = loadCloudWordSets;
+  }
 
   // Helper to load synonym data into editor inputs
   window.loadSynonymIntoEditor = function(en, de, it, es, fr, category) {
@@ -5123,4 +5138,205 @@ if ('speechSynthesis' in window) {
   setTimeout(loadOnDeviceVoices, 1000);
   setTimeout(loadOnDeviceVoices, 2500);
 }
+
+// ==========================================
+// 11. Cloud Shared Word Sets API Client
+// ==========================================
+const CLOUD_API_URL = window.location.origin;
+
+async function loadCloudWordSets() {
+  const tbody = document.getElementById("cloud-sets-table-body");
+  if (!tbody) return;
+
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="3" style="text-align: center; color: var(--text-secondary); padding: 20px;">
+        <span class="spinner" style="display: inline-block; width: 16px; height: 16px; border: 2px solid var(--accent-color); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 8px; vertical-align: middle;"></span>
+        Fetching shared sets from cloud...
+      </td>
+    </tr>
+  `;
+
+  try {
+    const res = await fetch(`${CLOUD_API_URL}/api/list`);
+    if (!res.ok) throw new Error("Failed to fetch shared sets");
+    const list = await res.json();
+
+    if (list.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="3" style="text-align: center; color: var(--text-secondary); padding: 20px;">
+            ☁️ No shared sets in cloud yet. Upload yours to get started!
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = "";
+    list.forEach(set => {
+      const tr = document.createElement("tr");
+      tr.style.borderBottom = "1px solid rgba(255,255,255,0.04)";
+      
+      const sizeMb = (set.size / (1024 * 1024)).toFixed(2);
+      const formattedDate = new Date(set.updatedAt).toLocaleDateString();
+
+      tr.innerHTML = `
+        <td style="padding: 10px; font-weight: 600; color: #fff;">
+          📁 ${set.name}
+          <div style="font-size: 0.75rem; color: var(--text-secondary); font-weight: normal; margin-top: 2px;">Updated: ${formattedDate}</div>
+        </td>
+        <td style="padding: 10px; color: var(--accent-color); font-weight: 600;">
+          ${set.wordCount} words
+        </td>
+        <td style="padding: 10px; text-align: center; display: flex; gap: 8px; justify-content: center; align-items: center;">
+          <button class="btn btn-primary btn-sm" onclick="downloadAndImportCloudSet('${set.filename}')" style="margin: 0; padding: 4px 10px; font-size: 0.75rem; min-height: 28px;">📥 Import</button>
+          <button class="btn btn-secondary btn-sm" onclick="deleteCloudSet('${set.filename}')" style="margin: 0; padding: 4px 10px; font-size: 0.75rem; min-height: 28px; background: rgba(224, 36, 36, 0.15); color: #ff4d4d; border: 1px solid rgba(224, 36, 36, 0.3);">🗑️ Delete</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch (err) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="3" style="text-align: center; color: var(--error-color); padding: 20px;">
+          ❌ Could not load cloud sets: ${err.message}
+        </td>
+      </tr>
+    `;
+  }
+}
+
+async function uploadActiveVocabToCloud() {
+  const nameInput = document.getElementById("cloud-upload-name");
+  if (!nameInput) return;
+
+  const setName = nameInput.value.trim().replace(/[^a-zA-Z0-9_\-\s]/g, "");
+  if (!setName) {
+    alert("Please enter a valid name for the shared set.");
+    return;
+  }
+
+  if (!state.customVocab || state.customVocab.length === 0) {
+    alert("Your custom vocabulary list is empty. Add or import some words first!");
+    return;
+  }
+
+  const uploadBtn = document.getElementById("btn-cloud-upload");
+  if (uploadBtn) {
+    uploadBtn.disabled = true;
+    uploadBtn.textContent = "Uploading...";
+  }
+
+  // Package custom vocab + folders
+  const exportData = {
+    vocab: state.customVocab,
+    folders: state.customFolders || []
+  };
+
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+  const formData = new FormData();
+  formData.append("vocabFile", blob, `${setName}.json`);
+
+  try {
+    const res = await fetch(`${CLOUD_API_URL}/api/upload`, {
+      method: "POST",
+      body: formData
+    });
+
+    if (!res.ok) throw new Error("Upload failed");
+    
+    alert(`🎉 Set "${setName}" uploaded successfully to the cloud!`);
+    nameInput.value = "";
+    loadCloudWordSets();
+  } catch (err) {
+    alert(`❌ Failed to upload set: ${err.message}`);
+  } finally {
+    if (uploadBtn) {
+      uploadBtn.disabled = false;
+      uploadBtn.textContent = "⬆️ Upload Active Vocabulary";
+    }
+  }
+}
+
+async function downloadAndImportCloudSet(filename) {
+  const confirmed = await showCustomConfirm(`Do you want to download and merge the shared set "${filename.replace('.json', '')}"?`);
+  if (!confirmed) return;
+
+  try {
+    const res = await fetch(`${CLOUD_API_URL}/api/download/${filename}`);
+    if (!res.ok) throw new Error("Failed to download file");
+    
+    const data = await res.json();
+    
+    let importedVocab = [];
+    let importedFolders = [];
+
+    // Parse custom set format (array or nested object)
+    if (Array.isArray(data)) {
+      importedVocab = data;
+    } else if (data && Array.isArray(data.vocab)) {
+      importedVocab = data.vocab;
+      importedFolders = data.folders || [];
+    }
+
+    if (importedVocab.length === 0) {
+      alert("The downloaded set does not contain any valid vocabulary words.");
+      return;
+    }
+
+    // Merge into local customVocab (avoiding duplicates by base word match)
+    const base = state.baseLang || "en";
+    let duplicateCount = 0;
+    let addedCount = 0;
+
+    importedVocab.forEach(item => {
+      const exists = state.customVocab.some(v => v[base] && item[base] && v[base].toLowerCase().trim() === item[base].toLowerCase().trim());
+      if (exists) {
+        duplicateCount++;
+      } else {
+        state.customVocab.push(item);
+        addedCount++;
+      }
+    });
+
+    // Merge custom folders
+    importedFolders.forEach(folder => {
+      const exists = state.customFolders.some(f => f.id === folder.id);
+      if (!exists) {
+        state.customFolders.push(folder);
+      }
+    });
+
+    saveState();
+    renderImportedList();
+    updateCategoryCounts();
+    
+    alert(`📥 Imported successfully!\nAdded: ${addedCount} words.\nDuplicates skipped: ${duplicateCount}.`);
+  } catch (err) {
+    alert(`❌ Failed to download and import: ${err.message}`);
+  }
+}
+
+async function deleteCloudSet(filename) {
+  const confirmed = await showCustomConfirm(`Are you sure you want to delete the shared set "${filename.replace('.json', '')}" from the cloud?`);
+  if (!confirmed) return;
+
+  try {
+    const res = await fetch(`${CLOUD_API_URL}/api/delete/${filename}`, {
+      method: "DELETE"
+    });
+
+    if (!res.ok) throw new Error("Failed to delete file from cloud");
+    
+    alert("🗑️ Shared set deleted successfully.");
+    loadCloudWordSets();
+  } catch (err) {
+    alert(`❌ Failed to delete: ${err.message}`);
+  }
+}
+
+// Expose download and delete functions to global window scope so HTML buttons can click them
+window.downloadAndImportCloudSet = downloadAndImportCloudSet;
+window.deleteCloudSet = deleteCloudSet;
 

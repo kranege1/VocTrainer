@@ -480,6 +480,7 @@
         <button class="tab-btn" data-tab="tab-manual">✏️ Add Custom</button>
         <button class="tab-btn" data-tab="tab-bulk">📝 Bulk List</button>
         <button class="tab-btn" data-tab="tab-file">📄 File Upload</button>
+        <button class="tab-btn" data-tab="tab-cloud">☁️ Cloud Share</button>
       </div>
 
       <!-- Web URL Import tab -->
@@ -779,6 +780,44 @@
             </div>
             <button id="btn-file-confirm" class="btn btn-primary btn-block" style="min-height: 46px;">🚀 Import Selected Words Now!</button>
           </div>
+        </div>
+      </div>
+
+      <!-- Cloud Share tab -->
+      <div id="tab-cloud" class="tab-content">
+        <!-- Section 1: Upload Active Custom Words -->
+        <div class="card">
+          <h3>☁️ Share Current Custom Set to Cloud</h3>
+          <p class="import-help">Upload your active custom vocabulary list to the shared cloud server so other devices or users can download it.</p>
+          <div class="form-group">
+            <label>Shared Word Set Name</label>
+            <input type="text" id="cloud-upload-name" placeholder="e.g. My_Italian_Verbs">
+          </div>
+          <button id="btn-cloud-upload" class="btn btn-primary btn-block">⬆️ Upload Active Vocabulary</button>
+        </div>
+
+        <!-- Section 2: Shared Sets List -->
+        <div class="card">
+          <h3>📥 Download Word Sets from Cloud</h3>
+          <p class="import-help">Below are the custom word sets shared by you and other users. Click download to merge them into your local vocabulary trainer.</p>
+          <div style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 16px; background: rgba(0,0,0,0.15);">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+              <thead>
+                <tr style="background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--border-color);">
+                  <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">Set Name</th>
+                  <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">Words</th>
+                  <th style="padding: 10px; width: 180px; text-align: center; font-weight: 700; color: var(--text-secondary);">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="cloud-sets-table-body">
+                <!-- Dynamically populated -->
+                <tr>
+                  <td colspan="3" style="padding: 20px; text-align: center; color: var(--text-secondary);">Loading cloud shared sets...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <button id="btn-refresh-cloud" class="btn btn-secondary btn-block">🔄 Refresh Cloud List</button>
         </div>
       </div>
 
