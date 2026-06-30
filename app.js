@@ -3354,8 +3354,8 @@ function setupWordDetails(currentWord) {
     if (details.articles) {
       const qArt = details.articles[qLang] || "";
       const aArt = details.articles[aLang] || "";
-      if (qArt) articlesHtml += `${flags[qLang] || ""} <strong>${qLang.toUpperCase()}</strong>: <span class="badge" style="background:var(--accent-color); padding: 4px 8px; border-radius: 6px; font-weight: bold; color: #0b0c10;">${qArt}</span> `;
-      if (aArt) articlesHtml += `${flags[aLang] || ""} <strong>${aLang.toUpperCase()}</strong>: <span class="badge" style="background:var(--accent-color); padding: 4px 8px; border-radius: 6px; font-weight: bold; color: #0b0c10;">${aArt}</span>`;
+      if (qArt) articlesHtml += `${flags[qLang] || ""} <strong>${qLang.toUpperCase()}</strong>: <span style="display:inline-block; background:var(--accent-color); padding: 4px 8px; border-radius: 6px; font-weight: bold; color: #0b0c10;">${qArt}</span> `;
+      if (aArt) articlesHtml += `${flags[aLang] || ""} <strong>${aLang.toUpperCase()}</strong>: <span style="display:inline-block; background:var(--accent-color); padding: 4px 8px; border-radius: 6px; font-weight: bold; color: #0b0c10;">${aArt}</span>`;
     }
     if (articlesHtml && sectionArticles) {
       sectionArticles.style.display = "block";
