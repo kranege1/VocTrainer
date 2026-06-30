@@ -65,3 +65,11 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
 - **Detection:** Auto-detects iPhone, iPad, or iPod devices on startup.
 - **Canvas Override:** Expands the container to maximum screen boundaries (`100vw`/`100vh`) to utilize touch space.
 - **Background & Card Style Override:** Disables floating window panels (no borders, border-radius, or box-shadows) and hides floating decorative blobs on iOS device targets.
+
+### 3.3 Study Details Panel & Markdown Rendering
+- **Reverso Context Lookup:**
+  - Performs an automated scrape of Reverso Context via the `AllOrigins` CORS proxy fallback.
+  - Automatically extracts key translations in context and sample sentence translation pairs for the target language.
+- **Rich Details Layout (Markdown to HTML):**
+  - Uses a client-side parser to render markdown syntax returned by AI models or dictionary fallbacks into styled HTML.
+  - Automatically structures lists (`-` or `*`), headings (`###` or `####`), bold markers (`**`), and tables (`|`) into borderless dark glass cards, themed lists, and responsive tables.
