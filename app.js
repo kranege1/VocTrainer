@@ -3471,7 +3471,7 @@ function setupWordDetails(currentWord) {
         responseText = `⚠️ [No API Key configured. Showing web dictionary fallback details instead of AI explanation]\n\n${fallbackText}`;
       }
 
-      aiResponse.textContent = responseText;
+      aiResponse.innerHTML = parseMarkdownToHTML(responseText);
       aiResponse.style.display = "block";
     } catch (err) {
       aiResponse.textContent = `Could not fetch details: ${err.message}`;
@@ -3481,6 +3481,113 @@ function setupWordDetails(currentWord) {
       aiBtn.disabled = false;
     }
   };
+}
+
+function parseMarkdownToHTML(md) {
+  if (!md) return "";
+  
+  let html = md;
+
+  // Escape HTML tags to prevent arbitrary code execution
+  html = html
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  // Parse Tables
+  const lines = html.split("\n");
+  let inTable = false;
+  let tableHeaders = [];
+  let tableRows = [];
+  let resultLines = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line.startsWith("|") && line.endsWith("|")) {
+      const cells = line.split("|").map(c => c.trim()).filter((c, idx, arr) => idx > 0 && idx < arr.length - 1);
+      const isSeparator = cells.every(c => /^:-*|-*:-*|-*:$/.test(c) || c === "");
+      
+      if (isSeparator) {
+        continue;
+      }
+
+      if (!inTable) {
+        inTable = true;
+        tableHeaders = cells;
+      } else {
+        tableRows.push(cells);
+      }
+    } else {
+      if (inTable) {
+        let tableHtml = `<div style="overflow-x:auto; margin: 12px 0;"><table style="width:100%; border-collapse:collapse; font-size:0.85rem; background:rgba(255,255,255,0.01); border-radius:8px; border:1px solid rgba(255,255,255,0.08); overflow:hidden;">`;
+        if (tableHeaders.length > 0) {
+          tableHtml += `<thead style="background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.08);"><tr>`;
+          tableHeaders.forEach(h => {
+            tableHtml += `<th style="padding: 8px 10px; font-weight:600; text-align:left; color:var(--accent-color);">${h}</th>`;
+          });
+          tableHtml += `</tr></thead>`;
+        }
+        tableHtml += `<tbody>`;
+        tableRows.forEach(row => {
+          tableHtml += `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">`;
+          row.forEach(cell => {
+            tableHtml += `<td style="padding: 8px 10px; color:var(--text-primary);">${cell}</td>`;
+          });
+          tableHtml += `</tr>`;
+        });
+        tableHtml += `</tbody></table></div>`;
+        resultLines.push(tableHtml);
+        
+        inTable = false;
+        tableHeaders = [];
+        tableRows = [];
+      }
+      resultLines.push(lines[i]);
+    }
+  }
+  
+  if (inTable) {
+    let tableHtml = `<div style="overflow-x:auto; margin: 12px 0;"><table style="width:100%; border-collapse:collapse; font-size:0.85rem; background:rgba(255,255,255,0.01); border-radius:8px; border:1px solid rgba(255,255,255,0.08); overflow:hidden;">`;
+    if (tableHeaders.length > 0) {
+      tableHtml += `<thead style="background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.08);"><tr>`;
+      tableHeaders.forEach(h => {
+        tableHtml += `<th style="padding: 8px 10px; font-weight:600; text-align:left; color:var(--accent-color);">${h}</th>`;
+      });
+      tableHtml += `</tr></thead>`;
+    }
+    tableHtml += `<tbody>`;
+    tableRows.forEach(row => {
+      tableHtml += `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">`;
+      row.forEach(cell => {
+        tableHtml += `<td style="padding: 8px 10px; color:var(--text-primary);">${cell}</td>`;
+      });
+      tableHtml += `</tr>`;
+    });
+    tableHtml += `</tbody></table></div>`;
+    resultLines.push(tableHtml);
+  }
+
+  html = resultLines.join("\n");
+
+  // Parse Headers
+  html = html.replace(/^#### (.*?)$/gm, '<h4 style="color:var(--accent-color); font-weight:700; margin-top:16px; margin-bottom:8px; font-size:1rem;">$1</h4>');
+  html = html.replace(/^### (.*?)$/gm, '<h3 style="color:var(--accent-color); font-weight:700; margin-top:18px; margin-bottom:8px; font-size:1.1rem;">$1</h3>');
+  html = html.replace(/^## (.*?)$/gm, '<h2 style="color:var(--accent-color); font-weight:700; margin-top:20px; margin-bottom:10px; font-size:1.2rem;">$1</h2>');
+
+  // Parse Bold Text
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+  // Parse Bullet Lists
+  html = html.replace(/^\s*[-*]\s+(.*?)$/gm, '<li style="margin-left: 16px; margin-bottom: 4px; color: var(--text-primary); list-style-type: disc;">$1</li>');
+
+  // Parse remaining linebreaks nicely
+  html = html.split("\n").map(l => {
+    const trimmed = l.trim();
+    if (trimmed.startsWith("<") && trimmed.endsWith(">")) return l;
+    return l + "<br>";
+  }).join("\n");
+
+  return html;
 }
 
 async function callGeminiAPI(apiKey, prompt) {
