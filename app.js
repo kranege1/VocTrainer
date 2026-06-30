@@ -2639,6 +2639,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
   }
 
+  const btnCsvImportSubmit = document.getElementById("btn-csv-import-submit");
+  if (btnCsvImportSubmit) {
+    btnCsvImportSubmit.onclick = executeCSVImport;
+  }
+
   // Helper to load synonym data into editor inputs
   window.loadSynonymIntoEditor = function(en, de, it, es, fr, category) {
     document.getElementById("manual-lang-en").value = en;
@@ -5399,4 +5404,108 @@ async function deleteCloudSet(filename) {
 // Expose download and delete functions to global window scope so HTML buttons can click them
 window.downloadAndImportCloudSet = downloadAndImportCloudSet;
 window.deleteCloudSet = deleteCloudSet;
+
+// 12. Direct Semicolon CSV Import
+async function executeCSVImport() {
+  const textInput = document.getElementById("csv-import-text");
+  const catInput = document.getElementById("csv-category");
+  if (!textInput || !catInput) return;
+
+  const text = textInput.value;
+  const category = catInput.value.trim() || "csv-import";
+  const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+
+  if (lines.length === 0) {
+    alert("Please paste some semicolon-separated lines first.");
+    return;
+  }
+
+  let addedCount = 0;
+  let duplicateCount = 0;
+  let invalidCount = 0;
+
+  const base = state.baseLang || "en";
+  const staticFolders = ["verbs", "nouns", "technology", "biology", "phrases"];
+
+  for (const line of lines) {
+    const parts = line.split(";").map(p => p.trim());
+    if (parts.length < 5) {
+      invalidCount++;
+      continue;
+    }
+
+    const en = parts[0];
+    const de = parts[1];
+    const it = parts[2];
+    const es = parts[3];
+    const fr = parts[4];
+
+    if (!en || !de || !it || !es || !fr) {
+      invalidCount++;
+      continue;
+    }
+
+    // Check if word already exists in customVocab
+    const cleanBaseWord = (base === "en" ? en : base === "de" ? de : base === "it" ? it : base === "es" ? es : fr).toLowerCase();
+    const existsInCustom = (state.customVocab || []).some(v => {
+      const vBase = (v[base] || v.en || "").trim().toLowerCase();
+      return vBase === cleanBaseWord;
+    });
+
+    const existsInStarter = STARTER_VOCAB_RAW.some(v => {
+      const vBase = (v[base] || v.en || "").trim().toLowerCase();
+      return vBase === cleanBaseWord;
+    });
+
+    if (existsInCustom || existsInStarter) {
+      duplicateCount++;
+      continue;
+    }
+
+    // Create new word directly
+    const newWord = {
+      en: sanitizeWordTranslation(en, "en"),
+      de: sanitizeWordTranslation(de, "de"),
+      it: sanitizeWordTranslation(it, "it"),
+      es: sanitizeWordTranslation(es, "es"),
+      fr: sanitizeWordTranslation(fr, "fr"),
+      category: category,
+      image: en,
+      details: {
+        articles: {},
+        sentences: {
+          en: `I see the ${en}.`,
+          de: `Ich sehe ${de}.`,
+          it: `Vedo ${it}.`,
+          es: `Veo ${es}.`,
+          fr: `Je vois ${fr}.`
+        },
+        variations: {},
+        synonyms: { en: [], de: [], it: [], es: [], fr: [] }
+      }
+    };
+
+    // Ensure custom category folder exists if not standard
+    if (!staticFolders.includes(category)) {
+      const folderExists = (state.customFolders || []).some(f => f.id === category || f.name === category);
+      if (!folderExists) {
+        state.customFolders.push({ id: category, name: category, parentId: null });
+      }
+    }
+
+    state.customVocab.push(newWord);
+    sessionImportedList.push(newWord);
+    addedCount++;
+  }
+
+  if (addedCount > 0) {
+    saveState();
+    renderImportedList();
+    updateCategoryCounts();
+    alert(`🎉 CSV Import finished!\nSuccessfully imported: ${addedCount} words.\nDuplicates skipped: ${duplicateCount}.\nInvalid lines: ${invalidCount}.`);
+    textInput.value = "";
+  } else {
+    alert(`No words imported.\nDuplicates skipped: ${duplicateCount}.\nInvalid lines (not 5 columns): ${invalidCount}.`);
+  }
+}
 
