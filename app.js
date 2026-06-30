@@ -3424,6 +3424,62 @@ async function callAnthropicAPI(apiKey, prompt) {
 }
 
 async function fetchWebDetailsFallback(word, targetLang) {
+  const sourceLang = state.baseLang || "en";
+  const langNames = {
+    en: "english",
+    de: "german",
+    it: "italian",
+    es: "spanish",
+    fr: "french"
+  };
+  const sourceName = langNames[sourceLang] || "english";
+  const targetName = langNames[targetLang] || "german";
+  const reversoUrl = `https://context.reverso.net/translation/${sourceName}-${targetName}/${encodeURIComponent(word)}`;
+
+  try {
+    const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(reversoUrl)}`);
+    if (res.ok) {
+      const json = await res.json();
+      const html = json.contents;
+      
+      // Extract Translations
+      const transRegex = /<a[^>]*class="[^"]*translation[^"]*"[^>]*>\s*([^<]+?)\s*<\/a>/gi;
+      const translations = [];
+      let match;
+      while ((match = transRegex.exec(html)) !== null && translations.length < 5) {
+        const cleanTrans = match[1].trim();
+        if (cleanTrans && !translations.includes(cleanTrans) && !cleanTrans.includes("<") && !cleanTrans.includes(">")) {
+          translations.push(cleanTrans);
+        }
+      }
+
+      // Extract Examples
+      function stripTags(str) {
+        return str.replace(/<[^>]*>?/gm, '').replace(/\s+/g, ' ').trim();
+      }
+
+      const examples = [];
+      const exampleRegex = /<div class="example"[\s\S]*?<div class="src[^"]*">([\s\S]*?)<\/div>[\s\S]*?<div class="trg[^"]*">([\s\S]*?)<\/div>/gi;
+      while ((match = exampleRegex.exec(html)) !== null && examples.length < 3) {
+        const srcText = stripTags(match[1]);
+        const trgText = stripTags(match[2]);
+        if (srcText && trgText) {
+          examples.push({ src: srcText, trg: trgText });
+        }
+      }
+
+      if (translations.length > 0 || examples.length > 0) {
+        let output = `📖 [Reverso Context Web Lookup]\nWord: "${word}"\n\nKey Translations in Context:\n➔ ${translations.join(", ")}\n\nSentence Examples:\n`;
+        examples.forEach((ex, i) => {
+          output += `${i + 1}. "${ex.src}"\n   ➔ "${ex.trg}"\n\n`;
+        });
+        return output.trim();
+      }
+    }
+  } catch (err) {
+    console.warn("Reverso Context fetch failed, falling back to standard dictionary:", err);
+  }
+
   try {
     const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
     if (!res.ok) throw new Error("Word not found in dictionary");
@@ -3448,7 +3504,7 @@ Example Usage: "${example}"`;
 
   } catch (err) {
     return `[Web Lookups]
-Could not find dictionary details for "${word}".
+Could not find Reverso Context or dictionary details for "${word}".
 You can read more directly on Wiktionary: https://en.wiktionary.org/wiki/${encodeURIComponent(word)}`;
   }
 }
