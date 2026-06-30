@@ -3458,14 +3458,17 @@ function setupWordDetails(currentWord) {
     aiResponse.style.display = "none";
     aiBtn.disabled = true;
 
+    const baseLang = state.baseLang || "en";
+    const baseLangName = langNames[baseLang] || baseLang;
+
     try {
-      const promptText = `Explain the usage of the word "${currentWord.en}" (${langNames[qLang] || qLang}) and its translation "${currentWord.target}" in ${langNames[aLang] || aLang}. Provide articles, prepositions, example sentences, and cases (like plural, gender, etc.) if applicable. Keep it concise, helpful, and formatted clearly.`;
+      const promptText = `Explain the usage of the word "${currentWord.en}" (${langNames[qLang] || qLang}) and its translation "${currentWord.target}" in ${langNames[aLang] || aLang}. Provide articles, prepositions, example sentences, and grammatical cases if applicable. You MUST write your explanation, commentary, and descriptions in ${baseLangName}.`;
 
       let responseText = "";
 
       // Check keys using unified callLLM helper
       if (state.geminiKey || state.openaiKey || state.grokKey) {
-        responseText = await callLLM(promptText, "You are a helpful language teacher explaining vocabulary details.");
+        responseText = await callLLM(promptText, `You are a helpful language teacher. Explain all vocabulary details in ${baseLangName}.`);
       } else {
         const fallbackText = await fetchWebDetailsFallback(currentWord.en, aLang);
         responseText = `⚠️ [No API Key configured. Showing web dictionary fallback details instead of AI explanation]\n\n${fallbackText}`;

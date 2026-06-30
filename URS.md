@@ -73,3 +73,4 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
 - **Rich Details Layout (Markdown to HTML):**
   - Uses a client-side parser to render markdown syntax returned by AI models or dictionary fallbacks into styled HTML.
   - Automatically structures lists (`-` or `*`), headings (`###` or `####`), bold markers (`**`), and tables (`|`) into borderless dark glass cards, themed lists, and responsive tables.
+  - **Explanation Language:** The AI model is strictly instructed via system guidelines to write all explanation commentaries, descriptions, and notes in the user's active **Base Language** (e.g. German descriptions when the base study language is DE).
