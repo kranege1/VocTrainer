@@ -593,6 +593,55 @@
             </div>
           </div>
           
+          <!-- Advanced Grammar Details Accordion -->
+          <div style="margin-bottom: 16px; border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; background: rgba(255,255,255,0.01);">
+            <button type="button" id="btn-toggle-grammar-details" class="btn btn-secondary btn-block" style="margin: 0; min-height: 40px; border-radius: 0; border: none; text-align: left; display: flex; justify-content: space-between; align-items: center; padding: 10px 16px;">
+              <span>✨ Advanced Grammar (Articles & Genders)</span>
+              <span id="grammar-toggle-icon">▼</span>
+            </button>
+            <div id="grammar-details-panel" style="display: none; padding: 16px; border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.1);">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                <div class="form-group" style="margin: 0;">
+                  <label style="font-size: 0.75rem;">🇩🇪 DE Article</label>
+                  <input type="text" id="manual-art-de" placeholder="der / die / das" style="margin: 0; min-height: 38px;">
+                </div>
+                <div class="form-group" style="margin: 0;">
+                  <label style="font-size: 0.75rem;">🇮🇹 IT Article</label>
+                  <input type="text" id="manual-art-it" placeholder="il / la / lo" style="margin: 0; min-height: 38px;">
+                </div>
+                <div class="form-group" style="margin: 0;">
+                  <label style="font-size: 0.75rem;">🇪🇸 ES Article</label>
+                  <input type="text" id="manual-art-es" placeholder="el / la" style="margin: 0; min-height: 38px;">
+                </div>
+                <div class="form-group" style="margin: 0;">
+                  <label style="font-size: 0.75rem;">🇫🇷 FR Article</label>
+                  <input type="text" id="manual-art-fr" placeholder="le / la" style="margin: 0; min-height: 38px;">
+                </div>
+              </div>
+              <div style="border-top: 1px solid rgba(255,255,255,0.04); padding-top: 12px;">
+                <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--accent-color); margin-bottom: 8px;">Gender Variations (DE & IT)</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px;">
+                  <div class="form-group" style="margin: 0;">
+                    <label style="font-size: 0.75rem;">🇩🇪 DE Masculine</label>
+                    <input type="text" id="manual-gen-de-m" placeholder="m. form" style="margin: 0; min-height: 38px;">
+                  </div>
+                  <div class="form-group" style="margin: 0;">
+                    <label style="font-size: 0.75rem;">🇩🇪 DE Feminine</label>
+                    <input type="text" id="manual-gen-de-f" placeholder="f. form" style="margin: 0; min-height: 38px;">
+                  </div>
+                  <div class="form-group" style="margin: 0;">
+                    <label style="font-size: 0.75rem;">🇮🇹 IT Masculine</label>
+                    <input type="text" id="manual-gen-it-m" placeholder="m. form" style="margin: 0; min-height: 38px;">
+                  </div>
+                  <div class="form-group" style="margin: 0;">
+                    <label style="font-size: 0.75rem;">🇮🇹 IT Feminine</label>
+                    <input type="text" id="manual-gen-it-f" placeholder="f. form" style="margin: 0; min-height: 38px;">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
           <button id="btn-manual-submit" class="btn btn-primary btn-block" style="margin-top: 12px; margin-bottom: 24px;">💾 Save Custom Word</button>
 
           <!-- Step 3: Synonyms & Alternatives Suggestions Widget -->

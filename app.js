@@ -2295,6 +2295,16 @@ document.addEventListener("DOMContentLoaded", async () => {
           "fr": "French translation"
         },
         "category": "nouns, verbs, adjectives, or phrases",
+        "articles": {
+          "de": "der, die, or das if applicable",
+          "it": "il, la, lo, etc. if applicable",
+          "es": "el or la if applicable",
+          "fr": "le or la if applicable"
+        },
+        "genderForms": {
+          "de": { "m": "masculine form if applicable", "f": "feminine form if applicable" },
+          "it": { "m": "masculine form if applicable", "f": "feminine form if applicable" }
+        },
         "synonyms": [
           {
             "word": "Synonym word 1 in English",
@@ -2341,6 +2351,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("manual-category").value = parsed.category || "nouns";
       document.getElementById("manual-image-url").value = parsed.translations?.en || word;
 
+      // Populate Advanced Grammar fields from AI
+      if (parsed.articles) {
+        document.getElementById("manual-art-de").value = parsed.articles.de || "";
+        document.getElementById("manual-art-it").value = parsed.articles.it || "";
+        document.getElementById("manual-art-es").value = parsed.articles.es || "";
+        document.getElementById("manual-art-fr").value = parsed.articles.fr || "";
+      }
+      if (parsed.genderForms) {
+        document.getElementById("manual-gen-de-m").value = parsed.genderForms.de?.m || "";
+        document.getElementById("manual-gen-de-f").value = parsed.genderForms.de?.f || "";
+        document.getElementById("manual-gen-it-m").value = parsed.genderForms.it?.m || "";
+        document.getElementById("manual-gen-it-f").value = parsed.genderForms.it?.f || "";
+      }
+
       const synContainer = document.getElementById("manual-synonyms-container");
       synContainer.innerHTML = "";
 
@@ -2382,6 +2406,33 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   };
 
+  // Advanced Grammar Details Accordion Toggle
+  const btnToggleGrammar = document.getElementById("btn-toggle-grammar-details");
+  const grammarPanel = document.getElementById("grammar-details-panel");
+  const grammarIcon = document.getElementById("grammar-toggle-icon");
+  if (btnToggleGrammar && grammarPanel) {
+    btnToggleGrammar.onclick = () => {
+      if (grammarPanel.style.display === "none") {
+        grammarPanel.style.display = "block";
+        grammarIcon.textContent = "▲";
+      } else {
+        grammarPanel.style.display = "none";
+        grammarIcon.textContent = "▼";
+      }
+    };
+  }
+
+  const resetGrammarFields = () => {
+    document.getElementById("manual-art-de").value = "";
+    document.getElementById("manual-art-it").value = "";
+    document.getElementById("manual-art-es").value = "";
+    document.getElementById("manual-art-fr").value = "";
+    document.getElementById("manual-gen-de-m").value = "";
+    document.getElementById("manual-gen-de-f").value = "";
+    document.getElementById("manual-gen-it-m").value = "";
+    document.getElementById("manual-gen-it-f").value = "";
+  };
+
   // Manual import submit action
   document.getElementById("btn-manual-submit").onclick = () => {
     const en = document.getElementById("manual-lang-en").value.trim();
@@ -2391,6 +2442,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     const fr = document.getElementById("manual-lang-fr").value.trim();
     const category = document.getElementById("manual-category").value.trim() || "nouns";
     const imageUrl = document.getElementById("manual-image-url").value.trim();
+
+    // Advanced Grammar details
+    const artDe = document.getElementById("manual-art-de").value.trim();
+    const artIt = document.getElementById("manual-art-it").value.trim();
+    const artEs = document.getElementById("manual-art-es").value.trim();
+    const artFr = document.getElementById("manual-art-fr").value.trim();
+    const genDeM = document.getElementById("manual-gen-de-m").value.trim();
+    const genDeF = document.getElementById("manual-gen-de-f").value.trim();
+    const genItM = document.getElementById("manual-gen-it-m").value.trim();
+    const genItF = document.getElementById("manual-gen-it-f").value.trim();
 
     if (!en || !de || !it || !es || !fr) {
       alert("Please ensure all translation fields are filled before saving.");
@@ -2418,8 +2479,17 @@ document.addEventListener("DOMContentLoaded", async () => {
           state.customVocab[idx].fr = cleanFr;
           state.customVocab[idx].category = category;
           state.customVocab[idx].image = imageUrl || cleanEn;
+          state.customVocab[idx].details = {
+            ...state.customVocab[idx].details,
+            articles: { de: artDe, it: artIt, es: artEs, fr: artFr },
+            genderForms: {
+              de: { m: genDeM, f: genDeF },
+              it: { m: genItM, f: genItF }
+            }
+          };
         }
       } else {
+        const override = state.editedStarters[originalKey] || {};
         state.editedStarters[originalKey] = {
           en: cleanEn,
           de: cleanDe,
@@ -2427,7 +2497,15 @@ document.addEventListener("DOMContentLoaded", async () => {
           es: cleanEs,
           fr: cleanFr,
           category,
-          image: imageUrl || cleanEn
+          image: imageUrl || cleanEn,
+          details: {
+            ...override.details,
+            articles: { de: artDe, it: artIt, es: artEs, fr: artFr },
+            genderForms: {
+              de: { m: genDeM, f: genDeF },
+              it: { m: genItM, f: genItF }
+            }
+          }
         };
       }
       
@@ -2446,6 +2524,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("manual-lang-es").value = "";
       document.getElementById("manual-lang-fr").value = "";
       document.getElementById("manual-image-url").value = "";
+      resetGrammarFields();
       
       alert("Word updated successfully!");
       showView("view-browse");
@@ -2488,10 +2567,19 @@ document.addEventListener("DOMContentLoaded", async () => {
               state.customVocab[idx].fr = cleanFr;
               state.customVocab[idx].category = category;
               state.customVocab[idx].image = imageUrl || cleanEn;
+              state.customVocab[idx].details = {
+                ...state.customVocab[idx].details,
+                articles: { de: artDe, it: artIt, es: artEs, fr: artFr },
+                genderForms: {
+                  de: { m: genDeM, f: genDeF },
+                  it: { m: genItM, f: genItF }
+                }
+              };
             }
           } else {
             const starter = STARTER_VOCAB_RAW.find(v => (v[base] || v.en || "").trim().toLowerCase() === cleanWord);
             const starterKey = starter ? (starter[base] || starter.en) : cleanWord;
+            const override = state.editedStarters[starterKey] || {};
             state.editedStarters[starterKey] = {
               en: cleanEn,
               de: cleanDe,
@@ -2499,7 +2587,15 @@ document.addEventListener("DOMContentLoaded", async () => {
               es: cleanEs,
               fr: cleanFr,
               category,
-              image: imageUrl || cleanEn
+              image: imageUrl || cleanEn,
+              details: {
+                ...override.details,
+                articles: { de: artDe, it: artIt, es: artEs, fr: artFr },
+                genderForms: {
+                  de: { m: genDeM, f: genDeF },
+                  it: { m: genItM, f: genItF }
+                }
+              }
             };
           }
           
@@ -2513,6 +2609,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           document.getElementById("manual-lang-es").value = "";
           document.getElementById("manual-lang-fr").value = "";
           document.getElementById("manual-image-url").value = "";
+          resetGrammarFields();
           
           alert("Word overwritten successfully!");
         }
@@ -2536,7 +2633,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       image: imageUrl || cleanEn,
       audio: currentRecordingBase64,
       details: {
-        articles: {},
+        articles: { de: artDe, it: artIt, es: artEs, fr: artFr },
+        genderForms: {
+          de: { m: genDeM, f: genDeF },
+          it: { m: genItM, f: genItF }
+        },
         sentences: {},
         variations: {},
         synonyms: { en: [], de: [], it: [], es: [], fr: [] }
@@ -3295,7 +3396,7 @@ function setupWordDetails(currentWord) {
       sectionSentence.style.display = "none";
     }
 
-    // 3. Variations (plural, conjugation)
+    // 3. Variations (plural, conjugation, gender forms)
     let variationsHtml = "";
     if (details.variations) {
       if (details.variations.plural && (details.variations.plural[qLang] || details.variations.plural[aLang])) {
@@ -3314,6 +3415,15 @@ function setupWordDetails(currentWord) {
         if (qHe) variationsHtml += `${flags[qLang] || ""} <strong>${qHe}</strong> `;
         if (qHe && aHe) variationsHtml += `&rarr; `;
         if (aHe) variationsHtml += `${flags[aLang] || ""} <strong>${aHe}</strong>`;
+        variationsHtml += `<br>`;
+      }
+    }
+    if (details.genderForms && (details.genderForms.de || details.genderForms.it)) {
+      if (details.genderForms.de && (details.genderForms.de.m || details.genderForms.de.f)) {
+        variationsHtml += `🇩🇪 <strong>Genders (DE)</strong>: ♂️ ${details.genderForms.de.m || "-"} / ♀️ ${details.genderForms.de.f || "-"}<br>`;
+      }
+      if (details.genderForms.it && (details.genderForms.it.m || details.genderForms.it.f)) {
+        variationsHtml += `🇮🇹 <strong>Genders (IT)</strong>: ♂️ ${details.genderForms.it.m || "-"} / ♀️ ${details.genderForms.it.f || "-"}<br>`;
       }
     }
     if (variationsHtml && sectionVariations) {
@@ -3611,7 +3721,8 @@ window.triggerEditWord = function(key, isCustom) {
         es: override.es || item.es || "",
         fr: override.fr || item.fr || "",
         category: override.category || item.category || "",
-        image: override.image || item.image || ""
+        image: override.image || item.image || "",
+        details: override.details || item.details || {}
       };
     }
   }
@@ -3636,6 +3747,21 @@ window.triggerEditWord = function(key, isCustom) {
     document.getElementById("manual-category").value = currentWord.category || "";
     document.getElementById("manual-image-url").value = currentWord.image || "";
     
+    // Pre-fill Advanced Grammar fields
+    const det = currentWord.details || {};
+    const arts = det.articles || {};
+    const genders = det.genderForms || {};
+    
+    document.getElementById("manual-art-de").value = arts.de || "";
+    document.getElementById("manual-art-it").value = arts.it || "";
+    document.getElementById("manual-art-es").value = arts.es || "";
+    document.getElementById("manual-art-fr").value = arts.fr || "";
+    
+    document.getElementById("manual-gen-de-m").value = genders.de?.m || "";
+    document.getElementById("manual-gen-de-f").value = genders.de?.f || "";
+    document.getElementById("manual-gen-it-m").value = genders.it?.m || "";
+    document.getElementById("manual-gen-it-f").value = genders.it?.f || "";
+
     // Change button text and title
     document.getElementById("btn-manual-submit").textContent = "💾 Save Changes";
     const header = document.querySelector("#tab-manual h3");
