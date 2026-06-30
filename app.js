@@ -114,7 +114,7 @@ function saveState() {
     customVoices: state.customVoices
   }));
   updateHeaderUI();
-  populateCustomCategoryDropdown();
+  updateCategoryCounts();
 }
 
 // Helper to synchronize custom folders with categories used in customVocab
@@ -206,7 +206,7 @@ function loadState() {
   renderImportedList();
   renderMistakesList();
   renderHistoryList();
-  populateCustomCategoryDropdown();
+  updateCategoryCounts();
 }
 
 function getFolderFullPath(folderId) {
@@ -218,24 +218,90 @@ function getFolderFullPath(folderId) {
   return folder.name;
 }
 
-function populateCustomCategoryDropdown() {
-  const dropdown = document.getElementById("select-custom-category");
-  if (dropdown) {
-    dropdown.innerHTML = '<option value="none">✨ -- Select Custom Set --</option>';
+function updateCategoryCounts() {
+  const selectCategory = document.getElementById("select-category");
+  const selectCustomCategory = document.getElementById("select-custom-category");
+  if (!selectCategory) return;
+
+  const language = state.selectedLang || "it";
+  const base = state.baseLang || "en";
+
+  // Calculate full vocabulary pool
+  const starters = STARTER_VOCAB_RAW.map(item => {
+    const origEn = item[base];
+    const origTarget = item[language];
+    if (state.deletedStarters.includes(origEn)) return null;
     
-    const sorted = (state.customFolders || []).map(f => ({
-      id: f.id,
-      path: getFolderFullPath(f.id)
-    })).sort((a, b) => a.path.localeCompare(b.path));
+    let finalEn = origEn;
+    let finalTarget = origTarget;
+    if (state.editedStarters[origEn]) {
+      finalEn = state.editedStarters[origEn].en || origEn;
+      finalTarget = state.editedStarters[origEn].target || origTarget;
+    }
+    
+    return {
+      en: finalEn,
+      target: finalTarget,
+      category: item.category
+    };
+  }).filter(Boolean);
+
+  const customs = (state.customVocab || [])
+    .filter(item => item[base] && item[language] && item[base].toLowerCase().trim() !== item[language].toLowerCase().trim())
+    .map(item => ({
+      en: item[base],
+      target: item[language],
+      category: item.category
+    }));
+
+  let pool = [...starters, ...customs];
+  pool = pool.filter(w => w.en && w.target && w.en.toLowerCase().trim() !== w.target.toLowerCase().trim());
+
+  // Count by standard category
+  const counts = { all: pool.length, verbs: 0, nouns: 0, technology: 0, biology: 0, phrases: 0 };
+  pool.forEach(w => {
+    const cat = (w.category || "").toLowerCase();
+    if (counts[cat] !== undefined) {
+      counts[cat]++;
+    }
+  });
+
+  // Update Standard Category selector options text
+  const optionLabels = {
+    all: `📚 All Categories (${counts.all})`,
+    verbs: `🏃 Verbs (${counts.verbs})`,
+    nouns: `🍎 Nouns (${counts.nouns})`,
+    technology: `💻 Technology (${counts.technology})`,
+    biology: `🌿 Biology (${counts.biology})`,
+    phrases: `💬 Phrases (${counts.phrases})`
+  };
+
+  Array.from(selectCategory.options).forEach(opt => {
+    if (optionLabels[opt.value]) {
+      opt.textContent = optionLabels[opt.value];
+    }
+  });
+
+  // Update Custom Category dropdown options with counts
+  if (selectCustomCategory) {
+    selectCustomCategory.innerHTML = '<option value="none">✨ -- Select Custom Set --</option>';
+    const sorted = (state.customFolders || []).map(f => {
+      const folderWords = (state.customVocab || []).filter(v => v.category === f.id && v[base] && v[language] && v[base].toLowerCase().trim() !== v[language].toLowerCase().trim());
+      return {
+        id: f.id,
+        path: getFolderFullPath(f.id),
+        count: folderWords.length
+      };
+    }).sort((a, b) => a.path.localeCompare(b.path));
 
     sorted.forEach(folder => {
       const opt = document.createElement("option");
       opt.value = folder.id;
-      opt.textContent = `📁 ${folder.path}`;
-      dropdown.appendChild(opt);
+      opt.textContent = `📁 ${folder.path} (${folder.count})`;
+      selectCustomCategory.appendChild(opt);
     });
   }
-}
+};
 
 // ==========================================
 // 3. UI Navigation & Helpers
@@ -2284,6 +2350,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.classList.add("active");
       state.selectedLang = btn.dataset.lang;
       updateDirectionButtonsUI();
+      updateCategoryCounts();
+      saveState();
     };
   });
 
