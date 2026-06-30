@@ -24,38 +24,6 @@
           "de": "Er rennt.",
           "es": "Él corre."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to work",
-          "to lead",
-          "to discharge",
-          "to endure"
-        ],
-        "de": [
-          "arbeiten",
-          "führen",
-          "entladung",
-          "aushalten"
-        ],
-        "it": [
-          "lavoro",
-          "guida",
-          "scarico",
-          "sopportare"
-        ],
-        "es": [
-          "trabajar",
-          "dirigir",
-          "descargar",
-          "perdurar"
-        ],
-        "fr": [
-          "travail",
-          "plomb",
-          "décharge",
-          "endurer"
-        ]
       }
     }
   },
@@ -84,34 +52,6 @@
           "it": "Lui parla.",
           "fr": "Il parle."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to address",
-          "to mouth",
-          "to talk",
-          "to verbalize"
-        ],
-        "de": [
-          "adresse",
-          "mund",
-          "verbalisieren"
-        ],
-        "it": [
-          "indirizzo",
-          "bocca",
-          "verbalizzare"
-        ],
-        "es": [
-          "dirección",
-          "boca",
-          "expresar verbalmente"
-        ],
-        "fr": [
-          "adresse",
-          "bouche",
-          "verbaliser"
-        ]
       }
     }
   },
@@ -140,37 +80,6 @@
           "es": "Él aprende.",
           "it": "Impara."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to ascertain",
-          "to see",
-          "to check",
-          "to determine"
-        ],
-        "de": [
-          "ermitteln",
-          "sehen",
-          "überprüfen",
-          "bestimmen"
-        ],
-        "it": [
-          "accertare",
-          "vedere",
-          "controllo",
-          "determinare"
-        ],
-        "es": [
-          "comprobar",
-          "ver",
-          "controlar",
-          "determinar"
-        ],
-        "fr": [
-          "vérifier",
-          "voir",
-          "déterminer"
-        ]
       }
     }
   },
@@ -199,38 +108,6 @@
           "fr": "Il s'en va.",
           "it": "Lui va."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to break",
-          "to crack",
-          "to work",
-          "to lead"
-        ],
-        "de": [
-          "brechen",
-          "riss",
-          "arbeiten",
-          "führen"
-        ],
-        "it": [
-          "rottura",
-          "crepa",
-          "lavoro",
-          "guida"
-        ],
-        "es": [
-          "romper",
-          "grieta",
-          "trabajar",
-          "dirigir"
-        ],
-        "fr": [
-          "casser",
-          "fissure",
-          "travail",
-          "plomb"
-        ]
       }
     }
   },
@@ -259,38 +136,6 @@
           "es": "Él viene.",
           "it": "Lui viene."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to derive",
-          "to fall",
-          "to fare",
-          "to get"
-        ],
-        "de": [
-          "ableiten",
-          "fallen",
-          "fahrpreis",
-          "erhalten"
-        ],
-        "it": [
-          "derivare",
-          "autunno",
-          "tariffa",
-          "ottenere"
-        ],
-        "es": [
-          "derivar",
-          "caer",
-          "tarifa",
-          "conseguir"
-        ],
-        "fr": [
-          "dériver",
-          "automne",
-          "tarif",
-          "obtenir"
-        ]
       }
     }
   },
@@ -319,38 +164,6 @@
           "es": "Él ve.",
           "fr": "Il voit."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to ascertain",
-          "to regard",
-          "to control",
-          "to assure"
-        ],
-        "de": [
-          "ermitteln",
-          "betrachten",
-          "kontrolle",
-          "versichern"
-        ],
-        "it": [
-          "accertare",
-          "considerare",
-          "controllare",
-          "assicurare"
-        ],
-        "es": [
-          "comprobar",
-          "respecto",
-          "control",
-          "asegurar"
-        ],
-        "fr": [
-          "vérifier",
-          "égard",
-          "contrôle",
-          "assurer"
-        ]
       }
     }
   },
@@ -379,38 +192,6 @@
           "es": "Él escucha.",
           "de": "Er hört."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to see",
-          "to take heed",
-          "to try",
-          "to find out"
-        ],
-        "de": [
-          "sehen",
-          "pass auf",
-          "versuchen",
-          "finde es heraus"
-        ],
-        "it": [
-          "vedere",
-          "fate attenzione",
-          "tentativo",
-          "scoprire"
-        ],
-        "es": [
-          "ver",
-          "presta atención",
-          "intentar",
-          "descubrir"
-        ],
-        "fr": [
-          "voir",
-          "prends garde",
-          "essayer",
-          "découvrir"
-        ]
       }
     }
   },
@@ -439,38 +220,6 @@
           "fr": "Il mange.",
           "es": "Él come."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to corrode",
-          "to consume",
-          "to rust",
-          "to exhaust"
-        ],
-        "de": [
-          "korrodieren",
-          "verbrauchen",
-          "rost",
-          "auspuff"
-        ],
-        "it": [
-          "corrodersi",
-          "consumare",
-          "ruggine",
-          "scarico"
-        ],
-        "es": [
-          "corroer",
-          "consumir",
-          "óxido",
-          "escape"
-        ],
-        "fr": [
-          "corroder",
-          "consommer",
-          "rouiller",
-          "échappement"
-        ]
       }
     }
   },
@@ -499,35 +248,6 @@
           "it": "Beve.",
           "es": "Él bebe."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to imbibe",
-          "to pledge",
-          "to swallow",
-          "to crapulence"
-        ],
-        "de": [
-          "versprechen",
-          "schlucken",
-          "crapulenz"
-        ],
-        "it": [
-          "assorbire",
-          "impegno",
-          "rondine",
-          "crapulenza"
-        ],
-        "es": [
-          "promesa",
-          "tragar",
-          "crápula"
-        ],
-        "fr": [
-          "gage",
-          "avaler",
-          "crapulence"
-        ]
       }
     }
   },
@@ -556,37 +276,6 @@
           "fr": "Il dort.",
           "it": "Dorme."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to quietus",
-          "to rest",
-          "to kip",
-          "to slumber"
-        ],
-        "de": [
-          "ruhe",
-          "ausruhen",
-          "pennen",
-          "schlummern"
-        ],
-        "it": [
-          "quieto",
-          "riposo",
-          "kip",
-          "sonno"
-        ],
-        "es": [
-          "golpe de gracia",
-          "descansar",
-          "sueño"
-        ],
-        "fr": [
-          "coup de grâce",
-          "repos",
-          "kiffer",
-          "sommeil"
-        ]
       }
     }
   },
@@ -615,37 +304,6 @@
           "fr": "Il écrit.",
           "it": "Scrive."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to compose",
-          "to indite",
-          "to spell",
-          "to pen"
-        ],
-        "de": [
-          "komponieren",
-          "indite",
-          "fluch",
-          "stift"
-        ],
-        "it": [
-          "comporre",
-          "indi",
-          "sillabare",
-          "penna"
-        ],
-        "es": [
-          "componer",
-          "endilgar",
-          "deletrear",
-          "bolígrafo"
-        ],
-        "fr": [
-          "composer",
-          "épeler",
-          "stylo"
-        ]
       }
     }
   },
@@ -674,38 +332,6 @@
           "es": "Él lee.",
           "fr": "Il lit."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to show",
-          "to understand",
-          "to take",
-          "to study"
-        ],
-        "de": [
-          "zeigen",
-          "verstehen",
-          "nehmen",
-          "studie"
-        ],
-        "it": [
-          "spettacolo",
-          "capire",
-          "prendere",
-          "studio"
-        ],
-        "es": [
-          "espectáculo",
-          "entender",
-          "llevar",
-          "estudiar"
-        ],
-        "fr": [
-          "montrer",
-          "comprendre",
-          "prendre",
-          "étude"
-        ]
       }
     }
   },
@@ -734,38 +360,6 @@
           "es": "Él abre.",
           "fr": "Il ouvre."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to conspicuous",
-          "to candid",
-          "to free",
-          "to ingenuous"
-        ],
-        "de": [
-          "auffällig",
-          "offen",
-          "frei",
-          "naiv"
-        ],
-        "it": [
-          "cospicuo",
-          "candido",
-          "gratuito",
-          "ingenuo"
-        ],
-        "es": [
-          "conspicuo",
-          "sincero",
-          "gratis",
-          "ingenuo"
-        ],
-        "fr": [
-          "visible",
-          "candide",
-          "gratuit",
-          "ingénu"
-        ]
       }
     }
   },
@@ -794,38 +388,6 @@
           "fr": "Il ferme.",
           "it": "Chiude."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to good",
-          "to intimate",
-          "to warm",
-          "to familiar"
-        ],
-        "de": [
-          "gut",
-          "intim",
-          "warm",
-          "vertraut"
-        ],
-        "it": [
-          "bene",
-          "intimo",
-          "caldo",
-          "familiare"
-        ],
-        "es": [
-          "bien",
-          "íntimo",
-          "cálido",
-          "familiar"
-        ],
-        "fr": [
-          "bien",
-          "intime",
-          "chaud",
-          "familier"
-        ]
       }
     }
   },
@@ -854,38 +416,6 @@
           "de": "Er spielt.",
           "es": "Él juega."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to render",
-          "to work",
-          "to run",
-          "to caper"
-        ],
-        "de": [
-          "machen",
-          "arbeiten",
-          "laufen",
-          "kapern"
-        ],
-        "it": [
-          "rendere",
-          "lavoro",
-          "correre",
-          "cappero"
-        ],
-        "es": [
-          "prestar",
-          "trabajar",
-          "correr",
-          "alcaparra"
-        ],
-        "fr": [
-          "rendre",
-          "travail",
-          "courir",
-          "câpre"
-        ]
       }
     }
   },
@@ -914,38 +444,6 @@
           "es": "Él trabaja.",
           "de": "Er arbeitet."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to cultivate",
-          "to address",
-          "to process",
-          "to function"
-        ],
-        "de": [
-          "pflegen",
-          "adresse",
-          "verfahren",
-          "funktion"
-        ],
-        "it": [
-          "coltivare",
-          "indirizzo",
-          "processo",
-          "funzione"
-        ],
-        "es": [
-          "cultivar",
-          "dirección",
-          "proceso",
-          "función"
-        ],
-        "fr": [
-          "cultiver",
-          "adresse",
-          "processus",
-          "fonction"
-        ]
       }
     }
   },
@@ -974,36 +472,6 @@
           "de": "Er wartet.",
           "es": "Él espera."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to hold",
-          "to look",
-          "to await",
-          "to hold back"
-        ],
-        "de": [
-          "halten",
-          "sehen",
-          "erwarten",
-          "zurückhalten"
-        ],
-        "it": [
-          "presa",
-          "aspetto",
-          "attendere",
-          "trattenere"
-        ],
-        "es": [
-          "sostener",
-          "mirar",
-          "contener"
-        ],
-        "fr": [
-          "prise",
-          "regarder",
-          "retenir"
-        ]
       }
     }
   },
@@ -1032,37 +500,6 @@
           "fr": "Il aide.",
           "it": "Lui aiuta."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to facilitate",
-          "to avail",
-          "to assist",
-          "to assistance"
-        ],
-        "de": [
-          "erleichtern",
-          "verfügbar",
-          "hilfe"
-        ],
-        "it": [
-          "facilitare",
-          "avvalersi",
-          "assistere",
-          "assistenza"
-        ],
-        "es": [
-          "facilitar",
-          "aprovechar",
-          "asistir",
-          "asistencia"
-        ],
-        "fr": [
-          "faciliter",
-          "profiter",
-          "assister",
-          "assistance"
-        ]
       }
     }
   },
@@ -1091,34 +528,6 @@
           "fr": "Il cherche.",
           "it": "Cerca."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to look",
-          "to seek",
-          "to explore",
-          "to research"
-        ],
-        "de": [
-          "sehen",
-          "erkunden",
-          "forschung"
-        ],
-        "it": [
-          "aspetto",
-          "esplorare",
-          "ricerca"
-        ],
-        "es": [
-          "mirar",
-          "explorar",
-          "investigación"
-        ],
-        "fr": [
-          "regarder",
-          "explorer",
-          "recherche"
-        ]
       }
     }
   },
@@ -1147,38 +556,6 @@
           "it": "Lui vive.",
           "fr": "Il vit."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to endure",
-          "to hot",
-          "to experience",
-          "to subsist"
-        ],
-        "de": [
-          "aushalten",
-          "heiß",
-          "erfahrung",
-          "bestehen"
-        ],
-        "it": [
-          "sopportare",
-          "caldo",
-          "esperienza",
-          "sussistere"
-        ],
-        "es": [
-          "perdurar",
-          "caliente",
-          "experiencia",
-          "subsistir"
-        ],
-        "fr": [
-          "endurer",
-          "chaud",
-          "expérience",
-          "subsister"
-        ]
       }
     }
   },
@@ -1207,38 +584,6 @@
           "de": "Er liebt.",
           "it": "Lui ama."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to passion",
-          "to beloved",
-          "to lovemaking",
-          "to enjoy"
-        ],
-        "de": [
-          "hingabe",
-          "geliebten",
-          "liebesspiel",
-          "genießen"
-        ],
-        "it": [
-          "passione",
-          "amato",
-          "fare l'amore",
-          "godere"
-        ],
-        "es": [
-          "pasión",
-          "amado",
-          "relaciones sexuales",
-          "disfrutar"
-        ],
-        "fr": [
-          "passion",
-          "bien-aimé",
-          "rapports sexuels",
-          "apprécier"
-        ]
       }
     }
   },
@@ -1267,37 +612,6 @@
           "de": "Er kauft.",
           "fr": "Il achète."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to corrupt",
-          "to bargain",
-          "to purchase",
-          "to steal"
-        ],
-        "de": [
-          "korrupt",
-          "schnäppchen",
-          "stehlen"
-        ],
-        "it": [
-          "corrotto",
-          "affare",
-          "acquistare",
-          "rubare"
-        ],
-        "es": [
-          "corrupto",
-          "negociar",
-          "compra",
-          "robar"
-        ],
-        "fr": [
-          "corrompu",
-          "marchander",
-          "achat",
-          "voler"
-        ]
       }
     }
   },
@@ -1326,33 +640,6 @@
           "fr": "Il vend.",
           "it": "Lui vende."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to deal",
-          "to betray",
-          "to trade"
-        ],
-        "de": [
-          "handeln",
-          "verraten",
-          "handel"
-        ],
-        "it": [
-          "affare",
-          "tradire",
-          "commercio"
-        ],
-        "es": [
-          "trato",
-          "traicionar",
-          "comercio"
-        ],
-        "fr": [
-          "accord",
-          "trahir",
-          "commerce"
-        ]
       }
     }
   },
@@ -1381,38 +668,6 @@
           "es": "Él piensa.",
           "de": "Er denkt."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to mean",
-          "to consider",
-          "to conceive",
-          "to cogitate"
-        ],
-        "de": [
-          "bedeuten",
-          "halten",
-          "begreifen",
-          "nachdenken"
-        ],
-        "it": [
-          "significare",
-          "considerare",
-          "concepire",
-          "cogitare"
-        ],
-        "es": [
-          "significar",
-          "considerar",
-          "concebir",
-          "meditar"
-        ],
-        "fr": [
-          "signifier",
-          "considérer",
-          "concevoir",
-          "réfléchir"
-        ]
       }
     }
   },
@@ -1441,38 +696,6 @@
           "fr": "Il fait.",
           "it": "Lui fa."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to induce",
-          "to clear",
-          "to shuffle",
-          "to constitute"
-        ],
-        "de": [
-          "induzieren",
-          "klar",
-          "shuffle",
-          "bilden"
-        ],
-        "it": [
-          "indurre",
-          "chiaro",
-          "mescolata",
-          "costituire"
-        ],
-        "es": [
-          "inducir",
-          "claro",
-          "barajar",
-          "constituir"
-        ],
-        "fr": [
-          "induire",
-          "clair",
-          "mélanger",
-          "constituer"
-        ]
       }
     }
   },
@@ -1501,38 +724,6 @@
           "es": "Él toma.",
           "de": "Er nimmt."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to yield",
-          "to convey",
-          "to issue",
-          "to conduct"
-        ],
-        "de": [
-          "ertrag",
-          "vermitteln",
-          "ausgabe",
-          "benehmen"
-        ],
-        "it": [
-          "prodotto",
-          "trasportare",
-          "problema",
-          "condotta"
-        ],
-        "es": [
-          "producir",
-          "transmitir",
-          "asunto",
-          "conducta"
-        ],
-        "fr": [
-          "rendement",
-          "transmettre",
-          "problème",
-          "conduire"
-        ]
       }
     }
   },
@@ -1561,37 +752,6 @@
           "it": "Lui dà.",
           "es": "Él da."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to yield",
-          "to render",
-          "to impart",
-          "to present"
-        ],
-        "de": [
-          "ertrag",
-          "machen",
-          "vermitteln",
-          "gegenwärtig"
-        ],
-        "it": [
-          "prodotto",
-          "rendere",
-          "impartire",
-          "presente"
-        ],
-        "es": [
-          "producir",
-          "prestar",
-          "impartir",
-          "presente"
-        ],
-        "fr": [
-          "rendement",
-          "rendre",
-          "présent"
-        ]
       }
     }
   },
@@ -1620,38 +780,6 @@
           "de": "Er sagt.",
           "es": "Él dice."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to articulate",
-          "to state",
-          "to order",
-          "to enunciate"
-        ],
-        "de": [
-          "artikulieren",
-          "zustand",
-          "befehl",
-          "aussprechen"
-        ],
-        "it": [
-          "articolare",
-          "stato",
-          "ordine",
-          "enunciare"
-        ],
-        "es": [
-          "articular",
-          "estado",
-          "orden",
-          "enunciar"
-        ],
-        "fr": [
-          "articuler",
-          "état",
-          "commande",
-          "énoncer"
-        ]
       }
     }
   },
@@ -1680,35 +808,6 @@
           "es": "Él lo sabe.",
           "fr": "Il sait."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to bang",
-          "to experience",
-          "to recognize",
-          "to acknowledge"
-        ],
-        "de": [
-          "knall",
-          "erfahrung",
-          "erkennen",
-          "anerkennen"
-        ],
-        "it": [
-          "botto",
-          "esperienza",
-          "riconoscere"
-        ],
-        "es": [
-          "estallido",
-          "experiencia",
-          "reconocer"
-        ],
-        "fr": [
-          "claquer",
-          "expérience",
-          "reconnaître"
-        ]
       }
     }
   },
@@ -1737,38 +836,6 @@
           "es": "Él vuela.",
           "it": "Vola."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to flee",
-          "to pilot",
-          "to vanish",
-          "to wing"
-        ],
-        "de": [
-          "fliehen",
-          "pilot",
-          "verschwinden",
-          "flügel"
-        ],
-        "it": [
-          "fuggire",
-          "pilota",
-          "svanire",
-          "ala"
-        ],
-        "es": [
-          "huir",
-          "piloto",
-          "desaparecer",
-          "ala"
-        ],
-        "fr": [
-          "fuir",
-          "pilote",
-          "disparaître",
-          "aile"
-        ]
       }
     }
   },
@@ -1797,38 +864,6 @@
           "es": "Él conduce.",
           "it": "Lui guida."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to thrust",
-          "to run",
-          "to push",
-          "to cause"
-        ],
-        "de": [
-          "schub",
-          "laufen",
-          "drücken",
-          "ursache"
-        ],
-        "it": [
-          "spinta",
-          "correre",
-          "spingere",
-          "causa"
-        ],
-        "es": [
-          "empuje",
-          "correr",
-          "empujar",
-          "causa"
-        ],
-        "fr": [
-          "poussée",
-          "courir",
-          "pousser",
-          "cause"
-        ]
       }
     }
   },
@@ -1857,38 +892,6 @@
           "fr": "Il chante.",
           "de": "Er singt."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to peach",
-          "to babble",
-          "to tattle",
-          "to blab"
-        ],
-        "de": [
-          "pfirsich",
-          "plappern",
-          "tratschen",
-          "ausplaudern"
-        ],
-        "it": [
-          "pesca",
-          "balbettio",
-          "chiacchiere",
-          "blaterare"
-        ],
-        "es": [
-          "durazno",
-          "balbucear",
-          "chismes",
-          "cotilla"
-        ],
-        "fr": [
-          "pêche",
-          "babiller",
-          "cancans",
-          "jaser"
-        ]
       }
     }
   },
@@ -1917,31 +920,6 @@
           "fr": "Il danse.",
           "de": "Er tanzt."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to trip the light fantastic",
-          "to dancing",
-          "to terpsichore"
-        ],
-        "de": [
-          "trip das licht fantastisch",
-          "terpsichore"
-        ],
-        "it": [
-          "scatto la luce fantastica",
-          "tersicore"
-        ],
-        "es": [
-          "viaje la luz fantástico",
-          "baile",
-          "terpsícore"
-        ],
-        "fr": [
-          "voyage la lumière fantastique",
-          "dansant",
-          "terpsichore"
-        ]
       }
     }
   },
@@ -1970,36 +948,6 @@
           "fr": "Il rit.",
           "it": "Lui ride."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to jape",
-          "to wheeze",
-          "to gag",
-          "to jest"
-        ],
-        "de": [
-          "scherz",
-          "keuchen",
-          "gag"
-        ],
-        "it": [
-          "cavolo",
-          "sibilo",
-          "bavaglio",
-          "scherzo"
-        ],
-        "es": [
-          "broma",
-          "jadear",
-          "mordaza"
-        ],
-        "fr": [
-          "farce",
-          "respiration sifflante",
-          "gag",
-          "plaisanter"
-        ]
       }
     }
   },
@@ -2028,17 +976,6 @@
           "it": "Piange.",
           "de": "Er weint."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to cry"
-        ],
-        "de": [],
-        "it": [
-          "gridare"
-        ],
-        "es": [],
-        "fr": []
       }
     }
   },
@@ -2067,37 +1004,6 @@
           "es": "Él pregunta.",
           "fr": "» demande-t-il."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to inquire",
-          "to necessitate",
-          "to demand",
-          "to pose"
-        ],
-        "de": [
-          "erkundigen",
-          "erfordern",
-          "nachfrage",
-          "pose"
-        ],
-        "it": [
-          "informarsi",
-          "necessitano",
-          "richiesta",
-          "posa"
-        ],
-        "es": [
-          "necesitar",
-          "demanda",
-          "pose"
-        ],
-        "fr": [
-          "renseigner",
-          "nécessiter",
-          "demande",
-          "pose"
-        ]
       }
     }
   },
@@ -2126,38 +1032,6 @@
           "it": "Lui risponde.",
           "fr": "Il répond."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to resolve",
-          "to resolution",
-          "to solution",
-          "to result"
-        ],
-        "de": [
-          "lösen",
-          "auflösung",
-          "lösung",
-          "ergebnis"
-        ],
-        "it": [
-          "risolvere",
-          "risoluzione",
-          "soluzione",
-          "risultato"
-        ],
-        "es": [
-          "resolver",
-          "resolución",
-          "solución",
-          "resultado"
-        ],
-        "fr": [
-          "résoudre",
-          "résolution",
-          "solution",
-          "résultat"
-        ]
       }
     }
   },
@@ -2186,38 +1060,6 @@
           "it": "Si siede.",
           "fr": "Il est assis."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to model",
-          "to pose",
-          "to posture",
-          "to ride"
-        ],
-        "de": [
-          "modell",
-          "pose",
-          "haltung",
-          "fahrt"
-        ],
-        "it": [
-          "modello",
-          "posa",
-          "postura",
-          "passeggiata"
-        ],
-        "es": [
-          "modelo",
-          "pose",
-          "postura",
-          "conducir"
-        ],
-        "fr": [
-          "modèle",
-          "pose",
-          "posture",
-          "monter"
-        ]
       }
     }
   },
@@ -2246,38 +1088,6 @@
           "fr": "Il se lève.",
           "it": "Lui sta in piedi."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to base",
-          "to support",
-          "to abide",
-          "to endure"
-        ],
-        "de": [
-          "base",
-          "unterstützung",
-          "bleiben",
-          "aushalten"
-        ],
-        "it": [
-          "base",
-          "supporto",
-          "restare",
-          "sopportare"
-        ],
-        "es": [
-          "base",
-          "apoyo",
-          "cumplir",
-          "perdurar"
-        ],
-        "fr": [
-          "base",
-          "soutien",
-          "se conformer",
-          "endurer"
-        ]
       }
     }
   },
@@ -2306,37 +1116,6 @@
           "es": "Él llama.",
           "fr": "Il appelle."
         }
-      },
-      "synonyms": {
-        "en": [
-          "to squall",
-          "to ring",
-          "to holler",
-          "to cry"
-        ],
-        "de": [
-          "bö",
-          "ring",
-          "brüll",
-          "weinen"
-        ],
-        "it": [
-          "burrasca",
-          "squillo",
-          "gridare"
-        ],
-        "es": [
-          "chubasco",
-          "anillo",
-          "gritar",
-          "llorar"
-        ],
-        "fr": [
-          "bourrasque",
-          "anneau",
-          "brailler",
-          "pleurer"
-        ]
       }
     }
   },
@@ -2370,28 +1149,6 @@
           "it": "mele",
           "es": "manzanas"
         }
-      },
-      "synonyms": {
-        "en": [
-          "malus pumila",
-          "orchard apple tree"
-        ],
-        "de": [
-          "malus pumila",
-          "obstgarten-apfelbaum"
-        ],
-        "it": [
-          "malus pumila",
-          "melo del frutteto"
-        ],
-        "es": [
-          "malus pumila",
-          "manzano del huerto"
-        ],
-        "fr": [
-          "malus pumila",
-          "pommier du verger"
-        ]
       }
     }
   },
@@ -2425,37 +1182,6 @@
           "it": "pani",
           "fr": "pains"
         }
-      },
-      "synonyms": {
-        "en": [
-          "loot",
-          "lucre",
-          "kale",
-          "pelf"
-        ],
-        "de": [
-          "beute",
-          "lukre",
-          "grünkohl",
-          "geld"
-        ],
-        "it": [
-          "bottino",
-          "lucro",
-          "cavolo",
-          "pelo"
-        ],
-        "es": [
-          "botín",
-          "lucro",
-          "col rizada",
-          "vil metal"
-        ],
-        "fr": [
-          "butin",
-          "lucre",
-          "chou frisé"
-        ]
       }
     }
   },
@@ -2489,36 +1215,6 @@
           "de": "Häuser",
           "it": "case"
         }
-      },
-      "synonyms": {
-        "en": [
-          "firm",
-          "home",
-          "menage",
-          "sign"
-        ],
-        "de": [
-          "firma",
-          "heim",
-          "haushalt",
-          "zeichen"
-        ],
-        "it": [
-          "ditta",
-          "menage",
-          "cartello"
-        ],
-        "es": [
-          "firme",
-          "hogar",
-          "menaje",
-          "firmar"
-        ],
-        "fr": [
-          "ferme",
-          "ménage",
-          "signe"
-        ]
       }
     }
   },
@@ -2552,36 +1248,6 @@
           "it": "auto",
           "de": "Autos"
         }
-      },
-      "synonyms": {
-        "en": [
-          "automobile",
-          "machine",
-          "auto",
-          "gondola"
-        ],
-        "de": [
-          "automobil",
-          "maschine",
-          "gondel"
-        ],
-        "it": [
-          "automobile",
-          "auto",
-          "gondola"
-        ],
-        "es": [
-          "automóvil",
-          "máquina",
-          "auto",
-          "góndola"
-        ],
-        "fr": [
-          "automobile",
-          "machine",
-          "auto",
-          "gondole"
-        ]
       }
     }
   },
@@ -2615,37 +1281,6 @@
           "it": "gatti",
           "de": "Katzen"
         }
-      },
-      "synonyms": {
-        "en": [
-          "cast",
-          "sick",
-          "disgorge",
-          "vomit"
-        ],
-        "de": [
-          "gießen",
-          "krank",
-          "ausspucken",
-          "sich erbrechen"
-        ],
-        "it": [
-          "lancio",
-          "malato",
-          "sboccare",
-          "vomito"
-        ],
-        "es": [
-          "elenco",
-          "enfermo",
-          "vomitar"
-        ],
-        "fr": [
-          "casting",
-          "malade",
-          "dégorger",
-          "vomir"
-        ]
       }
     }
   },
@@ -2679,38 +1314,6 @@
           "es": "perros",
           "it": "cani"
         }
-      },
-      "synonyms": {
-        "en": [
-          "cad",
-          "track",
-          "heel",
-          "tail"
-        ],
-        "de": [
-          "cad",
-          "schiene",
-          "ferse",
-          "schwanz"
-        ],
-        "it": [
-          "cadavere",
-          "traccia",
-          "tallone",
-          "coda"
-        ],
-        "es": [
-          "canalla",
-          "pista",
-          "tacón",
-          "cola"
-        ],
-        "fr": [
-          "goujat",
-          "piste",
-          "talon",
-          "queue"
-        ]
       }
     }
   },
@@ -2744,35 +1347,6 @@
           "it": "tavoli",
           "de": "Tische"
         }
-      },
-      "synonyms": {
-        "en": [
-          "defer",
-          "remit",
-          "board",
-          "postpone"
-        ],
-        "de": [
-          "verschieben",
-          "auftrag",
-          "planke"
-        ],
-        "it": [
-          "rinviare",
-          "mandato",
-          "asse"
-        ],
-        "es": [
-          "aplazar",
-          "remitir",
-          "junta",
-          "posponer"
-        ],
-        "fr": [
-          "reporter",
-          "remettre",
-          "conseil"
-        ]
       }
     }
   },
@@ -2806,33 +1380,6 @@
           "de": "Stühle",
           "fr": "chaises"
         }
-      },
-      "synonyms": {
-        "en": [
-          "seat",
-          "armchair",
-          "stool"
-        ],
-        "de": [
-          "Sessel",
-          "Sitz",
-          "Hocker"
-        ],
-        "it": [
-          "sedile",
-          "poltrona",
-          "sgabello"
-        ],
-        "es": [
-          "asiento",
-          "sillón",
-          "taburete"
-        ],
-        "fr": [
-          "siège",
-          "fauteuil",
-          "tabouret"
-        ]
       }
     }
   },
@@ -2866,38 +1413,6 @@
           "es": "libros",
           "it": "libri"
         }
-      },
-      "synonyms": {
-        "en": [
-          "hold",
-          "leger",
-          "script",
-          "volume"
-        ],
-        "de": [
-          "halten",
-          "leger",
-          "skript",
-          "volumen"
-        ],
-        "it": [
-          "presa",
-          "leggier",
-          "sceneggiatura",
-          "volume"
-        ],
-        "es": [
-          "sostener",
-          "leger",
-          "guion",
-          "volumen"
-        ],
-        "fr": [
-          "prise",
-          "léger",
-          "scénario",
-          "volume"
-        ]
       }
     }
   },
@@ -2931,23 +1446,6 @@
           "fr": "fenêtres",
           "es": "ventanas"
         }
-      },
-      "synonyms": {
-        "en": [
-          "windowpane"
-        ],
-        "de": [
-          "fensterscheibe"
-        ],
-        "it": [
-          "vetro della finestra"
-        ],
-        "es": [
-          "cristal de ventana"
-        ],
-        "fr": [
-          "vitre"
-        ]
       }
     }
   },
@@ -2981,29 +1479,6 @@
           "es": "puertas",
           "it": "porte"
         }
-      },
-      "synonyms": {
-        "en": [
-          "threshold",
-          "doorway",
-          "room access"
-        ],
-        "de": [
-          "schwelle",
-          "zimmerzugang"
-        ],
-        "it": [
-          "soglia",
-          "accesso alla camera"
-        ],
-        "es": [
-          "límite",
-          "acceso a la habitación"
-        ],
-        "fr": [
-          "seuil",
-          "accès aux chambres"
-        ]
       }
     }
   },
@@ -3037,36 +1512,6 @@
           "es": "soles",
           "it": "soli"
         }
-      },
-      "synonyms": {
-        "en": [
-          "sunlight",
-          "sunshine",
-          "sunbathe",
-          "sunday"
-        ],
-        "de": [
-          "sonnenlicht",
-          "sonnenschein",
-          "sonnenbaden",
-          "sonntag"
-        ],
-        "it": [
-          "luce solare",
-          "luce del sole",
-          "prendere il sole",
-          "domenica"
-        ],
-        "es": [
-          "luz del sol",
-          "luz solar",
-          "tomar el sol",
-          "domingo"
-        ],
-        "fr": [
-          "bronzer",
-          "dimanche"
-        ]
       }
     }
   },
@@ -3100,38 +1545,6 @@
           "es": "lunas",
           "it": "lune"
         }
-      },
-      "synonyms": {
-        "en": [
-          "daydream",
-          "lunation",
-          "synodic month",
-          "moonlight"
-        ],
-        "de": [
-          "tagtraum",
-          "lunation",
-          "synodischer monat",
-          "mondlicht"
-        ],
-        "it": [
-          "sognare ad occhi aperti",
-          "lunazione",
-          "mese sinodico",
-          "chiaro di luna"
-        ],
-        "es": [
-          "ensueño",
-          "lunación",
-          "mes sinódico",
-          "luz de la luna"
-        ],
-        "fr": [
-          "rêverie",
-          "lunation",
-          "mois synodique",
-          "clair de lune"
-        ]
       }
     }
   },
@@ -3165,23 +1578,6 @@
           "es": "arboles",
           "it": "alberi"
         }
-      },
-      "synonyms": {
-        "en": [
-          "tree diagram"
-        ],
-        "de": [
-          "baumdiagramm"
-        ],
-        "it": [
-          "diagramma ad albero"
-        ],
-        "es": [
-          "diagrama de arbol"
-        ],
-        "fr": [
-          "diagramme en arbre"
-        ]
       }
     }
   },
@@ -3215,37 +1611,6 @@
           "fr": "fleurs",
           "it": "fiori"
         }
-      },
-      "synonyms": {
-        "en": [
-          "flush",
-          "prime",
-          "efflorescence",
-          "blossom"
-        ],
-        "de": [
-          "spülen",
-          "primzahl",
-          "ausblühungen",
-          "blüte"
-        ],
-        "it": [
-          "a filo",
-          "primo",
-          "efflorescenze"
-        ],
-        "es": [
-          "enjuagar",
-          "principal",
-          "eflorescencia",
-          "florecer"
-        ],
-        "fr": [
-          "flush",
-          "prime",
-          "efflorescence",
-          "fleurir"
-        ]
       }
     }
   },
@@ -3279,38 +1644,6 @@
           "es": "aguas",
           "it": "acque"
         }
-      },
-      "synonyms": {
-        "en": [
-          "sudor",
-          "piddle",
-          "diaphoresis",
-          "body of water"
-        ],
-        "de": [
-          "schweiß",
-          "pinkeln",
-          "diaphorese",
-          "gewässer"
-        ],
-        "it": [
-          "sudore",
-          "sciocchezza",
-          "diaforesi",
-          "specchio d'acqua"
-        ],
-        "es": [
-          "sudor",
-          "hacer pipí",
-          "diaforesis",
-          "cuerpo de agua"
-        ],
-        "fr": [
-          "sudor",
-          "faire pipi",
-          "diaphorèse",
-          "plan d'eau"
-        ]
       }
     }
   },
@@ -3344,35 +1677,6 @@
           "es": "leches",
           "it": "latti"
         }
-      },
-      "synonyms": {
-        "en": [
-          "whitish",
-          "milk river",
-          "milklike",
-          "milky"
-        ],
-        "de": [
-          "weißlich",
-          "milchfluss",
-          "milchig"
-        ],
-        "it": [
-          "biancastro",
-          "fiume di latte",
-          "lattiginoso",
-          "latteo"
-        ],
-        "es": [
-          "blancuzco",
-          "río de leche",
-          "lechoso"
-        ],
-        "fr": [
-          "blanchâtre",
-          "rivière de lait",
-          "laiteux"
-        ]
       }
     }
   },
@@ -3406,38 +1710,6 @@
           "de": "Kaffee",
           "es": "cafes"
         }
-      },
-      "synonyms": {
-        "en": [
-          "umber",
-          "java",
-          "burnt umber",
-          "chocolate"
-        ],
-        "de": [
-          "umber",
-          "java",
-          "gebrannte umbra",
-          "schokolade"
-        ],
-        "it": [
-          "terra d'ombra",
-          "giava",
-          "terra d'ombra bruciata",
-          "cioccolato"
-        ],
-        "es": [
-          "ocre oscuro",
-          "java",
-          "sombra quemada",
-          "chocolate"
-        ],
-        "fr": [
-          "ombre",
-          "java",
-          "terre d'ombre brûlée",
-          "chocolat"
-        ]
       }
     }
   },
@@ -3471,38 +1743,6 @@
           "es": "tes",
           "it": "tè"
         }
-      },
-      "synonyms": {
-        "en": [
-          "tea leaf",
-          "afternoon tea",
-          "teatime",
-          "camellia sinensis"
-        ],
-        "de": [
-          "teeblatt",
-          "nachmittagstee",
-          "teezeit",
-          "kamelie sinensis"
-        ],
-        "it": [
-          "foglia di tè",
-          "tè pomeridiano",
-          "l'ora del tè",
-          "camelia sinensis"
-        ],
-        "es": [
-          "hoja de te",
-          "té de la tarde",
-          "la hora del té",
-          "camelia sinensis"
-        ],
-        "fr": [
-          "feuille de thé",
-          "thé de l'après-midi",
-          "l'heure du thé",
-          "camélia sinensis"
-        ]
       }
     }
   },
@@ -3536,33 +1776,6 @@
           "es": "madres",
           "it": "madri"
         }
-      },
-      "synonyms": {
-        "en": [
-          "engender",
-          "generate",
-          "sire",
-          "beget"
-        ],
-        "de": [
-          "erzeugen",
-          "vater",
-          "zeugen"
-        ],
-        "it": [
-          "generare",
-          "sire"
-        ],
-        "es": [
-          "engendrar",
-          "generar",
-          "padre"
-        ],
-        "fr": [
-          "engendrer",
-          "générer",
-          "sire"
-        ]
       }
     }
   },
@@ -3596,31 +1809,6 @@
           "it": "i padri",
           "de": "Väter"
         }
-      },
-      "synonyms": {
-        "en": [
-          "engender",
-          "generate",
-          "sire",
-          "beget"
-        ],
-        "de": [
-          "erzeugen",
-          "zeugen"
-        ],
-        "it": [
-          "generare",
-          "sire"
-        ],
-        "es": [
-          "engendrar",
-          "generar"
-        ],
-        "fr": [
-          "engendrer",
-          "générer",
-          "sire"
-        ]
       }
     }
   },
@@ -3654,34 +1842,6 @@
           "it": "fratelli",
           "fr": "frères"
         }
-      },
-      "synonyms": {
-        "en": [
-          "fellow",
-          "comrade",
-          "crony",
-          "buddy"
-        ],
-        "de": [
-          "gefährte",
-          "genosse",
-          "freund",
-          "kumpel"
-        ],
-        "it": [
-          "compagno",
-          "amico"
-        ],
-        "es": [
-          "compañero",
-          "camarada",
-          "amigote"
-        ],
-        "fr": [
-          "compagnon",
-          "camarade",
-          "copain"
-        ]
       }
     }
   },
@@ -3715,35 +1875,6 @@
           "es": "hermanas",
           "fr": "soeurs"
         }
-      },
-      "synonyms": {
-        "en": [
-          "fellow",
-          "baby",
-          "sis",
-          "brother"
-        ],
-        "de": [
-          "gefährte",
-          "baby",
-          "bruder"
-        ],
-        "it": [
-          "compagno",
-          "bambino",
-          "fratello"
-        ],
-        "es": [
-          "compañero",
-          "bebé",
-          "hermano"
-        ],
-        "fr": [
-          "compagnon",
-          "bébé",
-          "soeur",
-          "frère"
-        ]
       }
     }
   },
@@ -3777,37 +1908,6 @@
           "de": "Kinder",
           "it": "bambini"
         }
-      },
-      "synonyms": {
-        "en": [
-          "tyke",
-          "minor",
-          "girl",
-          "baby"
-        ],
-        "de": [
-          "kerl",
-          "unerheblich",
-          "mädchen",
-          "baby"
-        ],
-        "it": [
-          "tipo",
-          "minore",
-          "ragazza"
-        ],
-        "es": [
-          "perro de calle",
-          "menor",
-          "chica",
-          "bebé"
-        ],
-        "fr": [
-          "chien bâtard",
-          "mineure",
-          "fille",
-          "bébé"
-        ]
       }
     }
   },
@@ -3841,38 +1941,6 @@
           "de": "Schulen",
           "fr": "écoles"
         }
-      },
-      "synonyms": {
-        "en": [
-          "cultivate",
-          "shoal",
-          "train",
-          "educate"
-        ],
-        "de": [
-          "pflegen",
-          "schwarm",
-          "zug",
-          "erziehen"
-        ],
-        "it": [
-          "coltivare",
-          "banco",
-          "treno",
-          "educare"
-        ],
-        "es": [
-          "cultivar",
-          "banco",
-          "tren",
-          "educar"
-        ],
-        "fr": [
-          "cultiver",
-          "haut-fond",
-          "former",
-          "éduquer"
-        ]
       }
     }
   },
@@ -3906,38 +1974,6 @@
           "it": "amici",
           "fr": "amis"
         }
-      },
-      "synonyms": {
-        "en": [
-          "champion",
-          "acquaintance",
-          "ally",
-          "supporter"
-        ],
-        "de": [
-          "champion",
-          "bekanntschaft",
-          "verbündete",
-          "fan"
-        ],
-        "it": [
-          "campione",
-          "conoscenza",
-          "alleato",
-          "sostenitore"
-        ],
-        "es": [
-          "campeón",
-          "conocido",
-          "aliado",
-          "seguidor"
-        ],
-        "fr": [
-          "champion",
-          "connaissance",
-          "allié",
-          "supporter"
-        ]
       }
     }
   },
@@ -3971,13 +2007,6 @@
           "it": "strade",
           "fr": "rues"
         }
-      },
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
       }
     }
   },
@@ -4011,31 +2040,6 @@
           "de": "Städte",
           "fr": "villes"
         }
-      },
-      "synonyms": {
-        "en": [
-          "metropolis",
-          "urban center",
-          "town"
-        ],
-        "de": [
-          "metropole",
-          "städtisches zentrum",
-          "ort",
-          "kleinstadt"
-        ],
-        "it": [
-          "metropoli",
-          "centro urbano"
-        ],
-        "es": [
-          "metrópoli",
-          "centro urbano"
-        ],
-        "fr": [
-          "métropole",
-          "centre urbain"
-        ]
       }
     }
   },
@@ -4069,37 +2073,6 @@
           "de": "Länder",
           "fr": "pays"
         }
-      },
-      "synonyms": {
-        "en": [
-          "state",
-          "area",
-          "land",
-          "res publica"
-        ],
-        "de": [
-          "zustand",
-          "bereich",
-          "res publica"
-        ],
-        "it": [
-          "stato",
-          "zona",
-          "terra",
-          "res pubblica"
-        ],
-        "es": [
-          "estado",
-          "área",
-          "tierra",
-          "res publica"
-        ],
-        "fr": [
-          "état",
-          "zone",
-          "atterrir",
-          "chose publique"
-        ]
       }
     }
   },
@@ -4133,33 +2106,6 @@
           "es": "cielos",
           "fr": "ciels"
         }
-      },
-      "synonyms": {
-        "en": [
-          "pitch",
-          "toss",
-          "flip"
-        ],
-        "de": [
-          "tonhöhe",
-          "werfen",
-          "umdrehen"
-        ],
-        "it": [
-          "pece",
-          "lanciare",
-          "capovolgere"
-        ],
-        "es": [
-          "paso",
-          "sacudida",
-          "voltear"
-        ],
-        "fr": [
-          "pas",
-          "jeter",
-          "retourner"
-        ]
       }
     }
   },
@@ -4193,37 +2139,6 @@
           "fr": "pluies",
           "it": "piogge"
         }
-      },
-      "synonyms": {
-        "en": [
-          "pelting",
-          "rainfall",
-          "rain down",
-          "rainwater"
-        ],
-        "de": [
-          "prasseln",
-          "niederschlagsmenge",
-          "regnen",
-          "regenwasser"
-        ],
-        "it": [
-          "pelatura",
-          "piovosità",
-          "piovere",
-          "acqua piovana"
-        ],
-        "es": [
-          "torrencial",
-          "llover",
-          "agua de lluvia"
-        ],
-        "fr": [
-          "écorchage",
-          "précipitations",
-          "il pleut",
-          "eaux de pluie"
-        ]
       }
     }
   },
@@ -4257,38 +2172,6 @@
           "fr": "neiges",
           "it": "nevi"
         }
-      },
-      "synonyms": {
-        "en": [
-          "coke",
-          "hoodwink",
-          "lead by the nose",
-          "bamboozle"
-        ],
-        "de": [
-          "koks",
-          "betrügen",
-          "an der nase geführt",
-          "beschwindeln"
-        ],
-        "it": [
-          "coke",
-          "ingannare",
-          "condurre per il naso",
-          "imbroglio"
-        ],
-        "es": [
-          "coque",
-          "engañar",
-          "entruchar",
-          "embaucar"
-        ],
-        "fr": [
-          "coke",
-          "frauder",
-          "mener par le nez",
-          "embobiner"
-        ]
       }
     }
   },
@@ -4322,38 +2205,6 @@
           "de": "Uhren",
           "es": "relojes"
         }
-      },
-      "synonyms": {
-        "en": [
-          "ascertain",
-          "observe",
-          "sentry",
-          "see"
-        ],
-        "de": [
-          "ermitteln",
-          "beobachten",
-          "posten",
-          "sehen"
-        ],
-        "it": [
-          "accertare",
-          "osservare",
-          "sentinella",
-          "vedere"
-        ],
-        "es": [
-          "comprobar",
-          "observar",
-          "centinela",
-          "ver"
-        ],
-        "fr": [
-          "vérifier",
-          "observer",
-          "sentinelle",
-          "voir"
-        ]
       }
     }
   },
@@ -4387,13 +2238,6 @@
           "de": "Geld",
           "es": "dineros"
         }
-      },
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
       }
     }
   },
@@ -4427,37 +2271,6 @@
           "de": "Taschen",
           "fr": "sacs"
         }
-      },
-      "synonyms": {
-        "en": [
-          "base",
-          "grip",
-          "bulge",
-          "purse"
-        ],
-        "de": [
-          "base",
-          "griff",
-          "ausbuchtung",
-          "geldbeutel"
-        ],
-        "it": [
-          "base",
-          "presa",
-          "rigonfiamento"
-        ],
-        "es": [
-          "base",
-          "agarre",
-          "bulto",
-          "cartera"
-        ],
-        "fr": [
-          "base",
-          "poignée",
-          "renflement",
-          "bourse"
-        ]
       }
     }
   },
@@ -4491,38 +2304,6 @@
           "es": "cabezas",
           "it": "teste"
         }
-      },
-      "synonyms": {
-        "en": [
-          "lead",
-          "direct",
-          "point",
-          "nous"
-        ],
-        "de": [
-          "führen",
-          "direkt",
-          "punkt",
-          "nous"
-        ],
-        "it": [
-          "guida",
-          "diretto",
-          "punto",
-          "nous"
-        ],
-        "es": [
-          "dirigir",
-          "directo",
-          "punto",
-          "cacumen"
-        ],
-        "fr": [
-          "plomb",
-          "direct",
-          "indiquer",
-          "nous"
-        ]
       }
     }
   },
@@ -4556,38 +2337,6 @@
           "es": "manos",
           "de": "Hände"
         }
-      },
-      "synonyms": {
-        "en": [
-          "give",
-          "pass",
-          "reach",
-          "deal"
-        ],
-        "de": [
-          "geben",
-          "passieren",
-          "erreichen",
-          "handeln"
-        ],
-        "it": [
-          "dare",
-          "passaggio",
-          "portata",
-          "affare"
-        ],
-        "es": [
-          "dar",
-          "aprobar",
-          "alcanzar",
-          "trato"
-        ],
-        "fr": [
-          "donner",
-          "passer",
-          "atteindre",
-          "accord"
-        ]
       }
     }
   },
@@ -4621,38 +2370,6 @@
           "de": "Augen",
           "it": "occhi"
         }
-      },
-      "synonyms": {
-        "en": [
-          "heart",
-          "oculus",
-          "peeper",
-          "centre"
-        ],
-        "de": [
-          "herz",
-          "okulus",
-          "peeper",
-          "center"
-        ],
-        "it": [
-          "cuore",
-          "oculo",
-          "guardone",
-          "centro"
-        ],
-        "es": [
-          "corazón",
-          "óculo",
-          "mirón",
-          "centro"
-        ],
-        "fr": [
-          "cœur",
-          "oculus",
-          "mirette",
-          "centre"
-        ]
       }
     }
   },
@@ -4686,37 +2403,6 @@
           "de": "Fuß",
           "it": "piedi"
         }
-      },
-      "synonyms": {
-        "en": [
-          "base",
-          "foundation",
-          "pick",
-          "fundament"
-        ],
-        "de": [
-          "base",
-          "stiftung",
-          "wählen",
-          "fundament"
-        ],
-        "it": [
-          "base",
-          "fondazione",
-          "scegliere",
-          "fondamento"
-        ],
-        "es": [
-          "base",
-          "elegir",
-          "fundamento"
-        ],
-        "fr": [
-          "base",
-          "fondation",
-          "prendre",
-          "fondement"
-        ]
       }
     }
   },
@@ -4750,38 +2436,6 @@
           "fr": "chaussures",
           "it": "scarpe"
         }
-      },
-      "synonyms": {
-        "en": [
-          "horseshoe",
-          "brake shoe",
-          "provide with shoes",
-          "u-shaped plate"
-        ],
-        "de": [
-          "hufeisen",
-          "bremsbacke",
-          "mit schuhen versorgen",
-          "u-förmige platte"
-        ],
-        "it": [
-          "ferro di cavallo",
-          "ganascia del freno",
-          "munirsi di scarpe",
-          "piastra a forma di u"
-        ],
-        "es": [
-          "herradura",
-          "zapata",
-          "proporcionar zapatos",
-          "placa en forma de u"
-        ],
-        "fr": [
-          "fer à cheval",
-          "mâchoire de frein",
-          "chausser",
-          "plaque en forme de u"
-        ]
       }
     }
   },
@@ -4815,38 +2469,6 @@
           "es": "vestidos",
           "it": "vestiti"
         }
-      },
-      "synonyms": {
-        "en": [
-          "set",
-          "plume",
-          "preen",
-          "apparel"
-        ],
-        "de": [
-          "satz",
-          "feder",
-          "putzen",
-          "bekleidung"
-        ],
-        "it": [
-          "impostato",
-          "pennacchio",
-          "pavoneggiarsi",
-          "abbigliamento"
-        ],
-        "es": [
-          "colocar",
-          "penacho",
-          "arreglarse",
-          "vestir"
-        ],
-        "fr": [
-          "ensemble",
-          "plume",
-          "se lisser les plumes",
-          "vêtements"
-        ]
       }
     }
   },
@@ -4880,13 +2502,6 @@
           "it": "magliette",
           "fr": "chemises"
         }
-      },
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
       }
     }
   },
@@ -4920,32 +2535,6 @@
           "es": "los pantalones",
           "de": "Hosen"
         }
-      },
-      "synonyms": {
-        "en": [
-          "trousers",
-          "jeans",
-          "slacks"
-        ],
-        "de": [
-          "Jeans",
-          "Beinkleid",
-          "Stoffhose"
-        ],
-        "it": [
-          "calzoni",
-          "jeans",
-          "pantaloni lunghi"
-        ],
-        "es": [
-          "pantalón",
-          "jeans",
-          "vaqueros"
-        ],
-        "fr": [
-          "jeans",
-          "pantalon de costume"
-        ]
       }
     }
   },
@@ -4979,38 +2568,6 @@
           "es": "camas",
           "de": "Betten"
         }
-      },
-      "synonyms": {
-        "en": [
-          "bang",
-          "love",
-          "bottom",
-          "hump"
-        ],
-        "de": [
-          "knall",
-          "liebe",
-          "unten",
-          "buckel"
-        ],
-        "it": [
-          "botto",
-          "amore",
-          "metter il fondo a",
-          "gobba"
-        ],
-        "es": [
-          "estallido",
-          "amar",
-          "abajo",
-          "joroba"
-        ],
-        "fr": [
-          "claquer",
-          "amour",
-          "bas",
-          "bosse"
-        ]
       }
     }
   },
@@ -5044,13 +2601,6 @@
           "es": "cocinas",
           "de": "Küchen"
         }
-      },
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
       }
     }
   },
@@ -5084,33 +2634,6 @@
           "de": "Zimmer",
           "es": "habitaciones"
         }
-      },
-      "synonyms": {
-        "en": [
-          "way",
-          "board",
-          "elbow room"
-        ],
-        "de": [
-          "weg",
-          "planke",
-          "bewegungsfreiheit"
-        ],
-        "it": [
-          "modo",
-          "asse",
-          "spazio per i gomiti"
-        ],
-        "es": [
-          "forma",
-          "junta",
-          "espacio para los codos"
-        ],
-        "fr": [
-          "chemin",
-          "conseil",
-          "espace pour les coudes"
-        ]
       }
     }
   },
@@ -5144,36 +2667,6 @@
           "fr": "fromages",
           "it": "formaggi"
         }
-      },
-      "synonyms": {
-        "en": [
-          "malva sylvestris",
-          "cheeseflower",
-          "high mallow",
-          "tall mallow"
-        ],
-        "de": [
-          "malva sylvestris",
-          "käseblume",
-          "hohe malve"
-        ],
-        "it": [
-          "malva sylvestris",
-          "cheeseflower",
-          "alta malva",
-          "malva alta"
-        ],
-        "es": [
-          "malva sylvestris",
-          "flor de queso",
-          "malva alta"
-        ],
-        "fr": [
-          "malve sylvestris",
-          "fleur de fromage",
-          "mauve haute",
-          "grande mauve"
-        ]
       }
     }
   },
@@ -5207,38 +2700,6 @@
           "es": "carnes",
           "de": "Fleischsorten"
         }
-      },
-      "synonyms": {
-        "en": [
-          "essence",
-          "core",
-          "pith",
-          "substance"
-        ],
-        "de": [
-          "wesen",
-          "kern",
-          "mark",
-          "substanz"
-        ],
-        "it": [
-          "essenza",
-          "nucleo",
-          "midollo",
-          "sostanza"
-        ],
-        "es": [
-          "esencia",
-          "centro",
-          "médula",
-          "sustancia"
-        ],
-        "fr": [
-          "essence",
-          "cœur",
-          "moelle",
-          "substance"
-        ]
       }
     }
   },
@@ -5272,37 +2733,6 @@
           "fr": "poissons",
           "it": "pesci"
         }
-      },
-      "synonyms": {
-        "en": [
-          "mark",
-          "fool",
-          "sucker",
-          "chump"
-        ],
-        "de": [
-          "markieren",
-          "narr",
-          "saugnapf",
-          "trottel"
-        ],
-        "it": [
-          "segno",
-          "scemo",
-          "ventosa",
-          "idiota"
-        ],
-        "es": [
-          "marca",
-          "tonto",
-          "ventosa",
-          "cabeza"
-        ],
-        "fr": [
-          "marque",
-          "idiot",
-          "ventouse"
-        ]
       }
     }
   },
@@ -5336,38 +2766,6 @@
           "fr": "oiseaux",
           "es": "pájaros"
         }
-      },
-      "synonyms": {
-        "en": [
-          "snort",
-          "wench",
-          "dame",
-          "hiss"
-        ],
-        "de": [
-          "schnauben",
-          "weibsbild",
-          "dame",
-          "zischen"
-        ],
-        "it": [
-          "sbuffare",
-          "fanciulla",
-          "signora",
-          "sibilo"
-        ],
-        "es": [
-          "bufido",
-          "moza",
-          "dama",
-          "silbido"
-        ],
-        "fr": [
-          "renifler",
-          "jeune fille",
-          "dame",
-          "sifflement"
-        ]
       }
     }
   },
@@ -5401,37 +2799,6 @@
           "de": "Computer",
           "it": "computer"
         }
-      },
-      "synonyms": {
-        "en": [
-          "reckoner",
-          "calculator",
-          "estimator",
-          "figurer"
-        ],
-        "de": [
-          "rechnen",
-          "kalkulator",
-          "schätzer",
-          "figur"
-        ],
-        "it": [
-          "calcolatore",
-          "calcolatrice",
-          "estimatore",
-          "figurante"
-        ],
-        "es": [
-          "calculadora",
-          "estimador",
-          "figurador"
-        ],
-        "fr": [
-          "calculateur",
-          "calculatrice",
-          "estimateur",
-          "chiffreur"
-        ]
       }
     }
   },
@@ -5465,13 +2832,6 @@
           "es": "bases de datos",
           "fr": "bases de données"
         }
-      },
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
       }
     }
   },
@@ -5505,38 +2865,6 @@
           "es": "pantallas",
           "fr": "écrans"
         }
-      },
-      "synonyms": {
-        "en": [
-          "cover",
-          "shield",
-          "sieve",
-          "test"
-        ],
-        "de": [
-          "abdeckung",
-          "schild",
-          "sieb",
-          "prüfen"
-        ],
-        "it": [
-          "copertina",
-          "scudo",
-          "setaccio",
-          "test"
-        ],
-        "es": [
-          "cubrir",
-          "blindaje",
-          "tamiz",
-          "prueba"
-        ],
-        "fr": [
-          "couverture",
-          "bouclier",
-          "tamis",
-          "test"
-        ]
       }
     }
   },
@@ -5570,13 +2898,6 @@
           "es": "teclados",
           "fr": "claviers"
         }
-      },
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
       }
     }
   },
@@ -5610,38 +2931,6 @@
           "de": "Mäuse",
           "it": "topi"
         }
-      },
-      "synonyms": {
-        "en": [
-          "creep",
-          "sneak",
-          "pussyfoot",
-          "steal"
-        ],
-        "de": [
-          "kriechen",
-          "schleichen",
-          "pussyfoot",
-          "stehlen"
-        ],
-        "it": [
-          "strisciamento",
-          "furtivo",
-          "piede di gatto",
-          "rubare"
-        ],
-        "es": [
-          "arrastrarse",
-          "furtivo",
-          "andar con mucho sigilo",
-          "robar"
-        ],
-        "fr": [
-          "ramper",
-          "mouchard",
-          "pied de chatte",
-          "voler"
-        ]
       }
     }
   },
@@ -5675,23 +2964,6 @@
           "de": "Internets",
           "fr": "internets"
         }
-      },
-      "synonyms": {
-        "en": [
-          "cyberspace"
-        ],
-        "de": [
-          "cyberspace"
-        ],
-        "it": [
-          "cyberspazio"
-        ],
-        "es": [
-          "ciberespacio"
-        ],
-        "fr": [
-          "cyberespace"
-        ]
       }
     }
   },
@@ -5725,28 +2997,6 @@
           "fr": "e-mails",
           "it": "e-mail"
         }
-      },
-      "synonyms": {
-        "en": [
-          "e-mail",
-          "electronic mail",
-          "netmail"
-        ],
-        "de": [
-          "elektronische post",
-          "netmail"
-        ],
-        "it": [
-          "posta elettronica",
-          "netmail"
-        ],
-        "es": [
-          "correo de red"
-        ],
-        "fr": [
-          "courrier électronique",
-          "messagerie internet"
-        ]
       }
     }
   },
@@ -5780,37 +3030,6 @@
           "es": "contraseñas",
           "fr": "mots de passe"
         }
-      },
-      "synonyms": {
-        "en": [
-          "word",
-          "parole",
-          "watchword",
-          "countersign"
-        ],
-        "de": [
-          "wort",
-          "parole",
-          "gegenzeichnen"
-        ],
-        "it": [
-          "parola",
-          "libertà condizionale",
-          "parola d'ordine",
-          "contrassegno"
-        ],
-        "es": [
-          "palabra",
-          "libertad condicional",
-          "lema",
-          "refrendar"
-        ],
-        "fr": [
-          "mot",
-          "parole",
-          "mot d'ordre",
-          "contresigner"
-        ]
       }
     }
   },
@@ -5844,13 +3063,6 @@
           "fr": "sites Web",
           "it": "siti web"
         }
-      },
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
       }
     }
   },
@@ -5884,37 +3096,6 @@
           "fr": "candidatures",
           "it": "applicazioni"
         }
-      },
-      "synonyms": {
-        "en": [
-          "diligence",
-          "coating",
-          "covering",
-          "lotion"
-        ],
-        "de": [
-          "fleiß",
-          "beschichtung",
-          "abdeckung",
-          "lotion"
-        ],
-        "it": [
-          "diligenza",
-          "rivestimento",
-          "copertura",
-          "lozione"
-        ],
-        "es": [
-          "diligencia",
-          "revestimiento",
-          "cubierta",
-          "loción"
-        ],
-        "fr": [
-          "diligence",
-          "revêtement",
-          "lotion"
-        ]
       }
     }
   },
@@ -5948,38 +3129,6 @@
           "fr": "fichiers",
           "es": "archivos"
         }
-      },
-      "synonyms": {
-        "en": [
-          "charge",
-          "register",
-          "file away",
-          "single file"
-        ],
-        "de": [
-          "aufladung",
-          "registrieren",
-          "ablegen",
-          "einzelne datei"
-        ],
-        "it": [
-          "carica",
-          "registro",
-          "archiviare",
-          "singolo fascicolo"
-        ],
-        "es": [
-          "cargar",
-          "registro",
-          "encarpetar",
-          "fila india"
-        ],
-        "fr": [
-          "charge",
-          "registre",
-          "ranger",
-          "fichier unique"
-        ]
       }
     }
   },
@@ -6013,29 +3162,6 @@
           "fr": "dossiers",
           "es": "carpetas"
         }
-      },
-      "synonyms": {
-        "en": [
-          "pamphlet",
-          "booklet",
-          "leaflet",
-          "brochure"
-        ],
-        "de": [
-          "broschüre"
-        ],
-        "it": [
-          "opuscolo",
-          "libretto",
-          "volantino"
-        ],
-        "es": [
-          "folleto",
-          "prospecto"
-        ],
-        "fr": [
-          "brochure"
-        ]
       }
     }
   },
@@ -6069,34 +3195,6 @@
           "de": "Anschlüsse",
           "fr": "connexions"
         }
-      },
-      "synonyms": {
-        "en": [
-          "link",
-          "association",
-          "connexion",
-          "connecting"
-        ],
-        "de": [
-          "link",
-          "verein",
-          "verbinden"
-        ],
-        "it": [
-          "collegamento",
-          "associazione"
-        ],
-        "es": [
-          "enlace",
-          "asociación",
-          "conectando"
-        ],
-        "fr": [
-          "lien",
-          "association",
-          "rapport",
-          "de liaison"
-        ]
       }
     }
   },
@@ -6130,36 +3228,6 @@
           "it": "reti",
           "fr": "réseaux"
         }
-      },
-      "synonyms": {
-        "en": [
-          "net",
-          "mesh",
-          "reticulation",
-          "meshwork"
-        ],
-        "de": [
-          "netto",
-          "netz",
-          "retikulation",
-          "geflecht"
-        ],
-        "it": [
-          "netto",
-          "maglia",
-          "reticolazione"
-        ],
-        "es": [
-          "neto",
-          "malla",
-          "reticulación"
-        ],
-        "fr": [
-          "filet",
-          "engrener",
-          "réticulation",
-          "maillage"
-        ]
       }
     }
   },
@@ -6193,27 +3261,6 @@
           "es": "servidores",
           "it": "server"
         }
-      },
-      "synonyms": {
-        "en": [
-          "host",
-          "waiter"
-        ],
-        "de": [
-          "gastgeber",
-          "kellner"
-        ],
-        "it": [
-          "ospite",
-          "cameriere"
-        ],
-        "es": [
-          "anfitrión",
-          "mesero"
-        ],
-        "fr": [
-          "hôte"
-        ]
       }
     }
   },
@@ -6247,23 +3294,6 @@
           "it": "software",
           "fr": "logiciels"
         }
-      },
-      "synonyms": {
-        "en": [
-          "software system"
-        ],
-        "de": [
-          "softwaresystem"
-        ],
-        "it": [
-          "sistema software"
-        ],
-        "es": [
-          "sistema de software"
-        ],
-        "fr": [
-          "système logiciel"
-        ]
       }
     }
   },
@@ -6297,28 +3327,6 @@
           "es": "hardwares",
           "it": "hardware"
         }
-      },
-      "synonyms": {
-        "en": [
-          "ironware",
-          "computer hardware"
-        ],
-        "de": [
-          "eisenwaren",
-          "computerhardware"
-        ],
-        "it": [
-          "ferramenta",
-          "hardware del computer"
-        ],
-        "es": [
-          "ferretería",
-          "hardware de computadora"
-        ],
-        "fr": [
-          "ferronnerie",
-          "matériel informatique"
-        ]
       }
     }
   },
@@ -6352,37 +3360,6 @@
           "es": "telefonos",
           "it": "telefoni"
         }
-      },
-      "synonyms": {
-        "en": [
-          "ring",
-          "call",
-          "sound",
-          "call up"
-        ],
-        "de": [
-          "ring",
-          "anruf",
-          "klang",
-          "aufrufen"
-        ],
-        "it": [
-          "squillo",
-          "chiamata",
-          "suono",
-          "richiamare"
-        ],
-        "es": [
-          "anillo",
-          "llamar",
-          "sonido"
-        ],
-        "fr": [
-          "anneau",
-          "appel",
-          "son",
-          "appeler"
-        ]
       }
     }
   },
@@ -6416,27 +3393,6 @@
           "es": "camaras",
           "it": "fotocamere"
         }
-      },
-      "synonyms": {
-        "en": [
-          "photographic camera",
-          "television camera"
-        ],
-        "de": [
-          "fotokamera",
-          "fernsehkamera"
-        ],
-        "it": [
-          "macchina fotografica",
-          "telecamera"
-        ],
-        "es": [
-          "cámara fotográfica",
-          "camara de television"
-        ],
-        "fr": [
-          "caméra de télévision"
-        ]
       }
     }
   },
@@ -6470,37 +3426,6 @@
           "it": "cavi",
           "fr": "câbles"
         }
-      },
-      "synonyms": {
-        "en": [
-          "line",
-          "wire",
-          "telegraph",
-          "cablegram"
-        ],
-        "de": [
-          "linie",
-          "draht",
-          "telegraph",
-          "telegramm"
-        ],
-        "it": [
-          "linea",
-          "filo",
-          "telegrafo",
-          "cablogramma"
-        ],
-        "es": [
-          "línea",
-          "telégrafo",
-          "cablegrama"
-        ],
-        "fr": [
-          "doubler",
-          "fil",
-          "télégraphe",
-          "câblogramme"
-        ]
       }
     }
   },
@@ -6534,33 +3459,6 @@
           "it": "codici",
           "fr": "codes"
         }
-      },
-      "synonyms": {
-        "en": [
-          "cipher",
-          "cypher",
-          "inscribe",
-          "encrypt"
-        ],
-        "de": [
-          "chiffre",
-          "einschreiben",
-          "verschlüsseln"
-        ],
-        "it": [
-          "cifra",
-          "inscrivere",
-          "crittografare"
-        ],
-        "es": [
-          "cifrar",
-          "inscribir"
-        ],
-        "fr": [
-          "chiffrer",
-          "zéro",
-          "inscrire"
-        ]
       }
     }
   },
@@ -6594,28 +3492,6 @@
           "it": "algoritmi",
           "fr": "algorithmes"
         }
-      },
-      "synonyms": {
-        "en": [
-          "algorithmic program",
-          "algorithmic rule"
-        ],
-        "de": [
-          "algorithmisches programm",
-          "algorithmische regel"
-        ],
-        "it": [
-          "programma algoritmico",
-          "regola algoritmica"
-        ],
-        "es": [
-          "programa algorítmico",
-          "regla algorítmica"
-        ],
-        "fr": [
-          "programme algorithmique",
-          "règle algorithmique"
-        ]
       }
     }
   },
@@ -6649,23 +3525,6 @@
           "es": "datos",
           "fr": "données"
         }
-      },
-      "synonyms": {
-        "en": [
-          "information"
-        ],
-        "de": [
-          "information"
-        ],
-        "it": [
-          "informazioni"
-        ],
-        "es": [
-          "información"
-        ],
-        "fr": [
-          "information"
-        ]
       }
     }
   },
@@ -6699,38 +3558,6 @@
           "it": "nuvole",
           "fr": "nuages"
         }
-      },
-      "synonyms": {
-        "en": [
-          "obscure",
-          "overcast",
-          "mist",
-          "corrupt"
-        ],
-        "de": [
-          "obskur",
-          "bedeckt",
-          "nebel",
-          "korrupt"
-        ],
-        "it": [
-          "oscuro",
-          "coperto",
-          "nebbia",
-          "corrotto"
-        ],
-        "es": [
-          "oscuro",
-          "nublado",
-          "neblina",
-          "corrupto"
-        ],
-        "fr": [
-          "obscur",
-          "couvert",
-          "brume",
-          "corrompu"
-        ]
       }
     }
   },
@@ -6764,37 +3591,6 @@
           "fr": "titres",
           "de": "Wertpapiere"
         }
-      },
-      "synonyms": {
-        "en": [
-          "protection",
-          "surety",
-          "certificate",
-          "security measures"
-        ],
-        "de": [
-          "schutz",
-          "zertifikat",
-          "sicherheitsmaßnahmen"
-        ],
-        "it": [
-          "protezione",
-          "fideiussione",
-          "certificato",
-          "misure di sicurezza"
-        ],
-        "es": [
-          "protección",
-          "garantía",
-          "certificado",
-          "medidas de seguridad"
-        ],
-        "fr": [
-          "protection",
-          "caution",
-          "certificat",
-          "mesures de sécurité"
-        ]
       }
     }
   },
@@ -6828,23 +3624,6 @@
           "de": "Verschlüsselungen",
           "it": "crittografie"
         }
-      },
-      "synonyms": {
-        "en": [
-          "encoding"
-        ],
-        "de": [
-          "codierung"
-        ],
-        "it": [
-          "codifica"
-        ],
-        "es": [
-          "codificación"
-        ],
-        "fr": [
-          "codage"
-        ]
       }
     }
   },
@@ -6878,36 +3657,6 @@
           "de": "Backups",
           "it": "backup"
         }
-      },
-      "synonyms": {
-        "en": [
-          "substitute",
-          "relief",
-          "stand-in",
-          "backup man"
-        ],
-        "de": [
-          "ersatz",
-          "erleichterung",
-          "ersatzmann"
-        ],
-        "it": [
-          "sostituire",
-          "sollievo",
-          "controfigura",
-          "uomo di riserva"
-        ],
-        "es": [
-          "sustituto",
-          "alivio",
-          "suplente",
-          "hombre de respaldo"
-        ],
-        "fr": [
-          "remplaçant",
-          "relief",
-          "homme de secours"
-        ]
       }
     }
   },
@@ -6941,13 +3690,6 @@
           "de": "Downloads",
           "it": "download"
         }
-      },
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
       }
     }
   },
@@ -6981,13 +3723,6 @@
           "fr": "téléchargements",
           "de": "Uploads"
         }
-      },
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
       }
     }
   },
@@ -7021,28 +3756,6 @@
           "de": "Drucker",
           "it": "stampanti"
         }
-      },
-      "synonyms": {
-        "en": [
-          "pressman",
-          "printing machine"
-        ],
-        "de": [
-          "pressemann",
-          "druckmaschine"
-        ],
-        "it": [
-          "giornalista",
-          "macchina da stampa"
-        ],
-        "es": [
-          "periodista",
-          "máquina de impresión"
-        ],
-        "fr": [
-          "journaliste",
-          "machine à imprimer"
-        ]
       }
     }
   },
@@ -7076,35 +3789,6 @@
           "de": "Zellen",
           "it": "celle"
         }
-      },
-      "synonyms": {
-        "en": [
-          "cubicle",
-          "prison cell",
-          "electric cell",
-          "jail cell"
-        ],
-        "de": [
-          "kabine",
-          "gefängniszelle",
-          "elektrische zelle"
-        ],
-        "it": [
-          "cubicolo",
-          "cella di prigione",
-          "cella elettrica"
-        ],
-        "es": [
-          "cubículo",
-          "celda de prisión",
-          "celda electrica",
-          "celda de la carcel"
-        ],
-        "fr": [
-          "cabine",
-          "cellule de prison",
-          "cellule électrique"
-        ]
       }
     }
   },
@@ -7138,33 +3822,6 @@
           "fr": "organismes",
           "de": "Organismen"
         }
-      },
-      "synonyms": {
-        "en": [
-          "being",
-          "life form",
-          "living thing"
-        ],
-        "de": [
-          "sein",
-          "lebensform",
-          "lebewesen"
-        ],
-        "it": [
-          "essendo",
-          "forma di vita",
-          "cosa vivente"
-        ],
-        "es": [
-          "ser",
-          "forma de vida",
-          "ser vivo"
-        ],
-        "fr": [
-          "être",
-          "forme de vie",
-          "être vivant"
-        ]
       }
     }
   },
@@ -7198,38 +3855,6 @@
           "it": "piante",
           "de": "Pflanzen"
         }
-      },
-      "synonyms": {
-        "en": [
-          "constitute",
-          "set",
-          "establish",
-          "institute"
-        ],
-        "de": [
-          "bilden",
-          "satz",
-          "gründen",
-          "institut"
-        ],
-        "it": [
-          "costituire",
-          "impostato",
-          "stabilire",
-          "istituto"
-        ],
-        "es": [
-          "constituir",
-          "colocar",
-          "establecer",
-          "instituto"
-        ],
-        "fr": [
-          "constituer",
-          "ensemble",
-          "établir",
-          "institut"
-        ]
       }
     }
   },
@@ -7263,37 +3888,6 @@
           "de": "Tiere",
           "it": "animali"
         }
-      },
-      "synonyms": {
-        "en": [
-          "brute",
-          "sensual",
-          "carnal",
-          "beast"
-        ],
-        "de": [
-          "brutal",
-          "sinnlich",
-          "fleischlich"
-        ],
-        "it": [
-          "bruto",
-          "sensuale",
-          "carnale",
-          "bestia"
-        ],
-        "es": [
-          "bruto",
-          "sensual",
-          "carnal",
-          "bestia"
-        ],
-        "fr": [
-          "brute",
-          "sensuel",
-          "charnel",
-          "bête"
-        ]
       }
     }
   },
@@ -7327,38 +3921,6 @@
           "fr": "feuilles",
           "de": "Blätter"
         }
-      },
-      "synonyms": {
-        "en": [
-          "foliage",
-          "riffle",
-          "folio",
-          "flick"
-        ],
-        "de": [
-          "laub",
-          "gewehr",
-          "folio",
-          "schnippen"
-        ],
-        "it": [
-          "fogliame",
-          "riffle",
-          "foglio",
-          "colpo"
-        ],
-        "es": [
-          "follaje",
-          "rápido",
-          "fol",
-          "película"
-        ],
-        "fr": [
-          "feuillage",
-          "fusil",
-          "folio",
-          "feuilleter"
-        ]
       }
     }
   },
@@ -7392,38 +3954,6 @@
           "de": "Wurzeln",
           "it": "radici"
         }
-      },
-      "synonyms": {
-        "en": [
-          "base",
-          "radical",
-          "rout",
-          "source"
-        ],
-        "de": [
-          "base",
-          "radikale",
-          "router",
-          "quelle"
-        ],
-        "it": [
-          "base",
-          "radicale",
-          "rotta",
-          "fonte"
-        ],
-        "es": [
-          "base",
-          "radical",
-          "derrota",
-          "fuente"
-        ],
-        "fr": [
-          "base",
-          "radical",
-          "déroute",
-          "source"
-        ]
       }
     }
   },
@@ -7457,38 +3987,6 @@
           "de": "Samen",
           "it": "semi"
         }
-      },
-      "synonyms": {
-        "en": [
-          "source",
-          "ejaculate",
-          "sow",
-          "seminal fluid"
-        ],
-        "de": [
-          "quelle",
-          "ejakulieren",
-          "sau",
-          "samenflüssigkeit"
-        ],
-        "it": [
-          "fonte",
-          "eiaculare",
-          "seminare",
-          "liquido seminale"
-        ],
-        "es": [
-          "fuente",
-          "eyacular",
-          "sembrar",
-          "fluido seminal"
-        ],
-        "fr": [
-          "source",
-          "éjaculer",
-          "truie",
-          "liquide séminal"
-        ]
       }
     }
   },
@@ -7522,37 +4020,6 @@
           "fr": "coeurs",
           "es": "corazones"
         }
-      },
-      "synonyms": {
-        "en": [
-          "essence",
-          "core",
-          "affection",
-          "spirit"
-        ],
-        "de": [
-          "wesen",
-          "kern",
-          "zuneigung",
-          "geist"
-        ],
-        "it": [
-          "essenza",
-          "nucleo",
-          "affetto",
-          "spirito"
-        ],
-        "es": [
-          "esencia",
-          "centro",
-          "afecto",
-          "espíritu"
-        ],
-        "fr": [
-          "essence",
-          "affection",
-          "esprit"
-        ]
       }
     }
   },
@@ -7586,13 +4053,6 @@
           "de": "Lungen",
           "it": "polmoni"
         }
-      },
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
       }
     }
   },
@@ -7626,38 +4086,6 @@
           "de": "Gehirne",
           "it": "cervelli"
         }
-      },
-      "synonyms": {
-        "en": [
-          "head",
-          "nous",
-          "mind",
-          "genius"
-        ],
-        "de": [
-          "kopf",
-          "nous",
-          "geist",
-          "genius"
-        ],
-        "it": [
-          "testa",
-          "nous",
-          "mente",
-          "genio"
-        ],
-        "es": [
-          "cabeza",
-          "cacumen",
-          "mente",
-          "genio"
-        ],
-        "fr": [
-          "tête",
-          "nous",
-          "esprit",
-          "génie"
-        ]
       }
     }
   },
@@ -7691,38 +4119,6 @@
           "it": "ossa",
           "fr": "os"
         }
-      },
-      "synonyms": {
-        "en": [
-          "cram",
-          "pearl",
-          "swot",
-          "drum"
-        ],
-        "de": [
-          "stopfen",
-          "perle",
-          "streber",
-          "trommel"
-        ],
-        "it": [
-          "stipare",
-          "perla",
-          "basta",
-          "tamburo"
-        ],
-        "es": [
-          "atestar",
-          "perla",
-          "empollón",
-          "tambor"
-        ],
-        "fr": [
-          "fourrer",
-          "perle",
-          "bosser",
-          "tambour"
-        ]
       }
     }
   },
@@ -7756,34 +4152,6 @@
           "it": "pelli",
           "fr": "peaux"
         }
-      },
-      "synonyms": {
-        "en": [
-          "scramble",
-          "clamber",
-          "struggle",
-          "pelt"
-        ],
-        "de": [
-          "gerangel",
-          "klettern",
-          "kampf",
-          "fell"
-        ],
-        "it": [
-          "strapazzare",
-          "arrampicarsi",
-          "lotta"
-        ],
-        "es": [
-          "lucha",
-          "trepar"
-        ],
-        "fr": [
-          "brouiller",
-          "grimper",
-          "lutte"
-        ]
       }
     }
   },
@@ -7817,34 +4185,6 @@
           "de": "Blute",
           "fr": "sangs"
         }
-      },
-      "synonyms": {
-        "en": [
-          "profligate",
-          "line",
-          "stock",
-          "gore"
-        ],
-        "de": [
-          "verschwenderisch",
-          "linie",
-          "aktie"
-        ],
-        "it": [
-          "dissoluto",
-          "linea",
-          "azione"
-        ],
-        "es": [
-          "libertino",
-          "línea",
-          "existencias"
-        ],
-        "fr": [
-          "débauché",
-          "doubler",
-          "action"
-        ]
       }
     }
   },
@@ -7878,36 +4218,6 @@
           "de": "Wälder",
           "fr": "forêts"
         }
-      },
-      "synonyms": {
-        "en": [
-          "timber",
-          "woods",
-          "afforest",
-          "timberland"
-        ],
-        "de": [
-          "holz",
-          "aufforsten",
-          "waldland"
-        ],
-        "it": [
-          "rivestire di legno",
-          "boschi",
-          "imboschire",
-          "legname"
-        ],
-        "es": [
-          "madera",
-          "repoblar con árboles",
-          "maderable"
-        ],
-        "fr": [
-          "bois",
-          "les bois",
-          "reboiser",
-          "terre forestière"
-        ]
       }
     }
   },
@@ -7941,37 +4251,6 @@
           "it": "vite",
           "fr": "vies"
         }
-      },
-      "synonyms": {
-        "en": [
-          "spirit",
-          "aliveness",
-          "animation",
-          "liveliness"
-        ],
-        "de": [
-          "geist",
-          "lebendigkeit",
-          "animation"
-        ],
-        "it": [
-          "spirito",
-          "vitalità",
-          "animazione",
-          "vivacità"
-        ],
-        "es": [
-          "espíritu",
-          "vitalidad",
-          "animación",
-          "vivacidad"
-        ],
-        "fr": [
-          "esprit",
-          "vitalité",
-          "animation",
-          "vivacité"
-        ]
       }
     }
   },
@@ -8005,38 +4284,6 @@
           "it": "nature",
           "fr": "natures"
         }
-      },
-      "synonyms": {
-        "en": [
-          "wild",
-          "existence",
-          "macrocosm",
-          "world"
-        ],
-        "de": [
-          "wild",
-          "existenz",
-          "makrokosmos",
-          "welt"
-        ],
-        "it": [
-          "selvaggio",
-          "esistenza",
-          "macrocosmo",
-          "mondo"
-        ],
-        "es": [
-          "salvaje",
-          "existencia",
-          "macrocosmo",
-          "mundo"
-        ],
-        "fr": [
-          "sauvage",
-          "existence",
-          "macrocosme",
-          "monde"
-        ]
       }
     }
   },
@@ -8070,33 +4317,6 @@
           "de": "Insekten",
           "fr": "insectes"
         }
-      },
-      "synonyms": {
-        "en": [
-          "louse",
-          "worm",
-          "dirt ball"
-        ],
-        "de": [
-          "laus",
-          "wurm",
-          "schmutzball"
-        ],
-        "it": [
-          "pidocchio",
-          "verme",
-          "palla di terra"
-        ],
-        "es": [
-          "piojo",
-          "gusano",
-          "bola de tierra"
-        ],
-        "fr": [
-          "pou",
-          "ver",
-          "boule de terre"
-        ]
       }
     }
   },
@@ -8130,15 +4350,6 @@
           "de": "Bakterien",
           "fr": "bactéries"
         }
-      },
-      "synonyms": {
-        "en": [
-          "bacterium"
-        ],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
       }
     }
   },
@@ -8172,13 +4383,6 @@
           "it": "virus",
           "fr": "virus"
         }
-      },
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
       }
     }
   },
@@ -8212,23 +4416,6 @@
           "de": "Arten",
           "fr": "espèces"
         }
-      },
-      "synonyms": {
-        "en": [
-          "variety"
-        ],
-        "de": [
-          "vielfalt"
-        ],
-        "it": [
-          "varietà"
-        ],
-        "es": [
-          "variedad"
-        ],
-        "fr": [
-          "variété"
-        ]
       }
     }
   },
@@ -8262,32 +4449,6 @@
           "it": "evoluzioni",
           "de": "Entwicklungen"
         }
-      },
-      "synonyms": {
-        "en": [
-          "development",
-          "phylogeny",
-          "phylogenesis"
-        ],
-        "de": [
-          "entwicklung",
-          "phylogenie",
-          "phylogenese"
-        ],
-        "it": [
-          "sviluppo",
-          "filogenesi"
-        ],
-        "es": [
-          "desarrollo",
-          "filogenia",
-          "filogénesis"
-        ],
-        "fr": [
-          "développement",
-          "phylogénie",
-          "phylogénèse"
-        ]
       }
     }
   },
@@ -8321,13 +4482,6 @@
           "it": "geni",
           "de": "Gene"
         }
-      },
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
       }
     }
   },
@@ -8361,24 +4515,6 @@
           "fr": "ADN",
           "de": "DNAs"
         }
-      },
-      "synonyms": {
-        "en": [
-          "deoxyribonucleic acid",
-          "desoxyribonucleic acid"
-        ],
-        "de": [
-          "desoxyribonukleinsäure"
-        ],
-        "it": [
-          "acido desossiribonucleico"
-        ],
-        "es": [
-          "ácido desoxirribonucleico"
-        ],
-        "fr": [
-          "acide désoxyribonucléique"
-        ]
       }
     }
   },
@@ -8412,38 +4548,6 @@
           "it": "zuccheri",
           "de": "Zucker"
         }
-      },
-      "synonyms": {
-        "en": [
-          "saccharide",
-          "carbohydrate",
-          "refined sugar",
-          "saccarify"
-        ],
-        "de": [
-          "saccharid",
-          "kohlenhydrat",
-          "raffinierter zucker",
-          "vergiften"
-        ],
-        "it": [
-          "saccaride",
-          "carboidrato",
-          "zucchero raffinato",
-          "saccarificare"
-        ],
-        "es": [
-          "sacárido",
-          "carbohidrato",
-          "azúcar refinado",
-          "sacarificar"
-        ],
-        "fr": [
-          "saccharide",
-          "glucides",
-          "sucre raffiné",
-          "saccarifier"
-        ]
       }
     }
   },
@@ -8477,13 +4581,6 @@
           "de": "Proteine",
           "fr": "protéines"
         }
-      },
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
       }
     }
   },
@@ -8517,28 +4614,6 @@
           "de": "Sauerstoffatome",
           "fr": "oxygènes"
         }
-      },
-      "synonyms": {
-        "en": [
-          "atomic number 8",
-          "o"
-        ],
-        "de": [
-          "ordnungszahl 8",
-          "o"
-        ],
-        "it": [
-          "numero atomico 8",
-          "o"
-        ],
-        "es": [
-          "número atómico 8",
-          "oh"
-        ],
-        "fr": [
-          "numéro atomique 8",
-          "o"
-        ]
       }
     }
   },
@@ -8572,38 +4647,6 @@
           "de": "Kohlenstoffe",
           "fr": "carbones"
         }
-      },
-      "synonyms": {
-        "en": [
-          "carbon copy",
-          "carbon paper",
-          "atomic number 6",
-          "c"
-        ],
-        "de": [
-          "kopie",
-          "kohlepapier",
-          "ordnungszahl 6",
-          "c"
-        ],
-        "it": [
-          "copia carbone",
-          "carta carbone",
-          "numero atomico 6",
-          "c"
-        ],
-        "es": [
-          "copia al carbón",
-          "papel carbón",
-          "número atómico 6",
-          "do"
-        ],
-        "fr": [
-          "copie carbone",
-          "papier carbone",
-          "numéro atomique 6",
-          "c"
-        ]
       }
     }
   },
@@ -8637,28 +4680,6 @@
           "de": "Wasserstoffatome",
           "fr": "hydrogènes"
         }
-      },
-      "synonyms": {
-        "en": [
-          "atomic number 1",
-          "h"
-        ],
-        "de": [
-          "ordnungszahl 1",
-          "h"
-        ],
-        "it": [
-          "numero atomico 1",
-          "h"
-        ],
-        "es": [
-          "número atómico 1",
-          "h"
-        ],
-        "fr": [
-          "numéro atomique 1",
-          "h"
-        ]
       }
     }
   },
@@ -8692,34 +4713,6 @@
           "de": "Böden",
           "fr": "sols"
         }
-      },
-      "synonyms": {
-        "en": [
-          "dirty",
-          "ground",
-          "land",
-          "filth"
-        ],
-        "de": [
-          "schmutzig",
-          "boden",
-          "land",
-          "schmutz"
-        ],
-        "it": [
-          "sporco",
-          "sporcizia"
-        ],
-        "es": [
-          "sucio",
-          "suelo",
-          "inmundicia"
-        ],
-        "fr": [
-          "sale",
-          "atterrir",
-          "saleté"
-        ]
       }
     }
   },
@@ -8753,13 +4746,6 @@
           "de": "Ökosysteme",
           "fr": "écosystèmes"
         }
-      },
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
       }
     }
   },
@@ -8780,29 +4766,7 @@
         "es": "Hola, ¿cómo estás?",
         "fr": "Bonjour, comment ça va?"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [
-          "how are you doing?",
-          "hi, how are you?"
-        ],
-        "de": [
-          "wie gehts?",
-          "hallo, wie geht es ihnen?"
-        ],
-        "it": [
-          "come va?",
-          "ciao, come va?"
-        ],
-        "es": [
-          "¿cómo te va?",
-          "¿qué tal?"
-        ],
-        "fr": [
-          "comment allez-vous?",
-          "ça va?"
-        ]
-      }
+      "variations": {}
     }
   },
   {
@@ -8822,29 +4786,7 @@
         "es": "Adiós, hasta mañana",
         "fr": "Au revoir, à demain"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [
-          "bye, see you tomorrow",
-          "goodbye, see you"
-        ],
-        "de": [
-          "tschüss, bis morgen",
-          "bis morgen"
-        ],
-        "it": [
-          "ciao, a domani",
-          "a domani"
-        ],
-        "es": [
-          "hasta mañana",
-          "chau, hasta mañana"
-        ],
-        "fr": [
-          "salut, à demain",
-          "à demain"
-        ]
-      }
+      "variations": {}
     }
   },
   {
@@ -8864,24 +4806,7 @@
         "es": "Una mesa para dos, por favor",
         "fr": "Une table pour deux, s'il vous plaît"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [
-          "table for two, please"
-        ],
-        "de": [
-          "tisch für zwei, bitte"
-        ],
-        "it": [
-          "un tavolo per due per favore"
-        ],
-        "es": [
-          "mesa para dos por favor"
-        ],
-        "fr": [
-          "table pour deux s'il vous plaît"
-        ]
-      }
+      "variations": {}
     }
   },
   {
@@ -8901,29 +4826,7 @@
         "es": "Muchas gracias",
         "fr": "Merci beaucoup"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [
-          "thanks a lot",
-          "thank you so much"
-        ],
-        "de": [
-          "besten dank",
-          "herzlichen dank"
-        ],
-        "it": [
-          "molte grazie",
-          "grazie di cuore"
-        ],
-        "es": [
-          "muchísimas gracias",
-          "mil gracias"
-        ],
-        "fr": [
-          "merci bien",
-          "merci mille fois"
-        ]
-      }
+      "variations": {}
     }
   },
   {
@@ -8943,29 +4846,7 @@
         "es": "Sí, por supuesto",
         "fr": "Oui, bien sûr"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [
-          "yes, sure",
-          "of course"
-        ],
-        "de": [
-          "sicherlich",
-          "ja, klar"
-        ],
-        "it": [
-          "sì, sicuro",
-          "certamente"
-        ],
-        "es": [
-          "sí, claro",
-          "por supuesto"
-        ],
-        "fr": [
-          "oui, sûr",
-          "bien sûr"
-        ]
-      }
+      "variations": {}
     }
   },
   {
@@ -8985,24 +4866,7 @@
         "es": "No, gracias",
         "fr": "Non, merci"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [
-          "no, thanks"
-        ],
-        "de": [
-          "nein, danke sehr"
-        ],
-        "it": [
-          "no, grazie mille"
-        ],
-        "es": [
-          "no, gracias de todos modos"
-        ],
-        "fr": [
-          "non, merci bien"
-        ]
-      }
+      "variations": {}
     }
   },
   {
@@ -9022,14 +4886,7 @@
         "es": "disculpe",
         "fr": "excusez-moi"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
-      }
+      "variations": {}
     }
   },
   {
@@ -9049,29 +4906,7 @@
         "es": "Lo siento mucho",
         "fr": "Je suis vraiment désolé"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [
-          "i am so sorry",
-          "my apologies"
-        ],
-        "de": [
-          "tut mir leid",
-          "ich bitte um entschuldigung"
-        ],
-        "it": [
-          "scusami",
-          "mi dispiace"
-        ],
-        "es": [
-          "lo siento",
-          "lo lamento"
-        ],
-        "fr": [
-          "désolé",
-          "je suis désolé"
-        ]
-      }
+      "variations": {}
     }
   },
   {
@@ -9091,24 +4926,7 @@
         "es": "Buenos días a todos",
         "fr": "Bonjour à tous"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [
-          "morning, everyone"
-        ],
-        "de": [
-          "guten morgen allerseits"
-        ],
-        "it": [
-          "buongiorno gente"
-        ],
-        "es": [
-          "buenos días gente"
-        ],
-        "fr": [
-          "bonjour tout le monde"
-        ]
-      }
+      "variations": {}
     }
   },
   {
@@ -9128,25 +4946,7 @@
         "es": "Buenas noches, que duermas bien",
         "fr": "Bonne nuit, dors bien"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [
-          "night, sleep well",
-          "good night"
-        ],
-        "de": [
-          "gute nacht, schlaf schön"
-        ],
-        "it": [
-          "buonanotte, sogni d'oro"
-        ],
-        "es": [
-          "buenas noches, dulces sueños"
-        ],
-        "fr": [
-          "bonne nuit, fais de beaux rêves"
-        ]
-      }
+      "variations": {}
     }
   },
   {
@@ -9166,14 +4966,7 @@
         "es": "¿cuánto cuesta?",
         "fr": "combien ça coûte?"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
-      }
+      "variations": {}
     }
   },
   {
@@ -9193,14 +4986,7 @@
         "es": "¿dónde está el baño?",
         "fr": "où sont les toilettes?"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
-      }
+      "variations": {}
     }
   },
   {
@@ -9220,14 +5006,7 @@
         "es": "no lo sé",
         "fr": "je ne sais pas"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
-      }
+      "variations": {}
     }
   },
   {
@@ -9247,14 +5026,7 @@
         "es": "¿hablas inglés?",
         "fr": "parlez-vous anglais?"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
-      }
+      "variations": {}
     }
   },
   {
@@ -9274,14 +5046,7 @@
         "es": "¿cómo te llamas?",
         "fr": "quel est votre nom?"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
-      }
+      "variations": {}
     }
   },
   {
@@ -9301,14 +5066,7 @@
         "es": "mi nombre es...",
         "fr": "mon nom est..."
       },
-      "variations": {},
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
-      }
+      "variations": {}
     }
   },
   {
@@ -9328,14 +5086,7 @@
         "es": "te amo",
         "fr": "je t'aime"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
-      }
+      "variations": {}
     }
   },
   {
@@ -9355,14 +5106,7 @@
         "es": "ayúdame",
         "fr": "aidez-moi"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [],
-        "de": [],
-        "it": [],
-        "es": [],
-        "fr": []
-      }
+      "variations": {}
     }
   },
   {
@@ -9382,24 +5126,7 @@
         "es": "Bienvenido a nuestra casa",
         "fr": "Bienvenue dans notre maison"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [
-          "welcome home"
-        ],
-        "de": [
-          "willkommen bei uns zu hause"
-        ],
-        "it": [
-          "benvenuto in casa"
-        ],
-        "es": [
-          "bienvenido a nuestro hogar"
-        ],
-        "fr": [
-          "bienvenue chez nous"
-        ]
-      }
+      "variations": {}
     }
   },
   {
@@ -9419,29 +5146,7 @@
         "es": "Salud por tu salud",
         "fr": "À votre santé"
       },
-      "variations": {},
-      "synonyms": {
-        "en": [
-          "to your health",
-          "cheers"
-        ],
-        "de": [
-          "auf dein wohl",
-          "prost"
-        ],
-        "it": [
-          "alla salute",
-          "salute"
-        ],
-        "es": [
-          "a tu salud",
-          "salud"
-        ],
-        "fr": [
-          "à ta santé",
-          "tchin tchin"
-        ]
-      }
+      "variations": {}
     }
   }
 ]
