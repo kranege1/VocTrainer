@@ -3321,20 +3321,35 @@ function setupWordDetails(currentWord) {
   if (baseLabelEl) baseLabelEl.textContent = `${flags[qLang] || "🌐"} ${qLang.toUpperCase()}`;
   if (targetLabelEl) targetLabelEl.textContent = `${flags[aLang] || "🌐"} ${aLang.toUpperCase()}`;
 
-  // Populate base and target text
+  // Populate base and target text (include articles!)
   const baseWordEl = document.getElementById("detail-base-word");
   const targetWordEl = document.getElementById("detail-target-word");
-  if (baseWordEl) baseWordEl.textContent = currentWord.en;
-  if (targetWordEl) targetWordEl.textContent = currentWord.target;
+  
+  let qArt = "";
+  let aArt = "";
+  if (details && details.articles) {
+    qArt = details.articles[qLang] || "";
+    aArt = details.articles[aLang] || "";
+  }
+  
+  const baseTextWithArt = qArt ? `${qArt} ${currentWord.en}` : currentWord.en;
+  const targetTextWithArt = aArt ? `${aArt} ${currentWord.target}` : currentWord.target;
+
+  if (baseWordEl) {
+    baseWordEl.innerHTML = qArt ? `<span style="font-size:0.85em; color:var(--accent-color);">${qArt}</span> ${currentWord.en}` : currentWord.en;
+  }
+  if (targetWordEl) {
+    targetWordEl.innerHTML = aArt ? `<span style="font-size:0.85em; color:var(--accent-color);">${aArt}</span> ${currentWord.target}` : currentWord.target;
+  }
 
   // Speak Base & Target handlers — use correct language for voice
   const speakBaseBtn = document.getElementById("btn-speak-detail-base");
   const speakTargetBtn = document.getElementById("btn-speak-detail-target");
   if (speakBaseBtn) {
-    speakBaseBtn.onclick = () => speakWord(currentWord.en, qLang, 1.0);
+    speakBaseBtn.onclick = () => speakWord(baseTextWithArt, qLang, 1.0);
   }
   if (speakTargetBtn) {
-    speakTargetBtn.onclick = () => speakWord(currentWord.target, aLang, 1.0);
+    speakTargetBtn.onclick = () => speakWord(targetTextWithArt, aLang, 1.0);
   }
 
   const articlesEl = document.getElementById("detail-articles");
@@ -3349,20 +3364,7 @@ function setupWordDetails(currentWord) {
   const sectionSynonyms = synonymsEl ? synonymsEl.parentElement : null;
 
   if (details) {
-    // 1. Articles — show for both question and answer languages
-    let articlesHtml = "";
-    if (details.articles) {
-      const qArt = details.articles[qLang] || "";
-      const aArt = details.articles[aLang] || "";
-      if (qArt) articlesHtml += `${flags[qLang] || ""} <strong>${qLang.toUpperCase()}</strong>: <span style="display:inline-block; background:var(--accent-color); padding: 4px 8px; border-radius: 6px; font-weight: bold; color: #0b0c10;">${qArt}</span> `;
-      if (aArt) articlesHtml += `${flags[aLang] || ""} <strong>${aLang.toUpperCase()}</strong>: <span style="display:inline-block; background:var(--accent-color); padding: 4px 8px; border-radius: 6px; font-weight: bold; color: #0b0c10;">${aArt}</span>`;
-    }
-    if (articlesHtml && sectionArticles) {
-      sectionArticles.style.display = "block";
-      articlesEl.innerHTML = articlesHtml;
-    } else if (sectionArticles) {
-      sectionArticles.style.display = "none";
-    }
+
 
     // 2. Sentences — show question language sentence + answer language translation
     const qSentence = details.sentences && details.sentences[qLang] ? details.sentences[qLang] : "";
@@ -3387,8 +3389,16 @@ function setupWordDetails(currentWord) {
     let variationsHtml = "";
     if (details.variations) {
       if (details.variations.plural && (details.variations.plural[qLang] || details.variations.plural[aLang])) {
-        const qPlural = details.variations.plural[qLang] || "";
-        const aPlural = details.variations.plural[aLang] || "";
+        let qPlural = details.variations.plural[qLang] || "";
+        let aPlural = details.variations.plural[aLang] || "";
+        
+        if (qLang === "de" && qPlural && !qPlural.toLowerCase().startsWith("die ")) {
+          qPlural = "die " + qPlural;
+        }
+        if (aLang === "de" && aPlural && !aPlural.toLowerCase().startsWith("die ")) {
+          aPlural = "die " + aPlural;
+        }
+
         variationsHtml += `Plural: `;
         if (qPlural) variationsHtml += `${flags[qLang] || ""} <strong>${qPlural}</strong> `;
         if (qPlural && aPlural) variationsHtml += `&rarr; `;

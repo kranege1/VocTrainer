@@ -2809,31 +2809,29 @@
       },
       "synonyms": {
         "en": [
-          "lead",
-          "moderate",
-          "chairman",
-          "president"
+          "seat",
+          "armchair",
+          "stool"
         ],
         "de": [
-          "führen",
-          "mäßig",
-          "vorsitzende",
-          "präsident"
+          "Sessel",
+          "Sitz",
+          "Hocker"
         ],
         "it": [
-          "guida",
-          "moderare",
-          "presidente"
+          "sedile",
+          "poltrona",
+          "sgabello"
         ],
         "es": [
-          "dirigir",
-          "moderado",
-          "presidente"
+          "asiento",
+          "sillón",
+          "taburete"
         ],
         "fr": [
-          "plomb",
-          "modéré",
-          "président"
+          "siège",
+          "fauteuil",
+          "tabouret"
         ]
       }
     }
