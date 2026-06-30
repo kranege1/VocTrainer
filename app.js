@@ -24,6 +24,17 @@ const LANG_LOCALES = {
   fr: "fr-FR"
 };
 
+function getLangColor(lang) {
+  const colors = {
+    de: "var(--lang-de, #4cc9f0)",
+    it: "var(--lang-it, #ffb703)",
+    es: "var(--lang-es, #2ec4b6)",
+    fr: "var(--lang-fr, #b5179e)",
+    en: "var(--lang-en, #ff0054)"
+  };
+  return colors[lang] || "var(--accent-color)";
+}
+
 // ==========================================
 // 2. State & Storage Management
 // ==========================================
@@ -1368,7 +1379,9 @@ function renderQuestion() {
   document.getElementById("test-category-tag").textContent = currentWord.category || "General";
   
   // Display target/source
-  document.getElementById("test-prompt-word").textContent = currentWord.en;
+  const promptWordEl = document.getElementById("test-prompt-word");
+  promptWordEl.textContent = currentWord.en;
+  promptWordEl.style.color = getLangColor(currentWord.questionLang || state.baseLang || "en");
   
   // Image Renderer - Use manual custom image if available, else fetch from LoremFlickr
   const imgEl = document.getElementById("word-image");
@@ -3274,11 +3287,11 @@ function renderBrowseWordsList(folderId) {
       <td style="padding: 10px 8px; text-align: center;">
         <input type="checkbox" class="chk-select-browse" data-key="${key.replace(/'/g, "\\'")}" data-custom="${isCustom}" style="cursor: pointer; width: 16px; height: 16px;">
       </td>
-      <td style="padding: 10px 8px; color: #fff; font-weight: 700;">${vocab.en || emptySpan}</td>
-      <td style="padding: 10px 8px;">${vocab.de || emptySpan}</td>
-      <td style="padding: 10px 8px;">${vocab.it || emptySpan}</td>
-      <td style="padding: 10px 8px;">${vocab.es || emptySpan}</td>
-      <td style="padding: 10px 8px;">${vocab.fr || emptySpan}</td>
+      <td style="padding: 10px 8px; font-weight: 700; color: ${getLangColor('en')};">${vocab.en || emptySpan}</td>
+      <td style="padding: 10px 8px; color: ${getLangColor('de')};">${vocab.de || emptySpan}</td>
+      <td style="padding: 10px 8px; color: ${getLangColor('it')};">${vocab.it || emptySpan}</td>
+      <td style="padding: 10px 8px; color: ${getLangColor('es')};">${vocab.es || emptySpan}</td>
+      <td style="padding: 10px 8px; color: ${getLangColor('fr')};">${vocab.fr || emptySpan}</td>
       <td style="padding: 10px 8px; text-align: center;"><span class="badge" style="background: rgba(255,255,255,0.05); color: var(--text-secondary); font-size: 0.7rem; border-radius: 6px;">Box ${box}</span></td>
       <td style="padding: 10px 8px; text-align: center;">${errors > 0 ? `<span class="badge" style="background: rgba(239, 71, 111, 0.1); color: var(--error-color); font-size: 0.7rem; border-radius: 6px;">⚠️ ${errors}</span>` : `<span style="color:var(--text-secondary); opacity: 0.3;">0</span>`}</td>
       <td style="padding: 10px 8px; text-align: center;">
@@ -3318,8 +3331,14 @@ function setupWordDetails(currentWord) {
   // Set dynamic labels (e.g. "🇩🇪 DE" instead of "Base Word")
   const baseLabelEl = document.getElementById("detail-base-label");
   const targetLabelEl = document.getElementById("detail-target-label");
-  if (baseLabelEl) baseLabelEl.textContent = `${flags[qLang] || "🌐"} ${qLang.toUpperCase()}`;
-  if (targetLabelEl) targetLabelEl.textContent = `${flags[aLang] || "🌐"} ${aLang.toUpperCase()}`;
+  if (baseLabelEl) {
+    baseLabelEl.textContent = `${flags[qLang] || "🌐"} ${qLang.toUpperCase()}`;
+    baseLabelEl.style.color = getLangColor(qLang);
+  }
+  if (targetLabelEl) {
+    targetLabelEl.textContent = `${flags[aLang] || "🌐"} ${aLang.toUpperCase()}`;
+    targetLabelEl.style.color = getLangColor(aLang);
+  }
 
   // Populate base and target text (include articles!)
   const baseWordEl = document.getElementById("detail-base-word");
@@ -3336,9 +3355,11 @@ function setupWordDetails(currentWord) {
   const targetTextWithArt = aArt ? `${aArt} ${currentWord.target}` : currentWord.target;
 
   if (baseWordEl) {
+    baseWordEl.style.color = getLangColor(qLang);
     baseWordEl.innerHTML = qArt ? `<span style="font-size:0.85em; color:var(--success-color);">${qArt}</span> ${currentWord.en}` : currentWord.en;
   }
   if (targetWordEl) {
+    targetWordEl.style.color = getLangColor(aLang);
     targetWordEl.innerHTML = aArt ? `<span style="font-size:0.85em; color:var(--success-color);">${aArt}</span> ${currentWord.target}` : currentWord.target;
   }
 
@@ -3400,18 +3421,18 @@ function setupWordDetails(currentWord) {
         }
 
         variationsHtml += `Plural: `;
-        if (qPlural) variationsHtml += `${flags[qLang] || ""} <strong>${qPlural}</strong> `;
+        if (qPlural) variationsHtml += `${flags[qLang] || ""} <strong style="color:${getLangColor(qLang)};">${qPlural}</strong> `;
         if (qPlural && aPlural) variationsHtml += `&rarr; `;
-        if (aPlural) variationsHtml += `${flags[aLang] || ""} <strong>${aPlural}</strong>`;
+        if (aPlural) variationsHtml += `${flags[aLang] || ""} <strong style="color:${getLangColor(aLang)};">${aPlural}</strong>`;
         variationsHtml += `<br>`;
       }
       if (details.variations.he && (details.variations.he[qLang] || details.variations.he[aLang])) {
         const qHe = details.variations.he[qLang] || "";
         const aHe = details.variations.he[aLang] || "";
         variationsHtml += `Conjugation (He/She): `;
-        if (qHe) variationsHtml += `${flags[qLang] || ""} <strong>${qHe}</strong> `;
+        if (qHe) variationsHtml += `${flags[qLang] || ""} <strong style="color:${getLangColor(qLang)};">${qHe}</strong> `;
         if (qHe && aHe) variationsHtml += `&rarr; `;
-        if (aHe) variationsHtml += `${flags[aLang] || ""} <strong>${aHe}</strong>`;
+        if (aHe) variationsHtml += `${flags[aLang] || ""} <strong style="color:${getLangColor(aLang)};">${aHe}</strong>`;
         variationsHtml += `<br>`;
       }
     }

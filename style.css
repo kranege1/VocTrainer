@@ -18,6 +18,12 @@
   --error-glow: rgba(255, 0, 84, 0.3);
   --warning-color: #f77f00;
   --gold-color: #ffb703;
+  
+  --lang-de: #4cc9f0;
+  --lang-it: #ffb703;
+  --lang-es: #2ec4b6;
+  --lang-fr: #b5179e;
+  --lang-en: #ff0054;
 }
 
 /* Reset and Base Styles */
