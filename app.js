@@ -1380,8 +1380,21 @@ function renderQuestion() {
   
   // Display target/source
   const promptWordEl = document.getElementById("test-prompt-word");
-  promptWordEl.textContent = currentWord.en;
-  promptWordEl.style.color = getLangColor(currentWord.questionLang || state.baseLang || "en");
+  const qLang = currentWord.questionLang || state.baseLang || "en";
+  
+  let qArt = "";
+  if (currentWord.details && currentWord.details.articles) {
+    qArt = currentWord.details.articles[qLang] || "";
+  }
+  
+  const promptTextWithArt = qArt ? `${qArt} ${currentWord.en}` : currentWord.en;
+  
+  promptWordEl.style.color = getLangColor(qLang);
+  if (qArt) {
+    promptWordEl.innerHTML = `<span style="font-size:0.85em; color:var(--success-color);">${qArt}</span> ${currentWord.en}`;
+  } else {
+    promptWordEl.textContent = currentWord.en;
+  }
   
   // Image Renderer - Use manual custom image if available, else fetch from LoremFlickr
   const imgEl = document.getElementById("word-image");
@@ -1401,8 +1414,8 @@ function renderQuestion() {
   }
 
   // Audio Buttons Setup
-  document.getElementById("btn-speak-prompt").onclick = () => speakWord(currentWord.en, currentWord.questionLang || state.baseLang || "en", 1.0);
-  document.getElementById("btn-speak-prompt-slow").onclick = () => speakWord(currentWord.en, currentWord.questionLang || state.baseLang || "en", 0.5);
+  document.getElementById("btn-speak-prompt").onclick = () => speakWord(promptTextWithArt, qLang, 1.0);
+  document.getElementById("btn-speak-prompt-slow").onclick = () => speakWord(promptTextWithArt, qLang, 0.5);
 
   const customPlayBtn = document.getElementById("btn-play-custom-recording");
   if (currentWord.audio) {
@@ -1677,8 +1690,11 @@ function submitAnswer() {
   const cleanAnsNoArticle = stripArticles(cleanAns, ansLang);
   const cleanTargetNoArticle = stripArticles(cleanTarget, ansLang);
 
-  const isExactMatch = cleanAns === cleanTarget;
-  const isCloseMatch = cleanAnsNoArticle === cleanTargetNoArticle;
+  const ansArt = (currentWord.details && currentWord.details.articles && currentWord.details.articles[ansLang]) ? currentWord.details.articles[ansLang].toLowerCase() : "";
+  const cleanTargetWithArt = ansArt ? `${ansArt} ${cleanTarget}` : cleanTarget;
+  
+  const isExactMatch = cleanAns === cleanTarget || cleanAns === cleanTargetWithArt;
+  const isCloseMatch = (!isExactMatch && cleanAnsNoArticle === cleanTargetNoArticle);
   
   // Calculate Levenshtein distance for typos
   const dist = getLevenshteinDistance(cleanAnsNoArticle, cleanTargetNoArticle);
