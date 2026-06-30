@@ -3965,8 +3965,15 @@ function parseMarkdownToHTML(md) {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
-    if (line.startsWith("|") && line.endsWith("|")) {
-      const cells = line.split("|").map(c => c.trim()).filter((c, idx, arr) => idx > 0 && idx < arr.length - 1);
+    // A line is part of a table if it contains at least one pipe separator
+    const isTableRow = line.includes("|");
+
+    if (isTableRow) {
+      let cells = line.split("|").map(c => c.trim());
+      // Shift/Pop empty outer elements if the line started or ended with a pipe
+      if (line.startsWith("|")) cells.shift();
+      if (line.endsWith("|")) cells.pop();
+      
       const isSeparator = cells.every(c => /^:-*|-*:-*|-*:$/.test(c) || c === "");
       
       if (isSeparator) {
