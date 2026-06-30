@@ -3336,10 +3336,10 @@ function setupWordDetails(currentWord) {
   const targetTextWithArt = aArt ? `${aArt} ${currentWord.target}` : currentWord.target;
 
   if (baseWordEl) {
-    baseWordEl.innerHTML = qArt ? `<span style="font-size:0.85em; color:var(--accent-color);">${qArt}</span> ${currentWord.en}` : currentWord.en;
+    baseWordEl.innerHTML = qArt ? `<span style="font-size:0.85em; color:var(--success-color);">${qArt}</span> ${currentWord.en}` : currentWord.en;
   }
   if (targetWordEl) {
-    targetWordEl.innerHTML = aArt ? `<span style="font-size:0.85em; color:var(--accent-color);">${aArt}</span> ${currentWord.target}` : currentWord.target;
+    targetWordEl.innerHTML = aArt ? `<span style="font-size:0.85em; color:var(--success-color);">${aArt}</span> ${currentWord.target}` : currentWord.target;
   }
 
   // Speak Base & Target handlers — use correct language for voice

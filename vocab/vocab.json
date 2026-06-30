@@ -4914,39 +4914,37 @@
       },
       "variations": {
         "plural": {
-          "en": "pantses",
-          "fr": "pantalons",
-          "it": "pantaloni",
-          "es": "pantalones",
+          "en": "pants",
+          "fr": "les pantalons",
+          "it": "i pantaloni",
+          "es": "los pantalones",
           "de": "Hosen"
         }
       },
       "synonyms": {
         "en": [
           "trousers",
-          "drawers",
-          "knickers",
-          "bloomers"
+          "jeans",
+          "slacks"
         ],
         "de": [
-          "schubladen",
-          "schlüpfer",
-          "pumphose"
+          "Jeans",
+          "Beinkleid",
+          "Stoffhose"
         ],
         "it": [
-          "cassetti",
-          "mutandine",
-          "calzoncini"
+          "calzoni",
+          "jeans",
+          "pantaloni lunghi"
         ],
         "es": [
-          "calzoncillos",
-          "bragas",
-          "pololos"
+          "pantalón",
+          "jeans",
+          "vaqueros"
         ],
         "fr": [
-          "tiroirs",
-          "culotte",
-          "culotte bouffante"
+          "jeans",
+          "pantalon de costume"
         ]
       }
     }
