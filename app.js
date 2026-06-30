@@ -2469,7 +2469,54 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     if (existsInCustom || existsInStarter) {
-      alert(`The word already exists in your custom list.`);
+      (async () => {
+        const overwrite = await showCustomConfirm(`"${cleanWord}" already exists. Do you want to overwrite it with these new translations?`);
+        if (overwrite) {
+          const cleanEn = sanitizeWordTranslation(en, "en");
+          const cleanDe = sanitizeWordTranslation(de, "de");
+          const cleanIt = sanitizeWordTranslation(it, "it");
+          const cleanEs = sanitizeWordTranslation(es, "es");
+          const cleanFr = sanitizeWordTranslation(fr, "fr");
+
+          if (existsInCustom) {
+            const idx = state.customVocab.findIndex(v => (v[base] || v.en || "").trim().toLowerCase() === cleanWord);
+            if (idx !== -1) {
+              state.customVocab[idx].en = cleanEn;
+              state.customVocab[idx].de = cleanDe;
+              state.customVocab[idx].it = cleanIt;
+              state.customVocab[idx].es = cleanEs;
+              state.customVocab[idx].fr = cleanFr;
+              state.customVocab[idx].category = category;
+              state.customVocab[idx].image = imageUrl || cleanEn;
+            }
+          } else {
+            const starter = STARTER_VOCAB_RAW.find(v => (v[base] || v.en || "").trim().toLowerCase() === cleanWord);
+            const starterKey = starter ? (starter[base] || starter.en) : cleanWord;
+            state.editedStarters[starterKey] = {
+              en: cleanEn,
+              de: cleanDe,
+              it: cleanIt,
+              es: cleanEs,
+              fr: cleanFr,
+              category,
+              image: imageUrl || cleanEn
+            };
+          }
+          
+          saveState();
+          
+          // Reset fields
+          document.getElementById("manual-input-word").value = "";
+          document.getElementById("manual-lang-en").value = "";
+          document.getElementById("manual-lang-de").value = "";
+          document.getElementById("manual-lang-it").value = "";
+          document.getElementById("manual-lang-es").value = "";
+          document.getElementById("manual-lang-fr").value = "";
+          document.getElementById("manual-image-url").value = "";
+          
+          alert("Word overwritten successfully!");
+        }
+      })();
       return;
     }
 
