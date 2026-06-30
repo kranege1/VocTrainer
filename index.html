@@ -167,7 +167,10 @@
         <span class="progress-text" id="test-progress-text">Question 1/10</span>
       </div>
 
-      <div class="question-container">
+      <div class="test-split-layout">
+        <!-- LEFT PANE -->
+        <div class="test-left-pane">
+          <div class="question-container">
         <div class="category-tag" id="test-category-tag">Verbs</div>
         
         <!-- Word Card with Dynamic Image Support -->
@@ -221,20 +224,18 @@
         </div>
 
         <button id="btn-submit-answer" class="btn btn-primary btn-block btn-lg">Check Answer</button>
-      </div>
+          </div>
+        </div>
 
-      <!-- Feedback Overlay -->
-      <div id="feedback-overlay" class="feedback-overlay">
-        <div class="feedback-content">
-          <div class="feedback-icon" id="feedback-icon">🎉</div>
-          <h3 id="feedback-title">Correct!</h3>
-          <p id="feedback-desc"></p>
-          
-          <!-- Show Details Button -->
-          <button id="btn-show-details" class="btn btn-secondary btn-block" style="margin-top: 10px;">ℹ️ Show Details</button>
-
-          <!-- Word Details Container (Collapsible) -->
-          <div id="word-details-container" style="display: none; text-align: left; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 0.9rem; max-height: 250px; overflow-y: auto;">
+        <!-- RIGHT PANE (Details & Feedback) -->
+        <div id="feedback-overlay" class="test-right-pane">
+          <div class="feedback-content">
+            <div class="feedback-icon" id="feedback-icon">🎉</div>
+            <h3 id="feedback-title">Correct!</h3>
+            <p id="feedback-desc"></p>
+            
+            <!-- Word Details Container (Directly Visible) -->
+            <div id="word-details-container" style="display: block; text-align: left; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 0.9rem; overflow-y: auto; padding-bottom: 20px;">
             <!-- Word & Translation Speakers -->
             <div class="detail-section" style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.06);">
               <div style="flex: 1;">
@@ -279,6 +280,8 @@
           </div>
 
           <button id="btn-next-question" class="btn btn-primary btn-block" style="margin-top: 15px;">Continue</button>
+        </div>
+          </div>
         </div>
       </div>
     </section>

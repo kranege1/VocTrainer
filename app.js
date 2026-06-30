@@ -1687,7 +1687,7 @@ function submitAnswer() {
 
   if (isCorrect) {
     playSound("sound-correct");
-    overlay.className = "feedback-overlay active correct-ans";
+    overlay.className = "test-right-pane active correct-ans";
     fTitle.textContent = "Correct!";
     fIcon.textContent = "🎉";
     
@@ -1718,7 +1718,7 @@ function submitAnswer() {
     if (stats.box < 5) stats.box++;
   } else {
     playSound("sound-incorrect");
-    overlay.className = "feedback-overlay active incorrect-ans";
+    overlay.className = "test-right-pane active incorrect-ans";
     fTitle.textContent = "Incorrect";
     fIcon.textContent = "😢";
     fDesc.textContent = `Correct translation is: "${currentWord.target}". You entered: "${studentAnswer || '[empty]'}".`;
@@ -3298,27 +3298,14 @@ function renderBrowseWordsList(folderId) {
 // ==========================================
 function setupWordDetails(currentWord) {
   const container = document.getElementById("word-details-container");
-  const showBtn = document.getElementById("btn-show-details");
   const aiBtn = document.getElementById("btn-get-ai-details");
   const aiLoading = document.getElementById("ai-details-loading");
   const aiResponse = document.getElementById("ai-details-response");
 
   // Reset display states
-  container.style.display = "none";
-  showBtn.textContent = "ℹ️ Show Details";
-  aiResponse.style.display = "none";
-  aiLoading.style.display = "none";
-
-  // Show Details Toggle
-  showBtn.onclick = () => {
-    if (container.style.display === "none") {
-      container.style.display = "block";
-      showBtn.textContent = "🙈 Hide Details";
-    } else {
-      container.style.display = "none";
-      showBtn.textContent = "ℹ️ Show Details";
-    }
-  };
+  if (container) container.style.display = "block";
+  if (aiResponse) aiResponse.style.display = "none";
+  if (aiLoading) aiLoading.style.display = "none";
 
   const details = currentWord.details;
   const qLang = currentWord.questionLang || state.baseLang || "en";
