@@ -1314,20 +1314,14 @@ async function addCustomWord(english, translation, lang, category, imageUrl = ""
   const base = state.baseLang || "en";
   const cleanEnglish = english.trim().toLowerCase();
 
-  // Check if word already exists in customVocab
+  // Check if word already exists in the target custom folder/category
   const existsInCustom = (state.customVocab || []).some(v => {
     const vBase = (v[base] || v.en || "").trim().toLowerCase();
-    return vBase === cleanEnglish;
+    return vBase === cleanEnglish && v.category === (category || "imported");
   });
 
-  // Check if word already exists in starter vocab
-  const existsInStarter = STARTER_VOCAB_RAW.some(v => {
-    const vBase = (v[base] || v.en || "").trim().toLowerCase();
-    return vBase === cleanEnglish;
-  });
-
-  if (existsInCustom || existsInStarter) {
-    console.log(`Word "${english}" already exists in wordlist. Skipping duplicate registration.`);
+  if (existsInCustom) {
+    console.log(`Word "${english}" already exists in wordlist "${category}". Skipping duplicate registration.`);
     return;
   }
   
@@ -5445,19 +5439,14 @@ async function executeCSVImport() {
       continue;
     }
 
-    // Check if word already exists in customVocab
+    // Check if word already exists in target customVocab category
     const cleanBaseWord = (base === "en" ? en : base === "de" ? de : base === "it" ? it : base === "es" ? es : fr).toLowerCase();
     const existsInCustom = (state.customVocab || []).some(v => {
       const vBase = (v[base] || v.en || "").trim().toLowerCase();
-      return vBase === cleanBaseWord;
+      return vBase === cleanBaseWord && v.category === category;
     });
 
-    const existsInStarter = STARTER_VOCAB_RAW.some(v => {
-      const vBase = (v[base] || v.en || "").trim().toLowerCase();
-      return vBase === cleanBaseWord;
-    });
-
-    if (existsInCustom || existsInStarter) {
+    if (existsInCustom) {
       duplicateCount++;
       continue;
     }
