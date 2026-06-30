@@ -36,7 +36,7 @@ const upload = multer({ storage: storage });
 // API Endpoints
 
 // 1. Upload vocabulary set
-app.post("/api/upload", upload.single("vocabFile"), (req, file) => {
+app.post("/api/upload", upload.single("vocabFile"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
