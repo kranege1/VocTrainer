@@ -1612,6 +1612,15 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
   renderQuestion();
 }
 
+function updateTestStatsMini() {
+  const tState = state.currentTest;
+  if (!tState) return;
+  const correctEl = document.getElementById("test-correct-count");
+  const wrongEl = document.getElementById("test-wrong-count");
+  if (correctEl) correctEl.textContent = tState.correctCount;
+  if (wrongEl) wrongEl.textContent = tState.wrongAnswers.length;
+}
+
 function renderQuestion() {
   const tState = state.currentTest;
   const currentWord = tState.words[tState.index];
@@ -1670,6 +1679,7 @@ function renderQuestion() {
   const progressPercent = ((tState.index) / tState.words.length) * 100;
   document.getElementById("test-progress-fill").style.width = `${progressPercent}%`;
   document.getElementById("test-progress-text").textContent = `Question ${tState.index + 1}/${tState.words.length}`;
+  updateTestStatsMini();
 
   // Reset inputs & word details panel
   document.getElementById("input-typing-answer").value = "";
@@ -1974,6 +1984,7 @@ function submitAnswer() {
     tState.correctCount++;
     state.xp += 10;
     checkLevelUp();
+    updateTestStatsMini();
 
     // Spaced Repetition Stats: correct progression
     // Spaced Repetition Stats: correct progression
@@ -1998,6 +2009,7 @@ function submitAnswer() {
     }
     
     recordMistake(currentWord);
+    updateTestStatsMini();
 
     // Spaced Repetition Stats: incorrect penalty
     const wordKey = currentWord.origEn || currentWord.en;
