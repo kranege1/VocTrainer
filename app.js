@@ -1734,7 +1734,20 @@ function renderQuestion() {
   }
 
   // Reset inputs & word details panel
-  document.getElementById("input-typing-answer").value = "";
+  const ansLang = currentWord.answerLang || state.selectedLang || "de";
+  const langNames = {
+    en: "English",
+    de: "German",
+    it: "Italian",
+    es: "Spanish",
+    fr: "French"
+  };
+  const expectedLangName = langNames[ansLang] || "German";
+  const typingInput = document.getElementById("input-typing-answer");
+  if (typingInput) {
+    typingInput.value = "";
+    typingInput.placeholder = `Type here in "${expectedLangName}"`;
+  }
   document.getElementById("bubble-selected-zone").innerHTML = "";
   document.getElementById("speech-transcript").textContent = "...";
   
