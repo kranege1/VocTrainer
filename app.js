@@ -1616,25 +1616,43 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
   const targetA = Math.round(count * 0.15);
   const targetB = count - targetA;
 
-  // Shuffle both groups
-  const shuffleArray = (arr) => arr.sort(() => 0.5 - Math.random());
-  shuffleArray(groupA);
-  shuffleArray(groupB);
+  // Custom difficulty/frequency weight selection helper
+  const getSelectionWeight = (word) => {
+    const stats = state.wordStats[word.origEn || word.en] || { attempts: 0, errors: 0 };
+    let diffWeight = 1.0;
+    if (stats.difficulty === "easy") diffWeight = 0.2;
+    else if (stats.difficulty === "hard") diffWeight = 3.0;
+    return diffWeight;
+  };
 
-  const pickedA = groupA.slice(0, targetA);
-  const pickedB = groupB.slice(0, targetB);
+  // Perform weighted random sorting based on difficulty weights
+  const weightedSort = (arr) => {
+    return arr.map(item => ({
+      item,
+      score: Math.random() * getSelectionWeight(item)
+    }))
+    .sort((a, b) => b.score - a.score)
+    .map(wrapper => wrapper.item);
+  };
+
+  const sortedA = weightedSort(groupA);
+  const sortedB = weightedSort(groupB);
+
+  const pickedA = sortedA.slice(0, targetA);
+  const pickedB = sortedB.slice(0, targetB);
 
   let selected = [...pickedA, ...pickedB];
 
   // If one of the groups was too small and we don't have enough words, fill from remaining
   if (selected.length < count) {
     const remainingPool = pool.filter(w => !selected.includes(w));
-    shuffleArray(remainingPool);
+    const sortedRemaining = weightedSort(remainingPool);
     const needed = count - selected.length;
-    selected = [...selected, ...remainingPool.slice(0, needed)];
+    selected = [...selected, ...sortedRemaining.slice(0, needed)];
   }
 
-  shuffleArray(selected);
+  // Shuffle the final selections randomly
+  selected.sort(() => 0.5 - Math.random());
   const wordsToTest = selected.slice(0, count);
 
   state.currentTest = {
@@ -1675,6 +1693,53 @@ function updateTestStatsMini() {
   if (correctEl) correctEl.textContent = tState.correctCount;
   if (wrongEl) wrongEl.textContent = tState.wrongAnswers.length;
   if (pointsEl) pointsEl.textContent = tState.points || 0;
+}
+
+window.voteDifficulty = function(level) {
+  const tState = state.currentTest;
+  if (!tState) return;
+  const currentWord = tState.words[tState.index];
+  if (!currentWord) return;
+  
+  const wordKey = currentWord.origEn || currentWord.en;
+  if (!state.wordStats[wordKey]) {
+    state.wordStats[wordKey] = { attempts: 0, errors: 0, box: 1, lastReview: null };
+  }
+  
+  state.wordStats[wordKey].difficulty = level;
+  saveState();
+  updateDifficultyVoteUI(level);
+};
+
+function updateDifficultyVoteUI(level) {
+  const btnEasy = document.getElementById("btn-vote-easy");
+  const btnMedium = document.getElementById("btn-vote-medium");
+  const btnHard = document.getElementById("btn-vote-hard");
+  if (!btnEasy || !btnMedium || !btnHard) return;
+  
+  btnEasy.style.background = "";
+  btnEasy.style.borderColor = "";
+  btnEasy.style.color = "";
+  btnMedium.style.background = "";
+  btnMedium.style.borderColor = "";
+  btnMedium.style.color = "";
+  btnHard.style.background = "";
+  btnHard.style.borderColor = "";
+  btnHard.style.color = "";
+  
+  if (level === "easy") {
+    btnEasy.style.background = "rgba(46, 204, 113, 0.2)";
+    btnEasy.style.borderColor = "#2ecc71";
+    btnEasy.style.color = "#2ecc71";
+  } else if (level === "medium") {
+    btnMedium.style.background = "rgba(241, 196, 15, 0.2)";
+    btnMedium.style.borderColor = "#f1c40f";
+    btnMedium.style.color = "#f1c40f";
+  } else if (level === "hard") {
+    btnHard.style.background = "rgba(231, 76, 60, 0.2)";
+    btnHard.style.borderColor = "#e74c3c";
+    btnHard.style.color = "#e74c3c";
+  }
 }
 
 function renderQuestion() {
@@ -2162,6 +2227,10 @@ function submitAnswer() {
   }
 
   setupWordDetails(currentWord);
+  
+  const vStats = state.wordStats[currentWord.origEn || currentWord.en] || { difficulty: "medium" };
+  updateDifficultyVoteUI(vStats.difficulty || "medium");
+
   saveState();
 
   // Ensure Continue button is visible by scrolling overlay to bottom
@@ -5087,7 +5156,7 @@ function renderFolderStatistics() {
   if (wordsTbody) {
     wordsTbody.innerHTML = "";
     if (pool.length === 0) {
-      wordsTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:var(--text-secondary);">No words in this category.</td></tr>`;
+      wordsTbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:15px; color:var(--text-secondary);">No words in this category.</td></tr>`;
     } else {
       pool.forEach(word => {
         const stats = state.wordStats[word.origEn || word.en] || { attempts: 0, errors: 0 };
@@ -5102,11 +5171,19 @@ function renderFolderStatistics() {
           ratioColor = ratio >= 80 ? "#2ecc71" : ratio >= 50 ? "#ff9f43" : "#ff4b4b";
         }
         
+        const difficulty = stats.difficulty || "medium";
+        const diffLabels = {
+          easy: '<span class="badge" style="background: rgba(46, 204, 113, 0.1); color: #2ecc71; font-size: 0.7rem; border-radius: 6px; padding: 2px 6px;">🟢 Easy</span>',
+          medium: '<span class="badge" style="background: rgba(241, 196, 15, 0.1); color: #f1c40f; font-size: 0.7rem; border-radius: 6px; padding: 2px 6px;">🟡 Medium</span>',
+          hard: '<span class="badge" style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; font-size: 0.7rem; border-radius: 6px; padding: 2px 6px;">🔴 Hard</span>'
+        };
+        
         const tr = document.createElement("tr");
         tr.style.borderBottom = "1px solid rgba(255,255,255,0.04)";
         tr.innerHTML = `
           <td style="padding: 10px; font-weight: 600; color: #fff;">${word.en}</td>
           <td style="padding: 10px; color: var(--text-secondary);">${word.target || word[state.selectedLang] || ""}</td>
+          <td style="padding: 10px; text-align: center;">${diffLabels[difficulty]}</td>
           <td style="padding: 10px; text-align: center; color: #2ecc71; font-weight: 600;">${corrects}</td>
           <td style="padding: 10px; text-align: center; color: #ff4b4b; font-weight: 600;">${falses}</td>
           <td style="padding: 10px; text-align: center; color: ${ratioColor}; font-weight: 700;">${ratioText}</td>

@@ -284,6 +284,16 @@
             </button>
           </div>
 
+          <!-- Word Difficulty Voting -->
+          <div class="difficulty-voting-container" style="margin-top: 15px; padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); text-align: center;">
+            <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">Rate Difficulty (Frequency Weight)</div>
+            <div style="display: flex; gap: 8px; justify-content: center;">
+              <button id="btn-vote-easy" class="btn btn-secondary" style="margin: 0; flex: 1; min-height: 36px; padding: 4px 8px; font-size: 0.8rem; border-radius: 8px;" onclick="voteDifficulty('easy')">🟢 Easy</button>
+              <button id="btn-vote-medium" class="btn btn-secondary" style="margin: 0; flex: 1; min-height: 36px; padding: 4px 8px; font-size: 0.8rem; border-radius: 8px;" onclick="voteDifficulty('medium')">🟡 Medium</button>
+              <button id="btn-vote-hard" class="btn btn-secondary" style="margin: 0; flex: 1; min-height: 36px; padding: 4px 8px; font-size: 0.8rem; border-radius: 8px;" onclick="voteDifficulty('hard')">🔴 Hard</button>
+            </div>
+          </div>
+
           <button id="btn-next-question" class="btn btn-primary btn-block" style="margin-top: 15px;">Continue</button>
         </div>
       </div>
@@ -955,9 +965,10 @@
                 <tr style="background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 10;">
                   <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">Word (EN)</th>
                   <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">Translation</th>
-                  <th style="padding: 10px; text-align: center; font-weight: 700; color: var(--text-secondary); width: 60px;">Correct</th>
-                  <th style="padding: 10px; text-align: center; font-weight: 700; color: var(--text-secondary); width: 60px;">False</th>
-                  <th style="padding: 10px; text-align: center; font-weight: 700; color: var(--text-secondary); width: 80px;">Ratio</th>
+                  <th style="padding: 10px; text-align: center; font-weight: 700; color: var(--text-secondary); width: 75px;">Difficulty</th>
+                  <th style="padding: 10px; text-align: center; font-weight: 700; color: var(--text-secondary); width: 55px;">Correct</th>
+                  <th style="padding: 10px; text-align: center; font-weight: 700; color: var(--text-secondary); width: 55px;">False</th>
+                  <th style="padding: 10px; text-align: center; font-weight: 700; color: var(--text-secondary); width: 65px;">Ratio</th>
                 </tr>
               </thead>
               <tbody id="stats-words-table-body">
