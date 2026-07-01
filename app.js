@@ -1014,67 +1014,6 @@ window.toggleUrlScrapedRow = (id, checked) => {
   if (row) row.active = checked;
 };
 
-async function executeUrlImport() {
-  const category = document.getElementById("import-url-category").value.trim() || "imported";
-  const btnConfirm = document.getElementById("btn-url-confirm");
-  const btnConfirmTop = document.getElementById("btn-url-confirm-top");
-  const originalText = btnConfirm ? btnConfirm.textContent : "Import Selected Words Now!";
-  
-  const progressContainer = document.getElementById("url-import-progress-container");
-  const progressBar = document.getElementById("url-import-progress-bar");
-  const progressStatus = document.getElementById("url-import-progress-status");
-  const progressPercent = document.getElementById("url-import-progress-percent");
-
-  const activeRows = urlScrapedRows.filter(r => r.active && r.word.trim());
-  const total = activeRows.length;
-  
-  if (total > 0 && progressContainer) {
-    progressContainer.style.display = "block";
-    progressBar.style.width = "0%";
-    progressPercent.textContent = "0%";
-    progressStatus.textContent = "Starting translation & import...";
-  }
-
-  let count = 0;
-  
-  if (btnConfirm) { btnConfirm.textContent = "⏳ Translating & Importing..."; btnConfirm.disabled = true; }
-  if (btnConfirmTop) { btnConfirmTop.textContent = "⏳ Importing..."; btnConfirmTop.disabled = true; }
-
-  try {
-    for (const row of urlScrapedRows) {
-      if (row.active && row.word.trim()) {
-        await addCustomWord(row.word.trim(), row.trans.trim(), state.selectedLang, category);
-        count++;
-        if (progressContainer) {
-          const pct = Math.round((count / total) * 100);
-          progressBar.style.width = `${pct}%`;
-          progressPercent.textContent = `${pct}%`;
-          progressStatus.textContent = `Translating & importing ${count} of ${total}...`;
-        }
-      }
-    }
-    
-    if (count > 0) {
-      saveState();
-      renderImportedList();
-      alert(`Successfully imported and translated ${count} custom words!`);
-      const previewArea = document.getElementById("url-preview-area");
-      if (previewArea) previewArea.style.display = "none";
-      document.getElementById("import-url").value = "";
-      urlScrapedRows = [];
-    } else {
-      alert("No words selected to import.");
-    }
-  } catch (err) {
-    console.error("URL import failed:", err);
-    alert("URL import failed during translation process: " + err.message);
-  } finally {
-    if (btnConfirm) { btnConfirm.textContent = originalText; btnConfirm.disabled = false; }
-    if (btnConfirmTop) { btnConfirmTop.textContent = "🚀 Start Import"; btnConfirmTop.disabled = false; }
-    if (progressContainer) progressContainer.style.display = "none";
-  }
-}
-
 // File Upload Processing Functions
 async function handleFileSelect(file) {
   const spinner = document.getElementById("file-spinner");
@@ -3104,22 +3043,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     alert("Word added successfully!");
   };
 
-  // URL import scraper submit action
-  document.getElementById("btn-import-url-submit").onclick = () => {
-    const url = document.getElementById("import-url").value.trim();
-    const category = document.getElementById("import-url-category").value.trim() || "imported";
-    if (url) {
-      importFromUrl(url, category);
-    } else {
-      alert("Please enter a valid URL.");
-    }
-  };
-
-  // URL Import confirmation bindings
-  const btnUrlConfirm = document.getElementById("btn-url-confirm");
-  const btnUrlConfirmTop = document.getElementById("btn-url-confirm-top");
-  if (btnUrlConfirm) btnUrlConfirm.onclick = executeUrlImport;
-  if (btnUrlConfirmTop) btnUrlConfirmTop.onclick = executeUrlImport;
+  // URL import logic removed
 
   // File Upload Drag & Drop & Upload controls
   const fileDropZone = document.getElementById("file-drop-zone");
