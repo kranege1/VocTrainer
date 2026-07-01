@@ -2079,8 +2079,6 @@ function checkLevelUp() {
   const newLevel = Math.floor(state.xp / 100) + 1;
   if (newLevel > state.level) {
     state.level = newLevel;
-    playSound("sound-levelup");
-    alert(`🎉 Level Up! You reached Level ${state.level}!`);
   }
 }
 

@@ -29,8 +29,8 @@
     <!-- Header with XP, Streak, Hearts, Level -->
     <header class="main-header">
       <div class="header-top-stats">
-        <div class="user-badge" id="level-badge">Lvl 1</div>
-        <div class="stat-pill xp-pill">
+        <div class="user-badge" id="level-badge" style="display: none;">Lvl 1</div>
+        <div class="stat-pill xp-pill" style="display: none;">
           <span class="icon">⚡</span>
           <span id="xp-count">0</span> XP
         </div>
@@ -293,7 +293,7 @@
         </div>
 
         <div class="stats-grid">
-          <div class="stat-box">
+          <div class="stat-box" style="display: none;">
             <span class="stat-val" id="report-xp">+0</span>
             <span class="stat-lbl">XP Earned</span>
           </div>
@@ -952,7 +952,7 @@
             <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Current Streak</span>
             <strong id="stats-streak-count" style="font-size: 1.3rem; color: #FF9800; display: block; margin-top: 4px;">0</strong>
           </div>
-          <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
+          <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color); display: none;">
             <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Total XP Earned</span>
             <strong id="stats-xp-points" style="font-size: 1.3rem; color: #E91E63; display: block; margin-top: 4px;">0</strong>
           </div>
