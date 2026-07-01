@@ -22,11 +22,24 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
   - Links statistics under a stable base English key (`origEn`) so that testing in both forward and reverse directions syncs to the same card record.
 - **Partial Session Logging:**
   - If a study session is quit early (either via clicking **Quit Test** or navigating away through the sidebar menu), the session is not lost.
-  - If at least 1 question is completed, the partial session is saved in the user's history and metrics (XP, session count, accuracy) are immediately updated.
+  - If at least 1 question is completed, the partial session is saved in the user's history and metrics (points earned, session count, accuracy) are immediately updated.
 - **Word Blocks (Bubbles) Mode:**
   - **Single Words:** Automatically splits words of length >= 3 into at least 3 separate selectable block pieces. Short words (< 3 characters) are split into letters and padded with prefix/suffix distractor blocks to ensure a minimum of 3 blocks are always displayed.
   - **Phrases:** Splits multi-word phrases word-by-word (one block per word). If a phrase contains fewer than 3 words, it is padded with decoy word blocks to maintain a minimum of 3 option options.
   - **Flexible Drag Reordering:** Selected blocks can be dynamically reordered inside the selection zone. Users can drag and drop (desktop mouse) or touch-drag (iOS/iPad finger touch) block elements between words or to any position in the sentence to modify the word order before submitting.
+- **Per-Question Timer Limit:**
+  - Allows the user to configure a countdown timer of 5, 10, or 15 seconds per question (or Deactivated).
+  - Automatically submits an empty/incorrect answer if the timer expires (hits 0 seconds).
+- **Points Scoring System:**
+  - Awarded for correct answers: base score of `100` points per correct answer.
+  - **Mode Multipliers:** `typing` mode (x1), `speech` mode (x1), `bubbles` mode (x0.5).
+  - **Speed Bonus:** If the timer is used, adds a **+20% bonus** for each remaining second left on the clock.
+  - **Timer difficulty multipliers:** `5s` limit (x3), `10s` limit (x2), `15s` limit (x1.5).
+- **Incorrect Answer Blocking:**
+  - If the user submits an incorrect answer, pressing the **Enter** key will **not** bypass or proceed past the correction screen. This forces the user to see the correct answer, requiring them to manually click the **Next** button.
+- **Focused Test Selection:**
+  - When starting a test session, the app divides the word pool into **Group A (Always Correct)** and **Group B (Difficult or Untested)**.
+  - Targets exactly **15%** of the session's word count from Group A, and **85%** from Group B, prioritizing learning difficult or new terms.
 
 ### 2.2 Translation Pipeline (All-Languages Backfill)
 - **Unified 5-Language Schema:** Every word registered in the system must hold translations across all 5 supported languages: **English (EN), German (DE), Italian (IT), Spanish (ES), and French (FR)**.
@@ -35,17 +48,25 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
   - **Punctuation Stripping:** Automatically removes trailing periods (`.`) or trailing commas (`,`) from vocabulary words/translations.
   - **German Capitalization:** Capitalizes single German words/nouns by default, excluding common verbs, adjectives, prepositions, and articles.
   - **Other Languages Casing:** Enforces lowercase for single words in EN, IT, ES, FR unless they represent proper nouns (language names, days of week, months).
+- **Wordlist-Scoped Duplicate Checks:** Duplicate checks are confined strictly within the target wordlist/category. Starter vocabularies and other folders are ignored during checks.
 
 ### 2.3 Import Workflows
 - **Manual Import:** Add single words. Input fields auto-sanitize casing and punctuation.
 - **Bulk Text Import:** Paste text blocks delimited by tab, comma, semicolon, colon, or hyphens. Interactive preview lets users verify, edit, and select/deselect rows before import.
-- **URL Scraper Scans:**
-  - **Table Check:** Scan HTML page for `<table>` grids, parsing key column translation pairs.
-  - **List Check:** Parses hyphens/delimiters in lists.
-  - **Page Word Tokenizer (Fallback):** Scrapes all raw words on a page of length 4–15, shows the top 50 unique items, and displays them in a preview table.
+- **Semicolon CSV Import:**
+  - Allows pasting a direct 5-language semicolon CSV format (`EN;DE;IT;ES;FR`) to import pre-translated lists instantly without AI/pipeline translations.
 - **File Upload Scraper:**
   - Allows drag-and-drop or browsing of text files (`.txt`, `.csv`) or PDF documents (`.pdf`).
   - Uses client-side **PDF.js** to extract page text, parses delimiter pairs, or tokenizes words, presenting them in an editable preview grid.
+
+### 2.4 iCloud / Local Folder Sync
+- **Local Sync Folder:** Replaces remote server cloud shares with a local sync folder (e.g., on your iCloud Drive) using the HTML5 File System Access API.
+- **Auto-Saving:** Automatically writes wordlists to individual `[Wordlist_Name].json` files in the selected folder with a debounced saver.
+- **Active List Toggling:** Allows users to check or uncheck individual JSON wordlists in the sync folder in Preferences, loading only selected files.
+- **Sync Now & Deletion Sync:**
+  - Includes a manual **Sync Now** button in Preferences to force-reload and merge active lists from the sync folder.
+  - Deleting a folder inside the app automatically unchecks its sync status and deletes the JSON file from the sync folder.
+- **IndexedDB Persistence:** Stores folder directory handles in IndexedDB, verifying directory read-write permissions across page reloads.
 
 ---
 
@@ -59,7 +80,7 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
 - **Translation Fix (Selection Tool):**
   - Includes a checkbox selector column to select multiple words (with a Select All toggle in the header).
   - Highlights empty translations in red `(empty)`.
-  - Includes a **🔄 Fix Translations** button allowing users to re-run selected rows through the translation pipeline (via LLM if key is set, or Google Translate GTX fallback) to automatically backfill empty or broken translations in the database.
+  - Includes a **🔄 Fix Translations** button allowing users to re-run selected rows through the translation pipeline to automatically backfill empty or broken translations.
 
 ### 3.2 Display Maximization (iOS & iPad)
 - **Detection:** Auto-detects iPhone, iPad, or iPod devices on startup.
@@ -74,3 +95,8 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
   - Uses a client-side parser to render markdown syntax returned by AI models or dictionary fallbacks into styled HTML.
   - Automatically structures lists (`-` or `*`), headings (`###` or `####`), bold markers (`**`), and tables (`|`) into borderless dark glass cards, themed lists, and responsive tables.
   - **Explanation Language:** The AI model is strictly instructed via system guidelines to write all explanation commentaries, descriptions, and notes in the user's active **Base Language** (e.g. German descriptions when the base study language is DE).
+
+### 3.4 Statistics Views
+- **Global Progress:** Renders total sessions, average accuracy, and current streak.
+- **Folder Performance:** Visualizes Leitner box mastery distribution (Box 1–5) and hardest words.
+- **Word-by-Word Statistics Table:** Shows the exact attempts (correct, false) and overall success ratio percentage for every single word in the selected wordlist.
