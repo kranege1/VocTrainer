@@ -70,7 +70,7 @@ let state = {
   wordStats: {}, // Spaced Repetition / Leitner stats: { wordEn: { attempts, errors, box, lastReview } }
   testDirection: "forward", // forward (base -> target) or reverse (target -> base)
   customVoices: {}, // Selected free local system voices for each language key: { en: "Voice Name", ... }
-  activeICloudLists: {} // Sync status of files in directory: { "filename.json": boolean }
+  activeICloudLists: {}, // Sync status of files in directory: { "filename.json": boolean }
 
   // Current active test state
   currentTest: {
