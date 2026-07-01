@@ -2086,6 +2086,7 @@ function submitAnswer() {
       fDesc.textContent = `Correct (with minor typo)! You entered: "${studentAnswer}". Correct word: "${currentWord.target}".`;
     }
 
+    tState.lastAnswerCorrect = true;
     tState.correctCount++;
     state.xp += 10;
     checkLevelUp();
@@ -2140,6 +2141,7 @@ function submitAnswer() {
     fIcon.textContent = "😢";
     fDesc.textContent = `Correct translation is: "${currentWord.target}". You entered: "${studentAnswer || '[empty]'}".`;
     
+    tState.lastAnswerCorrect = false;
     if (!tState.wrongAnswers.find(w => w.en === currentWord.en)) {
       tState.wrongAnswers.push(currentWord);
     }
@@ -2689,6 +2691,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       // 2. If feedback overlay is active, proceed to the next question
       if (feedback && feedback.classList.contains("active")) {
         e.preventDefault();
+        
+        // If last answer was incorrect, block the Enter key from proceeding
+        // so that the user is forced to see the right answer and click 'Next' manually.
+        if (state.currentTest && state.currentTest.lastAnswerCorrect === false) {
+          return;
+        }
+        
         nextQuestion();
       }
     }
