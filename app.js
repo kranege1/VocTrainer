@@ -5230,14 +5230,6 @@ async function syncICloudFolder() {
   }
 
   try {
-    const perm = await state.icloudHandle.queryPermission({ mode: "readwrite" });
-    if (perm !== "granted") {
-      if (tbody) {
-        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:15px; color:#FF9800;">⚠️ Access permission required. Click "Grant Folder Access" above.</td></tr>`;
-      }
-      return;
-    }
-
     const files = [];
     for await (const entry of state.icloudHandle.values()) {
       if (entry.kind === "file" && entry.name.endsWith(".json")) {
@@ -5334,8 +5326,27 @@ async function syncICloudFolder() {
     }
   } catch (err) {
     console.error("iCloud sync error:", err);
-    if (tbody) {
-      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:15px; color:var(--error-color);">❌ Sync failed: ${err.message}</td></tr>`;
+    const isPermissionError = err.name === "NotAllowedError" || err.name === "SecurityError" || err.message.toLowerCase().includes("permission") || err.message.toLowerCase().includes("allow");
+    
+    if (isPermissionError) {
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:15px; color:#FF9800;">⚠️ Access permission required. Click "Grant Folder Access" above.</td></tr>`;
+      }
+      
+      const statusSpan = document.getElementById("icloud-folder-status");
+      if (statusSpan) {
+        statusSpan.textContent = `📁 ${state.icloudHandle.name} (Access Needed)`;
+        statusSpan.style.color = "#FF9800";
+      }
+      
+      const selectBtn = document.getElementById("btn-select-icloud-folder");
+      if (selectBtn) {
+        selectBtn.textContent = "🔑 Grant Folder Access";
+      }
+    } else {
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:15px; color:var(--error-color);">❌ Sync failed: ${err.message}</td></tr>`;
+      }
     }
   }
 }
