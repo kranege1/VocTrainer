@@ -1742,12 +1742,243 @@ function updateDifficultyVoteUI(level) {
   }
 }
 
+function buildCompareMode() {
+  const tState = state.currentTest;
+  if (!tState) return;
+  
+  // Hide prompt card and category tag
+  const wordCardWrapper = document.querySelector(".word-card-wrapper");
+  const catTag = document.getElementById("test-category-tag");
+  if (wordCardWrapper) wordCardWrapper.style.display = "none";
+  if (catTag) catTag.style.display = "none";
+  
+  // Hide check answer button since game is interactive
+  const submitBtn = document.getElementById("btn-submit-answer");
+  if (submitBtn) submitBtn.style.display = "none";
+
+  // Pick up to 5 words starting from current index
+  const batch = tState.words.slice(tState.index, tState.index + 5);
+  if (batch.length === 0) {
+    finishTestRound();
+    return;
+  }
+
+  // Update progress text
+  document.getElementById("test-progress-text").textContent = `Matching Batch (${tState.index + 1} - ${tState.index + batch.length}/${tState.words.length})`;
+  const progressPercent = (tState.index / tState.words.length) * 100;
+  document.getElementById("test-progress-fill").style.width = `${progressPercent}%`;
+
+  const leftCol = document.getElementById("compare-col-left");
+  const rightCol = document.getElementById("compare-col-right");
+  if (!leftCol || !rightCol) return;
+
+  leftCol.innerHTML = "";
+  rightCol.innerHTML = "";
+
+  window.compareLeftSelected = null;
+  window.compareRightSelected = null;
+  window.compareMatchedCount = 0;
+
+  // Clear timer interval
+  if (window.questionTimerInterval) {
+    clearInterval(window.questionTimerInterval);
+    window.questionTimerInterval = null;
+  }
+  const timerBadge = document.getElementById("test-countdown-badge");
+  if (timerBadge) timerBadge.style.display = "none";
+
+  // Shuffle left words and right translations independently
+  const leftWords = [...batch].sort(() => 0.5 - Math.random());
+  const rightWords = [...batch].sort(() => 0.5 - Math.random());
+
+  leftWords.forEach(word => {
+    const btn = document.createElement("button");
+    btn.className = "compare-card-btn";
+    btn.textContent = word.en;
+    btn.dataset.wordId = word.origEn || word.en;
+    btn.onclick = () => selectCompareWord("left", btn, word);
+    leftCol.appendChild(btn);
+  });
+
+  rightWords.forEach(word => {
+    const btn = document.createElement("button");
+    btn.className = "compare-card-btn";
+    btn.textContent = word.target;
+    btn.dataset.wordId = word.origEn || word.en;
+    btn.onclick = () => selectCompareWord("right", btn, word);
+    rightCol.appendChild(btn);
+  });
+}
+
+function selectCompareWord(side, btn, word) {
+  if (btn.classList.contains("matched")) return;
+  
+  playSound("sound-bubble"); // gentle click sound
+
+  if (side === "left") {
+    const prev = document.querySelector("#compare-col-left .compare-card-btn.selected");
+    if (prev) prev.classList.remove("selected");
+    
+    btn.classList.add("selected");
+    window.compareLeftSelected = { btn, word };
+  } else {
+    const prev = document.querySelector("#compare-col-right .compare-card-btn.selected");
+    if (prev) prev.classList.remove("selected");
+    
+    btn.classList.add("selected");
+    window.compareRightSelected = { btn, word };
+  }
+
+  if (window.compareLeftSelected && window.compareRightSelected) {
+    const left = window.compareLeftSelected;
+    const right = window.compareRightSelected;
+    
+    const leftId = left.word.origEn || left.word.en;
+    const rightId = right.word.origEn || right.word.en;
+    
+    if (leftId === rightId) {
+      playSound("sound-correct");
+      
+      left.btn.classList.remove("selected");
+      left.btn.classList.add("matched");
+      right.btn.classList.remove("selected");
+      right.btn.classList.add("matched");
+      
+      window.compareLeftSelected = null;
+      window.compareRightSelected = null;
+      window.compareMatchedCount++;
+      
+      // Update statistics: Correct
+      const wordKey = left.word.origEn || left.word.en;
+      if (!state.wordStats[wordKey]) {
+        state.wordStats[wordKey] = { attempts: 0, errors: 0, box: 1, lastReview: null };
+      }
+      const stats = state.wordStats[wordKey];
+      stats.attempts = (stats.attempts || 0) + 1;
+      stats.lastReview = Date.now();
+      if (!stats.box) stats.box = 1;
+      if (stats.box < 5) stats.box++;
+      
+      // Points addition: Compare mode uses x0.5 multiplier
+      let qPoints = 100 * 0.5;
+      
+      if (state.questionTimer > 0) {
+        const limit = state.questionTimer;
+        let timerLimitMult = 1.0;
+        if (limit === 5) timerLimitMult = 3.0;
+        else if (limit === 10) timerLimitMult = 2.0;
+        else if (limit === 15) timerLimitMult = 1.5;
+        qPoints = qPoints * timerLimitMult;
+      }
+      
+      state.currentTest.points = (state.currentTest.points || 0) + Math.round(qPoints);
+      state.currentTest.correctCount++;
+      updateTestStatsMini();
+      
+      const batch = state.currentTest.words.slice(state.currentTest.index, state.currentTest.index + 5);
+      if (window.compareMatchedCount === batch.length) {
+        setTimeout(() => {
+          showCompareFeedback(batch);
+        }, 300);
+      }
+    } else {
+      playSound("sound-incorrect");
+      
+      left.btn.style.borderColor = "var(--error-color)";
+      right.btn.style.borderColor = "var(--error-color)";
+      
+      setTimeout(() => {
+        left.btn.style.borderColor = "";
+        right.btn.style.borderColor = "";
+        left.btn.classList.remove("selected");
+        right.btn.classList.remove("selected");
+      }, 500);
+
+      const wordKey = left.word.origEn || left.word.en;
+      if (!state.wordStats[wordKey]) {
+        state.wordStats[wordKey] = { attempts: 0, errors: 0, box: 1, lastReview: null };
+      }
+      const stats = state.wordStats[wordKey];
+      stats.attempts = (stats.attempts || 0) + 1;
+      stats.errors = (stats.errors || 0) + 1;
+      stats.lastReview = Date.now();
+      stats.box = 1;
+
+      recordMistake(left.word);
+
+      if (!state.currentTest.wrongAnswers.find(w => w.en === left.word.en)) {
+        state.currentTest.wrongAnswers.push(left.word);
+      }
+      
+      updateTestStatsMini();
+      
+      window.compareLeftSelected = null;
+      window.compareRightSelected = null;
+    }
+  }
+}
+
+function showCompareFeedback(batch) {
+  const overlay = document.getElementById("feedback-overlay");
+  const fTitle = document.getElementById("feedback-title");
+  const fDesc = document.getElementById("feedback-desc");
+  const fIcon = document.getElementById("feedback-icon");
+  
+  overlay.className = "test-right-pane active correct-ans";
+  fTitle.textContent = "Match Complete!";
+  fIcon.textContent = "🏆";
+  fDesc.textContent = `You successfully matched all ${batch.length} word pairs in this batch!`;
+  
+  const detailsContainer = document.getElementById("word-details-container");
+  if (detailsContainer) detailsContainer.style.display = "none";
+  
+  const diffVoting = document.querySelector(".difficulty-voting-container");
+  if (diffVoting) diffVoting.style.display = "none";
+  
+  saveState();
+  
+  const nextBtn = document.getElementById("btn-next-question");
+  if (nextBtn) {
+    nextBtn.textContent = "Continue";
+    nextBtn.onclick = () => {
+      overlay.classList.remove("active");
+      state.currentTest.index += batch.length;
+      if (state.currentTest.index < state.currentTest.words.length) {
+        renderQuestion();
+      } else {
+        finishTestRound();
+      }
+    };
+  }
+}
+
 function renderQuestion() {
   const tState = state.currentTest;
   const currentWord = tState.words[tState.index];
   
   // Set category tag
   document.getElementById("test-category-tag").textContent = currentWord.category || "General";
+
+  // Restore default displays for non-compare modes
+  const wordCardWrapper = document.querySelector(".word-card-wrapper");
+  const catTag = document.getElementById("test-category-tag");
+  const submitBtn = document.getElementById("btn-submit-answer");
+  const nextBtn = document.getElementById("btn-next-question");
+  if (wordCardWrapper) wordCardWrapper.style.display = "block";
+  if (catTag) catTag.style.display = "block";
+  if (submitBtn) submitBtn.style.display = "block";
+  if (nextBtn) {
+    nextBtn.textContent = "Continue";
+    nextBtn.onclick = nextQuestion;
+  }
+
+  const diffVoting = document.querySelector(".difficulty-voting-container");
+  if (diffVoting) diffVoting.style.display = "block";
+
+  if (tState.selectedMode === "compare") {
+    buildCompareMode();
+    return;
+  }
   
   // Display target/source
   const promptWordEl = document.getElementById("test-prompt-word");
@@ -2639,9 +2870,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.querySelectorAll(".test-mode-section").forEach(s => s.classList.remove("active"));
       document.getElementById(`test-mode-${btn.dataset.mode}`).classList.add("active");
       
-      if (btn.dataset.mode === "typing") {
-        setTimeout(() => document.getElementById("input-typing-answer").focus(), 100);
-      }
+      renderQuestion();
     };
   });
 
@@ -2814,7 +3043,12 @@ document.addEventListener("DOMContentLoaded", async () => {
           return;
         }
         
-        nextQuestion();
+        const nextBtn = document.getElementById("btn-next-question");
+        if (nextBtn) {
+          nextBtn.click();
+        } else {
+          nextQuestion();
+        }
       }
     }
   });
