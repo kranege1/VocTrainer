@@ -70,6 +70,7 @@ let state = {
   wordStats: {}, // Spaced Repetition / Leitner stats: { wordEn: { attempts, errors, box, lastReview } }
   testDirection: "forward", // forward (base -> target) or reverse (target -> base)
   customVoices: {}, // Selected free local system voices for each language key: { en: "Voice Name", ... }
+  activeICloudLists: {} // Sync status of files in directory: { "filename.json": boolean }
 
   // Current active test state
   currentTest: {
@@ -111,7 +112,8 @@ function saveState() {
     customFolders: state.customFolders,
     wordStats: state.wordStats,
     testDirection: state.testDirection,
-    customVoices: state.customVoices
+    customVoices: state.customVoices,
+    activeICloudLists: state.activeICloudLists
   }));
   updateHeaderUI();
   updateCategoryCounts();
@@ -174,6 +176,7 @@ function loadState() {
     state.wordStats = parsed.wordStats || {};
     state.testDirection = parsed.testDirection || "forward";
     state.customVoices = parsed.customVoices || {};
+    state.activeICloudLists = parsed.activeICloudLists || {};
 
     // Prefill Setup fields
     document.getElementById("setup-openai-key").value = state.openaiKey;
@@ -341,6 +344,7 @@ function showView(viewId) {
   if (viewId === "view-setup") {
     loadOnDeviceVoices();
     renderHistoryList();
+    syncICloudFolder();
   } else if (viewId === "view-statistics") {
     renderStatisticsView();
   } else if (viewId === "view-browse") {
@@ -1194,6 +1198,9 @@ async function executeFileImport() {
     if (count > 0) {
       saveState();
       renderImportedList();
+      if (state.icloudHandle) {
+        saveWordlistToICloud(category);
+      }
       alert(`Successfully imported and translated ${count} custom words!`);
       const previewArea = document.getElementById("file-preview-area");
       if (previewArea) previewArea.style.display = "none";
@@ -1348,6 +1355,9 @@ async function addCustomWord(english, translation, lang, category, imageUrl = ""
   sessionImportedList.push(newWord);
   saveState();
   renderImportedList();
+  if (state.icloudHandle) {
+    saveWordlistToICloud(category || "nouns");
+  }
   if (document.getElementById("view-browse").classList.contains("active")) {
     renderBrowseList();
   }
@@ -2140,6 +2150,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await loadStarterVocab();
   loadState();
+  await initICloudSync();
 
   // Navigation Links
   document.getElementById("btn-go-import").onclick = () => showView("view-import");
@@ -2452,6 +2463,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     downloadAnchor.click();
     downloadAnchor.remove();
   };
+
+  const btnSelectICloud = document.getElementById("btn-select-icloud-folder");
+  if (btnSelectICloud) {
+    btnSelectICloud.onclick = selectICloudFolder;
+  }
 
   // Import Backup from File
   document.getElementById("import-backup-file").onchange = (e) => {
@@ -3242,6 +3258,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (count > 0) {
           saveState();
           renderImportedList();
+          if (state.icloudHandle) {
+            saveWordlistToICloud(cat);
+          }
           alert(`Successfully imported and fully translated ${count} custom words!`);
           document.getElementById("bulk-import-text").value = "";
           bulkPreviewArea.style.display = "none";
@@ -5095,231 +5114,282 @@ if ('speechSynthesis' in window) {
 }
 
 // ==========================================
-// 11. Cloud Shared Word Sets API Client
+// 11. iCloud / Local Folder Synchronization
 // ==========================================
-const CLOUD_API_URL = window.location.origin;
-
-async function loadCloudWordSets() {
-  const tbody = document.getElementById("cloud-sets-table-body");
-  if (!tbody) return;
-
-  tbody.innerHTML = `
-    <tr>
-      <td colspan="3" style="text-align: center; color: var(--text-secondary); padding: 20px;">
-        <span class="spinner" style="display: inline-block; width: 16px; height: 16px; border: 2px solid var(--accent-color); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 8px; vertical-align: middle;"></span>
-        Fetching shared sets from cloud...
-      </td>
-    </tr>
-  `;
-
-  try {
-    const res = await fetch(`${CLOUD_API_URL}/api/list`);
-    if (!res.ok) throw new Error("Failed to fetch shared sets");
-    const list = await res.json();
-
-    if (list.length === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="3" style="text-align: center; color: var(--text-secondary); padding: 20px;">
-            ☁️ No shared sets in cloud yet. Upload yours to get started!
-          </td>
-        </tr>
-      `;
-      return;
-    }
-
-    tbody.innerHTML = "";
-    list.forEach(set => {
-      const tr = document.createElement("tr");
-      tr.style.borderBottom = "1px solid rgba(255,255,255,0.04)";
-      
-      const sizeMb = (set.size / (1024 * 1024)).toFixed(2);
-      const formattedDate = new Date(set.updatedAt).toLocaleDateString();
-
-      tr.innerHTML = `
-        <td style="padding: 10px; font-weight: 600; color: #fff;">
-          📁 ${set.name}
-          <div style="font-size: 0.75rem; color: var(--text-secondary); font-weight: normal; margin-top: 2px;">Updated: ${formattedDate}</div>
-        </td>
-        <td style="padding: 10px; color: var(--accent-color); font-weight: 600;">
-          ${set.wordCount} words
-        </td>
-        <td style="padding: 10px; text-align: center; display: flex; gap: 8px; justify-content: center; align-items: center;">
-          <button class="btn btn-primary btn-sm" onclick="downloadAndImportCloudSet('${set.filename}')" style="margin: 0; padding: 4px 10px; font-size: 0.75rem; min-height: 28px;">📥 Import</button>
-          <button class="btn btn-secondary btn-sm" onclick="deleteCloudSet('${set.filename}')" style="margin: 0; padding: 4px 10px; font-size: 0.75rem; min-height: 28px; background: rgba(224, 36, 36, 0.15); color: #ff4d4d; border: 1px solid rgba(224, 36, 36, 0.3);">🗑️ Delete</button>
-        </td>
-      `;
-      tbody.appendChild(tr);
+const idb = {
+  dbName: "VocTrainerDB",
+  storeName: "handles",
+  getDB() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(this.dbName, 1);
+      req.onupgradeneeded = () => {
+        req.result.createObjectStore(this.storeName);
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
     });
+  },
+  async get(key) {
+    try {
+      const db = await this.getDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(this.storeName, "readonly");
+        const store = tx.objectStore(this.storeName);
+        const req = store.get(key);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    } catch (e) {
+      return null;
+    }
+  },
+  async set(key, val) {
+    try {
+      const db = await this.getDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(this.storeName, "readwrite");
+        const store = tx.objectStore(this.storeName);
+        const req = store.put(val, key);
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+      });
+    } catch (e) {}
+  }
+};
+
+state.icloudHandle = null;
+
+async function initICloudSync() {
+  try {
+    const handle = await idb.get("icloud_handle");
+    if (handle) {
+      state.icloudHandle = handle;
+      const statusSpan = document.getElementById("icloud-folder-status");
+      if (statusSpan) {
+        statusSpan.textContent = `📁 ${handle.name} (Access Needed)`;
+        statusSpan.style.color = "#FF9800";
+      }
+      
+      const selectBtn = document.getElementById("btn-select-icloud-folder");
+      if (selectBtn) {
+        selectBtn.textContent = "🔑 Grant Folder Access";
+      }
+    }
   } catch (err) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="3" style="text-align: center; color: var(--error-color); padding: 20px;">
-          ❌ Could not load cloud sets: ${err.message}
-        </td>
-      </tr>
-    `;
+    console.error("Failed to load iCloud handle:", err);
   }
 }
 
-async function uploadActiveVocabToCloud() {
-  const nameInput = document.getElementById("cloud-upload-name");
-  const selectCloudUploadCategory = document.getElementById("select-cloud-upload-category");
-  if (!nameInput || !selectCloudUploadCategory) return;
-
-  const setName = nameInput.value.trim().replace(/[^a-zA-Z0-9_\-\s]/g, "");
-  if (!setName) {
-    alert("Please enter a valid name for the shared set.");
-    return;
-  }
-
-  const selectedVal = selectCloudUploadCategory.value;
-  let uploadVocab = [];
-  let uploadFolders = [];
-
-  if (selectedVal === "all") {
-    uploadVocab = state.customVocab || [];
-    uploadFolders = state.customFolders || [];
-  } else {
-    // Filter custom vocab to include only words matching category === folderId
-    uploadVocab = (state.customVocab || []).filter(v => v.category === selectedVal);
-    // Find all custom folders in the hierarchy of the selected folder so structure is preserved
-    const getFolderHierarchy = (folderId, list = []) => {
-      const f = (state.customFolders || []).find(x => x.id === folderId);
-      if (f) {
-        list.push(f);
-        if (f.parentId) {
-          getFolderHierarchy(f.parentId, list);
+async function selectICloudFolder() {
+  try {
+    if (state.icloudHandle) {
+      const perm = await state.icloudHandle.queryPermission({ mode: "readwrite" });
+      if (perm !== "granted") {
+        const req = await state.icloudHandle.requestPermission({ mode: "readwrite" });
+        if (req === "granted") {
+          onICloudFolderAccessGranted();
+          return;
         }
       }
-      return list;
-    };
-    uploadFolders = getFolderHierarchy(selectedVal);
-  }
+    }
 
-  if (uploadVocab.length === 0) {
-    alert("The selected vocabulary set is empty. Add or select a set with words first!");
-    return;
-  }
-
-  const uploadBtn = document.getElementById("btn-cloud-upload");
-  if (uploadBtn) {
-    uploadBtn.disabled = true;
-    uploadBtn.textContent = "Uploading...";
-  }
-
-  // Package custom vocab + folders
-  const exportData = {
-    vocab: uploadVocab,
-    folders: uploadFolders
-  };
-
-  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
-  const formData = new FormData();
-  formData.append("vocabFile", blob, `${setName}.json`);
-
-  try {
-    const res = await fetch(`${CLOUD_API_URL}/api/upload`, {
-      method: "POST",
-      body: formData
-    });
-
-    if (!res.ok) throw new Error("Upload failed");
-    
-    alert(`🎉 Set "${setName}" uploaded successfully to the cloud!`);
-    nameInput.value = "";
-    selectCloudUploadCategory.value = "all";
-    loadCloudWordSets();
+    const handle = await window.showDirectoryPicker();
+    state.icloudHandle = handle;
+    await idb.set("icloud_handle", handle);
+    onICloudFolderAccessGranted();
   } catch (err) {
-    alert(`❌ Failed to upload set: ${err.message}`);
-  } finally {
-    if (uploadBtn) {
-      uploadBtn.disabled = false;
-      uploadBtn.textContent = "⬆️ Upload Selected Vocabulary";
+    if (err.name !== "AbortError") {
+      alert("Failed to access folder: " + err.message);
     }
   }
 }
 
-async function downloadAndImportCloudSet(filename) {
-  const confirmed = await showCustomConfirm(`Do you want to download and merge the shared set "${filename.replace('.json', '')}"?`);
-  if (!confirmed) return;
+async function onICloudFolderAccessGranted() {
+  const statusSpan = document.getElementById("icloud-folder-status");
+  if (statusSpan) {
+    statusSpan.textContent = `📁 ${state.icloudHandle.name}`;
+    statusSpan.style.color = "#4CAF50";
+  }
+  const selectBtn = document.getElementById("btn-select-icloud-folder");
+  if (selectBtn) {
+    selectBtn.textContent = "📂 Change Sync Folder";
+  }
+  
+  await syncICloudFolder();
+}
+
+async function syncICloudFolder() {
+  if (!state.icloudHandle) return;
+
+  const container = document.getElementById("icloud-wordlists-container");
+  const tbody = document.getElementById("icloud-lists-table-body");
+  if (container) container.style.display = "block";
+
+  if (tbody) {
+    tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:15px; color:var(--text-secondary);">Scanning folder...</td></tr>`;
+  }
 
   try {
-    const res = await fetch(`${CLOUD_API_URL}/api/download/${filename}`);
-    if (!res.ok) throw new Error("Failed to download file");
-    
-    const data = await res.json();
-    
-    let importedVocab = [];
-    let importedFolders = [];
-
-    // Parse custom set format (array or nested object)
-    if (Array.isArray(data)) {
-      importedVocab = data;
-    } else if (data && Array.isArray(data.vocab)) {
-      importedVocab = data.vocab;
-      importedFolders = data.folders || [];
-    }
-
-    if (importedVocab.length === 0) {
-      alert("The downloaded set does not contain any valid vocabulary words.");
+    const perm = await state.icloudHandle.queryPermission({ mode: "readwrite" });
+    if (perm !== "granted") {
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:15px; color:#FF9800;">⚠️ Access permission required. Click "Grant Folder Access" above.</td></tr>`;
+      }
       return;
     }
 
-    // Merge into local customVocab (avoiding duplicates by base word match)
-    const base = state.baseLang || "en";
-    let duplicateCount = 0;
-    let addedCount = 0;
-
-    importedVocab.forEach(item => {
-      const exists = state.customVocab.some(v => v[base] && item[base] && v[base].toLowerCase().trim() === item[base].toLowerCase().trim());
-      if (exists) {
-        duplicateCount++;
-      } else {
-        state.customVocab.push(item);
-        addedCount++;
+    const files = [];
+    for await (const entry of state.icloudHandle.values()) {
+      if (entry.kind === "file" && entry.name.endsWith(".json")) {
+        files.push(entry);
       }
-    });
+    }
 
-    // Merge custom folders
-    importedFolders.forEach(folder => {
-      const exists = state.customFolders.some(f => f.id === folder.id);
-      if (!exists) {
-        state.customFolders.push(folder);
+    const fileListDetails = [];
+    
+    // Clear old synced items to sync fresh from folder
+    const syncedFolderIds = [];
+
+    for (const entry of files) {
+      const file = await entry.getFile();
+      const content = await file.text();
+      try {
+        const parsed = JSON.parse(content);
+        let wordCount = 0;
+        let folderMeta = null;
+
+        if (Array.isArray(parsed)) {
+          wordCount = parsed.length;
+        } else if (parsed && Array.isArray(parsed.vocab)) {
+          wordCount = parsed.vocab.length;
+          folderMeta = parsed.folder;
+        }
+
+        const isActive = state.activeICloudLists[entry.name] !== false;
+        
+        fileListDetails.push({
+          filename: entry.name,
+          name: entry.name.replace(".json", ""),
+          count: wordCount,
+          isActive: isActive,
+          folder: folderMeta,
+          vocab: Array.isArray(parsed) ? parsed : (parsed.vocab || [])
+        });
+
+        if (folderMeta) {
+          syncedFolderIds.push(folderMeta.id);
+        }
+      } catch (e) {}
+    }
+
+    // Filter out old synced vocabulary and folders
+    state.customVocab = state.customVocab.filter(v => !syncedFolderIds.includes(v.category));
+    state.customFolders = state.customFolders.filter(f => !syncedFolderIds.includes(f.id));
+
+    // Merge active sets
+    fileListDetails.forEach(set => {
+      if (set.isActive) {
+        if (set.folder) {
+          const folderExists = state.customFolders.some(f => f.id === set.folder.id);
+          if (!folderExists) {
+            state.customFolders.push(set.folder);
+          }
+        }
+        
+        set.vocab.forEach(word => {
+          const base = state.baseLang || "en";
+          const wordText = (word[base] || "").toLowerCase().trim();
+          const exists = state.customVocab.some(v => v.category === word.category && (v[base] || "").toLowerCase().trim() === wordText);
+          if (!exists) {
+            state.customVocab.push(word);
+          }
+        });
       }
     });
 
     saveState();
     renderImportedList();
     updateCategoryCounts();
-    
-    alert(`📥 Imported successfully!\nAdded: ${addedCount} words.\nDuplicates skipped: ${duplicateCount}.`);
+
+    // Render table
+    if (tbody) {
+      if (fileListDetails.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:15px; color:var(--text-secondary);">No wordlists found in folder.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = "";
+      fileListDetails.forEach(set => {
+        const tr = document.createElement("tr");
+        tr.style.borderBottom = "1px solid rgba(255,255,255,0.04)";
+        tr.innerHTML = `
+          <td style="padding:10px; text-align:center;">
+            <input type="checkbox" ${set.isActive ? "checked" : ""} onchange="window.toggleICloudListSync('${set.filename}', this.checked)" style="width:16px; height:16px; accent-color:var(--accent-color); cursor:pointer;">
+          </td>
+          <td style="padding:10px; font-weight:600; color:#fff;">📁 ${set.name}</td>
+          <td style="padding:10px; text-align:center; color:var(--accent-color); font-weight:600;">${set.count}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
   } catch (err) {
-    alert(`❌ Failed to download and import: ${err.message}`);
+    console.error("iCloud sync error:", err);
+    if (tbody) {
+      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:15px; color:var(--error-color);">❌ Sync failed: ${err.message}</td></tr>`;
+    }
   }
 }
 
-async function deleteCloudSet(filename) {
-  const confirmed = await showCustomConfirm(`Are you sure you want to delete the shared set "${filename.replace('.json', '')}" from the cloud?`);
-  if (!confirmed) return;
+let icloudSaveTimeout = null;
+function saveWordlistToICloud(folderId) {
+  if (!state.icloudHandle) return;
+  
+  clearTimeout(icloudSaveTimeout);
+  icloudSaveTimeout = setTimeout(async () => {
+    try {
+      const perm = await state.icloudHandle.queryPermission({ mode: "readwrite" });
+      if (perm !== "granted") {
+        const req = await state.icloudHandle.requestPermission({ mode: "readwrite" });
+        if (req !== "granted") return;
+      }
 
-  try {
-    const res = await fetch(`${CLOUD_API_URL}/api/delete/${filename}`, {
-      method: "DELETE"
-    });
+      const folder = state.customFolders.find(f => f.id === folderId);
+      if (!folder) return;
 
-    if (!res.ok) throw new Error("Failed to delete file from cloud");
-    
-    alert("🗑️ Shared set deleted successfully.");
-    loadCloudWordSets();
-  } catch (err) {
-    alert(`❌ Failed to delete: ${err.message}`);
-  }
+      const filename = `${folder.name.replace(/[^a-zA-Z0-9_\-\s]/g, "")}.json`;
+      const folderWords = state.customVocab.filter(v => v.category === folderId);
+
+      const fileHandle = await state.icloudHandle.getFileHandle(filename, { create: true });
+      const writable = await fileHandle.createWritable();
+
+      const data = {
+        vocab: folderWords,
+        folder: folder
+      };
+
+      await writable.write(JSON.stringify(data, null, 2));
+      await writable.close();
+
+      state.activeICloudLists[filename] = true;
+      saveState();
+      
+      if (document.getElementById("view-setup").classList.contains("active")) {
+        await syncICloudFolder();
+      }
+    } catch (err) {
+      console.error("Failed to auto-save wordlist to folder:", err);
+    }
+  }, 500);
 }
 
-// Expose download and delete functions to global window scope so HTML buttons can click them
-window.downloadAndImportCloudSet = downloadAndImportCloudSet;
-window.deleteCloudSet = deleteCloudSet;
+window.toggleICloudListSync = async function(filename, checked) {
+  state.activeICloudLists[filename] = checked;
+  saveState();
+  await syncICloudFolder();
+};
+
+window.downloadAndImportCloudSet = () => {};
+window.deleteCloudSet = () => {};
 
 // 12. Direct Semicolon CSV Import
 async function executeCSVImport() {
@@ -5413,6 +5483,9 @@ async function executeCSVImport() {
     saveState();
     renderImportedList();
     updateCategoryCounts();
+    if (state.icloudHandle) {
+      saveWordlistToICloud(category);
+    }
     alert(`🎉 CSV Import finished!\nSuccessfully imported: ${addedCount} words.\nDuplicates skipped: ${duplicateCount}.\nInvalid lines: ${invalidCount}.`);
     textInput.value = "";
   } else {

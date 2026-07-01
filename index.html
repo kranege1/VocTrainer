@@ -352,6 +352,37 @@
         <button id="btn-save-setup" class="btn btn-primary btn-block">Save Preferences</button>
       </div>
 
+      <!-- iCloud / Local Folder Sync -->
+      <div class="card">
+        <h3>☁️ iCloud / Local Folder Sync</h3>
+        <p class="import-help" style="margin-bottom: 16px;">
+          Select a folder (e.g., on your iCloud Drive) where your custom wordlists will be automatically saved as JSON files. You can select or deselect which lists are active in the trainer.
+        </p>
+        
+        <div class="form-group" style="display: flex; gap: 10px; align-items: center; margin-bottom: 0;">
+          <button id="btn-select-icloud-folder" class="btn btn-secondary" style="margin: 0; flex: 1; min-height: 40px;">📂 Select Sync Folder</button>
+          <span id="icloud-folder-status" style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">No folder selected</span>
+        </div>
+
+        <div id="icloud-wordlists-container" style="display: none; margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+          <h4 style="margin-bottom: 10px; font-size: 0.9rem; color: var(--accent-color); font-weight: 700;">Syncable Wordlists in Folder</h4>
+          <div style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: 12px; background: rgba(0,0,0,0.15); margin-bottom: 12px;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+              <thead>
+                <tr style="background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--border-color);">
+                  <th style="padding: 10px; width: 50px; text-align: center; font-weight: 700; color: var(--text-secondary);">Sync</th>
+                  <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">List Name</th>
+                  <th style="padding: 10px; width: 80px; text-align: center; font-weight: 700; color: var(--text-secondary);">Words</th>
+                </tr>
+              </thead>
+              <tbody id="icloud-lists-table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- FREE ON-DEVICE VOICE SELECTOR -->
       <div class="card">
         <h3>Free On-Device Voices</h3>
@@ -480,7 +511,6 @@
         <button class="tab-btn" data-tab="tab-bulk">📝 Bulk List</button>
         <button class="tab-btn" data-tab="tab-csv">📋 Semicolon CSV</button>
         <button class="tab-btn" data-tab="tab-file">📄 File Upload</button>
-        <button class="tab-btn" data-tab="tab-cloud">☁️ Cloud Share</button>
       </div>
 
       <!-- Manual/Custom tab -->
@@ -748,50 +778,6 @@
         </div>
       </div>
 
-      <!-- Cloud Share tab -->
-      <div id="tab-cloud" class="tab-content">
-        <!-- Section 1: Upload Active Custom Words -->
-        <div class="card">
-          <h3>☁️ Share Current Custom Set to Cloud</h3>
-          <p class="import-help">Select a local custom set or folder to upload to the shared cloud server.</p>
-          <div class="form-group">
-            <label>Choose Word-Set to Upload</label>
-            <select id="select-cloud-upload-category" class="custom-select">
-              <option value="all">📚 Entire Custom Vocabulary</option>
-              <!-- Dynamically populated with local folders -->
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Shared Word Set Name</label>
-            <input type="text" id="cloud-upload-name" placeholder="e.g. My_Italian_Verbs">
-          </div>
-          <button id="btn-cloud-upload" class="btn btn-primary btn-block">⬆️ Upload Selected Vocabulary</button>
-        </div>
-
-        <!-- Section 2: Shared Sets List -->
-        <div class="card">
-          <h3>📥 Download Word Sets from Cloud</h3>
-          <p class="import-help">Below are the custom word sets shared by you and other users. Click download to merge them into your local vocabulary trainer.</p>
-          <div style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 16px; background: rgba(0,0,0,0.15);">
-            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
-              <thead>
-                <tr style="background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--border-color);">
-                  <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">Set Name</th>
-                  <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">Words</th>
-                  <th style="padding: 10px; width: 180px; text-align: center; font-weight: 700; color: var(--text-secondary);">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="cloud-sets-table-body">
-                <!-- Dynamically populated -->
-                <tr>
-                  <td colspan="3" style="padding: 20px; text-align: center; color: var(--text-secondary);">Loading cloud shared sets...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <button id="btn-refresh-cloud" class="btn btn-secondary btn-block">🔄 Refresh Cloud List</button>
-        </div>
-      </div>
 
       <div class="card recent-imports-card">
         <h3>My Custom & Scraped Words</h3>
