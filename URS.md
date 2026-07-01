@@ -27,12 +27,18 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
   - **Single Words:** Automatically splits words of length >= 3 into at least 3 separate selectable block pieces. Short words (< 3 characters) are split into letters and padded with prefix/suffix distractor blocks to ensure a minimum of 3 blocks are always displayed.
   - **Phrases:** Splits multi-word phrases word-by-word (one block per word). If a phrase contains fewer than 3 words, it is padded with decoy word blocks to maintain a minimum of 3 option options.
   - **Flexible Drag Reordering:** Selected blocks can be dynamically reordered inside the selection zone. Users can drag and drop (desktop mouse) or touch-drag (iOS/iPad finger touch) block elements between words or to any position in the sentence to modify the word order before submitting.
+- **Word Compare Mode:**
+  - A matching play-mode that lists a batch of up to 5 words side-by-side.
+  - Displays source words on the left column, and shuffled target translations on the right.
+  - Users click a word first on one side and its corresponding match on the other. 
+  - Correct matches gray out the buttons, mark them disabled (`.matched` class), play a success tone, and award points.
+  - Incorrect matches highlight in red and reset selection.
 - **Per-Question Timer Limit:**
   - Allows the user to configure a countdown timer of 5, 10, or 15 seconds per question (or Deactivated).
   - Automatically submits an empty/incorrect answer if the timer expires (hits 0 seconds).
 - **Points Scoring System:**
   - Awarded for correct answers: base score of `100` points per correct answer.
-  - **Mode Multipliers:** `typing` mode (x1), `speech` mode (x1), `bubbles` mode (x0.5).
+  - **Mode Multipliers:** `typing` mode (x1), `speech` mode (x1), `bubbles` mode (x0.5), `compare` mode (x0.5).
   - **Speed Bonus:** If the timer is used, adds a **+20% bonus** for each remaining second left on the clock.
   - **Timer difficulty multipliers:** `5s` limit (x3), `10s` limit (x2), `15s` limit (x1.5).
 - **Incorrect Answer Blocking:**
