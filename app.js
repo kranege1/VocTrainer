@@ -59,6 +59,7 @@ let state = {
   anthropicKey: "",
   audioEngine: "browser", // browser or openai
   allowSynonyms: true, // Allow similar words/synonyms
+  questionTimer: 0, // Per-question timer limit (0, 5, 10, 15)
   history: [], // Completed tests history
   deletedStarters: [], // Deleted starter vocab terms
   editedStarters: {}, // Edited starter vocab terms overrides
@@ -104,6 +105,7 @@ function saveState() {
     anthropicKey: state.anthropicKey,
     audioEngine: state.audioEngine,
     allowSynonyms: state.allowSynonyms,
+    questionTimer: state.questionTimer,
     baseLang: state.baseLang,
     selectedLang: state.selectedLang,
     history: state.history,
@@ -156,6 +158,7 @@ function loadState() {
     state.anthropicKey = parsed.anthropicKey || "";
     state.audioEngine = parsed.audioEngine || "browser";
     state.allowSynonyms = parsed.allowSynonyms !== undefined ? parsed.allowSynonyms : true;
+    state.questionTimer = parsed.questionTimer || 0;
     state.baseLang = parsed.baseLang || "en";
     state.selectedLang = parsed.selectedLang || "de";
     state.history = parsed.history || [];
@@ -181,6 +184,7 @@ function loadState() {
     // Prefill Setup fields
     document.getElementById("setup-openai-key").value = state.openaiKey;
     document.getElementById("setup-grok-key").value = state.grokKey;
+    document.getElementById("setup-question-timer").value = state.questionTimer;
     document.getElementById("setup-gemini-key").value = state.geminiKey;
     document.getElementById("setup-anthropic-key").value = state.anthropicKey;
     document.getElementById("select-audio-engine").value = state.audioEngine;
@@ -1605,11 +1609,26 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
     isRepeatRound: false,
     correctCount: 0,
     totalOriginalCount: wordsToTest.length,
-    selectedMode: "typing"
+    selectedMode: "typing",
+    points: 0
   };
 
   showView("view-test");
   renderQuestion();
+}
+
+function submitTimeUpAnswer() {
+  if (document.getElementById("feedback-overlay").classList.contains("active")) return;
+  
+  const mode = state.currentTest.selectedMode;
+  if (mode === "typing") {
+    document.getElementById("input-typing-answer").value = "";
+  } else if (mode === "bubbles") {
+    document.getElementById("bubble-selected-zone").innerHTML = "";
+  } else if (mode === "speech") {
+    document.getElementById("speech-transcript").textContent = "";
+  }
+  submitAnswer();
 }
 
 function updateTestStatsMini() {
@@ -1617,8 +1636,10 @@ function updateTestStatsMini() {
   if (!tState) return;
   const correctEl = document.getElementById("test-correct-count");
   const wrongEl = document.getElementById("test-wrong-count");
+  const pointsEl = document.getElementById("test-points-count");
   if (correctEl) correctEl.textContent = tState.correctCount;
   if (wrongEl) wrongEl.textContent = tState.wrongAnswers.length;
+  if (pointsEl) pointsEl.textContent = tState.points || 0;
 }
 
 function renderQuestion() {
@@ -1680,6 +1701,37 @@ function renderQuestion() {
   document.getElementById("test-progress-fill").style.width = `${progressPercent}%`;
   document.getElementById("test-progress-text").textContent = `Question ${tState.index + 1}/${tState.words.length}`;
   updateTestStatsMini();
+
+  // Set up timer
+  if (window.questionTimerInterval) {
+    clearInterval(window.questionTimerInterval);
+    window.questionTimerInterval = null;
+  }
+  
+  const timerBadge = document.getElementById("test-countdown-badge");
+  const timerSec = document.getElementById("test-countdown-sec");
+  
+  if (state.questionTimer > 0) {
+    timerBadge.style.display = "inline-flex";
+    timerSec.textContent = state.questionTimer;
+    tState.startTime = Date.now();
+    
+    let secRemaining = state.questionTimer;
+    window.questionTimerInterval = setInterval(() => {
+      secRemaining--;
+      if (secRemaining <= 0) {
+        clearInterval(window.questionTimerInterval);
+        window.questionTimerInterval = null;
+        timerSec.textContent = "0";
+        submitTimeUpAnswer();
+      } else {
+        timerSec.textContent = secRemaining;
+      }
+    }, 1000);
+  } else {
+    timerBadge.style.display = "none";
+    tState.startTime = Date.now();
+  }
 
   // Reset inputs & word details panel
   document.getElementById("input-typing-answer").value = "";
@@ -1915,6 +1967,11 @@ function stripArticles(text, lang) {
 
 // Check the student's answer
 function submitAnswer() {
+  if (window.questionTimerInterval) {
+    clearInterval(window.questionTimerInterval);
+    window.questionTimerInterval = null;
+  }
+
   const tState = state.currentTest;
   const currentWord = tState.words[tState.index];
   let studentAnswer = "";
@@ -1984,6 +2041,37 @@ function submitAnswer() {
     tState.correctCount++;
     state.xp += 10;
     checkLevelUp();
+    
+    // Points calculation:
+    let basePoints = 100;
+    let modeMult = 1.0;
+    if (activeMode === "bubbles") modeMult = 0.5;
+    else if (activeMode === "typing") modeMult = 1.0;
+    else if (activeMode === "speech") modeMult = 1.0;
+    
+    let qPoints = basePoints * modeMult;
+    
+    if (state.questionTimer > 0) {
+      const limit = state.questionTimer;
+      const elapsed = (Date.now() - tState.startTime) / 1000;
+      const secondsRemaining = Math.max(0, limit - elapsed);
+      
+      // add 20% of points for each second earlier (seconds remaining)
+      const timeBonus = 0.20 * secondsRemaining;
+      qPoints = qPoints * (1 + timeBonus);
+      
+      // Timer limit multiplier
+      let timerLimitMult = 1.0;
+      if (limit === 5) timerLimitMult = 3.0;
+      else if (limit === 10) timerLimitMult = 2.0;
+      else if (limit === 15) timerLimitMult = 1.5;
+      
+      qPoints = qPoints * timerLimitMult;
+    }
+    
+    qPoints = Math.round(qPoints);
+    tState.points = (tState.points || 0) + qPoints;
+    
     updateTestStatsMini();
 
     // Spaced Repetition Stats: correct progression
@@ -2073,13 +2161,13 @@ function finishTestRound() {
     total: tState.totalOriginalCount,
     correct: tState.correctCount,
     accuracy: accuracy,
-    xp: tState.correctCount * 10
+    points: tState.points || 0
   });
 
   saveState();
   renderHistoryList();
 
-  document.getElementById("report-xp").textContent = `+${tState.correctCount * 10}`;
+  document.getElementById("report-points").textContent = `${tState.points || 0}`;
   document.getElementById("report-accuracy").textContent = `${accuracy}%`;
   document.getElementById("report-wrong-count").textContent = tState.wrongAnswers.length;
 
@@ -2102,7 +2190,8 @@ function startRepeatingMistakes() {
     isRepeatRound: true,
     correctCount: 0,
     totalOriginalCount: wrongWords.length,
-    selectedMode: "typing"
+    selectedMode: "typing",
+    points: 0
   };
 
   showView("view-test");
@@ -2256,6 +2345,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   function quitAndSaveTestSession() {
+    if (window.questionTimerInterval) {
+      clearInterval(window.questionTimerInterval);
+      window.questionTimerInterval = null;
+    }
     const tState = state.currentTest;
     if (tState && tState.index > 0 && !tState.isRepeatRound) {
       const completedCount = tState.index;
@@ -2270,7 +2363,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         total: completedCount,
         correct: tState.correctCount,
         accuracy: accuracy,
-        xp: tState.correctCount * 10,
+        points: tState.points || 0,
         isPartial: true
       });
       
@@ -2408,6 +2501,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btn-save-setup").onclick = () => {
     state.audioEngine = document.getElementById("select-audio-engine").value;
     state.allowSynonyms = document.getElementById("setup-allow-synonyms").checked;
+    state.questionTimer = parseInt(document.getElementById("setup-question-timer").value) || 0;
     state.baseLang = document.getElementById("setup-base-lang").value;
     
     // Save chosen custom free voices
@@ -3414,7 +3508,7 @@ function renderHistoryList() {
     li.innerHTML = `
       <div style="display:flex; justify-content:space-between; font-weight:700;">
         <span>📅 ${session.date} (${session.lang})</span>
-        <span style="color:var(--accent-color);">+${session.xp} XP</span>
+        <span style="color:var(--accent-color);">+${session.points || session.xp || 0} pts</span>
       </div>
       <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--text-secondary);">
         <span>Pocket: ${session.category}</span>
