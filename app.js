@@ -2469,6 +2469,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     btnSelectICloud.onclick = selectICloudFolder;
   }
 
+  const btnSyncFolder = document.getElementById("btn-sync-folder-now");
+  if (btnSyncFolder) {
+    btnSyncFolder.onclick = async () => {
+      await syncICloudFolder();
+      alert("🔄 Synchronization complete! Wordlists updated from your sync folder.");
+    };
+  }
+
   // Import Backup from File
   document.getElementById("import-backup-file").onchange = (e) => {
     const file = e.target.files[0];
@@ -4724,6 +4732,17 @@ window.onTreeDeleteFolder = async function(e, folderId) {
   const confirmDel = await showCustomConfirm(`Are you sure you want to delete the folder "${folder.name}"? All subfolders and words inside it will also be deleted!`);
   if (!confirmDel) return;
 
+  const filename = `${folder.name.replace(/[^a-zA-Z0-9_\-\s]/g, "")}.json`;
+  state.activeICloudLists[filename] = false;
+
+  if (state.icloudHandle) {
+    try {
+      await state.icloudHandle.removeEntry(filename);
+    } catch (err) {
+      console.warn(`Could not delete file ${filename} from folder:`, err);
+    }
+  }
+
   deleteFolderRecursive(folderId);
   
   if (state.selectedBrowseFolderId === folderId) {
@@ -5174,6 +5193,11 @@ async function initICloudSync() {
       if (selectBtn) {
         selectBtn.textContent = "🔑 Grant Folder Access";
       }
+
+      const syncBtn = document.getElementById("btn-sync-folder-now");
+      if (syncBtn) {
+        syncBtn.style.display = "inline-flex";
+      }
     }
   } catch (err) {
     console.error("Failed to load iCloud handle:", err);
@@ -5213,6 +5237,10 @@ async function onICloudFolderAccessGranted() {
   const selectBtn = document.getElementById("btn-select-icloud-folder");
   if (selectBtn) {
     selectBtn.textContent = "📂 Change Sync Folder";
+  }
+  const syncBtn = document.getElementById("btn-sync-folder-now");
+  if (syncBtn) {
+    syncBtn.style.display = "inline-flex";
   }
   
   await syncICloudFolder();
