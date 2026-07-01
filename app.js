@@ -1758,7 +1758,7 @@ function renderQuestion() {
   if (currentWord.details && currentWord.details.articles && currentWord.details.articles[qLang]) {
     qArt = currentWord.details.articles[qLang];
   } else {
-    const parsed = getArticleAndNoun(currentWord.en, qLang);
+    const parsed = getArticleAndNoun(currentWord.en, qLang, currentWord);
     qArt = parsed.article;
     qNoun = parsed.noun;
   }
@@ -2084,7 +2084,7 @@ function stripArticles(text, lang) {
 }
 
 // Extract leading article and clean noun dynamically if details are missing
-function getArticleAndNoun(text, lang) {
+function getArticleAndNoun(text, lang, currentWord) {
   const articles = {
     en: ["the ", "a ", "an "],
     de: ["der ", "die ", "das ", "ein ", "eine "],
@@ -2094,6 +2094,8 @@ function getArticleAndNoun(text, lang) {
   };
   const list = articles[lang] || [];
   const clean = text.trim();
+  
+  // 1. First, check if the text string itself starts with an article
   for (const article of list) {
     if (clean.toLowerCase().startsWith(article.toLowerCase())) {
       const art = clean.substring(0, article.length).trim();
@@ -2101,6 +2103,24 @@ function getArticleAndNoun(text, lang) {
       return { article: art, noun: noun };
     }
   }
+  
+  // 2. Second, fallback: check if we can resolve the article from the STARTER_VOCAB_RAW database
+  if (currentWord) {
+    const baseKey = currentWord.origEn || currentWord.en;
+    if (baseKey && typeof STARTER_VOCAB_RAW !== "undefined") {
+      const starter = STARTER_VOCAB_RAW.find(v => {
+        return (v.en && v.en.toLowerCase() === baseKey.toLowerCase()) || 
+               (v.de && v.de.toLowerCase() === baseKey.toLowerCase()) ||
+               (v.it && v.it.toLowerCase() === baseKey.toLowerCase()) ||
+               (v.es && v.es.toLowerCase() === baseKey.toLowerCase()) ||
+               (v.fr && v.fr.toLowerCase() === baseKey.toLowerCase());
+      });
+      if (starter && starter.details && starter.details.articles && starter.details.articles[lang]) {
+        return { article: starter.details.articles[lang], noun: clean };
+      }
+    }
+  }
+  
   return { article: "", noun: clean };
 }
 
@@ -3981,7 +4001,7 @@ function setupWordDetails(currentWord) {
   if (details && details.articles && details.articles[qLang]) {
     qArt = details.articles[qLang];
   } else {
-    const parsed = getArticleAndNoun(currentWord.en, qLang);
+    const parsed = getArticleAndNoun(currentWord.en, qLang, currentWord);
     qArt = parsed.article;
     qNoun = parsed.noun;
   }
@@ -3991,7 +4011,7 @@ function setupWordDetails(currentWord) {
   if (details && details.articles && details.articles[aLang]) {
     aArt = details.articles[aLang];
   } else {
-    const parsed = getArticleAndNoun(currentWord.target, aLang);
+    const parsed = getArticleAndNoun(currentWord.target, aLang, currentWord);
     aArt = parsed.article;
     aNoun = parsed.noun;
   }
