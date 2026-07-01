@@ -944,6 +944,28 @@
             <!-- Hardest words listed here -->
           </ul>
         </div>
+
+        <!-- Word-by-Word Folder Stats Card -->
+        <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+          <h3 style="margin-bottom: 12px; color: #fff; font-weight: 700; font-size: 1rem;">📊 Word-by-Word Statistics</h3>
+          <p class="import-help" style="margin-bottom: 16px;">Shows the ratio of correct and false attempts for each word in the selected set.</p>
+          <div style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: 12px; background: rgba(0,0,0,0.15); max-height: 350px;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.8rem;">
+              <thead>
+                <tr style="background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 10;">
+                  <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">Word (EN)</th>
+                  <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">Translation</th>
+                  <th style="padding: 10px; text-align: center; font-weight: 700; color: var(--text-secondary); width: 60px;">Correct</th>
+                  <th style="padding: 10px; text-align: center; font-weight: 700; color: var(--text-secondary); width: 60px;">False</th>
+                  <th style="padding: 10px; text-align: center; font-weight: 700; color: var(--text-secondary); width: 80px;">Ratio</th>
+                </tr>
+              </thead>
+              <tbody id="stats-words-table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </section>
 

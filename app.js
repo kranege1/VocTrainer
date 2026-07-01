@@ -1599,8 +1599,43 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
     return;
   }
 
-  pool = pool.sort(() => 0.5 - Math.random());
-  const wordsToTest = pool.slice(0, count);
+  // Divide pool into Group A ("Correct") and Group B ("Difficult/Untested")
+  const groupA = []; // Correct: attempts > 0 and errors === 0
+  const groupB = []; // Difficult/Untested: errors > 0 or attempts === 0
+
+  pool.forEach(word => {
+    const stats = state.wordStats[word.origEn || word.en] || { attempts: 0, errors: 0 };
+    if (stats.attempts > 0 && (stats.errors || 0) === 0) {
+      groupA.push(word);
+    } else {
+      groupB.push(word);
+    }
+  });
+
+  // Calculate target numbers (only pick 10-20% correct words, rest are difficult/untested)
+  const targetA = Math.round(count * 0.15);
+  const targetB = count - targetA;
+
+  // Shuffle both groups
+  const shuffleArray = (arr) => arr.sort(() => 0.5 - Math.random());
+  shuffleArray(groupA);
+  shuffleArray(groupB);
+
+  const pickedA = groupA.slice(0, targetA);
+  const pickedB = groupB.slice(0, targetB);
+
+  let selected = [...pickedA, ...pickedB];
+
+  // If one of the groups was too small and we don't have enough words, fill from remaining
+  if (selected.length < count) {
+    const remainingPool = pool.filter(w => !selected.includes(w));
+    shuffleArray(remainingPool);
+    const needed = count - selected.length;
+    selected = [...selected, ...remainingPool.slice(0, needed)];
+  }
+
+  shuffleArray(selected);
+  const wordsToTest = selected.slice(0, count);
 
   state.currentTest = {
     words: wordsToTest,
@@ -5036,6 +5071,40 @@ function renderFolderStatistics() {
     });
   } else {
     hardestList.innerHTML = `<li style="list-style:none; margin-left:-18px; color:var(--text-secondary);">No errors recorded yet! Keep it up.</li>`;
+  }
+
+  // 3. Render Word-by-Word Statistics Table
+  const wordsTbody = document.getElementById("stats-words-table-body");
+  if (wordsTbody) {
+    wordsTbody.innerHTML = "";
+    if (pool.length === 0) {
+      wordsTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:var(--text-secondary);">No words in this category.</td></tr>`;
+    } else {
+      pool.forEach(word => {
+        const stats = state.wordStats[word.origEn || word.en] || { attempts: 0, errors: 0 };
+        const corrects = (stats.attempts || 0) - (stats.errors || 0);
+        const falses = stats.errors || 0;
+        
+        let ratioText = "N/A";
+        let ratioColor = "var(--text-secondary)";
+        if (stats.attempts > 0) {
+          const ratio = Math.round((corrects / stats.attempts) * 100);
+          ratioText = `${ratio}%`;
+          ratioColor = ratio >= 80 ? "#2ecc71" : ratio >= 50 ? "#ff9f43" : "#ff4b4b";
+        }
+        
+        const tr = document.createElement("tr");
+        tr.style.borderBottom = "1px solid rgba(255,255,255,0.04)";
+        tr.innerHTML = `
+          <td style="padding: 10px; font-weight: 600; color: #fff;">${word.en}</td>
+          <td style="padding: 10px; color: var(--text-secondary);">${word.target || word[state.selectedLang] || ""}</td>
+          <td style="padding: 10px; text-align: center; color: #2ecc71; font-weight: 600;">${corrects}</td>
+          <td style="padding: 10px; text-align: center; color: #ff4b4b; font-weight: 600;">${falses}</td>
+          <td style="padding: 10px; text-align: center; color: ${ratioColor}; font-weight: 700;">${ratioText}</td>
+        `;
+        wordsTbody.appendChild(tr);
+      });
+    }
   }
 }
 
