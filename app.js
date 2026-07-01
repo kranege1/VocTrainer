@@ -1655,6 +1655,15 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
   selected.sort(() => 0.5 - Math.random());
   const wordsToTest = selected.slice(0, count);
 
+  const activeMode = document.querySelector(".mode-toggle-btn.active")?.dataset.mode || "typing";
+  
+  // Ensure the correct mode section is displayed in the DOM
+  document.querySelectorAll(".test-mode-section").forEach(s => s.classList.remove("active"));
+  const activeSection = document.getElementById(`test-mode-${activeMode}`);
+  if (activeSection) {
+    activeSection.classList.add("active");
+  }
+
   state.currentTest = {
     words: wordsToTest,
     index: 0,
@@ -1662,7 +1671,7 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
     isRepeatRound: false,
     correctCount: 0,
     totalOriginalCount: wordsToTest.length,
-    selectedMode: "typing",
+    selectedMode: activeMode,
     points: 0
   };
 
