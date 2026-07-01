@@ -37,9 +37,12 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
   - **Timer difficulty multipliers:** `5s` limit (x3), `10s` limit (x2), `15s` limit (x1.5).
 - **Incorrect Answer Blocking:**
   - If the user submits an incorrect answer, pressing the **Enter** key will **not** bypass or proceed past the correction screen. This forces the user to see the correct answer, requiring them to manually click the **Next** button.
-- **Focused Test Selection:**
+- **Focused Test Selection & Difficulty Weights:**
   - When starting a test session, the app divides the word pool into **Group A (Always Correct)** and **Group B (Difficult or Untested)**.
   - Targets exactly **15%** of the session's word count from Group A, and **85%** from Group B, prioritizing learning difficult or new terms.
+  - Integrates the user's difficulty rating into the selection algorithm: **Hard** words receive a **3x selection weight** (prioritized for testing), and **Easy** words receive a **0.2x selection weight** (tested less frequently).
+- **Word Difficulty Voting:**
+  - Provides difficulty voting buttons (**🟢 Easy**, **🟡 Medium**, **🔴 Hard**) in the feedback panel for each word tested, allowing users to rate how difficult a word was and adjust its test selection frequency weight.
 
 ### 2.2 Translation Pipeline (All-Languages Backfill)
 - **Unified 5-Language Schema:** Every word registered in the system must hold translations across all 5 supported languages: **English (EN), German (DE), Italian (IT), Spanish (ES), and French (FR)**.
@@ -99,4 +102,4 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
 ### 3.4 Statistics Views
 - **Global Progress:** Renders total sessions, average accuracy, and current streak.
 - **Folder Performance:** Visualizes Leitner box mastery distribution (Box 1–5) and hardest words.
-- **Word-by-Word Statistics Table:** Shows the exact attempts (correct, false) and overall success ratio percentage for every single word in the selected wordlist.
+- **Word-by-Word Statistics Table:** Shows the exact attempts (correct, false), difficulty rating badge (Easy/Medium/Hard), and overall success ratio percentage for every single word in the selected wordlist.
