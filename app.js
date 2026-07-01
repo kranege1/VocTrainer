@@ -2852,6 +2852,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const count = activeSeg ? parseInt(activeSeg.dataset.count) : 10;
     const category = document.getElementById("select-category").value;
     const customCategory = document.getElementById("select-custom-category").value;
+    
+    if (category === "none" && customCategory === "none") {
+      alert("Please select either a Category (Pocket) or a User-Specific Word Set to start testing.");
+      return;
+    }
+    
     startTestSession(state.selectedLang, category, count, false, customCategory, state.testDirection);
   };
 
@@ -2860,11 +2866,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   const selectCustomCategory = document.getElementById("select-custom-category");
   if (selectCategory && selectCustomCategory) {
     selectCategory.onchange = () => {
-      selectCustomCategory.value = "none";
+      if (selectCategory.value !== "none") {
+        selectCustomCategory.value = "none";
+      }
     };
     selectCustomCategory.onchange = () => {
       if (selectCustomCategory.value !== "none") {
-        selectCategory.value = "all";
+        selectCategory.value = "none";
       }
     };
   }
