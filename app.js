@@ -1754,17 +1754,22 @@ function renderQuestion() {
   const qLang = currentWord.questionLang || state.baseLang || "en";
   
   let qArt = "";
-  if (currentWord.details && currentWord.details.articles) {
-    qArt = currentWord.details.articles[qLang] || "";
+  let qNoun = currentWord.en;
+  if (currentWord.details && currentWord.details.articles && currentWord.details.articles[qLang]) {
+    qArt = currentWord.details.articles[qLang];
+  } else {
+    const parsed = getArticleAndNoun(currentWord.en, qLang);
+    qArt = parsed.article;
+    qNoun = parsed.noun;
   }
   
-  const promptTextWithArt = qArt ? `${qArt} ${currentWord.en}` : currentWord.en;
+  const promptTextWithArt = qArt ? `${qArt} ${qNoun}` : qNoun;
   
   promptWordEl.style.color = getLangColor(qLang);
   if (qArt) {
-    promptWordEl.innerHTML = `<span style="font-size:0.85em; color:var(--success-color);">${qArt}</span> ${currentWord.en}`;
+    promptWordEl.innerHTML = `<span style="font-size:0.85em; color:var(--success-color);">${qArt}</span> ${qNoun}`;
   } else {
-    promptWordEl.textContent = currentWord.en;
+    promptWordEl.textContent = qNoun;
   }
   
   // Image Renderer - Use manual custom image if available, else fetch from LoremFlickr
@@ -2076,6 +2081,27 @@ function stripArticles(text, lang) {
     }
   }
   return cleanText;
+}
+
+// Extract leading article and clean noun dynamically if details are missing
+function getArticleAndNoun(text, lang) {
+  const articles = {
+    en: ["the ", "a ", "an "],
+    de: ["der ", "die ", "das ", "ein ", "eine "],
+    es: ["el ", "la ", "los ", "las ", "un ", "una ", "unos ", "unas "],
+    it: ["il ", "lo ", "la ", "i ", "gli ", "le ", "un ", "uno ", "una ", "un' "],
+    fr: ["le ", "la ", "les ", "un ", "une ", "des ", "l' "]
+  };
+  const list = articles[lang] || [];
+  const clean = text.trim();
+  for (const article of list) {
+    if (clean.toLowerCase().startsWith(article.toLowerCase())) {
+      const art = clean.substring(0, article.length).trim();
+      const noun = clean.substring(article.length).trim();
+      return { article: art, noun: noun };
+    }
+  }
+  return { article: "", noun: clean };
 }
 
 // Check the student's answer
@@ -3951,22 +3977,32 @@ function setupWordDetails(currentWord) {
   const targetWordEl = document.getElementById("detail-target-word");
   
   let qArt = "";
-  let aArt = "";
-  if (details && details.articles) {
-    qArt = details.articles[qLang] || "";
-    aArt = details.articles[aLang] || "";
+  let qNoun = currentWord.en;
+  if (details && details.articles && details.articles[qLang]) {
+    qArt = details.articles[qLang];
+  } else {
+    const parsed = getArticleAndNoun(currentWord.en, qLang);
+    qArt = parsed.article;
+    qNoun = parsed.noun;
   }
-  
-  const baseTextWithArt = qArt ? `${qArt} ${currentWord.en}` : currentWord.en;
-  const targetTextWithArt = aArt ? `${aArt} ${currentWord.target}` : currentWord.target;
+
+  let aArt = "";
+  let aNoun = currentWord.target;
+  if (details && details.articles && details.articles[aLang]) {
+    aArt = details.articles[aLang];
+  } else {
+    const parsed = getArticleAndNoun(currentWord.target, aLang);
+    aArt = parsed.article;
+    aNoun = parsed.noun;
+  }
 
   if (baseWordEl) {
     baseWordEl.style.color = getLangColor(qLang);
-    baseWordEl.innerHTML = qArt ? `<span style="font-size:0.85em; color:var(--success-color);">${qArt}</span> ${currentWord.en}` : currentWord.en;
+    baseWordEl.innerHTML = qArt ? `<span style="font-size:0.85em; color:var(--success-color);">${qArt}</span> ${qNoun}` : qNoun;
   }
   if (targetWordEl) {
     targetWordEl.style.color = getLangColor(aLang);
-    targetWordEl.innerHTML = aArt ? `<span style="font-size:0.85em; color:var(--success-color);">${aArt}</span> ${currentWord.target}` : currentWord.target;
+    targetWordEl.innerHTML = aArt ? `<span style="font-size:0.85em; color:var(--success-color);">${aArt}</span> ${aNoun}` : aNoun;
   }
 
   // Speak Base & Target handlers — use correct language for voice
