@@ -2730,12 +2730,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Typing Input Key Listener (Enter key to submit answer)
   document.getElementById("input-typing-answer").addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-      e.preventDefault();
       const feedback = document.getElementById("feedback-overlay");
       const customModal = document.getElementById("custom-modal-overlay");
       
       // If modal or feedback overlay are NOT active, submit the answer
       if ((!feedback || !feedback.classList.contains("active")) && (!customModal || !customModal.classList.contains("active"))) {
+        e.preventDefault();
+        e.stopPropagation();
         submitAnswer();
       }
     }
