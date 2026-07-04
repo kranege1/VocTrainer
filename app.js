@@ -1958,7 +1958,8 @@ const IRREGULAR_VERBS = {
     "sapere": ["so", "sai", "sa", "sappiamo", "sapete", "sanno"],
     "venire": ["vengo", "vieni", "viene", "veniamo", "venite", "vengono"],
     "dire": ["dico", "dici", "dice", "diciamo", "dite", "dicono"],
-    "uscire": ["esco", "esci", "esce", "usciamo", "uscite", "escono"]
+    "uscire": ["esco", "esci", "esce", "usciamo", "uscite", "escono"],
+    "sedere": ["siedo", "siedi", "siede", "sediamo", "sedete", "siedono"]
   },
   es: {
     "ser": ["soy", "eres", "es", "somos", "sois", "son"],
@@ -2087,18 +2088,78 @@ async function fetchConjugationsWithAI(verb, lang, wordKey) {
 
 function getConjugationsForVerb(wordObj, lang) {
   const wordKey = wordObj.origEn || wordObj.en;
-  const cleanInfinitive = stripArticles(wordObj.target, lang);
+  let cleanInfinitive = stripArticles(wordObj.target, lang).toLowerCase().trim();
 
   if (wordObj.details && wordObj.details.conjugations && wordObj.details.conjugations[lang]) {
     return wordObj.details.conjugations[lang];
   }
 
-  const irrs = IRREGULAR_VERBS[lang] || {};
-  if (irrs[cleanInfinitive]) {
-    return irrs[cleanInfinitive];
+  let isReflexive = false;
+  let baseInfinitive = cleanInfinitive;
+  let refPronouns = [];
+
+  if (lang === "it") {
+    if (cleanInfinitive.endsWith("arsi")) {
+      baseInfinitive = cleanInfinitive.slice(0, -4) + "are";
+      isReflexive = true;
+      refPronouns = ["mi", "ti", "si", "ci", "vi", "si"];
+    } else if (cleanInfinitive.endsWith("ersi")) {
+      baseInfinitive = cleanInfinitive.slice(0, -4) + "ere";
+      isReflexive = true;
+      refPronouns = ["mi", "ti", "si", "ci", "vi", "si"];
+    } else if (cleanInfinitive.endsWith("irsi")) {
+      baseInfinitive = cleanInfinitive.slice(0, -4) + "ire";
+      isReflexive = true;
+      refPronouns = ["mi", "ti", "si", "ci", "vi", "si"];
+    }
+  } else if (lang === "es") {
+    if (cleanInfinitive.endsWith("arse")) {
+      baseInfinitive = cleanInfinitive.slice(0, -2);
+      isReflexive = true;
+      refPronouns = ["me", "te", "se", "nos", "os", "se"];
+    } else if (cleanInfinitive.endsWith("erse")) {
+      baseInfinitive = cleanInfinitive.slice(0, -2);
+      isReflexive = true;
+      refPronouns = ["me", "te", "se", "nos", "os", "se"];
+    } else if (cleanInfinitive.endsWith("irse")) {
+      baseInfinitive = cleanInfinitive.slice(0, -2);
+      isReflexive = true;
+      refPronouns = ["me", "te", "se", "nos", "os", "se"];
+    }
+  } else if (lang === "fr") {
+    if (cleanInfinitive.startsWith("se ")) {
+      baseInfinitive = cleanInfinitive.substring(3).trim();
+      isReflexive = true;
+    } else if (cleanInfinitive.startsWith("s'")) {
+      baseInfinitive = cleanInfinitive.substring(2).trim();
+      isReflexive = true;
+    }
   }
 
-  const regs = getRegularConjugation(cleanInfinitive, lang);
+  let baseConjugations = null;
+  const irrs = IRREGULAR_VERBS[lang] || {};
+  if (irrs[baseInfinitive]) {
+    baseConjugations = irrs[baseInfinitive];
+  } else {
+    baseConjugations = getRegularConjugation(baseInfinitive, lang);
+  }
+
+  let result = baseConjugations;
+  if (isReflexive) {
+    if (lang === "fr") {
+      result = baseConjugations.map((val, idx) => {
+        const isVowel = /^[aeiouyàâéèêëîïôûùüh]/i.test(val);
+        if (idx === 0) return isVowel ? `m'${val}` : `me ${val}`;
+        if (idx === 1) return isVowel ? `t'${val}` : `te ${val}`;
+        if (idx === 2) return isVowel ? `s'${val}` : `se ${val}`;
+        if (idx === 3) return `nous ${val}`;
+        if (idx === 4) return `vous ${val}`;
+        return isVowel ? `s'${val}` : `se ${val}`;
+      });
+    } else {
+      result = baseConjugations.map((val, idx) => `${refPronouns[idx]} ${val}`);
+    }
+  }
 
   const hasKey = state.openaiKey || state.grokKey || state.geminiKey || state.anthropicKey;
   if (hasKey) {
@@ -2116,7 +2177,7 @@ function getConjugationsForVerb(wordObj, lang) {
     });
   }
 
-  return regs;
+  return result;
 }
 
 function buildConjugationMode() {
