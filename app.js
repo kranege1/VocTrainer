@@ -2538,6 +2538,11 @@ function renderQuestion() {
   const catTag = document.getElementById("test-category-tag");
   const submitBtn = document.getElementById("btn-submit-answer");
   const nextBtn = document.getElementById("btn-next-question");
+
+  const btnAddMeaning = document.getElementById("btn-add-alternative-meaning");
+  const wrapMeaningInput = document.getElementById("add-meaning-input-wrap");
+  if (btnAddMeaning) btnAddMeaning.style.display = "inline-flex";
+  if (wrapMeaningInput) wrapMeaningInput.style.display = "none";
   if (wordCardWrapper) wordCardWrapper.style.display = "block";
   if (catTag) catTag.style.display = "block";
   if (submitBtn) submitBtn.style.display = "block";
@@ -3608,6 +3613,73 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Continue to next question
   document.getElementById("btn-next-question").onclick = nextQuestion;
+
+  // Add Alternative Meaning Event Handlers
+  const btnAltMeaning = document.getElementById("btn-add-alternative-meaning");
+  const wrapAltMeaning = document.getElementById("add-meaning-input-wrap");
+  const inputNewMeaningVal = document.getElementById("input-new-meaning");
+  const btnSaveMeaningVal = document.getElementById("btn-save-new-meaning");
+  const btnCancelMeaningVal = document.getElementById("btn-cancel-new-meaning");
+
+  if (btnAltMeaning && wrapAltMeaning && inputNewMeaningVal && btnSaveMeaningVal && btnCancelMeaningVal) {
+    btnAltMeaning.onclick = () => {
+      btnAltMeaning.style.display = "none";
+      wrapAltMeaning.style.display = "flex";
+      inputNewMeaningVal.value = "";
+      inputNewMeaningVal.focus();
+    };
+
+    btnCancelMeaningVal.onclick = () => {
+      wrapAltMeaning.style.display = "none";
+      btnAltMeaning.style.display = "inline-flex";
+    };
+
+    btnSaveMeaningVal.onclick = () => {
+      const val = inputNewMeaningVal.value.trim();
+      if (!val) return;
+
+      const tState = state.currentTest;
+      if (!tState) return;
+      const currentWord = tState.words[tState.index];
+      const wordKey = currentWord.origEn || currentWord.en;
+      const ansLang = currentWord.answerLang || state.selectedLang;
+
+      const addSynToWord = (word) => {
+        if (!word.details) word.details = {};
+        if (!word.details.synonyms) word.details.synonyms = {};
+        if (!word.details.synonyms[ansLang]) word.details.synonyms[ansLang] = [];
+        if (!word.details.synonyms[ansLang].includes(val)) {
+          word.details.synonyms[ansLang].push(val);
+        }
+      };
+
+      const idx = state.customVocab.findIndex(v => v.en === wordKey || v.origEn === wordKey);
+      if (idx !== -1) {
+        addSynToWord(state.customVocab[idx]);
+      } else {
+        if (!state.editedStarters[wordKey]) {
+          state.editedStarters[wordKey] = { details: { synonyms: {} } };
+        }
+        addSynToWord(state.editedStarters[wordKey]);
+      }
+
+      addSynToWord(currentWord);
+      saveState();
+
+      const detailSyns = document.getElementById("detail-synonyms");
+      if (detailSyns) {
+        const currentSyns = (currentWord.details && currentWord.details.synonyms && currentWord.details.synonyms[ansLang])
+          ? currentWord.details.synonyms[ansLang]
+          : [];
+        detailSyns.textContent = currentSyns.length > 0 ? currentSyns.join(", ") : "None";
+      }
+
+      wrapAltMeaning.style.display = "none";
+      btnAltMeaning.style.display = "inline-flex";
+
+      showCustomAlert(`Alternative meaning "${val}" added successfully!`);
+    };
+  }
 
   // Typing Input Key Listener (Enter key to submit answer)
   document.getElementById("input-typing-answer").addEventListener("keydown", (e) => {
