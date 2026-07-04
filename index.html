@@ -241,6 +241,19 @@
               </div>
             </div>
           </div>
+
+          <!-- Conjugation Mode -->
+          <div id="test-mode-conjugation" class="test-mode-section">
+            <p class="speech-instruction" style="margin-bottom: 12px;">Match each conjugation to its correct pronoun.</p>
+            <div class="conjugation-game-container" style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+              <div id="conjugation-rows-container" style="display: flex; flex-direction: column; gap: 10px;">
+                <!-- 6 pronoun rows with slots -->
+              </div>
+              <div id="conjugation-pool" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 12px; padding: 12px; border: 1px dashed var(--border-color); border-radius: 12px; min-height: 60px; background: rgba(255,255,255,0.01);">
+                <!-- Shuffled conjugation card pool -->
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Mode Toggles in Test -->
@@ -249,6 +262,7 @@
           <button class="mode-toggle-btn" data-mode="bubbles">🧩 Blocks</button>
           <button class="mode-toggle-btn" data-mode="speech">🎙️ Speak</button>
           <button class="mode-toggle-btn" data-mode="compare">🔄 Compare</button>
+          <button class="mode-toggle-btn" data-mode="conjugation" id="btn-mode-conjugation" style="display: none;">🎯 Conjugate</button>
         </div>
 
         <button id="btn-submit-answer" class="btn btn-primary btn-block btn-lg">Check Answer</button>

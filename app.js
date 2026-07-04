@@ -1927,32 +1927,397 @@ function selectCompareWord(side, btn, word) {
   }
 }
 
-function showCompareFeedback(batch) {
+const PRONOUNS = {
+  de: ["ich", "du", "er/sie/es", "wir", "ihr", "sie/Sie"],
+  it: ["io", "tu", "lui/lei", "noi", "voi", "loro"],
+  es: ["yo", "tú", "él/ella", "nosotros", "vosotros", "ellos/ellas"],
+  fr: ["je", "tu", "il/elle", "nous", "vous", "ils/elles"],
+  en: ["I", "you", "he/she/it", "we", "you (plur.)", "they"]
+};
+
+const IRREGULAR_VERBS = {
+  de: {
+    "sein": ["bin", "bist", "ist", "sind", "seid", "sind"],
+    "haben": ["habe", "hast", "hat", "haben", "habt", "haben"],
+    "werden": ["werde", "wirst", "wird", "werden", "werdet", "werden"],
+    "können": ["kann", "kannst", "kann", "können", "könnt", "können"],
+    "müssen": ["muss", "musst", "muss", "müssen", "müsst", "müssen"],
+    "wollen": ["will", "willst", "will", "wollen", "wollt", "wollen"],
+    "sollen": ["soll", "sollst", "soll", "sollen", "sollt", "sollen"],
+    "dürfen": ["darf", "darfst", "darf", "dürfen", "dürft", "dürfen"],
+    "wissen": ["weiß", "weißt", "weiß", "wissen", "wisst", "wissen"]
+  },
+  it: {
+    "essere": ["sono", "sei", "è", "siamo", "siete", "sono"],
+    "avere": ["ho", "hai", "ha", "abbiamo", "avete", "hanno"],
+    "fare": ["faccio", "fai", "fa", "facciamo", "fate", "fanno"],
+    "andare": ["vado", "vai", "va", "andiamo", "andate", "vanno"],
+    "potere": ["posso", "puoi", "può", "possiamo", "potete", "possono"],
+    "dovere": ["devo", "devi", "deve", "dobbiamo", "dovete", "devono"],
+    "volere": ["voglio", "vuoi", "vuole", "vogliamo", "volete", "vogliono"],
+    "sapere": ["so", "sai", "sa", "sappiamo", "sapete", "sanno"],
+    "venire": ["vengo", "vieni", "viene", "veniamo", "venite", "vengono"],
+    "dire": ["dico", "dici", "dice", "diciamo", "dite", "dicono"],
+    "uscire": ["esco", "esci", "esce", "usciamo", "uscite", "escono"]
+  },
+  es: {
+    "ser": ["soy", "eres", "es", "somos", "sois", "son"],
+    "estar": ["estoy", "estás", "está", "estamos", "estáis", "están"],
+    "haber": ["he", "has", "ha", "hemos", "habéis", "han"],
+    "tener": ["tengo", "tienes", "tiene", "tenemos", "tenéis", "tienen"],
+    "ir": ["voy", "vas", "va", "vamos", "vais", "van"],
+    "hacer": ["hago", "haces", "hace", "hacemos", "hacéis", "hacen"],
+    "poder": ["puedo", "puedes", "puede", "podemos", "podéis", "pueden"],
+    "querer": ["quiero", "quieres", "quiere", "queremos", "queréis", "quieren"],
+    "decir": ["digo", "dices", "dice", "decimos", "decís", "dicen"],
+    "venir": ["vengo", "vienes", "viene", "venimos", "venís", "vienen"],
+    "saber": ["sé", "sabes", "sabe", "sabemos", "sabéis", "saben"]
+  },
+  fr: {
+    "être": ["suis", "es", "est", "sommes", "êtes", "sont"],
+    "avoir": ["ai", "as", "a", "avons", "avez", "ont"],
+    "aller": ["vais", "vas", "va", "allons", "allez", "vont"],
+    "faire": ["fais", "fais", "fait", "faisons", "faites", "font"],
+    "pouvoir": ["peux", "peux", "peut", "pouvons", "pouvez", "pouvent"],
+    "vouloir": ["veux", "veux", "veut", "voulons", "voulez", "veulent"],
+    "devoir": ["dois", "dois", "doit", "devons", "devez", "doivent"],
+    "savoir": ["sais", "sais", "sait", "savons", "savez", "savent"],
+    "venir": ["viens", "viens", "vient", "venons", "venez", "viennent"],
+    "prendre": ["prends", "prends", "prend", "prenons", "prenez", "prennent"]
+  }
+};
+
+function getRegularConjugation(infinitive, lang) {
+  const clean = infinitive.toLowerCase().trim();
+  if (lang === "de") {
+    if (clean.endsWith("en")) {
+      const base = clean.slice(0, -2);
+      const e = (base.endsWith("t") || base.endsWith("d") || (base.endsWith("n") && !base.endsWith("rn") && !base.endsWith("ln"))) ? "e" : "";
+      return [
+        base + "e",
+        base + e + "st",
+        base + e + "t",
+        base + "en",
+        base + e + "t",
+        base + "en"
+      ];
+    }
+  }
+  if (lang === "it") {
+    if (clean.endsWith("are")) {
+      const base = clean.slice(0, -3);
+      return [base + "o", base + "i", base + "a", base + "iamo", base + "ate", base + "ano"];
+    }
+    if (clean.endsWith("ere")) {
+      const base = clean.slice(0, -3);
+      return [base + "o", base + "i", base + "e", base + "iamo", base + "ete", base + "ono"];
+    }
+    if (clean.endsWith("ire")) {
+      const base = clean.slice(0, -3);
+      return [base + "o", base + "i", base + "e", base + "iamo", base + "ite", base + "ono"];
+    }
+  }
+  if (lang === "es") {
+    if (clean.endsWith("ar")) {
+      const base = clean.slice(0, -2);
+      return [base + "o", base + "as", base + "a", base + "amos", base + "áis", base + "an"];
+    }
+    if (clean.endsWith("er")) {
+      const base = clean.slice(0, -2);
+      return [base + "o", base + "es", base + "e", base + "emos", base + "éis", base + "en"];
+    }
+    if (clean.endsWith("ir")) {
+      const base = clean.slice(0, -2);
+      return [base + "o", base + "es", base + "e", base + "imos", base + "ís", base + "en"];
+    }
+  }
+  if (lang === "fr") {
+    if (clean.endsWith("er")) {
+      const base = clean.slice(0, -2);
+      return [base + "e", base + "es", base + "e", base + "ons", base + "ez", base + "ent"];
+    }
+    if (clean.endsWith("ir")) {
+      const base = clean.slice(0, -2);
+      return [base + "is", base + "is", base + "it", base + "issons", base + "issez", base + "issent"];
+    }
+    if (clean.endsWith("re")) {
+      const base = clean.slice(0, -2);
+      return [base + "s", base + "s", base + "", base + "ons", base + "ez", base + "ent"];
+    }
+  }
+  return [clean, clean, clean, clean, clean, clean];
+}
+
+async function fetchConjugationsWithAI(verb, lang, wordKey) {
+  const langNames = { en: "English", de: "German", it: "Italian", es: "Spanish", fr: "French" };
+  const targetName = langNames[lang] || "German";
+  
+  const prompt = `Conjugate the verb "${verb}" in present tense for the language "${targetName}".
+  Return ONLY a clean parseable JSON array of exactly 6 strings in order:
+  [1st person singular, 2nd person singular, 3rd person singular, 1st person plural, 2nd person plural, 3rd person plural].
+  Do not wrap in markdown code blocks. Do not write extra commentary.
+  Example for German "haben": ["habe", "hast", "hat", "haben", "habt", "haben"]`;
+
+  try {
+    const resText = await callLLM(prompt, "You are a precise grammar assistant.");
+    const cleanJson = resText.replace(/```json/g, "").replace(/```/g, "").trim();
+    const arr = JSON.parse(cleanJson);
+    if (Array.isArray(arr) && arr.length === 6) {
+      const idx = state.customVocab.findIndex(v => v.en === wordKey || v.origEn === wordKey);
+      if (idx !== -1) {
+        if (!state.customVocab[idx].details) state.customVocab[idx].details = {};
+        if (!state.customVocab[idx].details.conjugations) state.customVocab[idx].details.conjugations = {};
+        state.customVocab[idx].details.conjugations[lang] = arr;
+      } else {
+        if (!state.editedStarters[wordKey]) {
+          state.editedStarters[wordKey] = { details: { conjugations: {} } };
+        }
+        if (!state.editedStarters[wordKey].details) state.editedStarters[wordKey].details = {};
+        if (!state.editedStarters[wordKey].details.conjugations) state.editedStarters[wordKey].details.conjugations = {};
+        state.editedStarters[wordKey].details.conjugations[lang] = arr;
+      }
+      saveState();
+      return arr;
+    }
+  } catch (e) {
+    console.error("AI conjugation fetch failed:", e);
+  }
+  return null;
+}
+
+function getConjugationsForVerb(wordObj, lang) {
+  const wordKey = wordObj.origEn || wordObj.en;
+  const cleanInfinitive = stripArticles(wordObj.target, lang);
+
+  if (wordObj.details && wordObj.details.conjugations && wordObj.details.conjugations[lang]) {
+    return wordObj.details.conjugations[lang];
+  }
+
+  const irrs = IRREGULAR_VERBS[lang] || {};
+  if (irrs[cleanInfinitive]) {
+    return irrs[cleanInfinitive];
+  }
+
+  const regs = getRegularConjugation(cleanInfinitive, lang);
+
+  const hasKey = state.openaiKey || state.grokKey || state.geminiKey || state.anthropicKey;
+  if (hasKey) {
+    fetchConjugationsWithAI(cleanInfinitive, lang, wordKey).then(aiArr => {
+      if (aiArr && state.currentTest && state.currentTest.selectedMode === "conjugation") {
+        const currentWord = state.currentTest.words[state.currentTest.index];
+        if ((currentWord.origEn || currentWord.en) === wordKey) {
+          buildConjugationMode();
+        }
+      }
+    });
+  }
+
+  return regs;
+}
+
+function buildConjugationMode() {
+  const tState = state.currentTest;
+  if (!tState) return;
+
+  const currentWord = tState.words[tState.index];
+  const aLang = currentWord.answerLang || state.selectedLang;
+
+  const wordCardWrapper = document.querySelector(".word-card-wrapper");
+  const catTag = document.getElementById("test-category-tag");
+  if (wordCardWrapper) wordCardWrapper.style.display = "none";
+  if (catTag) catTag.style.display = "none";
+
+  const submitBtn = document.getElementById("btn-submit-answer");
+  if (submitBtn) {
+    submitBtn.style.display = "block";
+    submitBtn.textContent = "Check Answer";
+    submitBtn.onclick = checkConjugationAnswer;
+  }
+
+  if (window.questionTimerInterval) {
+    clearInterval(window.questionTimerInterval);
+    window.questionTimerInterval = null;
+  }
+  const timerBadge = document.getElementById("test-countdown-badge");
+  if (timerBadge) timerBadge.style.display = "none";
+
+  const correctConjugations = getConjugationsForVerb(currentWord, aLang);
+  window.conjugationCorrectList = correctConjugations;
+  window.conjugationUserMatches = [null, null, null, null, null, null];
+  window.conjugationSelectedCard = null;
+
+  const pronouns = PRONOUNS[aLang] || PRONOUNS.en;
+
+  const rowsContainer = document.getElementById("conjugation-rows-container");
+  rowsContainer.innerHTML = "";
+  pronouns.forEach((pronoun, index) => {
+    const row = document.createElement("div");
+    row.className = "conjugation-row";
+    row.innerHTML = `
+      <span class="conjugation-pronoun">${pronoun}</span>
+      <button class="conjugation-slot" id="conjugation-slot-${index}" onclick="window.clickConjugationSlot(${index})">[ Tap to Place ]</button>
+    `;
+    rowsContainer.appendChild(row);
+  });
+
+  const poolContainer = document.getElementById("conjugation-pool");
+  poolContainer.innerHTML = "";
+  
+  const shuffledConjugations = [...correctConjugations]
+    .map((text, index) => ({ text, index }))
+    .sort(() => 0.5 - Math.random());
+
+  shuffledConjugations.forEach(item => {
+    const card = document.createElement("button");
+    card.className = "conjugation-card";
+    card.textContent = item.text;
+    card.onclick = () => window.clickConjugationCard(card, item.text);
+    poolContainer.appendChild(card);
+  });
+}
+
+window.clickConjugationCard = function(cardEl, text) {
+  playSound("sound-bubble");
+  
+  if (cardEl.classList.contains("selected")) {
+    cardEl.classList.remove("selected");
+    window.conjugationSelectedCard = null;
+    return;
+  }
+
+  document.querySelectorAll(".conjugation-card").forEach(c => c.classList.remove("selected"));
+  cardEl.classList.add("selected");
+  window.conjugationSelectedCard = { el: cardEl, text: text };
+};
+
+window.clickConjugationSlot = function(index) {
+  playSound("sound-bubble");
+  const slotEl = document.getElementById(`conjugation-slot-${index}`);
+  const existingText = window.conjugationUserMatches[index];
+
+  if (existingText) {
+    const pool = document.getElementById("conjugation-pool");
+    const card = document.createElement("button");
+    card.className = "conjugation-card";
+    card.textContent = existingText;
+    card.onclick = () => window.clickConjugationCard(card, existingText);
+    pool.appendChild(card);
+
+    window.conjugationUserMatches[index] = null;
+    slotEl.classList.remove("filled");
+    slotEl.textContent = "[ Tap to Place ]";
+    return;
+  }
+
+  if (window.conjugationSelectedCard) {
+    const text = window.conjugationSelectedCard.text;
+    window.conjugationSelectedCard.el.remove();
+    window.conjugationSelectedCard = null;
+
+    window.conjugationUserMatches[index] = text;
+    slotEl.classList.add("filled");
+    slotEl.textContent = text;
+  }
+};
+
+function checkConjugationAnswer() {
+  const tState = state.currentTest;
+  if (!tState) return;
+
+  const currentWord = tState.words[tState.index];
+  const aLang = currentWord.answerLang || state.selectedLang;
+  const correctList = window.conjugationCorrectList;
+  const userMatches = window.conjugationUserMatches;
+  const pronouns = PRONOUNS[aLang] || PRONOUNS.en;
+
+  let allCorrect = true;
+
+  pronouns.forEach((pronoun, i) => {
+    const slotEl = document.getElementById(`conjugation-slot-${i}`);
+    if (slotEl) {
+      if (userMatches[i] === correctList[i]) {
+        slotEl.className = "conjugation-slot filled correct";
+      } else {
+        slotEl.className = "conjugation-slot filled incorrect";
+        slotEl.innerHTML = `${userMatches[i] || "Empty"} <span style="font-size:0.8em; opacity:0.8; text-decoration:line-through; margin:0 4px;">&rarr;</span> <span style="color:var(--success-color); font-weight:700;">${correctList[i]}</span>`;
+        allCorrect = false;
+      }
+    }
+  });
+
+  if (allCorrect) {
+    playSound("sound-correct");
+  } else {
+    playSound("sound-incorrect");
+  }
+
+  const wordKey = currentWord.origEn || currentWord.en;
+  if (!state.wordStats[wordKey]) {
+    state.wordStats[wordKey] = { attempts: 0, errors: 0, box: 1, lastReview: null };
+  }
+  const stats = state.wordStats[wordKey];
+  stats.attempts = (stats.attempts || 0) + 1;
+  stats.lastReview = Date.now();
+
+  if (allCorrect) {
+    if (!stats.box) stats.box = 1;
+    if (stats.box < 5) stats.box++;
+    
+    let qPoints = 100;
+    if (state.questionTimer > 0) {
+      const limit = state.questionTimer;
+      let timerLimitMult = 1.0;
+      if (limit === 5) timerLimitMult = 3.0;
+      else if (limit === 10) timerLimitMult = 2.0;
+      else if (limit === 15) timerLimitMult = 1.5;
+      qPoints = qPoints * timerLimitMult;
+    }
+    tState.points = (tState.points || 0) + Math.round(qPoints);
+    tState.correctCount++;
+    tState.lastAnswerCorrect = true;
+  } else {
+    stats.errors = (stats.errors || 0) + 1;
+    stats.box = 1;
+    
+    recordMistake(currentWord);
+
+    if (!tState.wrongAnswers.find(w => w.en === currentWord.en)) {
+      tState.wrongAnswers.push(currentWord);
+    }
+    tState.lastAnswerCorrect = false;
+  }
+
+  updateTestStatsMini();
+  saveState();
+
   const overlay = document.getElementById("feedback-overlay");
   const fTitle = document.getElementById("feedback-title");
   const fDesc = document.getElementById("feedback-desc");
   const fIcon = document.getElementById("feedback-icon");
   
-  overlay.className = "test-right-pane active correct-ans";
-  fTitle.textContent = "Match Complete!";
-  fIcon.textContent = "🏆";
-  fDesc.textContent = `You successfully matched all ${batch.length} word pairs in this batch!`;
-  
+  overlay.className = allCorrect ? "test-right-pane active correct-ans" : "test-right-pane active incorrect-ans";
+  fTitle.textContent = allCorrect ? "Correct Conjugation!" : "Conjugation Mistakes!";
+  fIcon.textContent = allCorrect ? "✅" : "❌";
+  fDesc.textContent = allCorrect 
+    ? `Perfect! You conjugated "${currentWord.target}" correctly across all pronouns.` 
+    : `Some conjugation matching mistakes were made. Review the corrections on the left.`;
+
   const detailsContainer = document.getElementById("word-details-container");
   if (detailsContainer) detailsContainer.style.display = "none";
-  
+
   const diffVoting = document.querySelector(".difficulty-voting-container");
-  if (diffVoting) diffVoting.style.display = "none";
-  
-  saveState();
-  
+  if (diffVoting) {
+    diffVoting.style.display = "block";
+    updateDifficultyVoteUI(currentWord);
+  }
+
   const nextBtn = document.getElementById("btn-next-question");
   if (nextBtn) {
     nextBtn.textContent = "Continue";
     nextBtn.onclick = () => {
       overlay.classList.remove("active");
-      state.currentTest.index += batch.length;
-      if (state.currentTest.index < state.currentTest.words.length) {
+      tState.index++;
+      if (tState.index < tState.words.length) {
         renderQuestion();
       } else {
         finishTestRound();
@@ -1984,8 +2349,33 @@ function renderQuestion() {
   const diffVoting = document.querySelector(".difficulty-voting-container");
   if (diffVoting) diffVoting.style.display = "block";
 
+  const conjBtn = document.getElementById("btn-mode-conjugation");
+  const isVerb = currentWord.category === "verbs";
+  
+  if (conjBtn) {
+    if (isVerb) {
+      conjBtn.style.display = "inline-flex";
+    } else {
+      conjBtn.style.display = "none";
+      if (tState.selectedMode === "conjugation") {
+        tState.selectedMode = "typing";
+        document.querySelectorAll(".mode-toggle-btn").forEach(b => {
+          if (b.dataset.mode === "typing") b.classList.add("active");
+          else b.classList.remove("active");
+        });
+        document.querySelectorAll(".test-mode-section").forEach(s => s.classList.remove("active"));
+        document.getElementById("test-mode-typing").classList.add("active");
+      }
+    }
+  }
+
   if (tState.selectedMode === "compare") {
     buildCompareMode();
+    return;
+  }
+  
+  if (tState.selectedMode === "conjugation") {
+    buildConjugationMode();
     return;
   }
   
@@ -3066,6 +3456,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else {
           nextQuestion();
         }
+      } else if (state.currentTest && state.currentTest.selectedMode === "conjugation" && (!customModal || !customModal.classList.contains("active"))) {
+        e.preventDefault();
+        checkConjugationAnswer();
       }
     }
   });

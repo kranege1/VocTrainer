@@ -1701,6 +1701,70 @@ body.device-ios .app-container {
   box-shadow: none !important;
 }
 
+/* Conjugation Mode Styles */
+.conjugation-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  padding: 10px 16px;
+  border-radius: 12px;
+  min-height: 52px;
+}
+.conjugation-pronoun {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+.conjugation-slot {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed var(--border-color);
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  border-radius: 8px;
+  min-width: 140px;
+  text-align: center;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.conjugation-slot.filled {
+  background: rgba(76, 201, 240, 0.1);
+  border-style: solid;
+  border-color: var(--accent-color);
+  color: #fff;
+}
+.conjugation-slot.correct {
+  background: rgba(46, 196, 182, 0.15) !important;
+  border-color: var(--success-color) !important;
+  color: var(--success-color) !important;
+}
+.conjugation-slot.incorrect {
+  background: rgba(255, 0, 84, 0.15) !important;
+  border-color: var(--error-color) !important;
+  color: var(--error-color) !important;
+}
+.conjugation-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.conjugation-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+.conjugation-card.selected {
+  background: rgba(76, 201, 240, 0.15);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
 
 
 
