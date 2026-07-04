@@ -40,7 +40,7 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
   - Supports dragging cards from the pool into slots, dragging between slots to swap/reassign, or dragging back to the pool to reset.
   - **Live Evaluation**: Every placement instantly checks correctness for that slot, playing the success/incorrect audio cue and coloring the slot green or red in real-time.
   - On completing all correct placements, the session automatically submits and proceeds.
-  - Resolves verb forms instantly using local irregular dictionaries and regular suffixes, while caching verified high-fidelity forms via background LLM requests.
+  - Resolves verb forms instantly using local irregular dictionaries, regular suffixes, and **reflexive verb grammar parsers** (supporting Italian `-arsi/-ersi/-irsi`, Spanish `-arse/-erse/-irse`, and French `se / s'`), while caching verified high-fidelity forms via background LLM requests.
 - **Per-Question Timer Limit:**
   - Allows the user to configure a countdown timer of 5, 10, or 15 seconds per question (or Deactivated).
   - Automatically submits an empty/incorrect answer if the timer expires (hits 0 seconds).
