@@ -33,12 +33,18 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
   - Users click a word first on one side and its corresponding match on the other. 
   - Correct matches gray out the buttons, mark them disabled (`.matched` class), play a success tone, and award points.
   - Incorrect matches highlight in red and reset selection.
+- **Verb Conjugation Mode:**
+  - A grammar-focused exercise available exclusively for verbs. 
+  - Lists the 6 target subject pronouns (e.g. *ich, du, er/sie/es, wir, ihr, sie/Sie*) next to interactive empty slots, with the 6 shuffled present tense conjugations of the verb listed below.
+  - Users place conjugations into their correct pronoun slots.
+  - On submission, correct matches are highlighted in green, and incorrect matches are highlighted in red alongside correct answers in strikethrough notation.
+  - Resolves verb forms instantly using local irregular dictionaries and regular suffixes, while caching verified high-fidelity forms via background LLM requests.
 - **Per-Question Timer Limit:**
   - Allows the user to configure a countdown timer of 5, 10, or 15 seconds per question (or Deactivated).
   - Automatically submits an empty/incorrect answer if the timer expires (hits 0 seconds).
 - **Points Scoring System:**
   - Awarded for correct answers: base score of `100` points per correct answer.
-  - **Mode Multipliers:** `typing` mode (x1), `speech` mode (x1), `bubbles` mode (x0.5), `compare` mode (x0.5).
+  - **Mode Multipliers:** `typing` mode (x1), `speech` mode (x1), `bubbles` mode (x0.5), `compare` mode (x0.5), `conjugation` mode (x1).
   - **Speed Bonus:** If the timer is used, adds a **+20% bonus** for each remaining second left on the clock.
   - **Timer difficulty multipliers:** `5s` limit (x3), `10s` limit (x2), `15s` limit (x1.5).
 - **Incorrect Answer Blocking:**
