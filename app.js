@@ -2106,7 +2106,11 @@ function getConjugationsForVerb(wordObj, lang) {
       if (aiArr && state.currentTest && state.currentTest.selectedMode === "conjugation") {
         const currentWord = state.currentTest.words[state.currentTest.index];
         if ((currentWord.origEn || currentWord.en) === wordKey) {
-          buildConjugationMode();
+          const isDifferent = JSON.stringify(aiArr) !== JSON.stringify(window.conjugationCorrectList);
+          const hasInteracted = window.conjugationUserMatches && window.conjugationUserMatches.some(m => m !== null);
+          if (isDifferent && !hasInteracted) {
+            buildConjugationMode();
+          }
         }
       }
     });
@@ -2167,10 +2171,11 @@ function buildConjugationMode() {
     .map((text, index) => ({ text, index }))
     .sort(() => 0.5 - Math.random());
 
-  shuffledConjugations.forEach(item => {
+  shuffledConjugations.forEach((item, idx) => {
     const card = document.createElement("button");
     card.className = "conjugation-card";
     card.textContent = item.text;
+    card.dataset.index = idx;
     card.onclick = () => window.clickConjugationCard(card, item.text);
     poolContainer.appendChild(card);
   });
@@ -2187,21 +2192,20 @@ window.clickConjugationCard = function(cardEl, text) {
 
   document.querySelectorAll(".conjugation-card").forEach(c => c.classList.remove("selected"));
   cardEl.classList.add("selected");
-  window.conjugationSelectedCard = { el: cardEl, text: text };
+  window.conjugationSelectedCard = { el: cardEl, text: text, index: cardEl.dataset.index };
 };
 
 window.clickConjugationSlot = function(index) {
   playSound("sound-bubble");
   const slotEl = document.getElementById(`conjugation-slot-${index}`);
-  const existingText = window.conjugationUserMatches[index];
+  const existingMatch = window.conjugationUserMatches[index];
 
-  if (existingText) {
-    const pool = document.getElementById("conjugation-pool");
-    const card = document.createElement("button");
-    card.className = "conjugation-card";
-    card.textContent = existingText;
-    card.onclick = () => window.clickConjugationCard(card, existingText);
-    pool.appendChild(card);
+  if (existingMatch) {
+    const cardEl = document.querySelector(`#conjugation-pool .conjugation-card[data-index="${existingMatch.cardIndex}"]`);
+    if (cardEl) {
+      cardEl.style.visibility = "visible";
+      cardEl.classList.remove("selected");
+    }
 
     window.conjugationUserMatches[index] = null;
     slotEl.classList.remove("filled");
@@ -2211,10 +2215,12 @@ window.clickConjugationSlot = function(index) {
 
   if (window.conjugationSelectedCard) {
     const text = window.conjugationSelectedCard.text;
-    window.conjugationSelectedCard.el.remove();
+    const cardIndex = window.conjugationSelectedCard.index;
+    
+    window.conjugationSelectedCard.el.style.visibility = "hidden";
     window.conjugationSelectedCard = null;
 
-    window.conjugationUserMatches[index] = text;
+    window.conjugationUserMatches[index] = { text, cardIndex };
     slotEl.classList.add("filled");
     slotEl.textContent = text;
   }
@@ -2235,11 +2241,12 @@ function checkConjugationAnswer() {
   pronouns.forEach((pronoun, i) => {
     const slotEl = document.getElementById(`conjugation-slot-${i}`);
     if (slotEl) {
-      if (userMatches[i] === correctList[i]) {
+      const userMatchText = userMatches[i] ? userMatches[i].text : null;
+      if (userMatchText === correctList[i]) {
         slotEl.className = "conjugation-slot filled correct";
       } else {
         slotEl.className = "conjugation-slot filled incorrect";
-        slotEl.innerHTML = `${userMatches[i] || "Empty"} <span style="font-size:0.8em; opacity:0.8; text-decoration:line-through; margin:0 4px;">&rarr;</span> <span style="color:var(--success-color); font-weight:700;">${correctList[i]}</span>`;
+        slotEl.innerHTML = `${userMatchText || "Empty"} <span style="font-size:0.8em; opacity:0.8; text-decoration:line-through; margin:0 4px;">&rarr;</span> <span style="color:var(--success-color); font-weight:700;">${correctList[i]}</span>`;
         allCorrect = false;
       }
     }
