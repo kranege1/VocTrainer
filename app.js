@@ -2166,12 +2166,38 @@ function buildConjugationMode() {
       <span class="conjugation-pronoun">${pronoun}</span>
       <button class="conjugation-slot" id="conjugation-slot-${index}" onclick="window.clickConjugationSlot(${index})">[ Tap to Place ]</button>
     `;
+    
+    const slotEl = row.querySelector(".conjugation-slot");
+    slotEl.ondragover = (e) => {
+      e.preventDefault();
+    };
+    slotEl.ondrop = (e) => {
+      e.preventDefault();
+      try {
+        const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+        window.placeCardInSlot(data.text, data.cardIndex, index, data.fromSlot);
+      } catch (err) {}
+    };
+
     rowsContainer.appendChild(row);
   });
 
   const poolContainer = document.getElementById("conjugation-pool");
   poolContainer.innerHTML = "";
   
+  poolContainer.ondragover = (e) => {
+    e.preventDefault();
+  };
+  poolContainer.ondrop = (e) => {
+    e.preventDefault();
+    try {
+      const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+      if (data.fromSlot !== undefined) {
+        window.returnCardToPool(data.fromSlot);
+      }
+    } catch (err) {}
+  };
+
   const shuffledConjugations = [...correctConjugations]
     .map((text, index) => ({ text, index }))
     .sort(() => 0.5 - Math.random());
@@ -2181,10 +2207,126 @@ function buildConjugationMode() {
     card.className = "conjugation-card";
     card.textContent = item.text;
     card.dataset.index = idx;
+    
+    card.draggable = true;
+    card.ondragstart = (e) => {
+      e.dataTransfer.setData("text/plain", JSON.stringify({ text: item.text, cardIndex: idx }));
+    };
+
     card.onclick = () => window.clickConjugationCard(card, item.text);
     poolContainer.appendChild(card);
   });
 }
+
+window.evaluateSlot = function(index) {
+  const slotEl = document.getElementById(`conjugation-slot-${index}`);
+  const match = window.conjugationUserMatches[index];
+  const correctList = window.conjugationCorrectList;
+
+  if (!match) {
+    slotEl.className = "conjugation-slot";
+    slotEl.textContent = "[ Tap to Place ]";
+    slotEl.removeAttribute("draggable");
+    slotEl.style.borderColor = "";
+    return;
+  }
+
+  const isCorrect = match.text === correctList[index];
+  if (isCorrect) {
+    slotEl.className = "conjugation-slot filled correct";
+    playSound("sound-correct");
+  } else {
+    slotEl.className = "conjugation-slot filled incorrect";
+    playSound("sound-incorrect");
+  }
+};
+
+window.placeCardInSlot = function(text, cardIndex, slotIndex, fromSlotIndex) {
+  const targetExisting = window.conjugationUserMatches[slotIndex];
+
+  if (fromSlotIndex !== undefined && fromSlotIndex !== null) {
+    window.conjugationUserMatches[fromSlotIndex] = null;
+    const fromSlotEl = document.getElementById(`conjugation-slot-${fromSlotIndex}`);
+    if (fromSlotEl) {
+      fromSlotEl.className = "conjugation-slot";
+      fromSlotEl.textContent = "[ Tap to Place ]";
+      fromSlotEl.removeAttribute("draggable");
+    }
+  }
+
+  if (targetExisting) {
+    const targetCardEl = document.querySelector(`#conjugation-pool .conjugation-card[data-index="${targetExisting.cardIndex}"]`);
+    if (targetCardEl) {
+      targetCardEl.style.visibility = "visible";
+    }
+  }
+
+  const cardEl = document.querySelector(`#conjugation-pool .conjugation-card[data-index="${cardIndex}"]`);
+  if (cardEl) {
+    cardEl.style.visibility = "hidden";
+  }
+
+  window.conjugationUserMatches[slotIndex] = { text, cardIndex };
+  const slotEl = document.getElementById(`conjugation-slot-${slotIndex}`);
+  if (slotEl) {
+    slotEl.textContent = text;
+    slotEl.classList.add("filled");
+    slotEl.draggable = true;
+    slotEl.ondragstart = (e) => {
+      e.dataTransfer.setData("text/plain", JSON.stringify({ text, cardIndex, fromSlot: slotIndex }));
+    };
+  }
+
+  window.evaluateSlot(slotIndex);
+
+  if (fromSlotIndex !== undefined && fromSlotIndex !== null) {
+    window.evaluateSlot(fromSlotIndex);
+  }
+
+  window.checkAllSlotsAuto();
+};
+
+window.returnCardToPool = function(slotIndex) {
+  const match = window.conjugationUserMatches[slotIndex];
+  if (match) {
+    const cardEl = document.querySelector(`#conjugation-pool .conjugation-card[data-index="${match.cardIndex}"]`);
+    if (cardEl) {
+      cardEl.style.visibility = "visible";
+      cardEl.classList.remove("selected");
+    }
+
+    window.conjugationUserMatches[slotIndex] = null;
+    const slotEl = document.getElementById(`conjugation-slot-${slotIndex}`);
+    if (slotEl) {
+      slotEl.className = "conjugation-slot";
+      slotEl.textContent = "[ Tap to Place ]";
+      slotEl.removeAttribute("draggable");
+    }
+
+    playSound("sound-bubble");
+  }
+};
+
+window.checkAllSlotsAuto = function() {
+  const tState = state.currentTest;
+  if (!tState) return;
+
+  const currentWord = tState.words[tState.index];
+  const aLang = currentWord.answerLang || state.selectedLang;
+  const correctList = window.conjugationCorrectList;
+  const userMatches = window.conjugationUserMatches;
+  const pronouns = PRONOUNS[aLang] || PRONOUNS.en;
+
+  const allFilled = userMatches.every(m => m !== null);
+  if (!allFilled) return;
+
+  const allCorrect = userMatches.every((m, i) => m.text === correctList[i]);
+  if (allCorrect) {
+    setTimeout(() => {
+      checkConjugationAnswer();
+    }, 400);
+  }
+};
 
 window.clickConjugationCard = function(cardEl, text) {
   playSound("sound-bubble");
@@ -2201,33 +2343,18 @@ window.clickConjugationCard = function(cardEl, text) {
 };
 
 window.clickConjugationSlot = function(index) {
-  playSound("sound-bubble");
-  const slotEl = document.getElementById(`conjugation-slot-${index}`);
   const existingMatch = window.conjugationUserMatches[index];
 
   if (existingMatch) {
-    const cardEl = document.querySelector(`#conjugation-pool .conjugation-card[data-index="${existingMatch.cardIndex}"]`);
-    if (cardEl) {
-      cardEl.style.visibility = "visible";
-      cardEl.classList.remove("selected");
-    }
-
-    window.conjugationUserMatches[index] = null;
-    slotEl.classList.remove("filled");
-    slotEl.textContent = "[ Tap to Place ]";
+    window.returnCardToPool(index);
     return;
   }
 
   if (window.conjugationSelectedCard) {
     const text = window.conjugationSelectedCard.text;
     const cardIndex = window.conjugationSelectedCard.index;
-    
-    window.conjugationSelectedCard.el.style.visibility = "hidden";
     window.conjugationSelectedCard = null;
-
-    window.conjugationUserMatches[index] = { text, cardIndex };
-    slotEl.classList.add("filled");
-    slotEl.textContent = text;
+    window.placeCardInSlot(text, cardIndex, index);
   }
 };
 
