@@ -57,6 +57,11 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
   - Integrates the user's difficulty rating into the selection algorithm: **Hard** words receive a **3x selection weight** (prioritized for testing), and **Easy** words receive a **0.2x selection weight** (tested less frequently).
 - **Word Difficulty Voting:**
   - Provides difficulty voting buttons (**🟢 Easy**, **🟡 Medium**, **🔴 Hard**) in the feedback panel for each word tested, allowing users to rate how difficult a word was and adjust its test selection frequency weight.
+- **Multiple Meanings & Alternative Meanings Panel**:
+  - Supports multiple correct translations for each word by checking synonyms defined in `details.synonyms` (if `allowSynonyms` is enabled).
+  - Displays a `➕ Add Alternative Meaning` action button in the feedback panel.
+  - Allows typing a new correct meaning during gameplay, saving it instantly to the word's permanent properties (`localStorage`) and updating the session queue so that subsequent inputs of this new meaning are accepted as correct.
+
 
 ### 2.2 Translation Pipeline (All-Languages Backfill)
 - **Unified 5-Language Schema:** Every word registered in the system must hold translations across all 5 supported languages: **English (EN), German (DE), Italian (IT), Spanish (ES), and French (FR)**.
