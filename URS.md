@@ -36,8 +36,10 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
 - **Verb Conjugation Mode:**
   - A grammar-focused exercise available exclusively for verbs. 
   - Lists the 6 target subject pronouns (e.g. *ich, du, er/sie/es, wir, ihr, sie/Sie*) next to interactive empty slots, with the 6 shuffled present tense conjugations of the verb listed below.
-  - Users place conjugations into their correct pronoun slots.
-  - On submission, correct matches are highlighted in green, and incorrect matches are highlighted in red alongside correct answers in strikethrough notation.
+  - Users place conjugations into their correct pronoun slots using **either tap-to-select or HTML5 drag-and-drop**.
+  - Supports dragging cards from the pool into slots, dragging between slots to swap/reassign, or dragging back to the pool to reset.
+  - **Live Evaluation**: Every placement instantly checks correctness for that slot, playing the success/incorrect audio cue and coloring the slot green or red in real-time.
+  - On completing all correct placements, the session automatically submits and proceeds.
   - Resolves verb forms instantly using local irregular dictionaries and regular suffixes, while caching verified high-fidelity forms via background LLM requests.
 - **Per-Question Timer Limit:**
   - Allows the user to configure a countdown timer of 5, 10, or 15 seconds per question (or Deactivated).
