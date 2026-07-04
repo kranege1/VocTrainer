@@ -2126,6 +2126,11 @@ function buildConjugationMode() {
   const currentWord = tState.words[tState.index];
   const aLang = currentWord.answerLang || state.selectedLang;
 
+  // Update progress context
+  document.getElementById("test-progress-text").textContent = `Question ${tState.index + 1}/${tState.words.length}`;
+  const progressPercent = (tState.index / tState.words.length) * 100;
+  document.getElementById("test-progress-fill").style.width = `${progressPercent}%`;
+
   const wordCardWrapper = document.querySelector(".word-card-wrapper");
   const catTag = document.getElementById("test-category-tag");
   if (wordCardWrapper) wordCardWrapper.style.display = "none";
