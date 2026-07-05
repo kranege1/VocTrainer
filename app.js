@@ -7311,8 +7311,7 @@ async function pushToCloud() {
     wordStats: state.wordStats,
     testDirection: state.testDirection,
     customVoices: state.customVoices,
-    activeICloudLists: state.activeICloudLists,
-    dictionaryCache: state.dictionaryCache
+    activeICloudLists: state.activeICloudLists
   };
 
   try {
@@ -7435,8 +7434,7 @@ async function generateCloudSyncCode() {
     wordStats: state.wordStats,
     testDirection: state.testDirection,
     customVoices: state.customVoices,
-    activeICloudLists: state.activeICloudLists,
-    dictionaryCache: state.dictionaryCache
+    activeICloudLists: state.activeICloudLists
   };
 
   try {
