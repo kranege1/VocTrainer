@@ -15,6 +15,29 @@ async function loadStarterVocab() {
   }
 }
 
+let FREQUENCY_LISTS = {};
+
+async function loadFrequencyLists() {
+  try {
+    const res = await fetch("vocab/frequency_lists.json");
+    if (res.ok) {
+      const data = await res.json();
+      FREQUENCY_LISTS = {};
+      Object.keys(data).forEach(lang => {
+        FREQUENCY_LISTS[lang] = new Set(data[lang].map(w => w.toLowerCase().trim()));
+      });
+    }
+  } catch (e) {
+    console.warn("Could not load frequency lists:", e);
+  }
+}
+
+function isCommonWord(wordText, lang) {
+  if (!wordText || !lang || !FREQUENCY_LISTS[lang]) return false;
+  const clean = stripArticles(wordText, lang).toLowerCase().trim();
+  return FREQUENCY_LISTS[lang].has(clean);
+}
+
 // Language code mappings to Speech Synthesis/Recognition locales
 const LANG_LOCALES = {
   en: "en-US",
@@ -2963,6 +2986,16 @@ function renderQuestion() {
   } else {
     promptWordEl.textContent = qNoun;
   }
+
+  const badgesRow = document.getElementById("word-badges-row");
+  if (badgesRow) {
+    badgesRow.innerHTML = "";
+    const isQCommon = isCommonWord(qNoun, qLang);
+    const isACommon = isCommonWord(currentWord.target, state.selectedLang);
+    if (isQCommon || isACommon) {
+      badgesRow.innerHTML = `<span class="badge-common" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; font-size: 0.65rem; font-weight: 700; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); display: inline-flex; align-items: center; gap: 4px;">⭐ Common Word</span>`;
+    }
+  }
   
   // Image Renderer - Use manual custom image if available, else fetch from LoremFlickr
   const imgEl = document.getElementById("word-image");
@@ -3609,6 +3642,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   await loadStarterVocab();
+  await loadFrequencyLists();
   loadState();
   await initICloudSync();
 
@@ -5242,16 +5276,17 @@ function renderBrowseWordsList(folderId) {
     };
 
     const emptySpan = '<span style="color:var(--error-color);opacity:0.6;font-style:italic;">(empty)</span>';
-    
+    const star = (txt, l) => isCommonWord(txt, l) ? ' <span title="High Frequency / Common Word" style="color: #f59e0b; cursor: help; font-size: 0.85rem;">⭐</span>' : '';
+
     tr.innerHTML = `
       <td style="padding: 10px 8px; text-align: center;">
         <input type="checkbox" class="chk-select-browse" data-key="${key.replace(/'/g, "\\'")}" data-custom="${isCustom}" style="cursor: pointer; width: 16px; height: 16px;">
       </td>
-      <td style="padding: 10px 8px; font-weight: 700; color: ${getLangColor('en')};">${vocab.en || emptySpan}</td>
-      <td style="padding: 10px 8px; color: ${getLangColor('de')};">${vocab.de || emptySpan}</td>
-      <td style="padding: 10px 8px; color: ${getLangColor('it')};">${vocab.it || emptySpan}</td>
-      <td style="padding: 10px 8px; color: ${getLangColor('es')};">${vocab.es || emptySpan}</td>
-      <td style="padding: 10px 8px; color: ${getLangColor('fr')};">${vocab.fr || emptySpan}</td>
+      <td style="padding: 10px 8px; font-weight: 700; color: ${getLangColor('en')};">${vocab.en || emptySpan}${star(vocab.en, 'en')}</td>
+      <td style="padding: 10px 8px; color: ${getLangColor('de')};">${vocab.de || emptySpan}${star(vocab.de, 'de')}</td>
+      <td style="padding: 10px 8px; color: ${getLangColor('it')};">${vocab.it || emptySpan}${star(vocab.it, 'it')}</td>
+      <td style="padding: 10px 8px; color: ${getLangColor('es')};">${vocab.es || emptySpan}${star(vocab.es, 'es')}</td>
+      <td style="padding: 10px 8px; color: ${getLangColor('fr')};">${vocab.fr || emptySpan}${star(vocab.fr, 'fr')}</td>
       <td style="padding: 10px 8px; text-align: center;"><span class="badge" style="background: rgba(255,255,255,0.05); color: var(--text-secondary); font-size: 0.7rem; border-radius: 6px;">Box ${box}</span></td>
       <td style="padding: 10px 8px; text-align: center;">${errors > 0 ? `<span class="badge" style="background: rgba(239, 71, 111, 0.1); color: var(--error-color); font-size: 0.7rem; border-radius: 6px;">⚠️ ${errors}</span>` : `<span style="color:var(--text-secondary); opacity: 0.3;">0</span>`}</td>
       <td style="padding: 10px 8px; text-align: center;">
