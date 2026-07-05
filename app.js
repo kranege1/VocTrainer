@@ -38,6 +38,104 @@ function isCommonWord(wordText, lang) {
   return FREQUENCY_LISTS[lang].has(clean);
 }
 
+// Central Dictionary caching & GTX translation utilities
+async function translateTextGTX(text, fromLang, toLang) {
+  try {
+    const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${fromLang}&tl=${toLang}&dt=t&q=${encodeURIComponent(text)}`);
+    if (res.ok) {
+      const data = await res.json();
+      return data[0].map(item => item[0]).join("");
+    }
+  } catch (e) {
+    console.error("GTX translation failed:", e);
+  }
+  return text;
+}
+
+function getWordDetails(wordObj) {
+  if (!wordObj) return { articles: {}, sentences: {}, variations: {}, synonyms: {} };
+  const wordKey = wordObj.origEn || wordObj.en || "";
+  const localDetails = wordObj.details || { articles: {}, sentences: {}, variations: {}, synonyms: {} };
+  if (wordKey && state.dictionaryCache && state.dictionaryCache[wordKey]) {
+    return {
+      ...localDetails,
+      ...state.dictionaryCache[wordKey]
+    };
+  }
+  return localDetails;
+}
+
+async function fetchAndCacheWordDetails(wordObj) {
+  const wordKey = wordObj ? (wordObj.origEn || wordObj.en || "") : "";
+  if (!wordKey) return;
+  if (!state.dictionaryCache) state.dictionaryCache = {};
+  if (state.dictionaryCache[wordKey] && state.dictionaryCache[wordKey].definitions) return state.dictionaryCache[wordKey];
+
+  try {
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(wordKey)}`);
+    if (!res.ok) throw new Error("Word not found in Free Dictionary API");
+    const data = await res.json();
+    const entry = data[0];
+
+    const phonetics = entry.phonetics || [];
+    const audioUrl = phonetics.find(p => p.audio)?.audio || "";
+    const phoneticText = entry.phonetic || (phonetics.find(p => p.text)?.text || "");
+
+    const enSyns = [];
+    const enDefs = [];
+    let enSentence = "";
+
+    if (entry.meanings) {
+      entry.meanings.forEach(m => {
+        if (m.synonyms) enSyns.push(...m.synonyms);
+        if (m.definitions) {
+          m.definitions.forEach(d => {
+            if (d.definition) enDefs.push(d.definition);
+            if (d.example && !enSentence) {
+              enSentence = d.example;
+            }
+          });
+        }
+      });
+    }
+
+    const cacheEntry = {
+      phonetic: phoneticText,
+      audio: audioUrl,
+      synonyms: { en: [...new Set(enSyns)].slice(0, 10) },
+      definitions: { en: enDefs.slice(0, 5) },
+      sentences: { en: enSentence },
+      articles: {},
+      variations: {}
+    };
+
+    state.dictionaryCache[wordKey] = cacheEntry;
+    saveState();
+
+    // Dynamically translate synonyms & sentences for DE, IT, ES, FR
+    const targetLangs = ["de", "it", "es", "fr"];
+    for (const lang of targetLangs) {
+      if (enSentence) {
+        cacheEntry.sentences[lang] = await translateTextGTX(enSentence, "en", lang);
+      }
+      if (cacheEntry.synonyms.en.length > 0) {
+        cacheEntry.synonyms[lang] = await Promise.all(
+          cacheEntry.synonyms.en.slice(0, 4).map(s => translateTextGTX(s, "en", lang))
+        );
+      }
+    }
+
+    saveState();
+
+    // If active question is this word, refresh details panel
+    if (state.currentTest && state.currentTest.words[state.currentTest.index]?.en === wordKey) {
+      showWordDetails();
+    }
+  } catch (err) {
+    console.warn("Free Dictionary API fetch failed:", err);
+  }
+}
+
 // Language code mappings to Speech Synthesis/Recognition locales
 const LANG_LOCALES = {
   en: "en-US",
@@ -223,104 +321,6 @@ function loadState() {
     if (state.anthropicKey) testApiKey("anthropic", state.anthropicKey, "setup-anthropic-status");
 
     // Prefill dashboard buttons active state
-
-// Central Dictionary caching & GTX translation utilities
-async function translateTextGTX(text, fromLang, toLang) {
-  try {
-    const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${fromLang}&tl=${toLang}&dt=t&q=${encodeURIComponent(text)}`);
-    if (res.ok) {
-      const data = await res.json();
-      return data[0].map(item => item[0]).join("");
-    }
-  } catch (e) {
-    console.error("GTX translation failed:", e);
-  }
-  return text;
-}
-
-function getWordDetails(wordObj) {
-  if (!wordObj) return { articles: {}, sentences: {}, variations: {}, synonyms: {} };
-  const wordKey = wordObj.origEn || wordObj.en || "";
-  const localDetails = wordObj.details || { articles: {}, sentences: {}, variations: {}, synonyms: {} };
-  if (wordKey && state.dictionaryCache && state.dictionaryCache[wordKey]) {
-    return {
-      ...localDetails,
-      ...state.dictionaryCache[wordKey]
-    };
-  }
-  return localDetails;
-}
-
-async function fetchAndCacheWordDetails(wordObj) {
-  const wordKey = wordObj ? (wordObj.origEn || wordObj.en || "") : "";
-  if (!wordKey) return;
-  if (!state.dictionaryCache) state.dictionaryCache = {};
-  if (state.dictionaryCache[wordKey] && state.dictionaryCache[wordKey].definitions) return state.dictionaryCache[wordKey];
-
-  try {
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(wordKey)}`);
-    if (!res.ok) throw new Error("Word not found in Free Dictionary API");
-    const data = await res.json();
-    const entry = data[0];
-
-    const phonetics = entry.phonetics || [];
-    const audioUrl = phonetics.find(p => p.audio)?.audio || "";
-    const phoneticText = entry.phonetic || (phonetics.find(p => p.text)?.text || "");
-
-    const enSyns = [];
-    const enDefs = [];
-    let enSentence = "";
-
-    if (entry.meanings) {
-      entry.meanings.forEach(m => {
-        if (m.synonyms) enSyns.push(...m.synonyms);
-        if (m.definitions) {
-          m.definitions.forEach(d => {
-            if (d.definition) enDefs.push(d.definition);
-            if (d.example && !enSentence) {
-              enSentence = d.example;
-            }
-          });
-        }
-      });
-    }
-
-    const cacheEntry = {
-      phonetic: phoneticText,
-      audio: audioUrl,
-      synonyms: { en: [...new Set(enSyns)].slice(0, 10) },
-      definitions: { en: enDefs.slice(0, 5) },
-      sentences: { en: enSentence },
-      articles: {},
-      variations: {}
-    };
-
-    state.dictionaryCache[wordKey] = cacheEntry;
-    saveState();
-
-    // Dynamically translate synonyms & sentences for DE, IT, ES, FR
-    const targetLangs = ["de", "it", "es", "fr"];
-    for (const lang of targetLangs) {
-      if (enSentence) {
-        cacheEntry.sentences[lang] = await translateTextGTX(enSentence, "en", lang);
-      }
-      if (cacheEntry.synonyms.en.length > 0) {
-        cacheEntry.synonyms[lang] = await Promise.all(
-          cacheEntry.synonyms.en.slice(0, 4).map(s => translateTextGTX(s, "en", lang))
-        );
-      }
-    }
-
-    saveState();
-
-    // If active question is this word, refresh details panel
-    if (state.currentTest && state.currentTest.words[state.currentTest.index]?.en === wordKey) {
-      showWordDetails();
-    }
-  } catch (err) {
-    console.warn("Free Dictionary API fetch failed:", err);
-  }
-}
 
     document.querySelectorAll(".lang-btn").forEach(b => {
       b.classList.remove("active");
