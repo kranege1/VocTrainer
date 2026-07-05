@@ -6873,6 +6873,21 @@ const idb = {
 state.icloudHandle = null;
 
 async function initICloudSync() {
+  if (!window.showDirectoryPicker) {
+    const statusSpan = document.getElementById("icloud-folder-status");
+    if (statusSpan) {
+      statusSpan.textContent = "❌ Not supported on this browser";
+      statusSpan.style.color = "var(--error-color)";
+    }
+    const selectBtn = document.getElementById("btn-select-icloud-folder");
+    if (selectBtn) {
+      selectBtn.disabled = true;
+      selectBtn.style.opacity = "0.5";
+      selectBtn.style.cursor = "not-allowed";
+      selectBtn.textContent = "Sync Not Supported";
+    }
+    return;
+  }
   try {
     const handle = await idb.get("icloud_handle");
     if (handle) {
@@ -6899,6 +6914,10 @@ async function initICloudSync() {
 }
 
 async function selectICloudFolder() {
+  if (!window.showDirectoryPicker) {
+    alert("Folder Syncing (File System Access API) is not supported in this browser. Please use a desktop Chromium browser (e.g. Chrome, Edge) for live folder synchronization. On iOS, Safari, or Firefox, you can use the manual Import/Export backups below.");
+    return;
+  }
   try {
     if (state.icloudHandle) {
       const perm = await state.icloudHandle.queryPermission({ mode: "readwrite" });
