@@ -194,6 +194,7 @@ let state = {
   customVoices: {}, // Selected free local system voices for each language key: { en: "Voice Name", ... }
   activeICloudLists: {}, // Sync status of files in directory: { "filename.json": boolean }
   dictionaryCache: {}, // Central dictionary cache mapping English base word to details: synonyms, conjugations, sentences, etc.
+  cloudSyncId: "", // Code used for easy multi-device Cloud Sync (JsonBlob ID)
 
   // Current active test state
   currentTest: {
@@ -238,7 +239,8 @@ function saveState() {
     testDirection: state.testDirection,
     customVoices: state.customVoices,
     activeICloudLists: state.activeICloudLists,
-    dictionaryCache: state.dictionaryCache
+    dictionaryCache: state.dictionaryCache,
+    cloudSyncId: state.cloudSyncId
   }));
   updateHeaderUI();
   updateCategoryCounts();
@@ -304,6 +306,7 @@ function loadState() {
     state.customVoices = parsed.customVoices || {};
     state.activeICloudLists = parsed.activeICloudLists || {};
     state.dictionaryCache = parsed.dictionaryCache || {};
+    state.cloudSyncId = parsed.cloudSyncId || "";
 
     // Prefill Setup fields
     document.getElementById("setup-openai-key").value = state.openaiKey;
@@ -339,6 +342,7 @@ function loadState() {
   renderMistakesList();
   renderHistoryList();
   updateCategoryCounts();
+  updateCloudSyncUI();
 }
 
 function getFolderFullPath(folderId) {
@@ -3939,6 +3943,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     showView("view-dashboard");
   };
 
+  // Easy Cloud Sync bindings
+  document.getElementById("btn-cloud-generate-code").onclick = generateCloudSyncCode;
+  document.getElementById("btn-cloud-upload").onclick = pushToCloud;
+  document.getElementById("btn-cloud-download").onclick = pullFromCloud;
+  document.getElementById("btn-cloud-unlink").onclick = unlinkCloudSyncDevice;
+  document.getElementById("btn-cloud-link-code").onclick = () => {
+    const code = document.getElementById("input-cloud-sync-code").value.trim();
+    linkCloudSyncDevice(code);
+  };
+
   // API Key Actions
   document.getElementById("btn-save-api-keys").onclick = async () => {
     state.openaiKey = document.getElementById("setup-openai-key").value.trim();
@@ -7242,6 +7256,287 @@ async function executeCSVImport() {
     textInput.value = "";
   } else {
     alert(`No words imported.\nDuplicates skipped: ${duplicateCount}.\nInvalid lines (not 5 columns): ${invalidCount}.`);
+  }
+}
+
+// ==========================================
+// 12. Easy Multi-Device Cloud Sync Logic
+// ==========================================
+function updateCloudSyncUI() {
+  const activeZone = document.getElementById("cloud-sync-active-zone");
+  const setupZone = document.getElementById("cloud-sync-setup-zone");
+  const codeDisplay = document.getElementById("cloud-sync-code-display");
+  
+  if (!activeZone || !setupZone || !codeDisplay) return;
+
+  if (state.cloudSyncId) {
+    activeZone.style.display = "block";
+    setupZone.style.display = "none";
+    codeDisplay.textContent = state.cloudSyncId;
+  } else {
+    activeZone.style.display = "none";
+    setupZone.style.display = "flex";
+    codeDisplay.textContent = "-";
+  }
+}
+
+async function pushToCloud() {
+  if (!state.cloudSyncId) return;
+  const statusMsg = document.getElementById("cloud-sync-status-msg");
+  if (statusMsg) {
+    statusMsg.textContent = "⏳ Syncing with cloud...";
+    statusMsg.style.color = "var(--text-secondary)";
+  }
+  
+  const payload = {
+    xp: state.xp,
+    streak: state.streak,
+    hearts: state.hearts,
+    level: state.level,
+    customVocab: state.customVocab,
+    mistakes: state.mistakes,
+    openaiKey: state.openaiKey,
+    grokKey: state.grokKey,
+    geminiKey: state.geminiKey,
+    anthropicKey: state.anthropicKey,
+    audioEngine: state.audioEngine,
+    allowSynonyms: state.allowSynonyms,
+    questionTimer: state.questionTimer,
+    baseLang: state.baseLang,
+    selectedLang: state.selectedLang,
+    history: state.history,
+    deletedStarters: state.deletedStarters,
+    editedStarters: state.editedStarters,
+    customFolders: state.customFolders,
+    wordStats: state.wordStats,
+    testDirection: state.testDirection,
+    customVoices: state.customVoices,
+    activeICloudLists: state.activeICloudLists,
+    dictionaryCache: state.dictionaryCache
+  };
+
+  try {
+    const res = await fetch(`https://jsonblob.com/api/jsonBlob/${state.cloudSyncId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      if (statusMsg) {
+        statusMsg.textContent = `✅ Synced to cloud at ${new Date().toLocaleTimeString()}`;
+        statusMsg.style.color = "var(--success-color)";
+      }
+      showCustomAlert("🎉 Data successfully pushed to Cloud!");
+    } else {
+      throw new Error(`Server returned code ${res.status}`);
+    }
+  } catch (err) {
+    if (statusMsg) {
+      statusMsg.textContent = `❌ Upload failed: ${err.message}`;
+      statusMsg.style.color = "var(--error-color)";
+    }
+    alert("Cloud Sync failed: " + err.message);
+  }
+}
+
+async function pullFromCloud() {
+  if (!state.cloudSyncId) return;
+  const statusMsg = document.getElementById("cloud-sync-status-msg");
+  if (statusMsg) {
+    statusMsg.textContent = "⏳ Fetching from cloud...";
+    statusMsg.style.color = "var(--text-secondary)";
+  }
+
+  try {
+    const res = await fetch(`https://jsonblob.com/api/jsonBlob/${state.cloudSyncId}`);
+    if (!res.ok) throw new Error(`Server returned code ${res.status}`);
+    const data = await res.json();
+    
+    if (data && typeof data === "object") {
+      // Overwrite/merge properties
+      if (data.xp !== undefined) state.xp = data.xp;
+      if (data.streak !== undefined) state.streak = data.streak;
+      if (data.hearts !== undefined) state.hearts = data.hearts;
+      if (data.level !== undefined) state.level = data.level;
+      if (data.customVocab !== undefined) state.customVocab = data.customVocab;
+      if (data.mistakes !== undefined) state.mistakes = data.mistakes;
+      if (data.openaiKey !== undefined) state.openaiKey = data.openaiKey;
+      if (data.grokKey !== undefined) state.grokKey = data.grokKey;
+      if (data.geminiKey !== undefined) state.geminiKey = data.geminiKey;
+      if (data.anthropicKey !== undefined) state.anthropicKey = data.anthropicKey;
+      if (data.audioEngine !== undefined) state.audioEngine = data.audioEngine;
+      if (data.allowSynonyms !== undefined) state.allowSynonyms = data.allowSynonyms;
+      if (data.questionTimer !== undefined) state.questionTimer = data.questionTimer;
+      if (data.baseLang !== undefined) state.baseLang = data.baseLang;
+      if (data.selectedLang !== undefined) state.selectedLang = data.selectedLang;
+      if (data.history !== undefined) state.history = data.history;
+      if (data.deletedStarters !== undefined) state.deletedStarters = data.deletedStarters;
+      if (data.editedStarters !== undefined) state.editedStarters = data.editedStarters;
+      if (data.customFolders !== undefined) state.customFolders = data.customFolders;
+      if (data.wordStats !== undefined) state.wordStats = data.wordStats;
+      if (data.testDirection !== undefined) state.testDirection = data.testDirection;
+      if (data.customVoices !== undefined) state.customVoices = data.customVoices;
+      if (data.activeICloudLists !== undefined) state.activeICloudLists = data.activeICloudLists;
+      if (data.dictionaryCache !== undefined) state.dictionaryCache = data.dictionaryCache;
+      
+      saveState();
+      
+      // Re-initialize views
+      renderImportedList();
+      renderMistakesList();
+      renderHistoryList();
+      updateCategoryCounts();
+      updateHeaderUI();
+      
+      if (statusMsg) {
+        statusMsg.textContent = `✅ Synced from cloud at ${new Date().toLocaleTimeString()}`;
+        statusMsg.style.color = "var(--success-color)";
+      }
+      showCustomAlert("🎉 Data successfully pulled from Cloud!");
+    } else {
+      throw new Error("Invalid sync file format");
+    }
+  } catch (err) {
+    if (statusMsg) {
+      statusMsg.textContent = `❌ Download failed: ${err.message}`;
+      statusMsg.style.color = "var(--error-color)";
+    }
+    alert("Cloud download failed: " + err.message);
+  }
+}
+
+async function generateCloudSyncCode() {
+  const btn = document.getElementById("btn-cloud-generate-code");
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "⏳ Generating Code...";
+  }
+
+  const payload = {
+    xp: state.xp,
+    streak: state.streak,
+    hearts: state.hearts,
+    level: state.level,
+    customVocab: state.customVocab,
+    mistakes: state.mistakes,
+    openaiKey: state.openaiKey,
+    grokKey: state.grokKey,
+    geminiKey: state.geminiKey,
+    anthropicKey: state.anthropicKey,
+    audioEngine: state.audioEngine,
+    allowSynonyms: state.allowSynonyms,
+    questionTimer: state.questionTimer,
+    baseLang: state.baseLang,
+    selectedLang: state.selectedLang,
+    history: state.history,
+    deletedStarters: state.deletedStarters,
+    editedStarters: state.editedStarters,
+    customFolders: state.customFolders,
+    wordStats: state.wordStats,
+    testDirection: state.testDirection,
+    customVoices: state.customVoices,
+    activeICloudLists: state.activeICloudLists,
+    dictionaryCache: state.dictionaryCache
+  };
+
+  try {
+    const res = await fetch("https://jsonblob.com/api/jsonBlob", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      const location = res.headers.get("Location");
+      const blobId = location.split("/").pop();
+      state.cloudSyncId = blobId;
+      saveState();
+      updateCloudSyncUI();
+      showCustomAlert("🎉 Sync Code generated! Save this code to link other devices.");
+    } else {
+      throw new Error(`Server returned code ${res.status}`);
+    }
+  } catch (err) {
+    alert("Could not generate Sync Code: " + err.message);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "🆕 Generate New Sync Code";
+    }
+  }
+}
+
+async function linkCloudSyncDevice(code) {
+  if (!code) {
+    alert("Please enter a Sync Code.");
+    return;
+  }
+  const btn = document.getElementById("btn-cloud-link-code");
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "⏳ Linking...";
+  }
+
+  try {
+    const res = await fetch(`https://jsonblob.com/api/jsonBlob/${code}`);
+    if (!res.ok) throw new Error("Sync Code not found or expired.");
+    const data = await res.json();
+    if (data && typeof data === "object") {
+      state.cloudSyncId = code;
+      
+      // Load data
+      if (data.xp !== undefined) state.xp = data.xp;
+      if (data.streak !== undefined) state.streak = data.streak;
+      if (data.hearts !== undefined) state.hearts = data.hearts;
+      if (data.level !== undefined) state.level = data.level;
+      if (data.customVocab !== undefined) state.customVocab = data.customVocab;
+      if (data.mistakes !== undefined) state.mistakes = data.mistakes;
+      if (data.openaiKey !== undefined) state.openaiKey = data.openaiKey;
+      if (data.grokKey !== undefined) state.grokKey = data.grokKey;
+      if (data.geminiKey !== undefined) state.geminiKey = data.geminiKey;
+      if (data.anthropicKey !== undefined) state.anthropicKey = data.anthropicKey;
+      if (data.audioEngine !== undefined) state.audioEngine = data.audioEngine;
+      if (data.allowSynonyms !== undefined) state.allowSynonyms = data.allowSynonyms;
+      if (data.questionTimer !== undefined) state.questionTimer = data.questionTimer;
+      if (data.baseLang !== undefined) state.baseLang = data.baseLang;
+      if (data.selectedLang !== undefined) state.selectedLang = data.selectedLang;
+      if (data.history !== undefined) state.history = data.history;
+      if (data.deletedStarters !== undefined) state.deletedStarters = data.deletedStarters;
+      if (data.editedStarters !== undefined) state.editedStarters = data.editedStarters;
+      if (data.customFolders !== undefined) state.customFolders = data.customFolders;
+      if (data.wordStats !== undefined) state.wordStats = data.wordStats;
+      if (data.testDirection !== undefined) state.testDirection = data.testDirection;
+      if (data.customVoices !== undefined) state.customVoices = data.customVoices;
+      if (data.activeICloudLists !== undefined) state.activeICloudLists = data.activeICloudLists;
+      if (data.dictionaryCache !== undefined) state.dictionaryCache = data.dictionaryCache;
+      
+      saveState();
+      updateCloudSyncUI();
+      
+      // Re-initialize views
+      renderImportedList();
+      renderMistakesList();
+      renderHistoryList();
+      updateCategoryCounts();
+      updateHeaderUI();
+
+      alert("🎉 Device linked successfully! Wordlists and progress synced.");
+    }
+  } catch (err) {
+    alert("Failed to link device: " + err.message);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "🔗 Link Device";
+    }
+  }
+}
+
+function unlinkCloudSyncDevice() {
+  if (confirm("Are you sure you want to disable Cloud Sync? Your current local data will NOT be deleted, but this device will stop syncing with the cloud.")) {
+    state.cloudSyncId = "";
+    saveState();
+    updateCloudSyncUI();
+    showCustomAlert("Cloud Sync disabled.");
   }
 }
 

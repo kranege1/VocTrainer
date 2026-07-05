@@ -438,6 +438,45 @@
         <button id="btn-save-setup" class="btn btn-primary btn-block">Save Preferences</button>
       </div>
 
+      <!-- Easy Multi-Device Cloud Sync -->
+      <div class="card" style="border: 1px solid rgba(76, 201, 240, 0.4); background: rgba(76, 201, 240, 0.02);">
+        <h3 style="color: var(--accent-color); display: flex; align-items: center; gap: 8px;">☁️ Easy Multi-Device Cloud Sync</h3>
+        <p class="import-help" style="margin-bottom: 16px;">
+          Synchronize all your vocab lists, custom folders, and progress between your PC, iPad, and iPhone. No accounts or passwords needed!
+        </p>
+        
+        <!-- Active Sync Code display -->
+        <div id="cloud-sync-active-zone" style="display: none; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--border-color);">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <span style="font-size: 0.8rem; color: var(--text-secondary); display: block;">Your Active Sync Code:</span>
+              <strong id="cloud-sync-code-display" style="font-size: 1.3rem; color: var(--success-color); letter-spacing: 1px; font-family: monospace;">-</strong>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button id="btn-cloud-upload" class="btn btn-secondary btn-sm" style="margin: 0; padding: 6px 12px; display: flex; align-items: center; gap: 4px;">📤 Push to Cloud</button>
+              <button id="btn-cloud-download" class="btn btn-secondary btn-sm" style="margin: 0; padding: 6px 12px; display: flex; align-items: center; gap: 4px;">📥 Pull from Cloud</button>
+            </div>
+          </div>
+          <span id="cloud-sync-status-msg" style="font-size: 0.72rem; color: var(--text-secondary); display: block; margin-top: 6px; font-style: italic;">Ready to sync</span>
+          <button id="btn-cloud-unlink" class="btn btn-secondary btn-sm" style="margin-top: 10px; width: 100%; min-height: 28px; padding: 4px; font-size: 0.75rem; color: var(--error-color); background: rgba(239,71,111,0.05);">❌ Disable Cloud Sync / Unlink Code</button>
+        </div>
+
+        <!-- Initial Setup Zone -->
+        <div id="cloud-sync-setup-zone" style="display: flex; flex-direction: column; gap: 12px;">
+          <button id="btn-cloud-generate-code" class="btn btn-primary" style="margin: 0; width: 100%; min-height: 40px; display: flex; align-items: center; justify-content: center; gap: 6px;">🆕 Generate New Sync Code</button>
+          
+          <div style="text-align: center; color: var(--text-secondary); font-size: 0.8rem; margin: 4px 0; position: relative;">
+            <span style="background: var(--bg-color); padding: 0 8px; position: relative; z-index: 1;">OR LINK AN EXISTING DEVICE</span>
+            <div style="border-top: 1px solid var(--border-color); position: absolute; width: 100%; top: 50%; left: 0; z-index: 0;"></div>
+          </div>
+
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <input type="text" id="input-cloud-sync-code" placeholder="Enter Sync Code" style="flex: 1; min-height: 40px; background: rgba(255,255,255,0.02); color: #fff; border: 1px solid var(--border-color); border-radius: 6px; padding: 0 12px; font-size: 0.95rem; font-family: monospace; text-align: center;">
+            <button id="btn-cloud-link-code" class="btn btn-secondary" style="margin: 0; min-height: 40px; white-space: nowrap;">🔗 Link Device</button>
+          </div>
+        </div>
+      </div>
+
       <!-- iCloud / Local Folder Sync -->
       <div class="card">
         <h3>☁️ iCloud / Local Folder Sync</h3>
