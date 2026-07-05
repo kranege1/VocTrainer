@@ -33,9 +33,14 @@ VocTrainer is an interactive, multi-language vocabulary learning system. It runs
   - Users click a word first on one side and its corresponding match on the other. 
   - Correct matches gray out the buttons, mark them disabled (`.matched` class), play a success tone, and award points.
   - Incorrect matches highlight in red and reset selection.
-- **Verb Conjugation Mode:**
-  - A grammar-focused exercise available exclusively for verbs. 
-  - Lists the 6 target subject pronouns (e.g. *ich, du, er/sie/es, wir, ihr, sie/Sie*) next to interactive empty slots, with the 6 shuffled present tense conjugations of the verb listed below.
+- **Verb Conjugation Mode / First-Class Conjugation Board:**
+  - Accessed via the top-level **🎯 Conjugate** option in the Test Direction/Activity segmented control.
+  - Removes the inline `Conjugate` tab button from the normal vocabulary game card.
+  - **30 Most Important Verbs**: Automatically loads a system list of the 30 most essential verbs per language (English, German, Italian, Spanish, French).
+  - **Conjugation Dashboard**: Lists all 30 verbs. Clicking a verb card expands it to display its 6 pronouns and present-tense conjugations.
+  - **Audio Melody Review**: Includes a `🔊 Melody` button that speaks all 6 conjugations of the verb sequentially in one go using dynamic TTS speech queues.
+  - **Pronoun Matching Practice**: Users can practice matching for a single verb or launch a shuffled conjugation matching session for all 30 verbs.
+  - Lists the 6 target subject pronouns next to interactive empty slots, with the 6 shuffled present tense conjugations of the verb listed below.
   - Users place conjugations into their correct pronoun slots using **either tap-to-select or HTML5 drag-and-drop**.
   - Supports dragging cards from the pool into slots, dragging between slots to swap/reassign, or dragging back to the pool to reset.
   - **Live Evaluation**: Every placement instantly checks correctness for that slot, playing the success/incorrect audio cue and coloring the slot green or red in real-time.
