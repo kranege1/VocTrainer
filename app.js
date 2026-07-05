@@ -355,6 +355,8 @@ function showView(viewId) {
     renderBrowseList();
   } else if (viewId === "view-grammar") {
     loadGrammarGuide();
+  } else if (viewId === "view-conjugation-dashboard") {
+    renderConjugationDashboard();
   }
 }
 
@@ -1927,6 +1929,290 @@ function selectCompareWord(side, btn, word) {
   }
 }
 
+const IMPORTANT_VERBS = {
+  de: [
+    { target: "sein", en: "to be" },
+    { target: "haben", en: "to have" },
+    { target: "werden", en: "to become" },
+    { target: "können", en: "to be able to" },
+    { target: "müssen", en: "to must / to have to" },
+    { target: "wollen", en: "to want" },
+    { target: "sollen", en: "to should" },
+    { target: "dürfen", en: "to be allowed to" },
+    { target: "wissen", en: "to know" },
+    { target: "geben", en: "to give" },
+    { target: "tun", en: "to do" },
+    { target: "sagen", en: "to say" },
+    { target: "gehen", en: "to go" },
+    { target: "sehen", en: "to see" },
+    { target: "kommen", en: "to come" },
+    { target: "denken", en: "to think" },
+    { target: "machen", en: "to make / to do" },
+    { target: "stehen", en: "to stand" },
+    { target: "finden", en: "to find" },
+    { target: "bleiben", en: "to stay" },
+    { target: "nehmen", en: "to take" },
+    { target: "lassen", en: "to let / to leave" },
+    { target: "zeigen", en: "to show" },
+    { target: "bringen", en: "to bring" },
+    { target: "leben", en: "to live" },
+    { target: "fahren", en: "to drive / to ride" },
+    { target: "sprechen", en: "to speak" },
+    { target: "schreiben", en: "to write" },
+    { target: "lesen", en: "to read" },
+    { target: "arbeiten", en: "to work" }
+  ],
+  it: [
+    { target: "essere", en: "to be" },
+    { target: "avere", en: "to have" },
+    { target: "fare", en: "to do / to make" },
+    { target: "dire", en: "to say / to tell" },
+    { target: "potere", en: "to be able to" },
+    { target: "volere", en: "to want" },
+    { target: "dovere", en: "to must / to have to" },
+    { target: "andare", en: "to go" },
+    { target: "sapere", en: "to know" },
+    { target: "venire", en: "to come" },
+    { target: "stare", en: "to stay / to be" },
+    { target: "prendere", en: "to take" },
+    { target: "parlare", en: "to speak" },
+    { target: "trovare", en: "to find" },
+    { target: "sentire", en: "to feel / to hear" },
+    { target: "lasciare", en: "to leave" },
+    { target: "vedere", en: "to see" },
+    { target: "mettere", en: "to put" },
+    { target: "pensare", en: "to think" },
+    { target: "capire", en: "to understand" },
+    { target: "finire", en: "to finish" },
+    { target: "aprire", en: "to open" },
+    { target: "chiudere", en: "to close" },
+    { target: "leggere", en: "to read" },
+    { target: "scrivere", en: "to write" },
+    { target: "ascoltare", en: "to listen" },
+    { target: "mangiare", en: "to eat" },
+    { target: "bere", en: "to drink" },
+    { target: "uscire", en: "to go out" },
+    { target: "dare", en: "to give" }
+  ],
+  es: [
+    { target: "ser", en: "to be (permanent)" },
+    { target: "estar", en: "to be (temporary)" },
+    { target: "haber", en: "to have (auxiliary)" },
+    { target: "tener", en: "to have" },
+    { target: "hacer", en: "to do / to make" },
+    { target: "poder", en: "to be able to" },
+    { target: "decir", en: "to say / to tell" },
+    { target: "ir", en: "to go" },
+    { target: "ver", en: "to see" },
+    { target: "dar", en: "to give" },
+    { target: "saber", en: "to know (information)" },
+    { target: "querer", en: "to want / to love" },
+    { target: "llegar", en: "to arrive" },
+    { target: "pasar", en: "to pass / to happen" },
+    { target: "deber", en: "to must / to owe" },
+    { target: "poner", en: "to put" },
+    { target: "parecer", en: "to seem" },
+    { target: "hablar", en: "to speak" },
+    { target: "quedar", en: "to stay / to remain" },
+    { target: "creer", en: "to believe" },
+    { target: "llevar", en: "to carry / to wear" },
+    { target: "tomar", en: "to take / to drink" },
+    { target: "encontrar", en: "to find" },
+    { target: "entender", en: "to understand" },
+    { target: "sentir", en: "to feel / to regret" },
+    { target: "pensar", en: "to think" },
+    { target: "escribir", en: "to write" },
+    { target: "leer", en: "to read" },
+    { target: "comer", en: "to eat" },
+    { target: "vivir", en: "to live" }
+  ],
+  fr: [
+    { target: "être", en: "to be" },
+    { target: "avoir", en: "to have" },
+    { target: "faire", en: "to do / to make" },
+    { target: "dire", en: "to say / to tell" },
+    { target: "aller", en: "to go" },
+    { target: "voir", en: "to see" },
+    { target: "savoir", en: "to know" },
+    { target: "pouvoir", en: "to be able to" },
+    { target: "vouloir", en: "to want" },
+    { target: "devoir", en: "to must / to owe" },
+    { target: "prendre", en: "to take" },
+    { target: "venir", en: "to come" },
+    { target: "mettre", en: "to put" },
+    { target: "parler", en: "to speak" },
+    { target: "trouver", en: "to find" },
+    { target: "donner", en: "to give" },
+    { target: "falloir", en: "to be necessary" },
+    { target: "passer", en: "to pass / to spend" },
+    { target: "comprendre", en: "to understand" },
+    { target: "aimer", en: "to love / to like" },
+    { target: "croire", en: "to believe" },
+    { target: "demander", en: "to ask" },
+    { target: "penser", en: "to think" },
+    { target: "écrire", en: "to write" },
+    { target: "lire", en: "to read" },
+    { target: "finir", en: "to finish" },
+    { target: "partir", en: "to leave" },
+    { target: "sortir", en: "to go out" },
+    { target: "manger", en: "to eat" },
+    { target: "boire", en: "to drink" }
+  ],
+  en: [
+    { target: "be", en: "be" },
+    { target: "have", en: "have" },
+    { target: "do", en: "do" },
+    { target: "say", en: "say" },
+    { target: "go", en: "go" },
+    { target: "get", en: "get" },
+    { target: "make", en: "make" },
+    { target: "know", en: "know" },
+    { target: "think", en: "think" },
+    { target: "take", en: "take" },
+    { target: "see", en: "see" },
+    { target: "come", en: "come" },
+    { target: "want", en: "want" },
+    { target: "use", en: "use" },
+    { target: "find", en: "find" },
+    { target: "give", en: "give" },
+    { target: "tell", en: "tell" },
+    { target: "work", en: "work" },
+    { target: "call", en: "call" },
+    { target: "try", en: "try" },
+    { target: "ask", en: "ask" },
+    { target: "need", en: "need" },
+    { target: "feel", en: "feel" },
+    { target: "become", en: "become" },
+    { target: "leave", en: "leave" },
+    { target: "put", en: "put" },
+    { target: "mean", en: "mean" },
+    { target: "keep", en: "keep" },
+    { target: "let", en: "let" },
+    { target: "begin", en: "begin" }
+  ]
+};
+
+function renderConjugationDashboard() {
+  const lang = state.selectedLang || "it";
+  const verbs = IMPORTANT_VERBS[lang] || IMPORTANT_VERBS.it;
+  
+  const langNames = { en: "English", de: "German", it: "Italian", es: "Spanish", fr: "French" };
+  const targetName = langNames[lang] || lang.toUpperCase();
+  document.getElementById("conjugation-dash-title").textContent = `Conjugations (${targetName})`;
+
+  const container = document.getElementById("conjugation-dashboard-verbs-list");
+  container.innerHTML = "";
+  
+  verbs.forEach((verb, idx) => {
+    const fakeWordObj = { target: verb.target, en: verb.en, category: "verbs" };
+    const conjugations = getConjugationsForVerb(fakeWordObj, lang);
+    const pronouns = PRONOUNS[lang] || PRONOUNS.en;
+
+    const card = document.createElement("div");
+    card.className = "verb-dash-card";
+    card.style.cssText = "background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; transition: all 0.2s ease; cursor: pointer;";
+    
+    card.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h3 style="margin: 0; font-size: 1.15rem; color: var(--accent-color); font-weight: 700;">${verb.target}</h3>
+          <span style="font-size: 0.85rem; color: var(--text-secondary);">${verb.en}</span>
+        </div>
+        <div style="display: flex; gap: 8px;" onclick="event.stopPropagation();">
+          <button class="btn btn-secondary btn-sm" style="margin: 0; padding: 6px 12px; min-height: 32px; font-size: 0.75rem;" id="btn-melody-${idx}">🔊 Melody</button>
+          <button class="btn btn-primary btn-sm" style="margin: 0; padding: 6px 12px; min-height: 32px; font-size: 0.75rem;" id="btn-practice-${idx}">🎯 Match</button>
+        </div>
+      </div>
+      <div class="verb-details-panel" id="verb-details-${idx}" style="display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 0.85rem;">
+        ${pronouns.map((pr, i) => `
+          <div style="display: flex; justify-content: space-between; padding: 4px 8px; background: rgba(255,255,255,0.01); border-radius: 6px;">
+            <span style="color: var(--text-secondary); font-weight: 600;">${pr}</span>
+            <strong style="color: #fff;">${conjugations[i]}</strong>
+          </div>
+        `).join("")}
+      </div>
+    `;
+    
+    card.onclick = () => {
+      const details = document.getElementById(`verb-details-${idx}`);
+      if (details.style.display === "none") {
+        details.style.display = "grid";
+        card.style.background = "rgba(255,255,255,0.04)";
+      } else {
+        details.style.display = "none";
+        card.style.background = "rgba(255,255,255,0.02)";
+      }
+    };
+
+    card.querySelector(`#btn-melody-${idx}`).onclick = (e) => {
+      e.stopPropagation();
+      const speechQueue = pronouns.map((pr, i) => ({
+        text: `${pr} ${conjugations[i]}`,
+        lang: lang
+      }));
+      playSpeechQueue(speechQueue);
+    };
+
+    card.querySelector(`#btn-practice-${idx}`).onclick = (e) => {
+      e.stopPropagation();
+      startSingleVerbConjugationTest(verb.target, verb.en);
+    };
+
+    container.appendChild(card);
+  });
+}
+
+function startSingleVerbConjugationTest(verbTarget, verbEn) {
+  const word = {
+    target: verbTarget,
+    en: verbEn,
+    category: "verbs",
+    lang: state.selectedLang,
+    questionLang: state.baseLang || "en",
+    answerLang: state.selectedLang
+  };
+  
+  state.currentTest = {
+    words: [word],
+    index: 0,
+    points: 0,
+    correctCount: 0,
+    wrongAnswers: [],
+    selectedMode: "conjugation",
+    lastAnswerCorrect: null
+  };
+
+  showView("view-test");
+  renderQuestion();
+}
+
+function startAllVerbsConjugationTest() {
+  const lang = state.selectedLang || "it";
+  const verbs = IMPORTANT_VERBS[lang] || IMPORTANT_VERBS.it;
+  
+  const words = verbs.map(v => ({
+    target: v.target,
+    en: v.en,
+    category: "verbs",
+    lang: lang,
+    questionLang: state.baseLang || "en",
+    answerLang: lang
+  })).sort(() => 0.5 - Math.random());
+
+  state.currentTest = {
+    words: words,
+    index: 0,
+    points: 0,
+    correctCount: 0,
+    wrongAnswers: [],
+    selectedMode: "conjugation",
+    lastAnswerCorrect: null
+  };
+
+  showView("view-test");
+  renderQuestion();
+}
+
 const PRONOUNS = {
   de: ["ich", "du", "er/sie/es", "wir", "ihr", "sie/Sie"],
   it: ["io", "tu", "lui/lei", "noi", "voi", "loro"],
@@ -2554,25 +2840,7 @@ function renderQuestion() {
   const diffVoting = document.querySelector(".difficulty-voting-container");
   if (diffVoting) diffVoting.style.display = "block";
 
-  const conjBtn = document.getElementById("btn-mode-conjugation");
-  const isVerb = currentWord.category === "verbs";
-  
-  if (conjBtn) {
-    if (isVerb) {
-      conjBtn.style.display = "inline-flex";
-    } else {
-      conjBtn.style.display = "none";
-      if (tState.selectedMode === "conjugation") {
-        tState.selectedMode = "typing";
-        document.querySelectorAll(".mode-toggle-btn").forEach(b => {
-          if (b.dataset.mode === "typing") b.classList.add("active");
-          else b.classList.remove("active");
-        });
-        document.querySelectorAll(".test-mode-section").forEach(s => s.classList.remove("active"));
-        document.getElementById("test-mode-typing").classList.add("active");
-      }
-    }
-  }
+
 
   if (tState.selectedMode === "compare") {
     buildCompareMode();
@@ -3443,6 +3711,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       alert("Please select a target language to learn that is different from your base language.");
       return;
     }
+
+    if (state.testDirection === "conjugation") {
+      showView("view-conjugation-dashboard");
+      return;
+    }
+
     const activeSeg = document.querySelector(".segmented-control:not(#test-direction-selector) .seg-btn.active");
     const count = activeSeg ? parseInt(activeSeg.dataset.count) : 10;
     const category = document.getElementById("select-category").value;
@@ -3455,6 +3729,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     startTestSession(state.selectedLang, category, count, false, customCategory, state.testDirection);
   };
+
+  // Conjugation Dashboard actions
+  const btnQuitConjugationDash = document.getElementById("btn-quit-conjugation-dash");
+  if (btnQuitConjugationDash) {
+    btnQuitConjugationDash.onclick = () => {
+      showView("view-dashboard");
+    };
+  }
+
+  const btnPlayAllConjugations = document.getElementById("btn-play-all-conjugations");
+  if (btnPlayAllConjugations) {
+    btnPlayAllConjugations.onclick = () => {
+      startAllVerbsConjugationTest();
+    };
+  }
 
   // Sync category dropdowns: choosing custom clears standard, choosing standard clears custom
   const selectCategory = document.getElementById("select-category");
@@ -6240,6 +6529,7 @@ async function callLLM(prompt, systemInstruction = "You are a helpful language t
 function updateDirectionButtonsUI() {
   const btnForward = document.getElementById("btn-direction-forward");
   const btnReverse = document.getElementById("btn-direction-reverse");
+  const btnConjugation = document.getElementById("btn-direction-conjugation");
   if (!btnForward || !btnReverse) return;
 
   const baseLang = state.baseLang || "en";
@@ -6268,6 +6558,9 @@ function updateDirectionButtonsUI() {
 
   btnForward.innerHTML = `➡️ ${baseFlag} ${baseName} &rarr; ${targetFlag} ${targetName}`;
   btnReverse.innerHTML = `⬅️ ${targetFlag} ${targetName} &rarr; ${baseFlag} ${baseName}`;
+  if (btnConjugation) {
+    btnConjugation.innerHTML = `🎯 Conjugate (${targetFlag} ${targetName})`;
+  }
 }
 
 // Dynamically fetch available models from xAI to prevent model not found errors
