@@ -2151,6 +2151,7 @@ function startSingleVerbConjugationTest(verbTarget, verbEn) {
     index: 0,
     points: 0,
     correctCount: 0,
+    totalOriginalCount: 1,
     wrongAnswers: [],
     selectedMode: "conjugation",
     lastAnswerCorrect: null
@@ -2181,6 +2182,7 @@ function startAllVerbsConjugationTest() {
     index: 0,
     points: 0,
     correctCount: 0,
+    totalOriginalCount: words.length,
     wrongAnswers: [],
     selectedMode: "conjugation",
     lastAnswerCorrect: null
@@ -3396,14 +3398,15 @@ function finishTestRound() {
     state.streak = Math.max(1, state.streak); 
   }
   
-  const accuracy = Math.round((tState.correctCount / tState.totalOriginalCount) * 100);
+  const totalCount = tState.totalOriginalCount || (tState.words ? tState.words.length : 0) || 1;
+  const accuracy = Math.round((tState.correctCount / totalCount) * 100);
   
   // Record history
   state.history.push({
     date: new Date().toLocaleDateString(),
     lang: state.selectedLang.toUpperCase(),
     category: document.getElementById("select-category").value,
-    total: tState.totalOriginalCount,
+    total: totalCount,
     correct: tState.correctCount,
     accuracy: accuracy,
     points: tState.points || 0
