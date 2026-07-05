@@ -5360,6 +5360,9 @@ function setupWordDetails(currentWord) {
     aNoun = parsed.noun;
   }
 
+  const baseTextWithArt = qArt ? `${qArt} ${qNoun}` : qNoun;
+  const targetTextWithArt = aArt ? `${aArt} ${aNoun}` : aNoun;
+
   if (baseWordEl) {
     baseWordEl.style.color = getLangColor(qLang);
     baseWordEl.innerHTML = qArt ? `<span style="font-size:0.85em; color:var(--success-color);">${qArt}</span> ${qNoun}` : qNoun;
