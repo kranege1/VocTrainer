@@ -6559,7 +6559,19 @@ function updateDirectionButtonsUI() {
   btnForward.innerHTML = `➡️ ${baseFlag} ${baseName} &rarr; ${targetFlag} ${targetName}`;
   btnReverse.innerHTML = `⬅️ ${targetFlag} ${targetName} &rarr; ${baseFlag} ${baseName}`;
   if (btnConjugation) {
-    btnConjugation.innerHTML = `🎯 Conjugate (${targetFlag} ${targetName})`;
+    if (targetLang === "en") {
+      btnConjugation.style.display = "none";
+      if (state.testDirection === "conjugation") {
+        state.testDirection = "forward";
+        btnForward.classList.add("active");
+        btnReverse.classList.remove("active");
+        btnConjugation.classList.remove("active");
+        saveState();
+      }
+    } else {
+      btnConjugation.style.display = "";
+      btnConjugation.innerHTML = `🎯 Conjugate (${targetFlag} ${targetName})`;
+    }
   }
 }
 
