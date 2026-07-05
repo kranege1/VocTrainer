@@ -72,6 +72,7 @@ let state = {
   testDirection: "forward", // forward (base -> target) or reverse (target -> base)
   customVoices: {}, // Selected free local system voices for each language key: { en: "Voice Name", ... }
   activeICloudLists: {}, // Sync status of files in directory: { "filename.json": boolean }
+  dictionaryCache: {}, // Central dictionary cache mapping English base word to details: synonyms, conjugations, sentences, etc.
 
   // Current active test state
   currentTest: {
@@ -115,7 +116,8 @@ function saveState() {
     wordStats: state.wordStats,
     testDirection: state.testDirection,
     customVoices: state.customVoices,
-    activeICloudLists: state.activeICloudLists
+    activeICloudLists: state.activeICloudLists,
+    dictionaryCache: state.dictionaryCache
   }));
   updateHeaderUI();
   updateCategoryCounts();
@@ -180,6 +182,7 @@ function loadState() {
     state.testDirection = parsed.testDirection || "forward";
     state.customVoices = parsed.customVoices || {};
     state.activeICloudLists = parsed.activeICloudLists || {};
+    state.dictionaryCache = parsed.dictionaryCache || {};
 
     // Prefill Setup fields
     document.getElementById("setup-openai-key").value = state.openaiKey;
@@ -197,6 +200,105 @@ function loadState() {
     if (state.anthropicKey) testApiKey("anthropic", state.anthropicKey, "setup-anthropic-status");
 
     // Prefill dashboard buttons active state
+
+// Central Dictionary caching & GTX translation utilities
+async function translateTextGTX(text, fromLang, toLang) {
+  try {
+    const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${fromLang}&tl=${toLang}&dt=t&q=${encodeURIComponent(text)}`);
+    if (res.ok) {
+      const data = await res.json();
+      return data[0].map(item => item[0]).join("");
+    }
+  } catch (e) {
+    console.error("GTX translation failed:", e);
+  }
+  return text;
+}
+
+function getWordDetails(wordObj) {
+  if (!wordObj) return { articles: {}, sentences: {}, variations: {}, synonyms: {} };
+  const wordKey = wordObj.origEn || wordObj.en || "";
+  const localDetails = wordObj.details || { articles: {}, sentences: {}, variations: {}, synonyms: {} };
+  if (wordKey && state.dictionaryCache && state.dictionaryCache[wordKey]) {
+    return {
+      ...localDetails,
+      ...state.dictionaryCache[wordKey]
+    };
+  }
+  return localDetails;
+}
+
+async function fetchAndCacheWordDetails(wordObj) {
+  const wordKey = wordObj ? (wordObj.origEn || wordObj.en || "") : "";
+  if (!wordKey) return;
+  if (!state.dictionaryCache) state.dictionaryCache = {};
+  if (state.dictionaryCache[wordKey] && state.dictionaryCache[wordKey].definitions) return state.dictionaryCache[wordKey];
+
+  try {
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(wordKey)}`);
+    if (!res.ok) throw new Error("Word not found in Free Dictionary API");
+    const data = await res.json();
+    const entry = data[0];
+
+    const phonetics = entry.phonetics || [];
+    const audioUrl = phonetics.find(p => p.audio)?.audio || "";
+    const phoneticText = entry.phonetic || (phonetics.find(p => p.text)?.text || "");
+
+    const enSyns = [];
+    const enDefs = [];
+    let enSentence = "";
+
+    if (entry.meanings) {
+      entry.meanings.forEach(m => {
+        if (m.synonyms) enSyns.push(...m.synonyms);
+        if (m.definitions) {
+          m.definitions.forEach(d => {
+            if (d.definition) enDefs.push(d.definition);
+            if (d.example && !enSentence) {
+              enSentence = d.example;
+            }
+          });
+        }
+      });
+    }
+
+    const cacheEntry = {
+      phonetic: phoneticText,
+      audio: audioUrl,
+      synonyms: { en: [...new Set(enSyns)].slice(0, 10) },
+      definitions: { en: enDefs.slice(0, 5) },
+      sentences: { en: enSentence },
+      articles: {},
+      variations: {}
+    };
+
+    state.dictionaryCache[wordKey] = cacheEntry;
+    saveState();
+
+    // Dynamically translate synonyms & sentences for DE, IT, ES, FR
+    const targetLangs = ["de", "it", "es", "fr"];
+    for (const lang of targetLangs) {
+      if (enSentence) {
+        cacheEntry.sentences[lang] = await translateTextGTX(enSentence, "en", lang);
+      }
+      if (cacheEntry.synonyms.en.length > 0) {
+        cacheEntry.synonyms[lang] = await Promise.all(
+          cacheEntry.synonyms.en.slice(0, 4).map(s => translateTextGTX(s, "en", lang))
+        );
+      }
+    }
+
+    saveState();
+
+    // If active question is this word, refresh details panel
+    if (state.currentTest && state.currentTest.words[state.currentTest.index]?.en === wordKey) {
+      showWordDetails();
+    }
+  } catch (err) {
+    console.warn("Free Dictionary API fetch failed:", err);
+  }
+}
+
     document.querySelectorAll(".lang-btn").forEach(b => {
       b.classList.remove("active");
       if (b.dataset.lang === state.selectedLang) b.classList.add("active");
@@ -2329,6 +2431,11 @@ async function fetchConjugationsWithAI(verb, lang, wordKey) {
     const cleanJson = resText.replace(/```json/g, "").replace(/```/g, "").trim();
     const arr = JSON.parse(cleanJson);
     if (Array.isArray(arr) && arr.length === 6) {
+      if (!state.dictionaryCache) state.dictionaryCache = {};
+      if (!state.dictionaryCache[wordKey]) state.dictionaryCache[wordKey] = {};
+      if (!state.dictionaryCache[wordKey].conjugations) state.dictionaryCache[wordKey].conjugations = {};
+      state.dictionaryCache[wordKey].conjugations[lang] = arr;
+
       const idx = state.customVocab.findIndex(v => v.en === wordKey || v.origEn === wordKey);
       if (idx !== -1) {
         if (!state.customVocab[idx].details) state.customVocab[idx].details = {};
@@ -2355,6 +2462,9 @@ function getConjugationsForVerb(wordObj, lang) {
   const wordKey = wordObj.origEn || wordObj.en;
   let cleanInfinitive = stripArticles(wordObj.target, lang).toLowerCase().trim();
 
+  if (state.dictionaryCache && state.dictionaryCache[wordKey] && state.dictionaryCache[wordKey].conjugations && state.dictionaryCache[wordKey].conjugations[lang]) {
+    return state.dictionaryCache[wordKey].conjugations[lang];
+  }
   if (wordObj.details && wordObj.details.conjugations && wordObj.details.conjugations[lang]) {
     return wordObj.details.conjugations[lang];
   }
@@ -3239,7 +3349,8 @@ function submitAnswer() {
   const cleanAnsNoArticle = stripArticles(cleanAns, ansLang);
   const cleanTargetNoArticle = stripArticles(cleanTarget, ansLang);
 
-  const ansArt = (currentWord.details && currentWord.details.articles && currentWord.details.articles[ansLang]) ? currentWord.details.articles[ansLang].toLowerCase() : "";
+  const details = getWordDetails(currentWord);
+  const ansArt = (details && details.articles && details.articles[ansLang]) ? details.articles[ansLang].toLowerCase() : "";
   const cleanTargetWithArt = ansArt ? `${ansArt} ${cleanTarget}` : cleanTarget;
   
   const isExactMatch = cleanAns === cleanTarget || cleanAns === cleanTargetWithArt;
@@ -3250,7 +3361,7 @@ function submitAnswer() {
   const isTypo = dist > 0 && dist <= 2; 
 
   // Synonym verification - use the answer language for synonym lookup
-  const syns = (currentWord.details && currentWord.details.synonyms && currentWord.details.synonyms[ansLang]) ? currentWord.details.synonyms[ansLang] : [];
+  const syns = (details && details.synonyms && details.synonyms[ansLang]) ? details.synonyms[ansLang] : [];
   const cleanSyns = syns.map(s => {
     const sLower = s.toLowerCase().replace(/[¿?¡!.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").trim();
     return stripArticles(sLower, ansLang);
@@ -3913,6 +4024,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       const wordKey = currentWord.origEn || currentWord.en;
       const ansLang = currentWord.answerLang || state.selectedLang;
 
+      const addSynToCache = (key) => {
+        if (!state.dictionaryCache) state.dictionaryCache = {};
+        if (!state.dictionaryCache[key]) state.dictionaryCache[key] = {};
+        if (!state.dictionaryCache[key].synonyms) state.dictionaryCache[key].synonyms = {};
+        if (!state.dictionaryCache[key].synonyms[ansLang]) state.dictionaryCache[key].synonyms[ansLang] = [];
+        if (!state.dictionaryCache[key].synonyms[ansLang].includes(val)) {
+          state.dictionaryCache[key].synonyms[ansLang].push(val);
+        }
+      };
+
       const addSynToWord = (word) => {
         if (!word.details) word.details = {};
         if (!word.details.synonyms) word.details.synonyms = {};
@@ -3932,13 +4053,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         addSynToWord(state.editedStarters[wordKey]);
       }
 
+      addSynToCache(wordKey);
       addSynToWord(currentWord);
       saveState();
 
       const detailSyns = document.getElementById("detail-synonyms");
       if (detailSyns) {
-        const currentSyns = (currentWord.details && currentWord.details.synonyms && currentWord.details.synonyms[ansLang])
-          ? currentWord.details.synonyms[ansLang]
+        const detailsObj = getWordDetails(currentWord);
+        const currentSyns = (detailsObj && detailsObj.synonyms && detailsObj.synonyms[ansLang])
+          ? detailsObj.synonyms[ansLang]
           : [];
         detailSyns.textContent = currentSyns.length > 0 ? currentSyns.join(", ") : "None";
       }
@@ -5157,7 +5280,8 @@ function setupWordDetails(currentWord) {
   if (aiResponse) aiResponse.style.display = "none";
   if (aiLoading) aiLoading.style.display = "none";
 
-  const details = currentWord.details;
+  const details = getWordDetails(currentWord);
+  fetchAndCacheWordDetails(currentWord);
   const qLang = currentWord.questionLang || state.baseLang || "en";
   const aLang = currentWord.answerLang || state.selectedLang;
 
