@@ -2080,7 +2080,7 @@ function renderConjugationDashboard() {
 
     const card = document.createElement("div");
     card.className = "verb-dash-card";
-    card.style.cssText = "background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; transition: all 0.2s ease; cursor: pointer;";
+    card.style.cssText = "background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; transition: all 0.2s ease; cursor: default;";
     
     card.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
@@ -2095,7 +2095,7 @@ function renderConjugationDashboard() {
         </div>
       </div>
       
-      <div class="verb-details-panel" id="verb-details-${idx}" style="display: none; flex-direction: column; gap: 8px; margin-top: 10px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 0.85rem;">
+      <div class="verb-details-panel" id="verb-details-${idx}" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 0.85rem;">
         <div style="display: grid; grid-template-columns: 1fr 1fr; font-weight: bold; padding: 4px 8px; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.04); margin-bottom: 4px;">
           <span>With Pronoun</span>
           <span>Without Pronoun</span>
@@ -2108,17 +2108,6 @@ function renderConjugationDashboard() {
         `).join("")}
       </div>
     `;
-    
-    card.onclick = () => {
-      const details = document.getElementById(`verb-details-${idx}`);
-      if (details.style.display === "none") {
-        details.style.display = "flex";
-        card.style.background = "rgba(255,255,255,0.04)";
-      } else {
-        details.style.display = "none";
-        card.style.background = "rgba(255,255,255,0.02)";
-      }
-    };
 
     card.querySelector(`#btn-melody-pronoun-${idx}`).onclick = (e) => {
       e.stopPropagation();
