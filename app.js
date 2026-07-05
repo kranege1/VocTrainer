@@ -1931,170 +1931,139 @@ function selectCompareWord(side, btn, word) {
 
 const IMPORTANT_VERBS = {
   de: [
-    { target: "sein", en: "to be" },
-    { target: "haben", en: "to have" },
-    { target: "werden", en: "to become" },
-    { target: "können", en: "to be able to" },
-    { target: "müssen", en: "to must / to have to" },
-    { target: "wollen", en: "to want" },
-    { target: "sollen", en: "to should" },
-    { target: "dürfen", en: "to be allowed to" },
-    { target: "wissen", en: "to know" },
-    { target: "geben", en: "to give" },
-    { target: "tun", en: "to do" },
-    { target: "sagen", en: "to say" },
-    { target: "gehen", en: "to go" },
-    { target: "sehen", en: "to see" },
-    { target: "kommen", en: "to come" },
-    { target: "denken", en: "to think" },
-    { target: "machen", en: "to make / to do" },
-    { target: "stehen", en: "to stand" },
-    { target: "finden", en: "to find" },
-    { target: "bleiben", en: "to stay" },
-    { target: "nehmen", en: "to take" },
-    { target: "lassen", en: "to let / to leave" },
-    { target: "zeigen", en: "to show" },
-    { target: "bringen", en: "to bring" },
-    { target: "leben", en: "to live" },
-    { target: "fahren", en: "to drive / to ride" },
-    { target: "sprechen", en: "to speak" },
-    { target: "schreiben", en: "to write" },
-    { target: "lesen", en: "to read" },
-    { target: "arbeiten", en: "to work" }
+    { target: "sein", translations: { de: "sein", en: "to be", it: "essere", es: "ser/estar", fr: "être" } },
+    { target: "haben", translations: { de: "haben", en: "to have", it: "avere", es: "haber/tener", fr: "avoir" } },
+    { target: "werden", translations: { de: "werden", en: "to become", it: "diventare", es: "convertirse", fr: "devenir" } },
+    { target: "können", translations: { de: "können", en: "to be able to", it: "potere", es: "poder", fr: "pouvoir" } },
+    { target: "müssen", translations: { de: "müssen", en: "to must / to have to", it: "dovere", es: "deber", fr: "devoir" } },
+    { target: "wollen", translations: { de: "wollen", en: "to want", it: "volere", es: "querer", fr: "vouloir" } },
+    { target: "sollen", translations: { de: "sollen", en: "to should", it: "dovere (sollen)", es: "deber", fr: "devoir" } },
+    { target: "dürfen", translations: { de: "dürfen", en: "to be allowed to", it: "potere (dürfen)", es: "poder (dürfen)", fr: "pouvoir (autorisé)" } },
+    { target: "wissen", translations: { de: "wissen", en: "to know", it: "sapere", es: "saber", fr: "savoir" } },
+    { target: "geben", translations: { de: "geben", en: "to give", it: "dare", es: "dar", fr: "donner" } },
+    { target: "tun", translations: { de: "tun", en: "to do", it: "fare", es: "hacer", fr: "faire" } },
+    { target: "sagen", translations: { de: "sagen", en: "to say", it: "dire", es: "decir", fr: "dire" } },
+    { target: "gehen", translations: { de: "gehen", en: "to go", it: "andare", es: "ir", fr: "aller" } },
+    { target: "sehen", translations: { de: "sehen", en: "to see", it: "vedere", es: "ver", fr: "voir" } },
+    { target: "kommen", translations: { de: "kommen", en: "to come", it: "venire", es: "venir", fr: "venir" } },
+    { target: "denken", translations: { de: "denken", en: "to think", it: "pensare", es: "pensar", fr: "penser" } },
+    { target: "machen", translations: { de: "machen", en: "to make / to do", it: "fare", es: "hacer", fr: "faire" } },
+    { target: "stehen", translations: { de: "stehen", en: "to stand", it: "stare in piedi", es: "estar de pie", fr: "être debout" } },
+    { target: "finden", translations: { de: "finden", en: "to find", it: "trovare", es: "encontrar", fr: "trouver" } },
+    { target: "bleiben", translations: { de: "bleiben", en: "to stay", it: "rimanere", es: "quedarse", fr: "rester" } },
+    { target: "nehmen", translations: { de: "nehmen", en: "to take", it: "prendere", es: "tomar", fr: "prendre" } },
+    { target: "lassen", translations: { de: "lassen", en: "to let / to leave", it: "lasciare", es: "dejar", fr: "laisser" } },
+    { target: "zeigen", translations: { de: "zeigen", en: "to show", it: "mostrare", es: "mostrar", fr: "montrer" } },
+    { target: "bringen", translations: { de: "bringen", en: "to bring", it: "portare", es: "traer", fr: "apporter" } },
+    { target: "leben", translations: { de: "leben", en: "to live", it: "vivere", es: "vivir", fr: "vivre" } },
+    { target: "fahren", translations: { de: "fahren", en: "to drive / to ride", it: "guidare / andare", es: "conducir / ir", fr: "conduire / aller" } },
+    { target: "sprechen", translations: { de: "sprechen", en: "to speak", it: "parlare", es: "hablar", fr: "parler" } },
+    { target: "schreiben", translations: { de: "schreiben", en: "to write", it: "scrivere", es: "escribir", fr: "écrire" } },
+    { target: "lesen", translations: { de: "lesen", en: "to read", it: "leggere", es: "leer", fr: "lire" } },
+    { target: "arbeiten", translations: { de: "arbeiten", en: "to work", it: "lavorare", es: "trabajar", fr: "travailler" } }
   ],
   it: [
-    { target: "essere", en: "to be" },
-    { target: "avere", en: "to have" },
-    { target: "fare", en: "to do / to make" },
-    { target: "dire", en: "to say / to tell" },
-    { target: "potere", en: "to be able to" },
-    { target: "volere", en: "to want" },
-    { target: "dovere", en: "to must / to have to" },
-    { target: "andare", en: "to go" },
-    { target: "sapere", en: "to know" },
-    { target: "venire", en: "to come" },
-    { target: "stare", en: "to stay / to be" },
-    { target: "prendere", en: "to take" },
-    { target: "parlare", en: "to speak" },
-    { target: "trovare", en: "to find" },
-    { target: "sentire", en: "to feel / to hear" },
-    { target: "lasciare", en: "to leave" },
-    { target: "vedere", en: "to see" },
-    { target: "mettere", en: "to put" },
-    { target: "pensare", en: "to think" },
-    { target: "capire", en: "to understand" },
-    { target: "finire", en: "to finish" },
-    { target: "aprire", en: "to open" },
-    { target: "chiudere", en: "to close" },
-    { target: "leggere", en: "to read" },
-    { target: "scrivere", en: "to write" },
-    { target: "ascoltare", en: "to listen" },
-    { target: "mangiare", en: "to eat" },
-    { target: "bere", en: "to drink" },
-    { target: "uscire", en: "to go out" },
-    { target: "dare", en: "to give" }
+    { target: "essere", translations: { de: "sein", en: "to be", it: "essere", es: "ser/estar", fr: "être" } },
+    { target: "avere", translations: { de: "haben", en: "to have", it: "avere", es: "haber/tener", fr: "avoir" } },
+    { target: "fare", translations: { de: "tun/machen", en: "to do / to make", it: "fare", es: "hacer", fr: "faire" } },
+    { target: "dire", translations: { de: "sagen/erzählen", en: "to say / to tell", it: "dire", es: "decir", fr: "dire" } },
+    { target: "potere", translations: { de: "können", en: "to be able to", it: "potere", es: "poder", fr: "pouvoir" } },
+    { target: "volere", translations: { de: "wollen", en: "to want", it: "volere", es: "querer", fr: "vouloir" } },
+    { target: "dovere", translations: { de: "müssen", en: "to must / to have to", it: "dovere", es: "deber", fr: "devoir" } },
+    { target: "andare", translations: { de: "gehen", en: "to go", it: "andare", es: "ir", fr: "aller" } },
+    { target: "sapere", translations: { de: "wissen", en: "to know", it: "sapere", es: "saber", fr: "savoir" } },
+    { target: "venire", translations: { de: "kommen", en: "to come", it: "venire", es: "venir", fr: "venir" } },
+    { target: "stare", translations: { de: "bleiben/sein", en: "to stay / to be", it: "stare", es: "estar/quedarse", fr: "rester/être" } },
+    { target: "prendere", translations: { de: "nehmen", en: "to take", it: "prendere", es: "tomar", fr: "prendre" } },
+    { target: "parlare", translations: { de: "sprechen", en: "to speak", it: "parlare", es: "hablar", fr: "parler" } },
+    { target: "trovare", translations: { de: "finden", en: "to find", it: "trovare", es: "encontrar", fr: "trover" } },
+    { target: "sentire", translations: { de: "fühlen/hören", en: "to feel / to hear", it: "sentire", es: "sentir/oír", fr: "sentir/entendre" } },
+    { target: "lasciare", translations: { de: "lassen/verlassen", en: "to leave", it: "lasciare", es: "dejar", fr: "laisser" } },
+    { target: "vedere", translations: { de: "sehen", en: "to see", it: "vedere", es: "ver", fr: "voir" } },
+    { target: "mettere", translations: { de: "legen/stellen", en: "to put", it: "mettere", es: "poner", fr: "mettre" } },
+    { target: "pensare", translations: { de: "denken", en: "to think", it: "pensare", es: "pensar", fr: "penser" } },
+    { target: "capire", translations: { de: "verstehen", en: "to understand", it: "capire", es: "entender", fr: "comprendre" } },
+    { target: "finire", translations: { de: "beenden/enden", en: "to finish", it: "finire", es: "terminar", fr: "finir" } },
+    { target: "aprire", translations: { de: "öffnen", en: "to open", it: "aprire", es: "abrir", fr: "ouvrir" } },
+    { target: "chiudere", translations: { de: "schließen", en: "to close", it: "chiudere", es: "cerrar", fr: "fermer" } },
+    { target: "leggere", translations: { de: "lesen", en: "to read", it: "leggere", es: "leer", fr: "lire" } },
+    { target: "scrivere", translations: { de: "schreiben", en: "to write", it: "scrivere", es: "escribir", fr: "écrire" } },
+    { target: "ascoltare", translations: { de: "zuhören", en: "to listen", it: "ascoltare", es: "escuchar", fr: "écouter" } },
+    { target: "mangiare", translations: { de: "essen", en: "to eat", it: "mangiare", es: "comer", fr: "manger" } },
+    { target: "bere", translations: { de: "trinken", en: "to drink", it: "bere", es: "beber", fr: "boire" } },
+    { target: "uscire", translations: { de: "hinausgehen", en: "to go out", it: "uscire", es: "salir", fr: "sortir" } },
+    { target: "dare", translations: { de: "geben", en: "to give", it: "dare", es: "dar", fr: "donner" } }
   ],
   es: [
-    { target: "ser", en: "to be (permanent)" },
-    { target: "estar", en: "to be (temporary)" },
-    { target: "haber", en: "to have (auxiliary)" },
-    { target: "tener", en: "to have" },
-    { target: "hacer", en: "to do / to make" },
-    { target: "poder", en: "to be able to" },
-    { target: "decir", en: "to say / to tell" },
-    { target: "ir", en: "to go" },
-    { target: "ver", en: "to see" },
-    { target: "dar", en: "to give" },
-    { target: "saber", en: "to know (information)" },
-    { target: "querer", en: "to want / to love" },
-    { target: "llegar", en: "to arrive" },
-    { target: "pasar", en: "to pass / to happen" },
-    { target: "deber", en: "to must / to owe" },
-    { target: "poner", en: "to put" },
-    { target: "parecer", en: "to seem" },
-    { target: "hablar", en: "to speak" },
-    { target: "quedar", en: "to stay / to remain" },
-    { target: "creer", en: "to believe" },
-    { target: "llevar", en: "to carry / to wear" },
-    { target: "tomar", en: "to take / to drink" },
-    { target: "encontrar", en: "to find" },
-    { target: "entender", en: "to understand" },
-    { target: "sentir", en: "to feel / to regret" },
-    { target: "pensar", en: "to think" },
-    { target: "escribir", en: "to write" },
-    { target: "leer", en: "to read" },
-    { target: "comer", en: "to eat" },
-    { target: "vivir", en: "to live" }
+    { target: "ser", translations: { de: "sein (dauerhaft)", en: "to be (permanent)", it: "essere", es: "ser", fr: "être" } },
+    { target: "estar", translations: { de: "sein (vorübergehend)", en: "to be (temporary)", it: "stare/essere", es: "estar", fr: "être" } },
+    { target: "haber", translations: { de: "haben (Hilfsverb)", en: "to have (auxiliary)", it: "avere (ausiliare)", es: "haber", fr: "avoir" } },
+    { target: "tener", translations: { de: "haben/besitzen", en: "to have", it: "avere", es: "tener", fr: "avoir" } },
+    { target: "hacer", translations: { de: "tun/machen", en: "to do / to make", it: "fare", es: "hacer", fr: "faire" } },
+    { target: "poder", translations: { de: "können", en: "to be able to", it: "potere", es: "poder", fr: "pouvoir" } },
+    { target: "decir", translations: { de: "sagen", en: "to say / to tell", it: "dire", es: "decir", fr: "dire" } },
+    { target: "ir", translations: { de: "gehen", en: "to go", it: "andare", es: "ir", fr: "aller" } },
+    { target: "ver", translations: { de: "sehen", en: "to see", it: "vedere", es: "ver", fr: "voir" } },
+    { target: "dar", translations: { de: "geben", en: "to give", it: "dare", es: "dar", fr: "donner" } },
+    { target: "saber", translations: { de: "wissen (Information)", en: "to know (information)", it: "sapere", es: "saber", fr: "savoir" } },
+    { target: "querer", translations: { de: "wollen/lieben", en: "to want / to love", it: "volere/amare", es: "querer", fr: "vouloir/aimer" } },
+    { target: "llegar", translations: { de: "ankommen", en: "to arrive", it: "arrivare", es: "llegar", fr: "arriver" } },
+    { target: "pasar", translations: { de: "verbringen/geschehen", en: "to pass / to happen", it: "passare/accadere", es: "pasar", fr: "passer/se passer" } },
+    { target: "deber", translations: { de: "müssen/schulden", en: "to must / to owe", it: "dovere/dovere soldi", es: "deber", fr: "devoir" } },
+    { target: "poner", translations: { de: "setzen/legen/stellen", en: "to put", it: "mettere", es: "poner", fr: "mettre" } },
+    { target: "parecer", translations: { de: "scheinen", en: "to seem", it: "sembrare", es: "parecer", fr: "sembler" } },
+    { target: "hablar", translations: { de: "sprechen", en: "to speak", it: "parlare", es: "hablar", fr: "parler" } },
+    { target: "quedar", translations: { de: "bleiben", en: "to stay / to remain", it: "rimanere", es: "quedar", fr: "rester" } },
+    { target: "creer", translations: { de: "glauben", en: "to believe", it: "credere", es: "creer", fr: "croire" } },
+    { target: "llevar", translations: { de: "tragen/bringen", en: "to carry / to wear", it: "portare/indossare", es: "llevar", fr: "porter/apporter" } },
+    { target: "tomar", translations: { de: "nehmen/trinken", en: "to take / to drink", it: "prendere/bere", es: "tomar", fr: "prendre/boire" } },
+    { target: "encontrar", translations: { de: "finden", en: "to find", it: "trovare", es: "encontrar", fr: "trouver" } },
+    { target: "entender", translations: { de: "verstehen", en: "to understand", it: "capire", es: "entender", fr: "comprendre" } },
+    { target: "sentir", translations: { de: "fühlen/bedauern", en: "to feel / to regret", it: "sentire", es: "sentir", fr: "sentir/regretter" } },
+    { target: "pensar", translations: { de: "denken", en: "to think", it: "pensare", es: "pensar", fr: "penser" } },
+    { target: "escribir", translations: { de: "schreiben", en: "to write", it: "scrivere", es: "escribir", fr: "escribir" } },
+    { target: "leer", translations: { de: "lesen", en: "to read", it: "leggere", es: "leer", fr: "leer" } },
+    { target: "comer", translations: { de: "essen", en: "to eat", it: "mangiare", es: "comer", fr: "comer" } },
+    { target: "vivir", translations: { de: "leben", en: "to live", it: "vivere", es: "vivir", fr: "vivir" } }
   ],
   fr: [
-    { target: "être", en: "to be" },
-    { target: "avoir", en: "to have" },
-    { target: "faire", en: "to do / to make" },
-    { target: "dire", en: "to say / to tell" },
-    { target: "aller", en: "to go" },
-    { target: "voir", en: "to see" },
-    { target: "savoir", en: "to know" },
-    { target: "pouvoir", en: "to be able to" },
-    { target: "vouloir", en: "to want" },
-    { target: "devoir", en: "to must / to owe" },
-    { target: "prendre", en: "to take" },
-    { target: "venir", en: "to come" },
-    { target: "mettre", en: "to put" },
-    { target: "parler", en: "to speak" },
-    { target: "trouver", en: "to find" },
-    { target: "donner", en: "to give" },
-    { target: "falloir", en: "to be necessary" },
-    { target: "passer", en: "to pass / to spend" },
-    { target: "comprendre", en: "to understand" },
-    { target: "aimer", en: "to love / to like" },
-    { target: "croire", en: "to believe" },
-    { target: "demander", en: "to ask" },
-    { target: "penser", en: "to think" },
-    { target: "écrire", en: "to write" },
-    { target: "lire", en: "to read" },
-    { target: "finir", en: "to finish" },
-    { target: "partir", en: "to leave" },
-    { target: "sortir", en: "to go out" },
-    { target: "manger", en: "to eat" },
-    { target: "boire", en: "to drink" }
-  ],
-  en: [
-    { target: "be", en: "be" },
-    { target: "have", en: "have" },
-    { target: "do", en: "do" },
-    { target: "say", en: "say" },
-    { target: "go", en: "go" },
-    { target: "get", en: "get" },
-    { target: "make", en: "make" },
-    { target: "know", en: "know" },
-    { target: "think", en: "think" },
-    { target: "take", en: "take" },
-    { target: "see", en: "see" },
-    { target: "come", en: "come" },
-    { target: "want", en: "want" },
-    { target: "use", en: "use" },
-    { target: "find", en: "find" },
-    { target: "give", en: "give" },
-    { target: "tell", en: "tell" },
-    { target: "work", en: "work" },
-    { target: "call", en: "call" },
-    { target: "try", en: "try" },
-    { target: "ask", en: "ask" },
-    { target: "need", en: "need" },
-    { target: "feel", en: "feel" },
-    { target: "become", en: "become" },
-    { target: "leave", en: "leave" },
-    { target: "put", en: "put" },
-    { target: "mean", en: "mean" },
-    { target: "keep", en: "keep" },
-    { target: "let", en: "let" },
-    { target: "begin", en: "begin" }
+    { target: "être", translations: { de: "sein", en: "to be", it: "essere", es: "ser/estar", fr: "être" } },
+    { target: "avoir", translations: { de: "haben", en: "to have", it: "avere", es: "haber/tener", fr: "avoir" } },
+    { target: "faire", translations: { de: "tun/machen", en: "to do / to make", it: "faire", es: "hacer", fr: "faire" } },
+    { target: "dire", translations: { de: "sagen", en: "to say / to tell", it: "dire", es: "decir", fr: "dire" } },
+    { target: "aller", translations: { de: "gehen", en: "to go", it: "aller", es: "ir", fr: "aller" } },
+    { target: "voir", translations: { de: "sehen", en: "to see", it: "vedere", es: "ver", fr: "voir" } },
+    { target: "savoir", translations: { de: "wissen", en: "to know", it: "sapere", es: "saber", fr: "savoir" } },
+    { target: "pouvoir", translations: { de: "können", en: "to be able to", it: "potere", es: "poder", fr: "pouvoir" } },
+    { target: "vouloir", translations: { de: "wollen", en: "to want", it: "volere", es: "querer", fr: "vouloir" } },
+    { target: "devoir", translations: { de: "müssen/schulden", en: "to must / to owe", it: "dovere", es: "deber", fr: "devoir" } },
+    { target: "prendre", translations: { de: "nehmen", en: "to take", it: "prendere", es: "tomar", fr: "prendre" } },
+    { target: "venir", translations: { de: "kommen", en: "to come", it: "venire", es: "venir", fr: "venir" } },
+    { target: "mettre", translations: { de: "setzen/legen/stellen", en: "to put", it: "mettere", es: "poner", fr: "mettre" } },
+    { target: "parler", translations: { de: "sprechen", en: "to speak", it: "parlare", es: "hablar", fr: "parler" } },
+    { target: "trouver", translations: { de: "finden", en: "to find", it: "trovare", es: "encontrar", fr: "trouver" } },
+    { target: "donner", translations: { de: "geben", en: "to give", it: "dare", es: "dar", fr: "donner" } },
+    { target: "falloir", translations: { de: "nötig sein", en: "to be necessary", it: "volerci / essere necessario", es: "ser necesario", fr: "falloir" } },
+    { target: "passer", translations: { de: "verbringen/vorbeigehen", en: "to pass / to spend", it: "passare", es: "pasar", fr: "passer" } },
+    { target: "comprendre", translations: { de: "verstehen", en: "to understand", it: "capire", es: "entender", fr: "comprendre" } },
+    { target: "aimer", translations: { de: "lieben/mögen", en: "to love / to like", it: "amare/piacere", es: "amar/querer", fr: "aimer" } },
+    { target: "croire", translations: { de: "glauben", en: "to believe", it: "credere", es: "creer", fr: "croire" } },
+    { target: "demander", translations: { de: "fragen/bitten", en: "to ask", it: "chiedere", es: "preguntar/pedir", fr: "demander" } },
+    { target: "penser", translations: { de: "denken", en: "to think", it: "pensare", es: "pensar", fr: "penser" } },
+    { target: "écrire", translations: { de: "schreiben", en: "to write", it: "scrivere", es: "escribir", fr: "écrire" } },
+    { target: "lire", translations: { de: "lesen", en: "to read", it: "leggere", es: "leer", fr: "lire" } },
+    { target: "finir", translations: { de: "beenden", en: "to finish", it: "finire", es: "terminar", fr: "finir" } },
+    { target: "partir", translations: { de: "abfahren/weggehen", en: "to leave", it: "partire", es: "irse/partir", fr: "partir" } },
+    { target: "sortir", translations: { de: "hinausgehen", en: "to go out", it: "uscire", es: "salir", fr: "sortir" } },
+    { target: "manger", translations: { de: "essen", en: "to eat", it: "mangiare", es: "comer", fr: "manger" } },
+    { target: "boire", translations: { de: "trinken", en: "to drink", it: "bere", es: "beber", fr: "boire" } }
   ]
 };
 
 function renderConjugationDashboard() {
   const lang = state.selectedLang || "it";
   const verbs = IMPORTANT_VERBS[lang] || IMPORTANT_VERBS.it;
+  const baseLang = state.baseLang || "en";
   
   const langNames = { en: "English", de: "German", it: "Italian", es: "Spanish", fr: "French" };
   const targetName = langNames[lang] || lang.toUpperCase();
@@ -2104,7 +2073,8 @@ function renderConjugationDashboard() {
   container.innerHTML = "";
   
   verbs.forEach((verb, idx) => {
-    const fakeWordObj = { target: verb.target, en: verb.en, category: "verbs" };
+    const translation = (verb.translations && verb.translations[baseLang]) || verb.en || (verb.translations && verb.translations.en) || "";
+    const fakeWordObj = { target: verb.target, en: translation, category: "verbs" };
     const conjugations = getConjugationsForVerb(fakeWordObj, lang);
     const pronouns = PRONOUNS[lang] || PRONOUNS.en;
 
@@ -2113,21 +2083,27 @@ function renderConjugationDashboard() {
     card.style.cssText = "background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; transition: all 0.2s ease; cursor: pointer;";
     
     card.innerHTML = `
-      <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
         <div>
           <h3 style="margin: 0; font-size: 1.15rem; color: var(--accent-color); font-weight: 700;">${verb.target}</h3>
-          <span style="font-size: 0.85rem; color: var(--text-secondary);">${verb.en}</span>
+          <span style="font-size: 0.85rem; color: var(--text-secondary);">${translation}</span>
         </div>
-        <div style="display: flex; gap: 8px;" onclick="event.stopPropagation();">
-          <button class="btn btn-secondary btn-sm" style="margin: 0; padding: 6px 12px; min-height: 32px; font-size: 0.75rem;" id="btn-melody-${idx}">🔊 Melody</button>
-          <button class="btn btn-primary btn-sm" style="margin: 0; padding: 6px 12px; min-height: 32px; font-size: 0.75rem;" id="btn-practice-${idx}">🎯 Match</button>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;" onclick="event.stopPropagation();">
+          <button class="btn btn-secondary btn-sm" style="margin: 0; padding: 6px 12px; min-height: 32px; font-size: 0.72rem; display: flex; align-items: center; gap: 4px;" id="btn-melody-pronoun-${idx}">🔊 + Pronoun</button>
+          <button class="btn btn-secondary btn-sm" style="margin: 0; padding: 6px 12px; min-height: 32px; font-size: 0.72rem; display: flex; align-items: center; gap: 4px;" id="btn-melody-verb-${idx}">🔊 Verb Only</button>
+          <button class="btn btn-primary btn-sm" style="margin: 0; padding: 6px 12px; min-height: 32px; font-size: 0.72rem; display: flex; align-items: center; gap: 4px;" id="btn-practice-${idx}">🎯 Match</button>
         </div>
       </div>
-      <div class="verb-details-panel" id="verb-details-${idx}" style="display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 0.85rem;">
+      
+      <div class="verb-details-panel" id="verb-details-${idx}" style="display: none; flex-direction: column; gap: 8px; margin-top: 10px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 0.85rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; font-weight: bold; padding: 4px 8px; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.04); margin-bottom: 4px;">
+          <span>With Pronoun</span>
+          <span>Without Pronoun</span>
+        </div>
         ${pronouns.map((pr, i) => `
-          <div style="display: flex; justify-content: space-between; padding: 4px 8px; background: rgba(255,255,255,0.01); border-radius: 6px;">
-            <span style="color: var(--text-secondary); font-weight: 600;">${pr}</span>
-            <strong style="color: #fff;">${conjugations[i]}</strong>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; padding: 6px 8px; background: rgba(255,255,255,0.01); border-radius: 6px; border-bottom: 1px solid rgba(255,255,255,0.02);">
+            <div style="color: #fff;"><span style="color: var(--text-secondary); font-weight: 500; margin-right: 6px;">${pr}</span> <strong>${conjugations[i]}</strong></div>
+            <div style="color: var(--accent-color); font-weight: 600;">${conjugations[i]}</div>
           </div>
         `).join("")}
       </div>
@@ -2136,7 +2112,7 @@ function renderConjugationDashboard() {
     card.onclick = () => {
       const details = document.getElementById(`verb-details-${idx}`);
       if (details.style.display === "none") {
-        details.style.display = "grid";
+        details.style.display = "flex";
         card.style.background = "rgba(255,255,255,0.04)";
       } else {
         details.style.display = "none";
@@ -2144,7 +2120,7 @@ function renderConjugationDashboard() {
       }
     };
 
-    card.querySelector(`#btn-melody-${idx}`).onclick = (e) => {
+    card.querySelector(`#btn-melody-pronoun-${idx}`).onclick = (e) => {
       e.stopPropagation();
       const speechQueue = pronouns.map((pr, i) => ({
         text: `${pr} ${conjugations[i]}`,
@@ -2153,9 +2129,18 @@ function renderConjugationDashboard() {
       playSpeechQueue(speechQueue);
     };
 
+    card.querySelector(`#btn-melody-verb-${idx}`).onclick = (e) => {
+      e.stopPropagation();
+      const speechQueue = conjugations.map(conj => ({
+        text: conj,
+        lang: lang
+      }));
+      playSpeechQueue(speechQueue);
+    };
+
     card.querySelector(`#btn-practice-${idx}`).onclick = (e) => {
       e.stopPropagation();
-      startSingleVerbConjugationTest(verb.target, verb.en);
+      startSingleVerbConjugationTest(verb.target, translation);
     };
 
     container.appendChild(card);
@@ -2190,14 +2175,17 @@ function startAllVerbsConjugationTest() {
   const lang = state.selectedLang || "it";
   const verbs = IMPORTANT_VERBS[lang] || IMPORTANT_VERBS.it;
   
-  const words = verbs.map(v => ({
-    target: v.target,
-    en: v.en,
-    category: "verbs",
-    lang: lang,
-    questionLang: state.baseLang || "en",
-    answerLang: lang
-  })).sort(() => 0.5 - Math.random());
+  const words = verbs.map(v => {
+    const translation = (v.translations && v.translations[state.baseLang || "en"]) || v.en || "";
+    return {
+      target: v.target,
+      en: translation,
+      category: "verbs",
+      lang: lang,
+      questionLang: state.baseLang || "en",
+      answerLang: lang
+    };
+  }).sort(() => 0.5 - Math.random());
 
   state.currentTest = {
     words: words,
