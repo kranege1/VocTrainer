@@ -7293,18 +7293,7 @@ function updateCloudSyncUI() {
   }
 }
 
-async function pushToCloud() {
-  if (window.location.protocol === "file:") {
-    alert("Browser Security Block:\nYou are running the app directly from your hard drive (file://). Browsers block all external cloud database requests in this mode.\n\nPlease start your local server and open 'http://localhost:8080' in your browser to use Cloud Sync!");
-    return;
-  }
-  if (!state.cloudSyncId) return;
-  const statusMsg = document.getElementById("cloud-sync-status-msg");
-  if (statusMsg) {
-    statusMsg.textContent = "⏳ Syncing with cloud...";
-    statusMsg.style.color = "var(--text-secondary)";
-  }
-  
+function getSanitizedSyncPayload() {
   const payload = {
     xp: state.xp,
     streak: state.streak,
@@ -7331,6 +7320,41 @@ async function pushToCloud() {
     activeICloudLists: state.activeICloudLists
   };
 
+  // Slice history to the last 100 entries to optimize size
+  if (payload.history && payload.history.length > 100) {
+    payload.history = payload.history.slice(-100);
+  }
+
+  let payloadStr = JSON.stringify(payload);
+  
+  // If still too large (e.g. > 1.2MB), strip audio properties to ensure successful upload
+  if (payloadStr.length > 1200000) {
+    console.warn(`Sync payload is very large (${payloadStr.length} bytes). Stripping heavy base64 custom voice recordings...`);
+    payload.customVocab = state.customVocab.map(item => {
+      const copy = { ...item };
+      delete copy.audio;
+      return copy;
+    });
+    payload.audioStripped = true;
+  }
+  
+  return payload;
+}
+
+async function pushToCloud() {
+  if (window.location.protocol === "file:") {
+    alert("Browser Security Block:\nYou are running the app directly from your hard drive (file://). Browsers block all external cloud database requests in this mode.\n\nPlease start your local server and open 'http://localhost:8080' in your browser to use Cloud Sync!");
+    return;
+  }
+  if (!state.cloudSyncId) return;
+  const statusMsg = document.getElementById("cloud-sync-status-msg");
+  if (statusMsg) {
+    statusMsg.textContent = "⏳ Syncing with cloud...";
+    statusMsg.style.color = "var(--text-secondary)";
+  }
+  
+  const payload = getSanitizedSyncPayload();
+
   try {
     const res = await fetch(`https://extendsclass.com/api/json-storage/bin/${state.cloudSyncId}`, {
       method: "PUT",
@@ -7341,11 +7365,12 @@ async function pushToCloud() {
       body: JSON.stringify(payload)
     });
     if (res.ok) {
+      const isAudioStripped = payload.audioStripped;
       if (statusMsg) {
-        statusMsg.textContent = `✅ Synced to cloud at ${new Date().toLocaleTimeString()}`;
+        statusMsg.textContent = `✅ Synced to cloud ${isAudioStripped ? "(audio skipped)" : ""} at ${new Date().toLocaleTimeString()}`;
         statusMsg.style.color = "var(--success-color)";
       }
-      showCustomAlert("🎉 Data successfully pushed to Cloud!");
+      showCustomAlert("🎉 Data successfully pushed to Cloud!" + (isAudioStripped ? "\n\n⚠️ Info: Your custom audio recordings were skipped during sync to stay within the free database storage limits." : ""));
     } else {
       throw new Error(`Server returned code ${res.status}`);
     }
