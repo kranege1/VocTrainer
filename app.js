@@ -7266,8 +7266,21 @@ function updateCloudSyncUI() {
   const activeZone = document.getElementById("cloud-sync-active-zone");
   const setupZone = document.getElementById("cloud-sync-setup-zone");
   const codeDisplay = document.getElementById("cloud-sync-code-display");
+  const statusMsg = document.getElementById("cloud-sync-status-msg");
   
   if (!activeZone || !setupZone || !codeDisplay) return;
+
+  if (window.location.protocol === "file:") {
+    activeZone.style.display = "none";
+    setupZone.style.display = "flex";
+    codeDisplay.textContent = "-";
+    if (statusMsg) {
+      statusMsg.innerHTML = "⚠️ Cloud Sync is blocked when running via <code>file://</code>. Please open the app via <code>http://localhost:8080</code> instead.";
+      statusMsg.style.color = "var(--error-color)";
+      statusMsg.parentElement.style.display = "block";
+    }
+    return;
+  }
 
   if (state.cloudSyncId) {
     activeZone.style.display = "block";
@@ -7281,6 +7294,10 @@ function updateCloudSyncUI() {
 }
 
 async function pushToCloud() {
+  if (window.location.protocol === "file:") {
+    alert("Browser Security Block:\nYou are running the app directly from your hard drive (file://). Browsers block all external cloud database requests in this mode.\n\nPlease start your local server and open 'http://localhost:8080' in your browser to use Cloud Sync!");
+    return;
+  }
   if (!state.cloudSyncId) return;
   const statusMsg = document.getElementById("cloud-sync-status-msg");
   if (statusMsg) {
@@ -7342,6 +7359,10 @@ async function pushToCloud() {
 }
 
 async function pullFromCloud() {
+  if (window.location.protocol === "file:") {
+    alert("Browser Security Block:\nYou are running the app directly from your hard drive (file://). Browsers block all external cloud database requests in this mode.\n\nPlease start your local server and open 'http://localhost:8080' in your browser to use Cloud Sync!");
+    return;
+  }
   if (!state.cloudSyncId) return;
   const statusMsg = document.getElementById("cloud-sync-status-msg");
   if (statusMsg) {
@@ -7411,6 +7432,10 @@ async function pullFromCloud() {
 }
 
 async function generateCloudSyncCode() {
+  if (window.location.protocol === "file:") {
+    alert("Browser Security Block:\nYou are running the app directly from your hard drive (file://). Browsers block all external cloud database requests in this mode.\n\nPlease start your local server and open 'http://localhost:8080' in your browser to use Cloud Sync!");
+    return;
+  }
   const btn = document.getElementById("btn-cloud-generate-code");
   if (btn) {
     btn.disabled = true;
@@ -7478,6 +7503,10 @@ async function generateCloudSyncCode() {
 }
 
 async function linkCloudSyncDevice(code) {
+  if (window.location.protocol === "file:") {
+    alert("Browser Security Block:\nYou are running the app directly from your hard drive (file://). Browsers block all external cloud database requests in this mode.\n\nPlease start your local server and open 'http://localhost:8080' in your browser to use Cloud Sync!");
+    return;
+  }
   if (!code) {
     alert("Please enter a Sync Code.");
     return;
