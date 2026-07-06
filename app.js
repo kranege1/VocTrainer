@@ -7317,7 +7317,11 @@ async function pushToCloud() {
   try {
     const res = await fetch(`https://jsonblob.com/api/jsonBlob/${state.cloudSyncId}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      mode: "cors",
+      headers: { 
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
       body: JSON.stringify(payload)
     });
     if (res.ok) {
@@ -7347,7 +7351,13 @@ async function pullFromCloud() {
   }
 
   try {
-    const res = await fetch(`https://jsonblob.com/api/jsonBlob/${state.cloudSyncId}`);
+    const res = await fetch(`https://jsonblob.com/api/jsonBlob/${state.cloudSyncId}`, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Accept": "application/json"
+      }
+    });
     if (!res.ok) throw new Error(`Server returned code ${res.status}`);
     const data = await res.json();
     
@@ -7438,13 +7448,21 @@ async function generateCloudSyncCode() {
   };
 
   try {
+    console.log("Attempting to connect to jsonblob.com...");
     const res = await fetch("https://jsonblob.com/api/jsonBlob", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      mode: "cors",
+      headers: { 
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
       body: JSON.stringify(payload)
     });
     if (res.ok) {
       const location = res.headers.get("Location");
+      if (!location) {
+        throw new Error("Server succeeded but did not return Location header.");
+      }
       const blobId = location.split("/").pop();
       state.cloudSyncId = blobId;
       saveState();
@@ -7454,7 +7472,8 @@ async function generateCloudSyncCode() {
       throw new Error(`Server returned code ${res.status}`);
     }
   } catch (err) {
-    alert("Could not generate Sync Code: " + err.message);
+    console.error("Cloud Sync connection failed:", err);
+    alert("Could not generate Sync Code: " + err.message + "\n\n💡 Tip: Your browser or network AdBlocker/Firewall might be blocking 'jsonblob.com'. Try disabling Brave Shields / AdBlocker, or visit https://jsonblob.com directly to check access.");
   } finally {
     if (btn) {
       btn.disabled = false;
@@ -7475,7 +7494,13 @@ async function linkCloudSyncDevice(code) {
   }
 
   try {
-    const res = await fetch(`https://jsonblob.com/api/jsonBlob/${code}`);
+    const res = await fetch(`https://jsonblob.com/api/jsonBlob/${code}`, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Accept": "application/json"
+      }
+    });
     if (!res.ok) throw new Error("Sync Code not found or expired.");
     const data = await res.json();
     if (data && typeof data === "object") {
