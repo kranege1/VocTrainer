@@ -71,7 +71,7 @@
         
         <!-- Build Timestamp on the bottom left -->
         <div id="build-timestamp" style="font-size: 0.65rem; color: var(--text-secondary); opacity: 0.5; font-family: monospace; padding-left: 16px; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.04); pointer-events: none; width: 100%;">
-          Build: 2026-07-06 09:14:33
+          Build: 2026-07-06 09:20:28
         </div>
       </nav>
     </header>
@@ -441,15 +441,21 @@
       <!-- Easy Multi-Device Cloud Sync -->
       <div class="card" style="border: 1px solid rgba(76, 201, 240, 0.4); background: rgba(76, 201, 240, 0.02);">
         <h3 style="color: var(--accent-color); display: flex; align-items: center; gap: 8px;">☁️ Easy Multi-Device Cloud Sync</h3>
-        <p class="import-help" style="margin-bottom: 16px;">
-          Synchronize all your vocab lists, custom folders, and progress between your PC, iPad, and iPhone. No accounts or passwords needed!
+        <p class="import-help" style="margin-bottom: 12px;">
+          Synchronize all your vocab lists, custom folders, and progress between your PC, iPad, and iPhone.
         </p>
+
+        <!-- Provider Switcher -->
+        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+          <button id="btn-sync-mode-easy" class="btn btn-secondary btn-sm active" style="flex: 1; margin: 0; padding: 6px; font-size: 0.78rem;">Zero-Config (Free)</button>
+          <button id="btn-sync-mode-github" class="btn btn-secondary btn-sm" style="flex: 1; margin: 0; padding: 6px; font-size: 0.78rem;">GitHub Gist (Adblock-Safe)</button>
+        </div>
         
         <!-- Active Sync Code display -->
         <div id="cloud-sync-active-zone" style="display: none; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--border-color);">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
             <div>
-              <span style="font-size: 0.8rem; color: var(--text-secondary); display: block;">Your Active Sync Code:</span>
+              <span id="cloud-sync-code-label" style="font-size: 0.8rem; color: var(--text-secondary); display: block;">Your Active Sync Code:</span>
               <strong id="cloud-sync-code-display" style="font-size: 1.3rem; color: var(--success-color); letter-spacing: 1px; font-family: monospace;">-</strong>
             </div>
             <div style="display: flex; gap: 8px;">
@@ -461,8 +467,8 @@
           <button id="btn-cloud-unlink" class="btn btn-secondary btn-sm" style="margin-top: 10px; width: 100%; min-height: 28px; padding: 4px; font-size: 0.75rem; color: var(--error-color); background: rgba(239,71,111,0.05);">❌ Disable Cloud Sync / Unlink Code</button>
         </div>
 
-        <!-- Initial Setup Zone -->
-        <div id="cloud-sync-setup-zone" style="display: flex; flex-direction: column; gap: 12px;">
+        <!-- Initial Setup Zone (Easy) -->
+        <div id="cloud-sync-setup-zone-easy" style="display: flex; flex-direction: column; gap: 12px;">
           <button id="btn-cloud-generate-code" class="btn btn-primary" style="margin: 0; width: 100%; min-height: 40px; display: flex; align-items: center; justify-content: center; gap: 6px;">🆕 Generate New Sync Code</button>
           
           <div style="text-align: center; color: var(--text-secondary); font-size: 0.8rem; margin: 4px 0; position: relative;">
@@ -474,6 +480,23 @@
             <input type="text" id="input-cloud-sync-code" placeholder="Enter Sync Code" style="flex: 1; min-height: 40px; background: rgba(255,255,255,0.02); color: #fff; border: 1px solid var(--border-color); border-radius: 6px; padding: 0 12px; font-size: 0.95rem; font-family: monospace; text-align: center;">
             <button id="btn-cloud-link-code" class="btn btn-secondary" style="margin: 0; min-height: 40px; white-space: nowrap;">🔗 Link Device</button>
           </div>
+        </div>
+
+        <!-- Initial Setup Zone (GitHub Gist) -->
+        <div id="cloud-sync-setup-zone-github" style="display: none; flex-direction: column; gap: 12px;">
+          <p class="import-help" style="font-size: 0.72rem; margin-bottom: 4px;">
+            Securely save data to a private Gist on your GitHub account. Guaranteed to work behind any Adblocker or Firewall.
+          </p>
+          <div class="form-group" style="margin-bottom: 8px; text-align: left;">
+            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 4px;">GitHub Personal Access Token (PAT)</label>
+            <input type="password" id="input-github-token" placeholder="ghp_..." style="width: 100%; min-height: 38px; background: rgba(255,255,255,0.02); color: #fff; border: 1px solid var(--border-color); border-radius: 6px; padding: 0 10px; font-size: 0.9rem;">
+            <a href="https://github.com/settings/tokens/new?scopes=gist&description=VocTrainer%20Sync" target="_blank" style="color: var(--accent-color); font-size: 0.7rem; text-decoration: underline; display: inline-block; margin-top: 4px;">Create Token here (Enable 'gist' scope)</a>
+          </div>
+          <div class="form-group" style="margin-bottom: 12px; text-align: left;">
+            <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 4px;">Existing Gist ID (To link another device)</label>
+            <input type="text" id="input-github-gist-id" placeholder="Leave empty for new gist" style="width: 100%; min-height: 38px; background: rgba(255,255,255,0.02); color: #fff; border: 1px solid var(--border-color); border-radius: 6px; padding: 0 10px; font-family: monospace; font-size: 0.9rem;">
+          </div>
+          <button id="btn-github-connect" class="btn btn-primary" style="margin: 0; width: 100%; min-height: 40px; display: flex; align-items: center; justify-content: center; gap: 6px;">🆕 Connect & Sync Gist</button>
         </div>
       </div>
 

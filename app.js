@@ -194,7 +194,10 @@ let state = {
   customVoices: {}, // Selected free local system voices for each language key: { en: "Voice Name", ... }
   activeICloudLists: {}, // Sync status of files in directory: { "filename.json": boolean }
   dictionaryCache: {}, // Central dictionary cache mapping English base word to details: synonyms, conjugations, sentences, etc.
-  cloudSyncId: "", // Code used for easy multi-device Cloud Sync (JsonBlob ID)
+  cloudSyncId: "", // Code used for easy multi-device Cloud Sync (JsonBlob / ExtendsClass ID)
+  syncProvider: "easy", // "easy" (ExtendsClass) or "github" (GitHub Gist)
+  githubToken: "", // Personal Access Token for Gist Sync
+  githubGistId: "", // Gist ID for Gist Sync
 
   // Current active test state
   currentTest: {
@@ -240,7 +243,10 @@ function saveState() {
     customVoices: state.customVoices,
     activeICloudLists: state.activeICloudLists,
     dictionaryCache: state.dictionaryCache,
-    cloudSyncId: state.cloudSyncId
+    cloudSyncId: state.cloudSyncId,
+    syncProvider: state.syncProvider,
+    githubToken: state.githubToken,
+    githubGistId: state.githubGistId
   }));
   updateHeaderUI();
   updateCategoryCounts();
@@ -307,6 +313,9 @@ function loadState() {
     state.activeICloudLists = parsed.activeICloudLists || {};
     state.dictionaryCache = parsed.dictionaryCache || {};
     state.cloudSyncId = parsed.cloudSyncId || "";
+    state.syncProvider = parsed.syncProvider || "easy";
+    state.githubToken = parsed.githubToken || "";
+    state.githubGistId = parsed.githubGistId || "";
 
     // Permanently remove obsolete base64 audio data from custom vocab to clear storage
     if (state.customVocab && Array.isArray(state.customVocab)) {
@@ -3968,6 +3977,33 @@ document.addEventListener("DOMContentLoaded", async () => {
     linkCloudSyncDevice(code);
   };
 
+  // Provider tabs switcher
+  const btnModeEasy = document.getElementById("btn-sync-mode-easy");
+  const btnModeGithub = document.getElementById("btn-sync-mode-github");
+  const setupZoneEasy = document.getElementById("cloud-sync-setup-zone-easy");
+  const setupZoneGithub = document.getElementById("cloud-sync-setup-zone-github");
+
+  if (btnModeEasy && btnModeGithub && setupZoneEasy && setupZoneGithub) {
+    btnModeEasy.onclick = () => {
+      btnModeEasy.classList.add("active");
+      btnModeGithub.classList.remove("active");
+      setupZoneEasy.style.display = "flex";
+      setupZoneGithub.style.display = "none";
+    };
+    btnModeGithub.onclick = () => {
+      btnModeGithub.classList.add("active");
+      btnModeEasy.classList.remove("active");
+      setupZoneEasy.style.display = "none";
+      setupZoneGithub.style.display = "flex";
+    };
+  }
+
+  // GitHub Gist Sync connect button
+  const btnGithubConnect = document.getElementById("btn-github-connect");
+  if (btnGithubConnect) {
+    btnGithubConnect.onclick = connectGitHubGist;
+  }
+
   // API Key Actions
   document.getElementById("btn-save-api-keys").onclick = async () => {
     state.openaiKey = document.getElementById("setup-openai-key").value.trim();
@@ -7279,15 +7315,18 @@ async function executeCSVImport() {
 // ==========================================
 function updateCloudSyncUI() {
   const activeZone = document.getElementById("cloud-sync-active-zone");
-  const setupZone = document.getElementById("cloud-sync-setup-zone");
+  const setupZoneEasy = document.getElementById("cloud-sync-setup-zone-easy");
+  const setupZoneGithub = document.getElementById("cloud-sync-setup-zone-github");
   const codeDisplay = document.getElementById("cloud-sync-code-display");
+  const codeLabel = document.getElementById("cloud-sync-code-label");
   const statusMsg = document.getElementById("cloud-sync-status-msg");
   
-  if (!activeZone || !setupZone || !codeDisplay) return;
+  if (!activeZone || !setupZoneEasy || !setupZoneGithub || !codeDisplay) return;
 
-  if (window.location.protocol === "file:") {
+  if (window.location.protocol === "file:" && state.syncProvider === "easy") {
     activeZone.style.display = "none";
-    setupZone.style.display = "flex";
+    setupZoneEasy.style.display = "flex";
+    setupZoneGithub.style.display = "none";
     codeDisplay.textContent = "-";
     if (statusMsg) {
       statusMsg.innerHTML = "⚠️ Cloud Sync is blocked when running via <code>file://</code>. Please open the app via <code>http://localhost:8080</code> instead.";
@@ -7297,13 +7336,36 @@ function updateCloudSyncUI() {
     return;
   }
 
+  // Prefill GitHub inputs if present
+  const inputToken = document.getElementById("input-github-token");
+  const inputGistId = document.getElementById("input-github-gist-id");
+  if (inputToken) inputToken.value = state.githubToken || "";
+  if (inputGistId) inputGistId.value = state.githubGistId || "";
+
   if (state.cloudSyncId) {
     activeZone.style.display = "block";
-    setupZone.style.display = "none";
+    setupZoneEasy.style.display = "none";
+    setupZoneGithub.style.display = "none";
     codeDisplay.textContent = state.cloudSyncId;
+    if (codeLabel) {
+      codeLabel.textContent = state.syncProvider === "github" ? "GitHub Gist ID / Sync Code:" : "Your Active Sync Code:";
+    }
   } else {
     activeZone.style.display = "none";
-    setupZone.style.display = "flex";
+    const btnModeEasy = document.getElementById("btn-sync-mode-easy");
+    const btnModeGithub = document.getElementById("btn-sync-mode-github");
+    
+    if (state.syncProvider === "github") {
+      if (btnModeGithub) btnModeGithub.classList.add("active");
+      if (btnModeEasy) btnModeEasy.classList.remove("active");
+      setupZoneEasy.style.display = "none";
+      setupZoneGithub.style.display = "flex";
+    } else {
+      if (btnModeEasy) btnModeEasy.classList.add("active");
+      if (btnModeGithub) btnModeGithub.classList.remove("active");
+      setupZoneEasy.style.display = "flex";
+      setupZoneGithub.style.display = "none";
+    }
     codeDisplay.textContent = "-";
   }
 }
@@ -7357,6 +7419,10 @@ function getSanitizedSyncPayload() {
 }
 
 async function pushToCloud() {
+  if (state.syncProvider === "github") {
+    await pushToGitHubGist();
+    return;
+  }
   if (window.location.protocol === "file:") {
     alert("Browser Security Block:\nYou are running the app directly from your hard drive (file://). Browsers block all external cloud database requests in this mode.\n\nPlease start your local server and open 'http://localhost:8080' in your browser to use Cloud Sync!");
     return;
@@ -7399,6 +7465,10 @@ async function pushToCloud() {
 }
 
 async function pullFromCloud() {
+  if (state.syncProvider === "github") {
+    await pullFromGitHubGist();
+    return;
+  }
   if (window.location.protocol === "file:") {
     alert("Browser Security Block:\nYou are running the app directly from your hard drive (file://). Browsers block all external cloud database requests in this mode.\n\nPlease start your local server and open 'http://localhost:8080' in your browser to use Cloud Sync!");
     return;
@@ -7617,9 +7687,239 @@ async function linkCloudSyncDevice(code) {
 function unlinkCloudSyncDevice() {
   if (confirm("Are you sure you want to disable Cloud Sync? Your current local data will NOT be deleted, but this device will stop syncing with the cloud.")) {
     state.cloudSyncId = "";
+    state.githubToken = "";
+    state.githubGistId = "";
+    state.syncProvider = "easy";
     saveState();
     updateCloudSyncUI();
     showCustomAlert("Cloud Sync disabled.");
+  }
+}
+
+// ==========================================
+// 13. GitHub Gist Cloud Sync Implementation
+// ==========================================
+async function connectGitHubGist() {
+  const token = document.getElementById("input-github-token").value.trim();
+  const gistId = document.getElementById("input-github-gist-id").value.trim();
+  
+  if (!token) {
+    alert("Please enter a GitHub Personal Access Token.");
+    return;
+  }
+
+  const btn = document.getElementById("btn-github-connect");
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "⏳ Connecting...";
+  }
+
+  const payload = getSanitizedSyncPayload();
+
+  try {
+    if (gistId) {
+      // LINKING existing Gist
+      const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+        method: "GET",
+        headers: {
+          "Authorization": `token ${token}`
+        }
+      });
+      if (!res.ok) throw new Error("Could not find Gist. Check Gist ID or Token validity.");
+      const data = await res.json();
+      
+      // Pull data
+      const contentStr = data.files["voctrainer_sync.json"].content;
+      const parsedData = JSON.parse(contentStr);
+      
+      state.syncProvider = "github";
+      state.githubToken = token;
+      state.githubGistId = gistId;
+      state.cloudSyncId = gistId;
+      
+      // Load properties
+      if (parsedData.xp !== undefined) state.xp = parsedData.xp;
+      if (parsedData.streak !== undefined) state.streak = parsedData.streak;
+      if (parsedData.hearts !== undefined) state.hearts = parsedData.hearts;
+      if (parsedData.level !== undefined) state.level = parsedData.level;
+      if (parsedData.customVocab !== undefined) state.customVocab = parsedData.customVocab;
+      if (parsedData.mistakes !== undefined) state.mistakes = parsedData.mistakes;
+      if (parsedData.openaiKey !== undefined) state.openaiKey = parsedData.openaiKey;
+      if (parsedData.grokKey !== undefined) state.grokKey = parsedData.grokKey;
+      if (parsedData.geminiKey !== undefined) state.geminiKey = parsedData.geminiKey;
+      if (parsedData.anthropicKey !== undefined) state.anthropicKey = parsedData.anthropicKey;
+      if (parsedData.audioEngine !== undefined) state.audioEngine = parsedData.audioEngine;
+      if (parsedData.allowSynonyms !== undefined) state.allowSynonyms = parsedData.allowSynonyms;
+      if (parsedData.questionTimer !== undefined) state.questionTimer = parsedData.questionTimer;
+      if (parsedData.baseLang !== undefined) state.baseLang = parsedData.baseLang;
+      if (parsedData.selectedLang !== undefined) state.selectedLang = parsedData.selectedLang;
+      if (parsedData.history !== undefined) state.history = parsedData.history;
+      if (parsedData.deletedStarters !== undefined) state.deletedStarters = parsedData.deletedStarters;
+      if (parsedData.editedStarters !== undefined) state.editedStarters = parsedData.editedStarters;
+      if (parsedData.customFolders !== undefined) state.customFolders = parsedData.customFolders;
+      if (parsedData.wordStats !== undefined) state.wordStats = parsedData.wordStats;
+      if (parsedData.testDirection !== undefined) state.testDirection = parsedData.testDirection;
+      if (parsedData.customVoices !== undefined) state.customVoices = parsedData.customVoices;
+      if (parsedData.activeICloudLists !== undefined) state.activeICloudLists = parsedData.activeICloudLists;
+      
+      saveState();
+      updateCloudSyncUI();
+      
+      // Re-initialize views
+      renderImportedList();
+      renderMistakesList();
+      renderHistoryList();
+      updateCategoryCounts();
+      updateHeaderUI();
+      
+      alert("🎉 Linked to GitHub Gist! Wordlists and progress pulled successfully.");
+    } else {
+      // CREATING new Gist
+      const res = await fetch("https://api.github.com/gists", {
+        method: "POST",
+        headers: {
+          "Authorization": `token ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          description: "VocTrainer Sync Data",
+          public: false,
+          files: {
+            "voctrainer_sync.json": {
+              content: JSON.stringify(payload)
+            }
+          }
+        })
+      });
+      if (!res.ok) throw new Error("Could not create Gist. Verify Token scopes.");
+      const data = await res.json();
+      
+      state.syncProvider = "github";
+      state.githubToken = token;
+      state.githubGistId = data.id;
+      state.cloudSyncId = data.id;
+      
+      saveState();
+      updateCloudSyncUI();
+      alert("🎉 GitHub Gist Sync connected! Copy your Gist ID to sync other devices.");
+    }
+  } catch (err) {
+    alert("Connection to GitHub Gist failed: " + err.message);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "🆕 Connect & Sync Gist";
+    }
+  }
+}
+
+async function pushToGitHubGist() {
+  const statusMsg = document.getElementById("cloud-sync-status-msg");
+  if (statusMsg) {
+    statusMsg.textContent = "⏳ Syncing with GitHub Gist...";
+    statusMsg.style.color = "var(--text-secondary)";
+  }
+  
+  const payload = getSanitizedSyncPayload();
+
+  try {
+    const res = await fetch(`https://api.github.com/gists/${state.githubGistId}`, {
+      method: "PATCH",
+      headers: {
+        "Authorization": `token ${state.githubToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        files: {
+          "voctrainer_sync.json": {
+            content: JSON.stringify(payload)
+          }
+        }
+      })
+    });
+    if (res.ok) {
+      if (statusMsg) {
+        statusMsg.textContent = `✅ Synced to Gist at ${new Date().toLocaleTimeString()}`;
+        statusMsg.style.color = "var(--success-color)";
+      }
+      showCustomAlert("🎉 Data successfully pushed to GitHub Gist!");
+    } else {
+      throw new Error(`GitHub returned code ${res.status}`);
+    }
+  } catch (err) {
+    if (statusMsg) {
+      statusMsg.textContent = `❌ Gist upload failed: ${err.message}`;
+      statusMsg.style.color = "var(--error-color)";
+    }
+    alert("GitHub Gist push failed: " + err.message);
+  }
+}
+
+async function pullFromGitHubGist() {
+  const statusMsg = document.getElementById("cloud-sync-status-msg");
+  if (statusMsg) {
+    statusMsg.textContent = "⏳ Fetching from GitHub Gist...";
+    statusMsg.style.color = "var(--text-secondary)";
+  }
+
+  try {
+    const res = await fetch(`https://api.github.com/gists/${state.githubGistId}`, {
+      headers: {
+        "Authorization": `token ${state.githubToken}`
+      }
+    });
+    if (!res.ok) throw new Error(`GitHub returned code ${res.status}`);
+    const data = await res.json();
+    const contentStr = data.files["voctrainer_sync.json"].content;
+    const parsedData = JSON.parse(contentStr);
+    
+    if (parsedData && typeof parsedData === "object") {
+      // Overwrite/merge properties
+      if (parsedData.xp !== undefined) state.xp = parsedData.xp;
+      if (parsedData.streak !== undefined) state.streak = parsedData.streak;
+      if (parsedData.hearts !== undefined) state.hearts = parsedData.hearts;
+      if (parsedData.level !== undefined) state.level = parsedData.level;
+      if (parsedData.customVocab !== undefined) state.customVocab = parsedData.customVocab;
+      if (parsedData.mistakes !== undefined) state.mistakes = parsedData.mistakes;
+      if (parsedData.openaiKey !== undefined) state.openaiKey = parsedData.openaiKey;
+      if (parsedData.grokKey !== undefined) state.grokKey = parsedData.grokKey;
+      if (parsedData.geminiKey !== undefined) state.geminiKey = parsedData.geminiKey;
+      if (parsedData.anthropicKey !== undefined) state.anthropicKey = parsedData.anthropicKey;
+      if (parsedData.audioEngine !== undefined) state.audioEngine = parsedData.audioEngine;
+      if (parsedData.allowSynonyms !== undefined) state.allowSynonyms = parsedData.allowSynonyms;
+      if (parsedData.questionTimer !== undefined) state.questionTimer = parsedData.questionTimer;
+      if (parsedData.baseLang !== undefined) state.baseLang = parsedData.baseLang;
+      if (parsedData.selectedLang !== undefined) state.selectedLang = parsedData.selectedLang;
+      if (parsedData.history !== undefined) state.history = parsedData.history;
+      if (parsedData.deletedStarters !== undefined) state.deletedStarters = parsedData.deletedStarters;
+      if (parsedData.editedStarters !== undefined) state.editedStarters = parsedData.editedStarters;
+      if (parsedData.customFolders !== undefined) state.customFolders = parsedData.customFolders;
+      if (parsedData.wordStats !== undefined) state.wordStats = parsedData.wordStats;
+      if (parsedData.testDirection !== undefined) state.testDirection = parsedData.testDirection;
+      if (parsedData.customVoices !== undefined) state.customVoices = parsedData.customVoices;
+      if (parsedData.activeICloudLists !== undefined) state.activeICloudLists = parsedData.activeICloudLists;
+      
+      saveState();
+      
+      // Re-initialize views
+      renderImportedList();
+      renderMistakesList();
+      renderHistoryList();
+      updateCategoryCounts();
+      updateHeaderUI();
+      
+      if (statusMsg) {
+        statusMsg.textContent = `✅ Synced from Gist at ${new Date().toLocaleTimeString()}`;
+        statusMsg.style.color = "var(--success-color)";
+      }
+      showCustomAlert("🎉 Data successfully pulled from GitHub Gist!");
+    }
+  } catch (err) {
+    if (statusMsg) {
+      statusMsg.textContent = `❌ Gist download failed: ${err.message}`;
+      statusMsg.style.color = "var(--error-color)";
+    }
+    alert("GitHub Gist pull failed: " + err.message);
   }
 }
 
