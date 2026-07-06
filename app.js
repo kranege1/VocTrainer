@@ -8,7 +8,17 @@ async function loadStarterVocab() {
   try {
     const res = await fetch("vocab/vocab.json");
     if (res.ok) {
-      STARTER_VOCAB_RAW = await res.json();
+      const data = await res.json();
+      STARTER_VOCAB_RAW = data.map(item => {
+        if (item.languages) {
+          const flatItem = { ...item };
+          ['en', 'de', 'it', 'es', 'fr'].forEach(lang => {
+            flatItem[lang] = item.languages[lang]?.word || "";
+          });
+          return flatItem;
+        }
+        return item;
+      });
     }
   } catch (e) {
     console.error("Failed to load starter vocab:", e);
@@ -33,9 +43,21 @@ async function loadFrequencyLists() {
 }
 
 function isCommonWord(wordText, lang) {
-  if (!wordText || !lang || !FREQUENCY_LISTS[lang]) return false;
-  const clean = stripArticles(wordText, lang).toLowerCase().trim();
-  return FREQUENCY_LISTS[lang].has(clean);
+  if (!wordText || !lang) return false;
+  const clean = wordText.toLowerCase().trim();
+  const item = STARTER_VOCAB_RAW.find(w => {
+    if (w.languages && w.languages[lang]) {
+      return w.languages[lang].word.toLowerCase().trim() === clean;
+    }
+    return w[lang] && w[lang].toLowerCase().trim() === clean;
+  });
+  if (item && item.languages && item.languages[lang]) {
+    const rank = item.languages[lang].frequency_rank;
+    return typeof rank === "number" && rank <= 500;
+  }
+  if (!FREQUENCY_LISTS[lang]) return false;
+  const cleanStripped = stripArticles(wordText, lang).toLowerCase().trim();
+  return FREQUENCY_LISTS[lang].has(cleanStripped);
 }
 
 // Central Dictionary caching & GTX translation utilities
