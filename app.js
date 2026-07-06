@@ -7319,8 +7319,7 @@ async function pushToCloud() {
       method: "PUT",
       mode: "cors",
       headers: { 
-        "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Content-Type": "text/plain"
       },
       body: JSON.stringify(payload)
     });
@@ -7353,10 +7352,7 @@ async function pullFromCloud() {
   try {
     const res = await fetch(`https://jsonblob.com/api/jsonBlob/${state.cloudSyncId}`, {
       method: "GET",
-      mode: "cors",
-      headers: {
-        "Accept": "application/json"
-      }
+      mode: "cors"
     });
     if (!res.ok) throw new Error(`Server returned code ${res.status}`);
     const data = await res.json();
@@ -7453,8 +7449,7 @@ async function generateCloudSyncCode() {
       method: "POST",
       mode: "cors",
       headers: { 
-        "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Content-Type": "text/plain"
       },
       body: JSON.stringify(payload)
     });
@@ -7496,10 +7491,7 @@ async function linkCloudSyncDevice(code) {
   try {
     const res = await fetch(`https://jsonblob.com/api/jsonBlob/${code}`, {
       method: "GET",
-      mode: "cors",
-      headers: {
-        "Accept": "application/json"
-      }
+      mode: "cors"
     });
     if (!res.ok) throw new Error("Sync Code not found or expired.");
     const data = await res.json();
