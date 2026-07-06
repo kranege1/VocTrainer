@@ -3967,15 +3967,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     showView("view-dashboard");
   };
 
-  // Easy Cloud Sync bindings
-  document.getElementById("btn-cloud-generate-code").onclick = generateCloudSyncCode;
-  document.getElementById("btn-cloud-upload").onclick = pushToCloud;
-  document.getElementById("btn-cloud-download").onclick = pullFromCloud;
-  document.getElementById("btn-cloud-unlink").onclick = unlinkCloudSyncDevice;
-  document.getElementById("btn-cloud-link-code").onclick = () => {
-    const code = document.getElementById("input-cloud-sync-code").value.trim();
-    linkCloudSyncDevice(code);
-  };
+  const btnGenCode = document.getElementById("btn-cloud-generate-code");
+  if (btnGenCode) btnGenCode.onclick = generateCloudSyncCode;
+
+  const btnUpload = document.getElementById("btn-cloud-upload");
+  if (btnUpload) btnUpload.onclick = pushToCloud;
+
+  const btnDownload = document.getElementById("btn-cloud-download");
+  if (btnDownload) btnDownload.onclick = pullFromCloud;
+
+  const btnUnlink = document.getElementById("btn-cloud-unlink");
+  if (btnUnlink) btnUnlink.onclick = unlinkCloudSyncDevice;
+
+  const btnLink = document.getElementById("btn-cloud-link-code");
+  if (btnLink) {
+    btnLink.onclick = () => {
+      const codeInput = document.getElementById("input-cloud-sync-code");
+      const code = codeInput ? codeInput.value.trim() : "";
+      linkCloudSyncDevice(code);
+    };
+  }
 
   // Provider tabs switcher
   const btnModeEasy = document.getElementById("btn-sync-mode-easy");
