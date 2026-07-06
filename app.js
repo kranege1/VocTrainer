@@ -308,6 +308,21 @@ function loadState() {
     state.dictionaryCache = parsed.dictionaryCache || {};
     state.cloudSyncId = parsed.cloudSyncId || "";
 
+    // Permanently remove obsolete base64 audio data from custom vocab to clear storage
+    if (state.customVocab && Array.isArray(state.customVocab)) {
+      let cleaned = false;
+      state.customVocab.forEach(item => {
+        if (item.audio) {
+          delete item.audio;
+          cleaned = true;
+        }
+      });
+      if (cleaned) {
+        saveState();
+        console.log("Cleanup: Obsolete base64 audio recordings permanently cleared from local storage.");
+      }
+    }
+
     // Prefill Setup fields
     document.getElementById("setup-openai-key").value = state.openaiKey;
     document.getElementById("setup-grok-key").value = state.grokKey;
