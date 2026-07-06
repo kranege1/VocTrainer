@@ -30,7 +30,7 @@ if (!fs.existsSync(SYNC_DIR)) {
 }
 
 // POST: Create a new sync bin
-app.post('/api/sync', (req, res) => {
+app.post('/api/vocabdata', (req, res) => {
   try {
     const id = crypto.randomBytes(4).toString('hex'); // 8-character code
     const filePath = path.join(SYNC_DIR, `${id}.json`);
@@ -43,7 +43,7 @@ app.post('/api/sync', (req, res) => {
 });
 
 // PUT: Update an existing sync bin
-app.put('/api/sync/:id', (req, res) => {
+app.put('/api/vocabdata/:id', (req, res) => {
   try {
     const { id } = req.params;
     const filePath = path.join(SYNC_DIR, `${id}.json`);
@@ -56,7 +56,7 @@ app.put('/api/sync/:id', (req, res) => {
 });
 
 // GET: Retrieve sync data
-app.get('/api/sync/:id', (req, res) => {
+app.get('/api/vocabdata/:id', (req, res) => {
   try {
     const { id } = req.params;
     const filePath = path.join(SYNC_DIR, `${id}.json`);

@@ -7315,9 +7315,9 @@ async function executeCSVImport() {
 // ==========================================
 function getSyncApiUrl(suffix = "") {
   if (window.location.hostname.includes("onrender.com") || window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-    return `/api/sync${suffix}`;
+    return `/api/vocabdata${suffix}`;
   } else {
-    return `https://voctrainer-app.onrender.com/api/sync${suffix}`;
+    return `https://voctrainer-app.onrender.com/api/vocabdata${suffix}`;
   }
 }
 
