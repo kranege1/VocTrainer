@@ -7313,6 +7313,14 @@ async function executeCSVImport() {
 // ==========================================
 // 12. Easy Multi-Device Cloud Sync Logic
 // ==========================================
+function getSyncApiUrl(suffix = "") {
+  if (window.location.hostname.includes("onrender.com") || window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+    return `/api/sync${suffix}`;
+  } else {
+    return `https://voctrainer-app.onrender.com/api/sync${suffix}`;
+  }
+}
+
 function updateCloudSyncUI() {
   const activeZone = document.getElementById("cloud-sync-active-zone");
   const setupZoneEasy = document.getElementById("cloud-sync-setup-zone-easy");
@@ -7437,7 +7445,7 @@ async function pushToCloud() {
   const payload = getSanitizedSyncPayload();
 
   try {
-    const res = await fetch(`https://extendsclass.com/api/json-storage/bin/${state.cloudSyncId}`, {
+    const res = await fetch(getSyncApiUrl(`/${state.cloudSyncId}`), {
       method: "PUT",
       mode: "cors",
       headers: { 
@@ -7481,7 +7489,7 @@ async function pullFromCloud() {
   }
 
   try {
-    const res = await fetch(`https://extendsclass.com/api/json-storage/bin/${state.cloudSyncId}`, {
+    const res = await fetch(getSyncApiUrl(`/${state.cloudSyncId}`), {
       method: "GET",
       mode: "cors"
     });
@@ -7523,7 +7531,6 @@ async function pullFromCloud() {
       renderHistoryList();
       updateCategoryCounts();
       updateHeaderUI();
-      
       if (statusMsg) {
         statusMsg.textContent = `✅ Synced from cloud at ${new Date().toLocaleTimeString()}`;
         statusMsg.style.color = "var(--success-color)";
@@ -7552,35 +7559,11 @@ async function generateCloudSyncCode() {
     btn.textContent = "⏳ Generating Code...";
   }
 
-  const payload = {
-    xp: state.xp,
-    streak: state.streak,
-    hearts: state.hearts,
-    level: state.level,
-    customVocab: state.customVocab,
-    mistakes: state.mistakes,
-    openaiKey: state.openaiKey,
-    grokKey: state.grokKey,
-    geminiKey: state.geminiKey,
-    anthropicKey: state.anthropicKey,
-    audioEngine: state.audioEngine,
-    allowSynonyms: state.allowSynonyms,
-    questionTimer: state.questionTimer,
-    baseLang: state.baseLang,
-    selectedLang: state.selectedLang,
-    history: state.history,
-    deletedStarters: state.deletedStarters,
-    editedStarters: state.editedStarters,
-    customFolders: state.customFolders,
-    wordStats: state.wordStats,
-    testDirection: state.testDirection,
-    customVoices: state.customVoices,
-    activeICloudLists: state.activeICloudLists
-  };
-
+  const payload = getSanitizedSyncPayload();
+ 
   try {
-    console.log("Attempting to connect to extendsclass.com...");
-    const res = await fetch("https://extendsclass.com/api/json-storage/bin", {
+    console.log("Attempting to connect to Render sync service...");
+    const res = await fetch(getSyncApiUrl(), {
       method: "POST",
       mode: "cors",
       headers: { 
@@ -7596,7 +7579,8 @@ async function generateCloudSyncCode() {
       state.cloudSyncId = data.id;
       saveState();
       updateCloudSyncUI();
-      showCustomAlert("🎉 Sync Code generated! Save this code to link other devices.");
+      const isAudioStripped = payload.audioStripped;
+      showCustomAlert("🎉 Sync Code generated! Save this code to link other devices." + (isAudioStripped ? "\n\n⚠️ Info: Your custom audio recordings were skipped during sync to stay within storage limits." : ""));
     } else {
       throw new Error(`Server returned code ${res.status}`);
     }
@@ -7627,7 +7611,7 @@ async function linkCloudSyncDevice(code) {
   }
 
   try {
-    const res = await fetch(`https://extendsclass.com/api/json-storage/bin/${code}`, {
+    const res = await fetch(getSyncApiUrl(`/${code}`), {
       method: "GET",
       mode: "cors"
     });

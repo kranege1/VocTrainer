@@ -1,0 +1,15 @@
+I need a multilingual vocabulary list for my flashcards. 
+
+Please create a list for the category: "[INSERT CATEGORY HERE, e.g., Biology / Phrases / Industry / Verben]"
+Number of entries: [INSERT NUMBER OF ENTRIES HERE, e.g., 30 / 40 / 50]
+
+Please strictly adhere to the following formatting rules:
+1. Use exactly these 5 languages as column headers in the first line: EN;DE;IT;ES;FR
+2. Use a semicolon (;) as the only delimiter between the languages.
+3. Every vocabulary group must be on its own separate, new line.
+4. Provide only ONE clear, primary meaning per language (no slashes, no alternate translations like "hear / listen").
+5. Rules for parts of speech:
+   - For Nomen/Nouns: Include the appropriate definite article in all languages (e.g., the cell;die Zelle;la cellula;la célula;la cellule).
+   - For Verbs: Use the pure, bare infinitive without any articles or particles (e.g., be;sein;essere;ser;être).
+6. If the ask is for "Phrases" or "Citations" find short sentences or famous citations as imput.
+7. Do NOT include any introductory text, explanations, or numbering. Output ONLY the raw CSV text inside a code block.

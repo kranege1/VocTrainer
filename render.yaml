@@ -1,6 +1,6 @@
 services:
   - type: web
     name: voctrainer-app
-    runtime: static
-    buildCommand: "" # No build step required for raw static html/css/js
-    staticPublishPath: "." # Render the root directory (containing index.html, style.css, app.js)
+    runtime: node
+    buildCommand: "npm install"
+    startCommand: "node server.js"
