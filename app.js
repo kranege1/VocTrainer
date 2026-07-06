@@ -7332,11 +7332,11 @@ async function pushToCloud() {
   };
 
   try {
-    const res = await fetch(`https://jsonblob.com/api/jsonBlob/${state.cloudSyncId}`, {
+    const res = await fetch(`https://extendsclass.com/api/json-storage/bin/${state.cloudSyncId}`, {
       method: "PUT",
       mode: "cors",
       headers: { 
-        "Content-Type": "text/plain"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(payload)
     });
@@ -7371,7 +7371,7 @@ async function pullFromCloud() {
   }
 
   try {
-    const res = await fetch(`https://jsonblob.com/api/jsonBlob/${state.cloudSyncId}`, {
+    const res = await fetch(`https://extendsclass.com/api/json-storage/bin/${state.cloudSyncId}`, {
       method: "GET",
       mode: "cors"
     });
@@ -7469,22 +7469,21 @@ async function generateCloudSyncCode() {
   };
 
   try {
-    console.log("Attempting to connect to jsonblob.com...");
-    const res = await fetch("https://jsonblob.com/api/jsonBlob", {
+    console.log("Attempting to connect to extendsclass.com...");
+    const res = await fetch("https://extendsclass.com/api/json-storage/bin", {
       method: "POST",
       mode: "cors",
       headers: { 
-        "Content-Type": "text/plain"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(payload)
     });
     if (res.ok) {
-      const location = res.headers.get("Location");
-      if (!location) {
-        throw new Error("Server succeeded but did not return Location header.");
+      const data = await res.json();
+      if (!data || !data.id) {
+        throw new Error("Server succeeded but did not return a bin ID.");
       }
-      const blobId = location.split("/").pop();
-      state.cloudSyncId = blobId;
+      state.cloudSyncId = data.id;
       saveState();
       updateCloudSyncUI();
       showCustomAlert("🎉 Sync Code generated! Save this code to link other devices.");
@@ -7493,7 +7492,7 @@ async function generateCloudSyncCode() {
     }
   } catch (err) {
     console.error("Cloud Sync connection failed:", err);
-    alert("Could not generate Sync Code: " + err.message + "\n\n💡 Tip: Your browser or network AdBlocker/Firewall might be blocking 'jsonblob.com'. Try disabling Brave Shields / AdBlocker, or visit https://jsonblob.com directly to check access.");
+    alert("Could not generate Sync Code: " + err.message + "\n\n💡 Tip: Your browser or network AdBlocker/Firewall might be blocking the sync service. Try disabling Brave Shields / AdBlocker.");
   } finally {
     if (btn) {
       btn.disabled = false;
@@ -7518,7 +7517,7 @@ async function linkCloudSyncDevice(code) {
   }
 
   try {
-    const res = await fetch(`https://jsonblob.com/api/jsonBlob/${code}`, {
+    const res = await fetch(`https://extendsclass.com/api/json-storage/bin/${code}`, {
       method: "GET",
       mode: "cors"
     });
@@ -7582,5 +7581,13 @@ function unlinkCloudSyncDevice() {
     updateCloudSyncUI();
     showCustomAlert("Cloud Sync disabled.");
   }
+}
+
+// Obsolete sync placeholders from previous version to prevent ReferenceErrors
+function loadCloudWordSets() {
+  console.log("loadCloudWordSets placeholder called.");
+}
+function uploadActiveVocabToCloud() {
+  console.log("uploadActiveVocabToCloud placeholder called.");
 }
 
