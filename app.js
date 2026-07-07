@@ -5508,14 +5508,14 @@ function setupWordDetails(currentWord) {
     targetWordEl.innerHTML = aArt ? `<span style="font-size:0.85em; color:var(--success-color);">${aArt}</span> ${aNoun}` : aNoun;
   }
 
-  // Speak Base & Target handlers — use correct language for voice
-  const speakBaseBtn = document.getElementById("btn-speak-detail-base");
-  const speakTargetBtn = document.getElementById("btn-speak-detail-target");
-  if (speakBaseBtn) {
-    speakBaseBtn.onclick = () => speakWord(baseTextWithArt, qLang, 1.0);
+  // Speak Base & Target handlers — clicking flag/label plays voice
+  const speakBaseArea = document.getElementById("clickable-speak-base");
+  const speakTargetArea = document.getElementById("clickable-speak-target");
+  if (speakBaseArea) {
+    speakBaseArea.onclick = () => speakWord(baseTextWithArt, qLang, 1.0);
   }
-  if (speakTargetBtn) {
-    speakTargetBtn.onclick = () => speakWord(targetTextWithArt, aLang, 1.0);
+  if (speakTargetArea) {
+    speakTargetArea.onclick = () => speakWord(targetTextWithArt, aLang, 1.0);
   }
 
   const articlesEl = document.getElementById("detail-articles");
@@ -5614,23 +5614,28 @@ function setupWordDetails(currentWord) {
       sectionVariations.style.display = "none";
     }
 
-    // 4. Synonyms — show answer language synonyms with question language equivalents
+    // 4. Synonyms — show answer language synonyms with question language equivalents (Always visible!)
     const aSyns = (details.synonyms && details.synonyms[aLang]) ? details.synonyms[aLang] : [];
     const qSyns = (details.synonyms && details.synonyms[qLang]) ? details.synonyms[qLang] : [];
-    if (aSyns && aSyns.length > 0 && sectionSynonyms) {
-      sectionSynonyms.style.display = "block";
-      synonymsEl.innerHTML = aSyns.map((syn, idx) => {
-        const qTrans = qSyns[idx] ? ` (${qSyns[idx]})` : "";
-        return `<code style="background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; font-family: monospace;">${syn}${qTrans}</code>`;
-      }).join(", ");
-    } else if (sectionSynonyms) {
-      sectionSynonyms.style.display = "none";
+    if (sectionSynonyms) {
+      sectionSynonyms.style.display = "flex";
+      if (aSyns && aSyns.length > 0) {
+        synonymsEl.innerHTML = aSyns.map((syn, idx) => {
+          const qTrans = qSyns[idx] ? ` (${qSyns[idx]})` : "";
+          return `<code style="background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; font-family: monospace;">${syn}${qTrans}</code>`;
+        }).join(", ");
+      } else {
+        synonymsEl.innerHTML = `<span style="color: var(--text-secondary); font-style: italic; font-size: 0.8rem;">None registered</span>`;
+      }
     }
   } else {
     if (sectionArticles) sectionArticles.style.display = "none";
     if (sectionSentence) sectionSentence.style.display = "none";
     if (sectionVariations) sectionVariations.style.display = "none";
-    if (sectionSynonyms) sectionSynonyms.style.display = "none";
+    if (sectionSynonyms) {
+      sectionSynonyms.style.display = "flex";
+      synonymsEl.innerHTML = `<span style="color: var(--text-secondary); font-style: italic; font-size: 0.8rem;">None registered</span>`;
+    }
   }
 
   // Combined Word Insights & Grammar Rules trigger

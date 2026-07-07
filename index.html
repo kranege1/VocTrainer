@@ -71,7 +71,7 @@
         
         <!-- Build Timestamp on the bottom left -->
         <div id="build-timestamp" style="font-size: 0.65rem; color: var(--text-secondary); opacity: 0.5; font-family: monospace; padding-left: 16px; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.04); pointer-events: none; width: 100%;">
-          Build: 2026-07-07 05:47:52
+          Build: 2026-07-07 05:55:57
         </div>
       </nav>
     </header>
@@ -278,70 +278,67 @@
           <div class="feedback-content">
             <div class="feedback-icon" id="feedback-icon">🎉</div>
             <h3 id="feedback-title">Correct!</h3>
-            <p id="feedback-desc"></p>
+            <p id="feedback-desc" style="margin-bottom: 12px;"></p>
             
             <!-- Word Details Container (Directly Visible) -->
-            <div id="word-details-container" style="display: block; text-align: left; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 0.9rem; overflow-y: auto; padding-bottom: 20px;">
+            <div id="word-details-container" style="display: block; text-align: left; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color); font-size: 0.85rem; padding-bottom: 12px;">
             <!-- Word & Translation Speakers -->
-            <div class="detail-section" style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.06);">
-              <div style="flex: 1;">
-                <span id="detail-base-label" style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">DE</span>
-                <strong id="detail-base-word" style="font-size: 1.1rem; display: block; margin-top: 2px;">...</strong>
-                <button id="btn-speak-detail-base" class="btn-audio" style="padding: 4px 10px; font-size: 0.8rem; margin-top: 6px; min-height: 32px; border-radius: 10px; width: 100%; justify-content: center;">🔊 Speak</button>
+            <div class="detail-section" style="display: flex; gap: 12px; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+              <div style="flex: 1; cursor: pointer;" id="clickable-speak-base">
+                <span id="detail-base-label" style="font-size: 0.7rem; color: var(--text-secondary); display: block; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">DE 🔊</span>
+                <strong id="detail-base-word" style="font-size: 1rem; display: block; margin-top: 2px;">...</strong>
               </div>
-              <div style="flex: 1;">
-                <span id="detail-target-label" style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">IT</span>
-                <strong id="detail-target-word" style="font-size: 1.1rem; color: var(--accent-color); display: block; margin-top: 2px;">...</strong>
-                <button id="btn-speak-detail-target" class="btn-audio" style="padding: 4px 10px; font-size: 0.8rem; margin-top: 6px; min-height: 32px; border-radius: 10px; width: 100%; justify-content: center;">🔊 Speak</button>
+              <div style="flex: 1; cursor: pointer;" id="clickable-speak-target">
+                <span id="detail-target-label" style="font-size: 0.7rem; color: var(--text-secondary); display: block; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">IT 🔊</span>
+                <strong id="detail-target-word" style="font-size: 1rem; color: var(--accent-color); display: block; margin-top: 2px;">...</strong>
               </div>
             </div>
 
-
-            <div id="section-sentence" class="detail-section" style="margin-top: 10px;">
+            <div id="section-sentence" class="detail-section" style="margin-top: 8px;">
               <strong>Example Sentence:</strong>
-              <p id="detail-sentence" style="font-style: italic;"></p>
-              <p id="detail-sentence-translation" style="color: var(--text-secondary);"></p>
+              <p id="detail-sentence" style="font-style: italic; margin-bottom: 2px;"></p>
+              <p id="detail-sentence-translation" style="color: var(--text-secondary); margin: 0;"></p>
             </div>
-            <div id="section-variations" class="detail-section" style="margin-top: 10px;">
+            <div id="section-variations" class="detail-section" style="margin-top: 8px;">
               <strong>Plural / Gender / Variations:</strong>
-              <p id="detail-variations">...</p>
+              <p id="detail-variations" style="margin: 0;">...</p>
             </div>
-            <div id="section-synonyms" class="detail-section" style="margin-top: 10px;">
-              <strong>Synonyms / Similar Words:</strong>
-              <p id="detail-synonyms">...</p>
+            <div id="section-synonyms" class="detail-section" style="margin-top: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px;">
+              <div style="flex: 1; min-width: 180px;">
+                <strong>Alternative Meanings:</strong>
+                <span id="detail-synonyms" style="margin-left: 4px;">...</span>
+              </div>
+              <button id="btn-add-alternative-meaning" class="btn btn-secondary" style="margin: 0; min-height: 24px; padding: 2px 6px; font-size: 0.7rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; border: 1px dashed var(--border-color); background: rgba(255,255,255,0.03); color: var(--text-secondary); cursor: pointer;">
+                ➕ Add
+              </button>
+            </div>
+
+            <!-- Input area for adding alternative meaning -->
+            <div id="add-meaning-input-wrap" style="display: none; flex-direction: column; gap: 6px; margin-top: 6px; background: rgba(255,255,255,0.02); padding: 8px; border-radius: 8px; border: 1px solid var(--border-color); text-align: left; width: 100%;">
+              <input type="text" id="input-new-meaning" placeholder="Type new correct meaning..." style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: #fff; font-size: 0.8rem; min-height: 32px;" />
+              <div style="display: flex; gap: 6px; margin-top: 2px;">
+                <button id="btn-save-new-meaning" class="btn btn-primary" style="flex: 1; margin: 0; min-height: 28px; padding: 2px 6px; font-size: 0.75rem; border-radius: 6px;">Save</button>
+                <button id="btn-cancel-new-meaning" class="btn btn-secondary" style="flex: 1; margin: 0; min-height: 28px; padding: 2px 6px; font-size: 0.75rem; border-radius: 6px;">Cancel</button>
+              </div>
             </div>
             
             <!-- Combined Word Insights & Grammar Rules -->
-            <button id="btn-show-word-insights" class="btn btn-primary btn-sm btn-block" style="margin-top: 16px;">
+            <button id="btn-show-word-insights" class="btn btn-primary btn-block" style="margin-top: 10px; min-height: 32px; padding: 4px 8px; font-size: 0.8rem; border-radius: 8px;">
               ✨ Word Insights & Grammar Rules
             </button>
           </div>
 
           <!-- Word Difficulty Voting -->
-          <div class="difficulty-voting-container" style="margin-top: 15px; padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); text-align: center;">
-            <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">Rate Difficulty (Frequency Weight)</div>
-            <div style="display: flex; gap: 8px; justify-content: center;">
-              <button id="btn-vote-easy" class="btn btn-secondary" style="margin: 0; flex: 1; min-height: 36px; padding: 4px 8px; font-size: 0.8rem; border-radius: 8px;" onclick="voteDifficulty('easy')">🟢 Easy</button>
-              <button id="btn-vote-medium" class="btn btn-secondary" style="margin: 0; flex: 1; min-height: 36px; padding: 4px 8px; font-size: 0.8rem; border-radius: 8px;" onclick="voteDifficulty('medium')">🟡 Medium</button>
-              <button id="btn-vote-hard" class="btn btn-secondary" style="margin: 0; flex: 1; min-height: 36px; padding: 4px 8px; font-size: 0.8rem; border-radius: 8px;" onclick="voteDifficulty('hard')">🔴 Hard</button>
+          <div class="difficulty-voting-container" style="margin-top: 10px; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); text-align: center;">
+            <div style="font-size: 0.65rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">Rate Difficulty (Frequency Weight)</div>
+            <div style="display: flex; gap: 6px; justify-content: center;">
+              <button id="btn-vote-easy" class="btn btn-secondary" style="margin: 0; flex: 1; min-height: 32px; padding: 2px 6px; font-size: 0.75rem; border-radius: 6px;" onclick="voteDifficulty('easy')">🟢 Easy</button>
+              <button id="btn-vote-medium" class="btn btn-secondary" style="margin: 0; flex: 1; min-height: 32px; padding: 2px 6px; font-size: 0.75rem; border-radius: 6px;" onclick="voteDifficulty('medium')">🟡 Medium</button>
+              <button id="btn-vote-hard" class="btn btn-secondary" style="margin: 0; flex: 1; min-height: 32px; padding: 2px 6px; font-size: 0.75rem; border-radius: 6px;" onclick="voteDifficulty('hard')">🔴 Hard</button>
             </div>
           </div>
 
-          <!-- Add Alternative Meaning Button -->
-          <div id="add-meaning-container" style="margin-top: 10px; text-align: center; width: 100%;">
-            <button id="btn-add-alternative-meaning" class="btn btn-secondary btn-block btn-sm" style="background: rgba(255,255,255,0.03); border: 1px dashed var(--border-color); color: var(--text-secondary); min-height: 38px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600; border-radius: 12px; width: 100%; margin: 0;">
-              ➕ Add Alternative Meaning
-            </button>
-            <div id="add-meaning-input-wrap" style="display: none; flex-direction: column; gap: 8px; margin-top: 8px; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); text-align: left;">
-              <input type="text" id="input-new-meaning" placeholder="Type new correct meaning..." style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: #fff; font-size: 0.85rem;" />
-              <div style="display: flex; gap: 8px; margin-top: 4px;">
-                <button id="btn-save-new-meaning" class="btn btn-primary btn-sm" style="flex: 1; margin: 0; min-height: 32px; font-size: 0.8rem;">Save</button>
-                <button id="btn-cancel-new-meaning" class="btn btn-secondary btn-sm" style="flex: 1; margin: 0; min-height: 32px; font-size: 0.8rem;">Cancel</button>
-              </div>
-            </div>
-          </div>
-
-          <button id="btn-next-question" class="btn btn-primary btn-block" style="margin-top: 15px;">Continue</button>
+          <button id="btn-next-question" class="btn btn-primary btn-block" style="margin-top: 12px; min-height: 38px; font-size: 0.9rem; border-radius: 10px;">Continue</button>
         </div>
       </div>
     </div>
@@ -1120,6 +1117,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=20260707_0547"></script>
+  <script src="app.js?v=20260707_0555"></script>
 </body>
 </html>
