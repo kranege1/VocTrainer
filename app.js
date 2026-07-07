@@ -4188,43 +4188,50 @@ document.addEventListener("DOMContentLoaded", async () => {
       const val = inputNewMeaningVal.value.trim();
       if (!val) return;
 
+      const newMeanings = val.split(',').map(s => s.trim()).filter(Boolean);
+      if (newMeanings.length === 0) return;
+
       const tState = state.currentTest;
       if (!tState) return;
       const currentWord = tState.words[tState.index];
       const wordKey = currentWord.origEn || currentWord.en;
       const ansLang = currentWord.answerLang || state.selectedLang;
 
-      const addSynToCache = (key) => {
+      const addSynsToCache = (key) => {
         if (!state.dictionaryCache) state.dictionaryCache = {};
         if (!state.dictionaryCache[key]) state.dictionaryCache[key] = {};
         if (!state.dictionaryCache[key].synonyms) state.dictionaryCache[key].synonyms = {};
         if (!state.dictionaryCache[key].synonyms[ansLang]) state.dictionaryCache[key].synonyms[ansLang] = [];
-        if (!state.dictionaryCache[key].synonyms[ansLang].includes(val)) {
-          state.dictionaryCache[key].synonyms[ansLang].push(val);
-        }
+        newMeanings.forEach(m => {
+          if (!state.dictionaryCache[key].synonyms[ansLang].includes(m)) {
+            state.dictionaryCache[key].synonyms[ansLang].push(m);
+          }
+        });
       };
 
-      const addSynToWord = (word) => {
+      const addSynsToWord = (word) => {
         if (!word.details) word.details = {};
         if (!word.details.synonyms) word.details.synonyms = {};
         if (!word.details.synonyms[ansLang]) word.details.synonyms[ansLang] = [];
-        if (!word.details.synonyms[ansLang].includes(val)) {
-          word.details.synonyms[ansLang].push(val);
-        }
+        newMeanings.forEach(m => {
+          if (!word.details.synonyms[ansLang].includes(m)) {
+            word.details.synonyms[ansLang].push(m);
+          }
+        });
       };
 
       const idx = state.customVocab.findIndex(v => v.en === wordKey || v.origEn === wordKey);
       if (idx !== -1) {
-        addSynToWord(state.customVocab[idx]);
+        addSynsToWord(state.customVocab[idx]);
       } else {
         if (!state.editedStarters[wordKey]) {
           state.editedStarters[wordKey] = { details: { synonyms: {} } };
         }
-        addSynToWord(state.editedStarters[wordKey]);
+        addSynsToWord(state.editedStarters[wordKey]);
       }
 
-      addSynToCache(wordKey);
-      addSynToWord(currentWord);
+      addSynsToCache(wordKey);
+      addSynsToWord(currentWord);
       saveState();
 
       const detailSyns = document.getElementById("detail-synonyms");
@@ -4233,7 +4240,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         const currentSyns = (detailsObj && detailsObj.synonyms && detailsObj.synonyms[ansLang])
           ? detailsObj.synonyms[ansLang]
           : [];
-        detailSyns.textContent = currentSyns.length > 0 ? currentSyns.join(", ") : "None";
+        const qLang = currentWord.questionLang || state.baseLang || "en";
+        const qSyns = (detailsObj && detailsObj.synonyms && detailsObj.synonyms[qLang])
+          ? detailsObj.synonyms[qLang]
+          : [];
+        if (currentSyns.length > 0) {
+          detailSyns.innerHTML = currentSyns.map((syn, idx) => {
+            const qTrans = qSyns[idx] ? ` (${qSyns[idx]})` : "";
+            return `<code style="background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; font-family: monospace;">${syn}${qTrans}</code>`;
+          }).join(", ");
+        } else {
+          detailSyns.innerHTML = `<span style="color: var(--text-secondary); font-style: italic; font-size: 0.8rem;">None registered</span>`;
+        }
       }
 
       wrapAltMeaning.style.display = "none";
