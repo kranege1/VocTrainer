@@ -2924,15 +2924,53 @@
       "en": {
         "word": "to sing",
         "meanings": [
-          "to sing"
+          "to sing",
+          "to chant",
+          "to vocalize"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 500,
         "conjugations": {
-          "present": {
-            "he": "He sings."
+          "en": {
+            "i": "sing",
+            "you": "sing",
+            "he": "sings",
+            "we": "sing",
+            "they": "sing"
+          },
+          "de": {
+            "ich": "singe",
+            "du": "singst",
+            "er": "singt",
+            "wir": "singen",
+            "ihr": "singt",
+            "sie": "singen"
+          },
+          "it": {
+            "io": "canto",
+            "tu": "canti",
+            "lui": "canta",
+            "noi": "cantiamo",
+            "voi": "cantate",
+            "loro": "cantano"
+          },
+          "es": {
+            "yo": "canto",
+            "tú": "cantas",
+            "él": "canta",
+            "nosotros": "cantamos",
+            "vosotros": "cantáis",
+            "ellos": "cantan"
+          },
+          "fr": {
+            "je": "chante",
+            "tu": "chantes",
+            "il": "chante",
+            "nous": "chantons",
+            "vous": "chantez",
+            "ils": "chantent"
           }
         },
         "sentence": "I like to sing."
@@ -2940,15 +2978,53 @@
       "de": {
         "word": "singen",
         "meanings": [
-          "singen"
+          "singen",
+          "trällern",
+          "vortragen"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 500,
         "conjugations": {
-          "present": {
-            "he": "Er singt."
+          "en": {
+            "i": "sing",
+            "you": "sing",
+            "he": "sings",
+            "we": "sing",
+            "they": "sing"
+          },
+          "de": {
+            "ich": "singe",
+            "du": "singst",
+            "er": "singt",
+            "wir": "singen",
+            "ihr": "singt",
+            "sie": "singen"
+          },
+          "it": {
+            "io": "canto",
+            "tu": "canti",
+            "lui": "canta",
+            "noi": "cantiamo",
+            "voi": "cantate",
+            "loro": "cantano"
+          },
+          "es": {
+            "yo": "canto",
+            "tú": "cantas",
+            "él": "canta",
+            "nosotros": "cantamos",
+            "vosotros": "cantáis",
+            "ellos": "cantan"
+          },
+          "fr": {
+            "je": "chante",
+            "tu": "chantes",
+            "il": "chante",
+            "nous": "chantons",
+            "vous": "chantez",
+            "ils": "chantent"
           }
         },
         "sentence": "Ich singe gern."
@@ -2956,15 +3032,53 @@
       "it": {
         "word": "cantare",
         "meanings": [
-          "cantare"
+          "cantare",
+          "intonare",
+          "esibirsi"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 500,
         "conjugations": {
-          "present": {
-            "he": "Canta."
+          "en": {
+            "i": "sing",
+            "you": "sing",
+            "he": "sings",
+            "we": "sing",
+            "they": "sing"
+          },
+          "de": {
+            "ich": "singe",
+            "du": "singst",
+            "er": "singt",
+            "wir": "singen",
+            "ihr": "singt",
+            "sie": "singen"
+          },
+          "it": {
+            "io": "canto",
+            "tu": "canti",
+            "lui": "canta",
+            "noi": "cantiamo",
+            "voi": "cantate",
+            "loro": "cantano"
+          },
+          "es": {
+            "yo": "canto",
+            "t��": "cantas",
+            "él": "canta",
+            "nosotros": "cantamos",
+            "vosotros": "cantáis",
+            "ellos": "cantan"
+          },
+          "fr": {
+            "je": "chante",
+            "tu": "chantes",
+            "il": "chante",
+            "nous": "chantons",
+            "vous": "chantez",
+            "ils": "chantent"
           }
         },
         "sentence": "Mi piace cantare."
@@ -2972,15 +3086,53 @@
       "es": {
         "word": "cantar",
         "meanings": [
-          "cantar"
+          "cantar",
+          "entonar",
+          "interpretar"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 500,
         "conjugations": {
-          "present": {
-            "he": "Él canta."
+          "en": {
+            "i": "sing",
+            "you": "sing",
+            "he": "sings",
+            "we": "sing",
+            "they": "sing"
+          },
+          "de": {
+            "ich": "singe",
+            "du": "singst",
+            "er": "singt",
+            "wir": "singen",
+            "ihr": "singt",
+            "sie": "singen"
+          },
+          "it": {
+            "io": "canto",
+            "tu": "canti",
+            "lui": "canta",
+            "noi": "cantiamo",
+            "voi": "cantate",
+            "loro": "cantano"
+          },
+          "es": {
+            "yo": "canto",
+            "tú": "cantas",
+            "él": "canta",
+            "nosotros": "cantamos",
+            "vosotros": "cantáis",
+            "ellos": "cantan"
+          },
+          "fr": {
+            "je": "chante",
+            "tu": "chantes",
+            "il": "chante",
+            "nous": "chantons",
+            "vous": "chantez",
+            "ils": "chantent"
           }
         },
         "sentence": "Me gusta cantar."
@@ -2988,15 +3140,53 @@
       "fr": {
         "word": "chanter",
         "meanings": [
-          "chanter"
+          "chanter",
+          "psalmodier",
+          "interpréter"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 500,
         "conjugations": {
-          "present": {
-            "he": "Il chante."
+          "en": {
+            "i": "sing",
+            "you": "sing",
+            "he": "sings",
+            "we": "sing",
+            "they": "sing"
+          },
+          "de": {
+            "ich": "singe",
+            "du": "singst",
+            "er": "singt",
+            "wir": "singen",
+            "ihr": "singt",
+            "sie": "singen"
+          },
+          "it": {
+            "io": "canto",
+            "tu": "canti",
+            "lui": "canta",
+            "noi": "cantiamo",
+            "voi": "cantate",
+            "loro": "cantano"
+          },
+          "es": {
+            "yo": "canto",
+            "tú": "cantas",
+            "él": "canta",
+            "nosotros": "cantamos",
+            "vosotros": "cantáis",
+            "ellos": "cantan"
+          },
+          "fr": {
+            "je": "chante",
+            "tu": "chantes",
+            "il": "chante",
+            "nous": "chantons",
+            "vous": "chantez",
+            "ils": "chantent"
           }
         },
         "sentence": "J'aime chanter."

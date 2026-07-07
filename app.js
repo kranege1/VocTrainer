@@ -440,7 +440,7 @@ function updateCategoryCounts() {
   pool = pool.filter(w => w.en && w.target && w.en.toLowerCase().trim() !== w.target.toLowerCase().trim());
 
   // Count by standard category
-  const counts = { all: pool.length, verbs: 0, nouns: 0, technology: 0, biology: 0, phrases: 0 };
+  const counts = { all: pool.length, verbs: 0, nouns: 0, adjectives: 0, travel: 0, food: 0, technology: 0, biology: 0, phrases: 0 };
   pool.forEach(w => {
     const cat = (w.category || "").toLowerCase();
     if (counts[cat] !== undefined) {
@@ -453,6 +453,9 @@ function updateCategoryCounts() {
     all: `📚 All Categories (${counts.all})`,
     verbs: `🏃 Verbs (${counts.verbs})`,
     nouns: `🍎 Nouns (${counts.nouns})`,
+    adjectives: `🎨 Adjectives (${counts.adjectives})`,
+    travel: `✈️ Travel (${counts.travel})`,
+    food: `🍕 Food (${counts.food})`,
     technology: `💻 Technology (${counts.technology})`,
     biology: `🌿 Biology (${counts.biology})`,
     phrases: `💬 Phrases (${counts.phrases})`
