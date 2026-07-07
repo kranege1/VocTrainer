@@ -15,6 +15,20 @@ async function loadStarterVocab() {
           ['en', 'de', 'it', 'es', 'fr'].forEach(lang => {
             flatItem[lang] = item.languages[lang]?.word || "";
           });
+          // Build details compatibility object dynamically
+          flatItem.details = { articles: {}, sentences: {}, variations: { he: {} }, synonyms: {} };
+          ['en', 'de', 'it', 'es', 'fr'].forEach(lang => {
+            const lData = item.languages[lang];
+            if (lData) {
+              if (lData.article) flatItem.details.articles[lang] = lData.article;
+              if (lData.sentence) flatItem.details.sentences[lang] = lData.sentence;
+              if (lData.meanings) flatItem.details.synonyms[lang] = lData.meanings;
+              if (lData.conjugations && lData.conjugations.present) {
+                const p = lData.conjugations.present;
+                flatItem.details.variations.he[lang] = p.he || p.er || p.il || p.lui || p.él || "";
+              }
+            }
+          });
           return flatItem;
         }
         return item;
@@ -3431,30 +3445,47 @@ function submitAnswer() {
   // Use the actual answer language stored on the word (handles reverse direction correctly)
   const ansLang = currentWord.answerLang || state.selectedLang;
 
-  // Strip articles
-  const cleanAnsNoArticle = stripArticles(cleanAns, ansLang);
-  const cleanTargetNoArticle = stripArticles(cleanTarget, ansLang);
-
   const details = getWordDetails(currentWord);
   const ansArt = (details && details.articles && details.articles[ansLang]) ? details.articles[ansLang].toLowerCase() : "";
-  const cleanTargetWithArt = ansArt ? `${ansArt} ${cleanTarget}` : cleanTarget;
-  
-  const isExactMatch = cleanAns === cleanTarget || cleanAns === cleanTargetWithArt;
-  const isCloseMatch = (!isExactMatch && cleanAnsNoArticle === cleanTargetNoArticle);
-  
+
+  // Parse student answer
+  const parsedAns = getArticleAndNoun(cleanAns, ansLang, currentWord);
+  const studentArt = parsedAns.article.trim().toLowerCase();
+  const studentNoun = parsedAns.noun.trim().toLowerCase();
+
+  // Parse target answer
+  const parsedTarget = getArticleAndNoun(cleanTarget, ansLang, currentWord);
+  const correctArt = (parsedTarget.article || ansArt).trim().toLowerCase();
+  const targetNounOnly = parsedTarget.noun.trim().toLowerCase();
+
+  // Verify article if provided
+  let articleIsCorrect = true;
+  if (correctArt && studentArt) {
+    if (studentArt !== correctArt) {
+      articleIsCorrect = false;
+    }
+  }
+
+  // Exact Match allows either:
+  // 1. studentNoun matches targetNounOnly AND studentArt matches correctArt (or studentArt is empty)
+  // 2. Or the raw cleanAns matches cleanTarget (as a fallback)
+  const isExactNounMatch = studentNoun === targetNounOnly;
+  const isExactMatch = (isExactNounMatch && articleIsCorrect && (studentArt === correctArt || !studentArt)) || cleanAns === cleanTarget;
+  const isCloseMatch = (!isExactMatch && isExactNounMatch && articleIsCorrect);
+
   // Calculate Levenshtein distance for typos
-  const dist = getLevenshteinDistance(cleanAnsNoArticle, cleanTargetNoArticle);
+  const dist = getLevenshteinDistance(studentNoun, targetNounOnly);
   const isTypo = dist > 0 && dist <= 2; 
 
   // Synonym verification - use the answer language for synonym lookup
   const syns = (details && details.synonyms && details.synonyms[ansLang]) ? details.synonyms[ansLang] : [];
   const cleanSyns = syns.map(s => {
     const sLower = s.toLowerCase().replace(/[¿?¡!.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").trim();
-    return stripArticles(sLower, ansLang);
+    return getArticleAndNoun(sLower, ansLang).noun;
   });
-  const isSynonymMatch = state.allowSynonyms && cleanSyns.includes(cleanAnsNoArticle);
+  const isSynonymMatch = state.allowSynonyms && cleanSyns.includes(studentNoun);
 
-  const isCorrect = isExactMatch || isCloseMatch || isTypo || isSynonymMatch;
+  const isCorrect = articleIsCorrect && (isExactMatch || isCloseMatch || isTypo || isSynonymMatch);
   const overlay = document.getElementById("feedback-overlay");
   const fTitle = document.getElementById("feedback-title");
   const fDesc = document.getElementById("feedback-desc");
@@ -3514,7 +3545,6 @@ function submitAnswer() {
     updateTestStatsMini();
 
     // Spaced Repetition Stats: correct progression
-    // Spaced Repetition Stats: correct progression
     const wordKey = currentWord.origEn || currentWord.en;
     if (!state.wordStats[wordKey]) {
       state.wordStats[wordKey] = { attempts: 0, errors: 0, box: 1, lastReview: null };
@@ -3529,7 +3559,12 @@ function submitAnswer() {
     overlay.className = "test-right-pane active incorrect-ans";
     fTitle.textContent = "Incorrect";
     fIcon.textContent = "😢";
-    fDesc.textContent = `Correct translation is: "${currentWord.target}". You entered: "${studentAnswer || '[empty]'}".`;
+    
+    if (!articleIsCorrect && isExactNounMatch) {
+      fDesc.textContent = `Wrong article! You entered: "${studentAnswer}". The correct article for "${targetNounOnly}" is "${correctArt}".`;
+    } else {
+      fDesc.textContent = `Correct translation is: "${currentWord.target}". You entered: "${studentAnswer || '[empty]'}".`;
+    }
     
     tState.lastAnswerCorrect = false;
     if (!tState.wrongAnswers.find(w => w.en === currentWord.en)) {

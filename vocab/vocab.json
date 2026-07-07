@@ -5304,11 +5304,13 @@
       "en": {
         "word": "brother",
         "meanings": [
-          "brother"
+          "male sibling",
+          "monk",
+          "comrade"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "m",
+        "plural": "brothers",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "My little brother plays soccer."
@@ -5316,11 +5318,13 @@
       "de": {
         "word": "Bruder",
         "meanings": [
-          "Bruder"
+          "männlicher Geschwister",
+          "Mönch",
+          "Kamerad"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "der",
+        "gender": "m",
+        "plural": "Brüder",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Mein kleiner Bruder spielt Fußball."
@@ -5328,11 +5332,13 @@
       "it": {
         "word": "fratello",
         "meanings": [
-          "fratello"
+          "fratello maschio",
+          "monaco",
+          "compagno"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "il",
+        "gender": "m",
+        "plural": "fratelli",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Mio fratello minore gioca a calcio."
@@ -5340,11 +5346,13 @@
       "es": {
         "word": "hermano",
         "meanings": [
-          "hermano"
+          "hermano varón",
+          "monje",
+          "compañero"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "el",
+        "gender": "m",
+        "plural": "hermanos",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Mi hermano menor juega al fútbol."
@@ -5352,11 +5360,13 @@
       "fr": {
         "word": "frère",
         "meanings": [
-          "frère"
+          "frère mâle",
+          "moine",
+          "camarade"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "le",
+        "gender": "m",
+        "plural": "frères",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Mon petit frère joue au football."
@@ -5371,11 +5381,13 @@
       "en": {
         "word": "sister",
         "meanings": [
-          "sister"
+          "female sibling",
+          "nun",
+          "ally"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "f",
+        "plural": "sisters",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Her older sister studies at university."
@@ -5383,11 +5395,13 @@
       "de": {
         "word": "Schwester",
         "meanings": [
-          "Schwester"
+          "weibliche Geschwister",
+          "Nonne",
+          "Verbündete"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "die",
+        "gender": "f",
+        "plural": "Schwestern",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Ihre ältere Schwester studiert an der Universität."
@@ -5395,11 +5409,13 @@
       "it": {
         "word": "sorella",
         "meanings": [
-          "sorella"
+          "sorella femmina",
+          "suora",
+          "alleata"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "sorelle",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Sua sorella maggiore studia all'università."
@@ -5407,11 +5423,13 @@
       "es": {
         "word": "hermana",
         "meanings": [
-          "hermana"
+          "hermana hembra",
+          "monja",
+          "aliada"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "hermanas",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Su hermana mayor estudia en la universidad."
@@ -5419,11 +5437,13 @@
       "fr": {
         "word": "sœur",
         "meanings": [
-          "sœur"
+          "sœur femelle",
+          "nonne",
+          "alliée"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "sœurs",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Sa sœur aînée étudie à l'université."
@@ -5438,11 +5458,13 @@
       "en": {
         "word": "child",
         "meanings": [
-          "child"
+          "young person",
+          "offspring",
+          "minor"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "children",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "The child is playing with a colorful toy."
@@ -5450,11 +5472,13 @@
       "de": {
         "word": "Kind",
         "meanings": [
-          "Kind"
+          "junges Wesen",
+          "Nachkomme",
+          "Minderjähriger"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "das",
+        "gender": "n",
+        "plural": "Kinder",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Das Kind spielt mit einem bunten Spielzeug."
@@ -5462,11 +5486,13 @@
       "it": {
         "word": "bambino",
         "meanings": [
-          "bambino"
+          "giovane persona",
+          "figlio",
+          "minore"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "il",
+        "gender": "m",
+        "plural": "bambini",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Il bambino gioca con un giocattolo colorato."
@@ -5474,11 +5500,13 @@
       "es": {
         "word": "niño",
         "meanings": [
-          "niño"
+          "persona joven",
+          "hijo",
+          "menor"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "el",
+        "gender": "m",
+        "plural": "niños",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "El niño juega con un juguete colorido."
@@ -5486,11 +5514,13 @@
       "fr": {
         "word": "enfant",
         "meanings": [
-          "enfant"
+          "jeune personne",
+          "progéniture",
+          "mineur"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "l'",
+        "gender": "m",
+        "plural": "enfants",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "L'enfant joue avec un jouet coloré."
@@ -5505,11 +5535,13 @@
       "en": {
         "word": "school",
         "meanings": [
-          "school"
+          "educational institution",
+          "group of fish",
+          "discipline"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "schools",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "The new school starts in September."
@@ -5517,11 +5549,13 @@
       "de": {
         "word": "Schule",
         "meanings": [
-          "Schule"
+          "Bildungseinrichtung",
+          "Schwarm Fische",
+          "Disziplin"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "die",
+        "gender": "f",
+        "plural": "Schulen",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Die neue Schule beginnt im September."
@@ -5529,11 +5563,13 @@
       "it": {
         "word": "scuola",
         "meanings": [
-          "scuola"
+          "istituzione educativa",
+          "banco di pesci",
+          "disciplina"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "scuole",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "La nuova scuola inizia a settembre."
@@ -5541,11 +5577,13 @@
       "es": {
         "word": "escuela",
         "meanings": [
-          "escuela"
+          "institución educativa",
+          "banco de peces",
+          "disciplina"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "escuelas",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "La nueva escuela comienza en septiembre."
@@ -5553,11 +5591,13 @@
       "fr": {
         "word": "école",
         "meanings": [
-          "école"
+          "institution éducative",
+          "banc de poissons",
+          "discipline"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "l'",
+        "gender": "f",
+        "plural": "écoles",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "La nouvelle école commence en septembre."
@@ -5572,11 +5612,13 @@
       "en": {
         "word": "friend",
         "meanings": [
-          "friend"
+          "close companion",
+          "supporter",
+          "ally"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "m",
+        "plural": "friends",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "A true friend is always there for you."
@@ -5584,11 +5626,13 @@
       "de": {
         "word": "Freund",
         "meanings": [
-          "Freund"
+          "enger Begleiter",
+          "Unterstützer",
+          "Verbündeter"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "der",
+        "gender": "m",
+        "plural": "Freunde",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Ein wahrer Freund ist immer für dich da."
@@ -5596,11 +5640,13 @@
       "it": {
         "word": "amico",
         "meanings": [
-          "amico"
+          "compagno stretto",
+          "sostenitore",
+          "alleato"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "l'",
+        "gender": "m",
+        "plural": "amici",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Un vero amico è sempre lì per te."
@@ -5608,11 +5654,13 @@
       "es": {
         "word": "amigo",
         "meanings": [
-          "amigo"
+          "compañero cercano",
+          "partidario",
+          "aliado"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "el",
+        "gender": "m",
+        "plural": "amigos",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Un verdadero amigo siempre está ahí para ti."
@@ -5620,11 +5668,13 @@
       "fr": {
         "word": "ami",
         "meanings": [
-          "ami"
+          "compagnon proche",
+          "supporter",
+          "allié"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "l'",
+        "gender": "m",
+        "plural": "amis",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Un véritable ami est toujours là pour toi."
@@ -5639,11 +5689,13 @@
       "en": {
         "word": "street",
         "meanings": [
-          "street"
+          "public road",
+          "thoroughfare",
+          "avenue"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "f",
+        "plural": "streets",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "The quiet street is lined with trees."
@@ -5651,11 +5703,13 @@
       "de": {
         "word": "Straße",
         "meanings": [
-          "Straße"
+          "öffentliche Straße",
+          "Durchgangsstraße",
+          "Allee"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "die",
+        "gender": "f",
+        "plural": "Straßen",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Die ruhige Straße ist von Bäumen gesäumt."
@@ -5663,11 +5717,13 @@
       "it": {
         "word": "strada",
         "meanings": [
-          "strada"
+          "strada pubblica",
+          "arteria",
+          "viale"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "strade",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "La strada tranquilla è fiancheggiata da alberi."
@@ -5675,11 +5731,13 @@
       "es": {
         "word": "calle",
         "meanings": [
-          "calle"
+          "calle pública",
+          "vía",
+          "avenida"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "calles",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "La calle tranquila está bordeada de árboles."
@@ -5687,11 +5745,13 @@
       "fr": {
         "word": "rue",
         "meanings": [
-          "rue"
+          "route publique",
+          "voie",
+          "avenue"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "rues",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "La rue calme est bordée d'arbres."
@@ -5706,11 +5766,13 @@
       "en": {
         "word": "city",
         "meanings": [
-          "city"
+          "large town",
+          "urban area",
+          "metropolis"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "f",
+        "plural": "cities",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Rome is a beautiful historic city."
@@ -5718,11 +5780,13 @@
       "de": {
         "word": "Stadt",
         "meanings": [
-          "Stadt"
+          "große Stadt",
+          "städtisches Gebiet",
+          "Metropole"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "die",
+        "gender": "f",
+        "plural": "Städte",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Rom ist eine wunderschöne historische Stadt."
@@ -5730,11 +5794,13 @@
       "it": {
         "word": "città",
         "meanings": [
-          "città"
+          "grande città",
+          "area urbana",
+          "metropoli"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "città",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Roma è una bellissima città storica."
@@ -5742,11 +5808,13 @@
       "es": {
         "word": "ciudad",
         "meanings": [
-          "ciudad"
+          "ciudad grande",
+          "área urbana",
+          "metrópoli"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "ciudades",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Roma es una hermosa ciudad histórica."
@@ -5754,11 +5822,13 @@
       "fr": {
         "word": "ville",
         "meanings": [
-          "ville"
+          "grande ville",
+          "zone urbaine",
+          "métropole"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "villes",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Rome est une belle ville historique."
@@ -5773,11 +5843,13 @@
       "en": {
         "word": "country",
         "meanings": [
-          "country"
+          "nation",
+          "rural area",
+          "homeland"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "countries",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Italy is a country in southern Europe."
@@ -5785,11 +5857,13 @@
       "de": {
         "word": "Land",
         "meanings": [
-          "Land"
+          "Nation",
+          "ländliches Gebiet",
+          "Heimat"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "das",
+        "gender": "n",
+        "plural": "Länder",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Italien ist ein Land in Südeuropa."
@@ -5797,11 +5871,13 @@
       "it": {
         "word": "paese",
         "meanings": [
-          "paese"
+          "nazione",
+          "area rurale",
+          "patria"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "il",
+        "gender": "m",
+        "plural": "paesi",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "L'Italia è un paese del sud Europa."
@@ -5809,11 +5885,13 @@
       "es": {
         "word": "país",
         "meanings": [
-          "país"
+          "nación",
+          "área rural",
+          "patria"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "el",
+        "gender": "m",
+        "plural": "países",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Italia es un país del sur de Europa."
@@ -5821,11 +5899,13 @@
       "fr": {
         "word": "pays",
         "meanings": [
-          "pays"
+          "nation",
+          "zone rurale",
+          "patrie"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "le",
+        "gender": "m",
+        "plural": "pays",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "L'Italie est un pays du sud de l'Europe."
@@ -5840,11 +5920,13 @@
       "en": {
         "word": "sky",
         "meanings": [
-          "sky"
+          "atmosphere above",
+          "heaven",
+          "firmament"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "skies",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "The blue sky is clear without any clouds."
@@ -5852,11 +5934,13 @@
       "de": {
         "word": "Himmel",
         "meanings": [
-          "Himmel"
+          "Atmosphäre darüber",
+          "Himmelreich",
+          "Firmament"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "der",
+        "gender": "m",
+        "plural": "Himmel",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Der blaue Himmel ist klar ohne Wolken."
@@ -5864,11 +5948,13 @@
       "it": {
         "word": "cielo",
         "meanings": [
-          "cielo"
+          "atmosfera sopra",
+          "paradiso",
+          "firmamento"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "il",
+        "gender": "m",
+        "plural": "cieli",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Il cielo azzurro è limpido senza nuvole."
@@ -5876,11 +5962,13 @@
       "es": {
         "word": "cielo",
         "meanings": [
-          "cielo"
+          "atmósfera superior",
+          "cielo",
+          "firmamento"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "el",
+        "gender": "m",
+        "plural": "cielos",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "El cielo azul está despejado sin nubes."
@@ -5888,11 +5976,13 @@
       "fr": {
         "word": "ciel",
         "meanings": [
-          "ciel"
+          "atmosphère au-dessus",
+          "paradis",
+          "firmament"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "le",
+        "gender": "m",
+        "plural": "cieux",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Le ciel bleu est dégagé sans nuages."
@@ -5907,11 +5997,13 @@
       "en": {
         "word": "rain",
         "meanings": [
-          "rain"
+          "precipitation",
+          "downpour",
+          "shower"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "rains",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "We need the rain for the plants to grow."
@@ -5919,11 +6011,13 @@
       "de": {
         "word": "Regen",
         "meanings": [
-          "Regen"
+          "Niederschlag",
+          "Regenguss",
+          "Schauer"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "der",
+        "gender": "m",
+        "plural": "Regen",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Wir brauchen den Regen, damit die Pflanzen wachsen."
@@ -5931,11 +6025,13 @@
       "it": {
         "word": "pioggia",
         "meanings": [
-          "pioggia"
+          "precipitazione",
+          "acquazzone",
+          "pioggerella"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "piogge",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Abbiamo bisogno della pioggia per far crescere le piante."
@@ -5943,11 +6039,13 @@
       "es": {
         "word": "lluvia",
         "meanings": [
-          "lluvia"
+          "precipitación",
+          "aguacero",
+          "chubasco"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "lluvias",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Necesitamos la lluvia para que crezcan las plantas."
@@ -5955,11 +6053,13 @@
       "fr": {
         "word": "pluie",
         "meanings": [
-          "pluie"
+          "précipitation",
+          "averse",
+          "ondée"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "pluies",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Nous avons besoin de la pluie pour faire pousser les plantes."
@@ -5974,11 +6074,13 @@
       "en": {
         "word": "snow",
         "meanings": [
-          "snow"
+          "frozen precipitation",
+          "blizzard",
+          "snowfall"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "snows",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "The mountains are covered with white snow."
@@ -5986,11 +6088,13 @@
       "de": {
         "word": "Schnee",
         "meanings": [
-          "Schnee"
+          "gefrorener Niederschlag",
+          "Schneesturm",
+          "Schneefall"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "der",
+        "gender": "m",
+        "plural": "Schnee",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Die Berge sind mit weißem Schnee bedeckt."
@@ -5998,11 +6102,13 @@
       "it": {
         "word": "neve",
         "meanings": [
-          "neve"
+          "precipitazione ghiacciata",
+          "bufera",
+          "nevicata"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "nevi",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Le montagne sono coperte di neve bianca."
@@ -6010,11 +6116,13 @@
       "es": {
         "word": "nieve",
         "meanings": [
-          "nieve"
+          "precipitación helada",
+          "ventisca",
+          "nevada"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "nieves",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Las montañas están cubiertas de nieve blanca."
@@ -6022,11 +6130,13 @@
       "fr": {
         "word": "neige",
         "meanings": [
-          "neige"
+          "précipitation gelée",
+          "blizzard",
+          "chute de neige"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "neiges",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Les montagnes sont couvertes de neige blanche."
@@ -6041,11 +6151,13 @@
       "en": {
         "word": "watch",
         "meanings": [
-          "watch"
+          "timepiece",
+          "observation",
+          "vigil"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "f",
+        "plural": "watches",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "The clock on the wall shows five o'clock."
@@ -6053,11 +6165,13 @@
       "de": {
         "word": "Uhr",
         "meanings": [
-          "Uhr"
+          "Zeitmessgerät",
+          "Beobachtung",
+          "Wache"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "die",
+        "gender": "f",
+        "plural": "Uhren",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Die Uhr an der Wand zeigt fünf Uhr."
@@ -6065,11 +6179,13 @@
       "it": {
         "word": "orologio",
         "meanings": [
-          "orologio"
+          "orologio da polso",
+          "osservazione",
+          "veglia"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "l'",
+        "gender": "m",
+        "plural": "orologi",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "L'orologio sulla parete mostra le cinque."
@@ -6077,11 +6193,13 @@
       "es": {
         "word": "reloj",
         "meanings": [
-          "reloj"
+          "reloj de pulsera",
+          "observación",
+          "vigilia"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "el",
+        "gender": "m",
+        "plural": "relojes",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "El reloj de la pared marca las cinco."
@@ -6089,11 +6207,13 @@
       "fr": {
         "word": "montre",
         "meanings": [
-          "montre"
+          "montre-bracelet",
+          "observation",
+          "veille"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "montres",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "L'horloge au mur indique cinq heures."
@@ -6108,11 +6228,13 @@
       "en": {
         "word": "money",
         "meanings": [
-          "money"
+          "currency",
+          "wealth",
+          "funds"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "moneys",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Money cannot buy happiness."
@@ -6120,11 +6242,13 @@
       "de": {
         "word": "Geld",
         "meanings": [
-          "Geld"
+          "Währung",
+          "Reichtum",
+          "Mittel"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "das",
+        "gender": "n",
+        "plural": "Gelder",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Geld kann kein Glück kaufen."
@@ -6132,11 +6256,13 @@
       "it": {
         "word": "denaro",
         "meanings": [
-          "denaro"
+          "valuta",
+          "ricchezza",
+          "fondi"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "il",
+        "gender": "m",
+        "plural": "denari",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "I soldi non possono comprare la felicità."
@@ -6144,11 +6270,13 @@
       "es": {
         "word": "dinero",
         "meanings": [
-          "dinero"
+          "moneda",
+          "riqueza",
+          "fondos"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "el",
+        "gender": "m",
+        "plural": "dineros",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "El dinero no puede comprar la felicidad."
@@ -6156,11 +6284,13 @@
       "fr": {
         "word": "argent",
         "meanings": [
-          "argent"
+          "monnaie",
+          "richesse",
+          "fonds"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "l'",
+        "gender": "m",
+        "plural": "argents",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "L'argent ne peut pas acheter le bonheur."
@@ -6175,11 +6305,13 @@
       "en": {
         "word": "bag",
         "meanings": [
-          "bag"
+          "container",
+          "sack",
+          "pouch"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "f",
+        "plural": "bags",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "She carried a heavy leather bag."
@@ -6187,11 +6319,13 @@
       "de": {
         "word": "Tasche",
         "meanings": [
-          "Tasche"
+          "Behälter",
+          "Sack",
+          "Beutel"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "die",
+        "gender": "f",
+        "plural": "Taschen",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Sie trug eine schwere Ledertasche."
@@ -6199,11 +6333,13 @@
       "it": {
         "word": "borsa",
         "meanings": [
-          "borsa"
+          "contenitore",
+          "sacco",
+          "borsellino"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "borse",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Portava una pesante borsa di pelle."
@@ -6211,11 +6347,13 @@
       "es": {
         "word": "bolsa",
         "meanings": [
-          "bolsa"
+          "contenedor",
+          "saco",
+          "bolsillo"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "bolsas",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Llevaba una pesada bolsa de cuero."
@@ -6223,11 +6361,13 @@
       "fr": {
         "word": "sac",
         "meanings": [
-          "sac"
+          "contenant",
+          "sac",
+          "poche"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "le",
+        "gender": "m",
+        "plural": "sacs",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Elle portait un sac en cuir lourd."
@@ -6242,11 +6382,13 @@
       "en": {
         "word": "head",
         "meanings": [
-          "head"
+          "body part",
+          "leader",
+          "top"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "m",
+        "plural": "heads",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "He shook his head in disagreement."
@@ -6254,11 +6396,13 @@
       "de": {
         "word": "Kopf",
         "meanings": [
-          "Kopf"
+          "Körperteil",
+          "Anführer",
+          "Oberseite"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "der",
+        "gender": "m",
+        "plural": "Köpfe",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Er schüttelte uneinig den Kopf."
@@ -6266,11 +6410,13 @@
       "it": {
         "word": "testa",
         "meanings": [
-          "testa"
+          "parte del corpo",
+          "capo",
+          "cima"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "teste",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Scosse la testa in segno di disaccordo."
@@ -6278,11 +6424,13 @@
       "es": {
         "word": "cabeza",
         "meanings": [
-          "cabeza"
+          "parte del cuerpo",
+          "líder",
+          "cima"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "cabezas",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Sacudió la cabeza en señal de desacuerdo."
@@ -6290,11 +6438,13 @@
       "fr": {
         "word": "tête",
         "meanings": [
-          "tête"
+          "partie du corps",
+          "chef",
+          "sommet"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "têtes",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Il secoua la tête en signe de désaccord."
@@ -6309,11 +6459,13 @@
       "en": {
         "word": "hand",
         "meanings": [
-          "hand"
+          "body part",
+          "worker",
+          "pointer"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "f",
+        "plural": "hands",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Raise your hand if you know the answer."
@@ -6321,11 +6473,13 @@
       "de": {
         "word": "Hand",
         "meanings": [
-          "Hand"
+          "Körperteil",
+          "Arbeiter",
+          "Zeiger"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "die",
+        "gender": "f",
+        "plural": "Hände",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Heben Sie die Hand, wenn Sie die Antwort wissen."
@@ -6333,11 +6487,13 @@
       "it": {
         "word": "mano",
         "meanings": [
-          "mano"
+          "parte del corpo",
+          "lavoratore",
+          "puntatore"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "mani",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Alza la mano se conosci la risposta."
@@ -6345,11 +6501,13 @@
       "es": {
         "word": "mano",
         "meanings": [
-          "mano"
+          "parte del cuerpo",
+          "trabajador",
+          "puntero"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "manos",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Levanta la mano si sabes la respuesta."
@@ -6357,11 +6515,13 @@
       "fr": {
         "word": "main",
         "meanings": [
-          "main"
+          "partie du corps",
+          "ouvrier",
+          "aiguille"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "mains",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Levez la main si vous connaissez la réponse."
@@ -6376,11 +6536,13 @@
       "en": {
         "word": "eye",
         "meanings": [
-          "eye"
+          "organ of sight",
+          "center",
+          "bud"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "eyes",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "The doctor examined her left eye."
@@ -6388,11 +6550,13 @@
       "de": {
         "word": "Auge",
         "meanings": [
-          "Auge"
+          "Sehorgan",
+          "Zentrum",
+          "Knospe"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "das",
+        "gender": "n",
+        "plural": "Augen",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Der Arzt untersuchte ihr linkes Auge."
@@ -6400,11 +6564,13 @@
       "it": {
         "word": "occhio",
         "meanings": [
-          "occhio"
+          "organo della vista",
+          "centro",
+          "bocciolo"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "l'",
+        "gender": "m",
+        "plural": "occhi",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Il dottore ha esaminato il suo occhio sinistro."
@@ -6412,11 +6578,13 @@
       "es": {
         "word": "ojo",
         "meanings": [
-          "ojo"
+          "órgano de la vista",
+          "centro",
+          "yema"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "el",
+        "gender": "m",
+        "plural": "ojos",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "El médico examinó su ojo izquierdo."
@@ -6424,11 +6592,13 @@
       "fr": {
         "word": "œil",
         "meanings": [
-          "œil"
+          "organe de la vue",
+          "centre",
+          "bourgeon"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "l'",
+        "gender": "m",
+        "plural": "yeux",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Le médecin a examiné son œil gauche."
@@ -6443,11 +6613,13 @@
       "en": {
         "word": "foot",
         "meanings": [
-          "foot"
+          "body part",
+          "base",
+          "unit of length"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "feet",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "I hurt my foot while running yesterday."
@@ -6455,11 +6627,13 @@
       "de": {
         "word": "Fuß",
         "meanings": [
-          "Fuß"
+          "Körperteil",
+          "Basis",
+          "Längeneinheit"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "der",
+        "gender": "m",
+        "plural": "Füße",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Ich habe mir gestern beim Laufen den Fuß verletzt."
@@ -6467,11 +6641,13 @@
       "it": {
         "word": "piede",
         "meanings": [
-          "piede"
+          "parte del corpo",
+          "base",
+          "unità di misura"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "il",
+        "gender": "m",
+        "plural": "piedi",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Mi sono fatto male al piede mentre correvo ieri."
@@ -6479,11 +6655,13 @@
       "es": {
         "word": "pie",
         "meanings": [
-          "pie"
+          "parte del cuerpo",
+          "base",
+          "unidad de longitud"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "el",
+        "gender": "m",
+        "plural": "pies",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Me lastimé el pie mientras corría ayer."
@@ -6491,11 +6669,13 @@
       "fr": {
         "word": "pied",
         "meanings": [
-          "pied"
+          "partie du corps",
+          "base",
+          "unité de longueur"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "le",
+        "gender": "m",
+        "plural": "pieds",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Je me suis blessé au pied en courant hier."
@@ -6510,11 +6690,13 @@
       "en": {
         "word": "shoe",
         "meanings": [
-          "shoe"
+          "footwear",
+          "covering",
+          "horseshoe"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "shoes",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "He tied the laces of his new shoe."
@@ -6522,11 +6704,13 @@
       "de": {
         "word": "Schuh",
         "meanings": [
-          "Schuh"
+          "Fußbekleidung",
+          "Abdeckung",
+          "Hufeisen"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "der",
+        "gender": "m",
+        "plural": "Schuhe",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Er band die Schnürsenkel seines neuen Schuhs zu."
@@ -6534,11 +6718,13 @@
       "it": {
         "word": "scarpa",
         "meanings": [
-          "scarpa"
+          "calzatura",
+          "copertura",
+          "ferro di cavallo"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "scarpe",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Allacciò le stringhe della sua nuova scarpa."
@@ -6546,11 +6732,13 @@
       "es": {
         "word": "zapato",
         "meanings": [
-          "zapato"
+          "calzado",
+          "cobertura",
+          "herradura"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "el",
+        "gender": "m",
+        "plural": "zapatos",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Se ató los cordones de su zapato nuevo."
@@ -6558,11 +6746,13 @@
       "fr": {
         "word": "chaussure",
         "meanings": [
-          "chaussure"
+          "chaussure",
+          "couverture",
+          "fer à cheval"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "chaussures",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Il a attaché les lacets de sa nouvelle chaussure."
@@ -6577,11 +6767,13 @@
       "en": {
         "word": "dress",
         "meanings": [
-          "dress"
+          "garment",
+          "attire",
+          "gown"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "dresses",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "She bought a beautiful summer dress."
@@ -6589,11 +6781,13 @@
       "de": {
         "word": "Kleid",
         "meanings": [
+          "Kleidungsstück",
+          "Kleidung",
           "Kleid"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "das",
+        "gender": "n",
+        "plural": "Kleider",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Sie hat ein wunderschönes Sommerkleid gekauft."
@@ -6601,11 +6795,13 @@
       "it": {
         "word": "vestito",
         "meanings": [
-          "vestito"
+          "indumento",
+          "abbigliamento",
+          "abito"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "il",
+        "gender": "m",
+        "plural": "vestiti",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Ha comprato un bellissimo vestito estivo."
@@ -6613,11 +6809,13 @@
       "es": {
         "word": "vestido",
         "meanings": [
+          "prenda",
+          "atuendo",
           "vestido"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "el",
+        "gender": "m",
+        "plural": "vestidos",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Ella compró un hermoso vestido de verano."
@@ -6625,11 +6823,13 @@
       "fr": {
         "word": "robe",
         "meanings": [
+          "vêtement",
+          "tenue",
           "robe"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "robes",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Elle a acheté une belle robe d'été."
@@ -6644,11 +6844,13 @@
       "en": {
         "word": "shirt",
         "meanings": [
-          "shirt"
+          "upper garment",
+          "blouse",
+          "top"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "shirts",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "He wore a white shirt to the interview."
@@ -6656,11 +6858,13 @@
       "de": {
         "word": "Hemd",
         "meanings": [
-          "Hemd"
+          "Oberbekleidung",
+          "Bluse",
+          "Oberteil"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "das",
+        "gender": "n",
+        "plural": "Hemden",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Er trug ein weißes Hemd zum Vorstellungsgespräch."
@@ -6668,11 +6872,13 @@
       "it": {
         "word": "camicia",
         "meanings": [
-          "camicia"
+          "indumento superiore",
+          "camicetta",
+          "top"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "camicie",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Indossava una camicia bianca per l'intervista."
@@ -6680,11 +6886,13 @@
       "es": {
         "word": "camisa",
         "meanings": [
-          "camisa"
+          "prenda superior",
+          "blusa",
+          "top"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "camisas",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Llevaba una camisa blanca para la entrevista."
@@ -6692,11 +6900,13 @@
       "fr": {
         "word": "chemise",
         "meanings": [
-          "chemise"
+          "vêtement supérieur",
+          "chemisier",
+          "haut"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "chemises",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Il portait une chemise blanche pour l'entretien."
@@ -6711,11 +6921,13 @@
       "en": {
         "word": "pants",
         "meanings": [
-          "pants"
+          "trousers",
+          "bottoms",
+          "leggings"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "pants",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "These pants are too long for me."
@@ -6723,11 +6935,13 @@
       "de": {
         "word": "Hose",
         "meanings": [
-          "Hose"
+          "Hose",
+          "Unterteil",
+          "Leggings"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "die",
+        "gender": "f",
+        "plural": "Hosen",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Diese Hose ist mir zu lang."
@@ -6735,11 +6949,13 @@
       "it": {
         "word": "pantaloni",
         "meanings": [
-          "pantaloni"
+          "pantaloni",
+          "fondi",
+          "calzamaglie"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "i",
+        "gender": "m",
+        "plural": "pantaloni",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Questi pantaloni sono troppo lunghi per me."
@@ -6747,11 +6963,13 @@
       "es": {
         "word": "pantalones",
         "meanings": [
-          "pantalones"
+          "pantalones",
+          "fondos",
+          "leggings"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "los",
+        "gender": "m",
+        "plural": "pantalones",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Estos pantalones son demasiado largos para mí."
@@ -6759,11 +6977,13 @@
       "fr": {
         "word": "pantalon",
         "meanings": [
-          "pantalon"
+          "pantalon",
+          "bas",
+          "leggings"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "le",
+        "gender": "m",
+        "plural": "pantalons",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Ce pantalon est trop long pour moi."
@@ -6778,11 +6998,13 @@
       "en": {
         "word": "bed",
         "meanings": [
-          "bed"
+          "furniture",
+          "garden plot",
+          "layer"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "beds",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "It is late, I am going to bed now."
@@ -6790,11 +7012,13 @@
       "de": {
         "word": "Bett",
         "meanings": [
-          "Bett"
+          "Möbelstück",
+          "Gartenbeet",
+          "Schicht"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "das",
+        "gender": "n",
+        "plural": "Betten",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Es ist spät, ich gehe jetzt ins Bett."
@@ -6802,11 +7026,13 @@
       "it": {
         "word": "letto",
         "meanings": [
-          "letto"
+          "mobile",
+          "aiuola",
+          "strato"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "il",
+        "gender": "m",
+        "plural": "letti",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "È tardi, vado a letto ora."
@@ -6814,11 +7040,13 @@
       "es": {
         "word": "cama",
         "meanings": [
-          "cama"
+          "mueble",
+          "parterre",
+          "capa"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "camas",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Es tarde, me voy a la cama ahora."
@@ -6826,11 +7054,13 @@
       "fr": {
         "word": "lit",
         "meanings": [
-          "lit"
+          "meuble",
+          "parterre",
+          "couche"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "le",
+        "gender": "m",
+        "plural": "lits",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Il est tard, je vais au lit maintenant."
@@ -6845,11 +7075,13 @@
       "en": {
         "word": "kitchen",
         "meanings": [
-          "kitchen"
+          "cooking room",
+          "cuisine",
+          "galley"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "kitchens",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "The kitchen is equipped with a new stove."
@@ -6857,11 +7089,13 @@
       "de": {
         "word": "Küche",
         "meanings": [
-          "Küche"
+          "Kochraum",
+          "Küche",
+          "Kombüse"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "die",
+        "gender": "f",
+        "plural": "Küchen",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Die Küche ist mit einem neuen Herd ausgestattet."
@@ -6869,11 +7103,13 @@
       "it": {
         "word": "cucina",
         "meanings": [
-          "cucina"
+          "stanza da cucina",
+          "cucina",
+          "cambusa"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "cucine",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "La cucina è dotata di una nuova stufa."
@@ -6881,11 +7117,13 @@
       "es": {
         "word": "cocina",
         "meanings": [
-          "cocina"
+          "habitación de cocina",
+          "cocina",
+          "camarote"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "cocinas",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "La cocina está equipada con una estufa nueva."
@@ -6893,11 +7131,13 @@
       "fr": {
         "word": "cuisine",
         "meanings": [
-          "cuisine"
+          "pièce de cuisson",
+          "cuisine",
+          "cambuse"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "cuisines",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "La cuisine est équipée d'une nouvelle cuisinière."
@@ -6912,11 +7152,13 @@
       "en": {
         "word": "room",
         "meanings": [
-          "room"
+          "space",
+          "chamber",
+          "area"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "rooms",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "My room has a window facing the garden."
@@ -6924,11 +7166,13 @@
       "de": {
         "word": "Zimmer",
         "meanings": [
-          "Zimmer"
+          "Raum",
+          "Kammer",
+          "Bereich"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "das",
+        "gender": "n",
+        "plural": "Zimmer",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Mein Zimmer hat ein Fenster zum Garten."
@@ -6936,11 +7180,13 @@
       "it": {
         "word": "stanza",
         "meanings": [
-          "stanza"
+          "spazio",
+          "camera",
+          "area"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "stanze",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "La mia stanza ha una finestra che dà sul giardino."
@@ -6948,11 +7194,13 @@
       "es": {
         "word": "habitación",
         "meanings": [
-          "habitación"
+          "espacio",
+          "habitación",
+          "área"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "habitaciones",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Mi habitación tiene una ventana que da al jardín."
@@ -6960,11 +7208,13 @@
       "fr": {
         "word": "chambre",
         "meanings": [
-          "chambre"
+          "espace",
+          "chambre",
+          "zone"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "chambres",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Ma chambre a une fenêtre donnant sur le jardin."
@@ -6979,11 +7229,13 @@
       "en": {
         "word": "cheese",
         "meanings": [
-          "cheese"
+          "dairy product",
+          "food",
+          "curd"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "cheeses",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Parmesan is a hard Italian cheese."
@@ -6991,11 +7243,13 @@
       "de": {
         "word": "Käse",
         "meanings": [
-          "Käse"
+          "Milchprodukt",
+          "Lebensmittel",
+          "Quark"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "der",
+        "gender": "m",
+        "plural": "Käse",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Parmesan ist ein harter italienischer Käse."
@@ -7003,11 +7257,13 @@
       "it": {
         "word": "formaggio",
         "meanings": [
-          "formaggio"
+          "prodotto caseario",
+          "cibo",
+          "cagliata"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "il",
+        "gender": "m",
+        "plural": "formaggi",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Il parmigiano è un formaggio italiano stagionato."
@@ -7015,11 +7271,13 @@
       "es": {
         "word": "queso",
         "meanings": [
-          "queso"
+          "producto lácteo",
+          "alimento",
+          "cuajada"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "el",
+        "gender": "m",
+        "plural": "quesos",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "El parmesano es un queso italiano curado."
@@ -7027,11 +7285,13 @@
       "fr": {
         "word": "fromage",
         "meanings": [
-          "fromage"
+          "produit laitier",
+          "aliment",
+          "caillé"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "le",
+        "gender": "m",
+        "plural": "fromages",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Le parmesan est un fromage italien à pâte dure."
@@ -7046,11 +7306,13 @@
       "en": {
         "word": "meat",
         "meanings": [
-          "meat"
+          "flesh",
+          "food",
+          "substance"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "meats",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Some people do not eat red meat."
@@ -7058,11 +7320,13 @@
       "de": {
         "word": "Fleisch",
         "meanings": [
-          "Fleisch"
+          "Fleisch",
+          "Lebensmittel",
+          "Substanz"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "das",
+        "gender": "n",
+        "plural": "Fleischsorten",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Manche Menschen essen kein rotes Fleisch."
@@ -7070,11 +7334,13 @@
       "it": {
         "word": "carne",
         "meanings": [
-          "carne"
+          "carne",
+          "cibo",
+          "sostanza"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "carni",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Alcune persone non mangiano carne rossa."
@@ -7082,11 +7348,13 @@
       "es": {
         "word": "carne",
         "meanings": [
-          "carne"
+          "carne",
+          "alimento",
+          "sustancia"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "carnes",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Algunas personas no comen carne roja."
@@ -7094,11 +7362,13 @@
       "fr": {
         "word": "viande",
         "meanings": [
-          "viande"
+          "viande",
+          "aliment",
+          "substance"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "la",
+        "gender": "f",
+        "plural": "viandes",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Certaines personnes ne mangent pas de viande rouge."
@@ -7113,11 +7383,13 @@
       "en": {
         "word": "fish",
         "meanings": [
-          "fish"
+          "aquatic animal",
+          "seafood",
+          "catch"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "fish",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "The fish swims gracefully in the aquarium."
@@ -7125,11 +7397,13 @@
       "de": {
         "word": "Fisch",
         "meanings": [
-          "Fisch"
+          "Wassertier",
+          "Meeresfrüchte",
+          "Fang"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "der",
+        "gender": "m",
+        "plural": "Fische",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Der Fisch schwimmt anmutig im Aquarium."
@@ -7137,11 +7411,13 @@
       "it": {
         "word": "pesce",
         "meanings": [
-          "pesce"
+          "animale acquatico",
+          "frutti di mare",
+          "pesca"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "il",
+        "gender": "m",
+        "plural": "pesci",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Il pesce nuota con grazia nell'acquario."
@@ -7149,11 +7425,13 @@
       "es": {
         "word": "pescado",
         "meanings": [
-          "pescado"
+          "animal acuático",
+          "mariscos",
+          "captura"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "el",
+        "gender": "m",
+        "plural": "pescados",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "El pez nada con gracia en el acuario."
@@ -7161,11 +7439,13 @@
       "fr": {
         "word": "poisson",
         "meanings": [
-          "poisson"
+          "animal aquatique",
+          "fruits de mer",
+          "prise"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "le",
+        "gender": "m",
+        "plural": "poissons",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Le poisson nage gracieusement dans l'aquarium."
@@ -7180,11 +7460,13 @@
       "en": {
         "word": "bird",
         "meanings": [
-          "bird"
+          "avian creature",
+          "fowl",
+          "person"
         ],
         "article": "",
-        "gender": "",
-        "plural": "",
+        "gender": "n",
+        "plural": "birds",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "The colorful bird is singing on the branch."
@@ -7192,11 +7474,13 @@
       "de": {
         "word": "Vogel",
         "meanings": [
-          "Vogel"
+          "Vogelwesen",
+          "Geflügel",
+          "Person"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "der",
+        "gender": "m",
+        "plural": "Vögel",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "Der bunte Vogel singt auf dem Ast."
@@ -7204,11 +7488,13 @@
       "it": {
         "word": "uccello",
         "meanings": [
-          "uccello"
+          "creatura aviaria",
+          "pollame",
+          "persona"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "l'",
+        "gender": "m",
+        "plural": "uccelli",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "L'uccello colorato canta sul ramo."
@@ -7216,11 +7502,13 @@
       "es": {
         "word": "pájaro",
         "meanings": [
-          "pájaro"
+          "criatura aviar",
+          "ave",
+          "persona"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "el",
+        "gender": "m",
+        "plural": "pájaros",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "El pájaro de colores canta en la rama."
@@ -7228,11 +7516,13 @@
       "fr": {
         "word": "oiseau",
         "meanings": [
-          "oiseau"
+          "créature aviaire",
+          "volaille",
+          "personne"
         ],
-        "article": "",
-        "gender": "",
-        "plural": "",
+        "article": "l'",
+        "gender": "m",
+        "plural": "oiseaux",
         "frequency_rank": 500,
         "conjugations": {},
         "sentence": "L'oiseau coloré chante sur la branche."
@@ -12607,85 +12897,104 @@
       "en": {
         "word": "to swim",
         "meanings": [
-          "move through water"
+          "move through water",
+          "float in liquid",
+          "travel by swimming"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 150,
         "conjugations": {
-          "present": {
-            "i": "swim",
-            "he": "swims"
-          }
+          "i": "swim",
+          "you": "swim",
+          "he": "swims",
+          "we": "swim",
+          "they": "swim"
         },
         "sentence": "I swim every morning."
       },
       "de": {
         "word": "schwimmen",
         "meanings": [
-          "sich im Wasser fortbewegen"
+          "sich durch Wasser bewegen",
+          "im Wasser treiben",
+          "schwimmend reisen"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 180,
         "conjugations": {
-          "present": {
-            "ich": "schwimme",
-            "er": "schwimmt"
-          }
+          "ich": "schwimme",
+          "du": "schwimmst",
+          "er": "schwimmt",
+          "wir": "schwimmen",
+          "ihr": "schwimmt",
+          "sie": "schwimmen"
         },
         "sentence": "Ich schwimme jeden Morgen."
       },
       "it": {
         "word": "nuotare",
         "meanings": [
-          "muoversi nell'acqua"
+          "muoversi in acqua",
+          "galleggiare",
+          "viaggiare nuotando"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 200,
         "conjugations": {
-          "present": {
-            "io": "nuoto",
-            "lui": "nuota"
-          }
+          "io": "nuoto",
+          "tu": "nuoti",
+          "lui": "nuota",
+          "noi": "nuotiamo",
+          "voi": "nuotate",
+          "loro": "nuotano"
         },
         "sentence": "Nuoto ogni mattina."
       },
       "es": {
         "word": "nadar",
         "meanings": [
-          "moverse en el agua"
+          "moverse por el agua",
+          "flotar en líquido",
+          "viajar nadando"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 170,
         "conjugations": {
-          "present": {
-            "yo": "nado",
-            "él": "nada"
-          }
+          "yo": "nado",
+          "tú": "nadas",
+          "él": "nada",
+          "nosotros": "nadamos",
+          "vosotros": "nadáis",
+          "ellos": "nadan"
         },
         "sentence": "Nado cada mañana."
       },
       "fr": {
         "word": "nager",
         "meanings": [
-          "se déplacer dans l'eau"
+          "se déplacer dans l'eau",
+          "flotter dans un liquide",
+          "voyager en nageant"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 190,
         "conjugations": {
-          "present": {
-            "je": "nage",
-            "il": "nage"
-          }
+          "je": "nage",
+          "tu": "nages",
+          "il": "nage",
+          "nous": "nageons",
+          "vous": "nagez",
+          "ils": "nagent"
         },
         "sentence": "Je nage chaque matin."
       }
@@ -13101,16 +13410,53 @@
       "en": {
         "word": "to jump",
         "meanings": [
-          "leap into air"
+          "leap into air",
+          "hop over obstacle",
+          "spring suddenly"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 160,
         "conjugations": {
-          "present": {
+          "en": {
             "i": "jump",
-            "he": "jumps"
+            "you": "jump",
+            "he": "jumps",
+            "we": "jump",
+            "they": "jump"
+          },
+          "de": {
+            "ich": "springe",
+            "du": "springst",
+            "er": "springt",
+            "wir": "springen",
+            "ihr": "springt",
+            "sie": "springen"
+          },
+          "it": {
+            "io": "salto",
+            "tu": "salti",
+            "lui": "salta",
+            "noi": "saltiamo",
+            "voi": "saltate",
+            "loro": "saltano"
+          },
+          "es": {
+            "yo": "salto",
+            "tú": "saltas",
+            "él": "salta",
+            "nosotros": "saltamos",
+            "vosotros": "saltáis",
+            "ellos": "saltan"
+          },
+          "fr": {
+            "je": "saute",
+            "tu": "sautes",
+            "il": "saute",
+            "nous": "sautons",
+            "vous": "sautez",
+            "ils": "sautent"
           }
         },
         "sentence": "The frog can jump."
@@ -13118,16 +13464,53 @@
       "de": {
         "word": "springen",
         "meanings": [
-          "in die Luft springen"
+          "in die Luft springen",
+          "über etwas hüpfen",
+          "plötzlich hochspringen"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 170,
         "conjugations": {
-          "present": {
+          "en": {
+            "i": "jump",
+            "you": "jump",
+            "he": "jumps",
+            "we": "jump",
+            "they": "jump"
+          },
+          "de": {
             "ich": "springe",
-            "er": "springt"
+            "du": "springst",
+            "er": "springt",
+            "wir": "springen",
+            "ihr": "springt",
+            "sie": "springen"
+          },
+          "it": {
+            "io": "salto",
+            "tu": "salti",
+            "lui": "salta",
+            "noi": "saltiamo",
+            "voi": "saltate",
+            "loro": "saltano"
+          },
+          "es": {
+            "yo": "salto",
+            "tú": "saltas",
+            "él": "salta",
+            "nosotros": "saltamos",
+            "vosotros": "saltáis",
+            "ellos": "saltan"
+          },
+          "fr": {
+            "je": "saute",
+            "tu": "sautes",
+            "il": "saute",
+            "nous": "sautons",
+            "vous": "sautez",
+            "ils": "sautent"
           }
         },
         "sentence": "Der Frosch kann springen."
@@ -13135,16 +13518,53 @@
       "it": {
         "word": "saltare",
         "meanings": [
-          "fare un balzo"
+          "fare un balzo",
+          "saltare oltre",
+          "scattare improvvisamente"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 180,
         "conjugations": {
-          "present": {
+          "en": {
+            "i": "jump",
+            "you": "jump",
+            "he": "jumps",
+            "we": "jump",
+            "they": "jump"
+          },
+          "de": {
+            "ich": "springe",
+            "du": "springst",
+            "er": "springt",
+            "wir": "springen",
+            "ihr": "springt",
+            "sie": "springen"
+          },
+          "it": {
             "io": "salto",
-            "lui": "salta"
+            "tu": "salti",
+            "lui": "salta",
+            "noi": "saltiamo",
+            "voi": "saltate",
+            "loro": "saltano"
+          },
+          "es": {
+            "yo": "salto",
+            "tú": "saltas",
+            "él": "salta",
+            "nosotros": "saltamos",
+            "vosotros": "saltáis",
+            "ellos": "saltan"
+          },
+          "fr": {
+            "je": "saute",
+            "tu": "sautes",
+            "il": "saute",
+            "nous": "sautons",
+            "vous": "sautez",
+            "ils": "sautent"
           }
         },
         "sentence": "La rana può saltare."
@@ -13152,16 +13572,53 @@
       "es": {
         "word": "saltar",
         "meanings": [
-          "dar un salto"
+          "dar un salto",
+          "saltar por encima",
+          "brincar de repente"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 165,
         "conjugations": {
-          "present": {
+          "en": {
+            "i": "jump",
+            "you": "jump",
+            "he": "jumps",
+            "we": "jump",
+            "they": "jump"
+          },
+          "de": {
+            "ich": "springe",
+            "du": "springst",
+            "er": "springt",
+            "wir": "springen",
+            "ihr": "springt",
+            "sie": "springen"
+          },
+          "it": {
+            "io": "salto",
+            "tu": "salti",
+            "lui": "salta",
+            "noi": "saltiamo",
+            "voi": "saltate",
+            "loro": "saltano"
+          },
+          "es": {
             "yo": "salto",
-            "él": "salta"
+            "tú": "saltas",
+            "él": "salta",
+            "nosotros": "saltamos",
+            "vosotros": "saltáis",
+            "ellos": "saltan"
+          },
+          "fr": {
+            "je": "saute",
+            "tu": "sautes",
+            "il": "saute",
+            "nous": "sautons",
+            "vous": "sautez",
+            "ils": "sautent"
           }
         },
         "sentence": "La rana puede saltar."
@@ -13169,16 +13626,53 @@
       "fr": {
         "word": "sauter",
         "meanings": [
-          "bondir dans les airs"
+          "bondir dans les airs",
+          "sauter par-dessus",
+          "surgir soudainement"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 175,
         "conjugations": {
-          "present": {
+          "en": {
+            "i": "jump",
+            "you": "jump",
+            "he": "jumps",
+            "we": "jump",
+            "they": "jump"
+          },
+          "de": {
+            "ich": "springe",
+            "du": "springst",
+            "er": "springt",
+            "wir": "springen",
+            "ihr": "springt",
+            "sie": "springen"
+          },
+          "it": {
+            "io": "salto",
+            "tu": "salti",
+            "lui": "salta",
+            "noi": "saltiamo",
+            "voi": "saltate",
+            "loro": "saltano"
+          },
+          "es": {
+            "yo": "salto",
+            "tú": "saltas",
+            "él": "salta",
+            "nosotros": "saltamos",
+            "vosotros": "saltáis",
+            "ellos": "saltan"
+          },
+          "fr": {
             "je": "saute",
-            "il": "saute"
+            "tu": "sautes",
+            "il": "saute",
+            "nous": "sautons",
+            "vous": "sautez",
+            "ils": "sautent"
           }
         },
         "sentence": "La grenouille peut sauter."
@@ -15453,85 +15947,104 @@
       "en": {
         "word": "to listen",
         "meanings": [
-          "hear attentively"
+          "hear attentively",
+          "pay attention to sound",
+          "heed advice"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 60,
         "conjugations": {
-          "present": {
-            "i": "listen",
-            "he": "listens"
-          }
+          "i": "listen",
+          "you": "listen",
+          "he": "listens",
+          "we": "listen",
+          "they": "listen"
         },
         "sentence": "She listens to music."
       },
       "de": {
         "word": "hören",
         "meanings": [
-          "hear attentively"
+          "hear attentively",
+          "auf Geräusche achten",
+          "Rat befolgen"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 55,
         "conjugations": {
-          "present": {
-            "ich": "höre",
-            "er": "hört"
-          }
+          "ich": "höre",
+          "du": "hörst",
+          "er": "hört",
+          "wir": "hören",
+          "ihr": "hört",
+          "sie": "hören"
         },
         "sentence": "Sie hört Musik."
       },
       "it": {
         "word": "ascoltare",
         "meanings": [
-          "hear attentively"
+          "hear attentively",
+          "prestare attenzione al suono",
+          "seguire un consiglio"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 65,
         "conjugations": {
-          "present": {
-            "io": "ascolto",
-            "lui": "ascolta"
-          }
+          "io": "ascolto",
+          "tu": "ascolti",
+          "lui": "ascolta",
+          "noi": "ascoltiamo",
+          "voi": "ascoltate",
+          "loro": "ascoltano"
         },
         "sentence": "Ascolta la musica."
       },
       "es": {
         "word": "escuchar",
         "meanings": [
-          "hear attentively"
+          "hear attentively",
+          "prestar atención al sonido",
+          "seguir un consejo"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 50,
         "conjugations": {
-          "present": {
-            "yo": "escucho",
-            "él": "escucha"
-          }
+          "yo": "escucho",
+          "tú": "escuchas",
+          "él": "escucha",
+          "nosotros": "escuchamos",
+          "vosotros": "escucháis",
+          "ellos": "escuchan"
         },
         "sentence": "Ella escucha música."
       },
       "fr": {
         "word": "écouter",
         "meanings": [
-          "hear attentively"
+          "hear attentively",
+          "prêter attention au son",
+          "suivre un conseil"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 58,
         "conjugations": {
-          "present": {
-            "je": "écoute",
-            "il": "écoute"
-          }
+          "je": "écoute",
+          "tu": "écoutes",
+          "il": "écoute",
+          "nous": "écoutons",
+          "vous": "écoutez",
+          "ils": "écoutent"
         },
         "sentence": "Elle écoute de la musique."
       }
@@ -17060,85 +17573,104 @@
       "en": {
         "word": "to shout",
         "meanings": [
-          "to yell loudly"
+          "to yell loudly",
+          "call out loudly",
+          "express anger vocally"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 250,
         "conjugations": {
-          "present": {
-            "i": "shout",
-            "he": "shouts"
-          }
+          "i": "shout",
+          "you": "shout",
+          "he": "shouts",
+          "we": "shout",
+          "they": "shout"
         },
         "sentence": "He likes to shout at the game."
       },
       "de": {
         "word": "schreien",
         "meanings": [
-          "laut rufen"
+          "laut rufen",
+          "laut schreien",
+          "vor Wut brüllen"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 300,
         "conjugations": {
-          "present": {
-            "ich": "schreie",
-            "er": "schreit"
-          }
+          "ich": "schreie",
+          "du": "schreist",
+          "er": "schreit",
+          "wir": "schreien",
+          "ihr": "schreit",
+          "sie": "schreien"
         },
         "sentence": "Er schreit gerne beim Spiel."
       },
       "it": {
         "word": "urlare",
         "meanings": [
-          "gridare forte"
+          "gridare forte",
+          "urlare di rabbia",
+          "chiamare a voce alta"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 320,
         "conjugations": {
-          "present": {
-            "io": "urlo",
-            "lui": "urla"
-          }
+          "io": "urlo",
+          "tu": "urli",
+          "lui": "urla",
+          "noi": "urliamo",
+          "voi": "urlate",
+          "loro": "urlano"
         },
         "sentence": "Gli piace urlare alla partita."
       },
       "es": {
         "word": "gritar",
         "meanings": [
-          "vocear"
+          "vocear fuerte",
+          "gritar de ira",
+          "llamar a voces"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 280,
         "conjugations": {
-          "present": {
-            "yo": "grito",
-            "él": "grita"
-          }
+          "yo": "grito",
+          "tú": "gritas",
+          "él": "grita",
+          "nosotros": "gritamos",
+          "vosotros": "gritáis",
+          "ellos": "gritan"
         },
         "sentence": "Le gusta gritar en el partido."
       },
       "fr": {
         "word": "crier",
         "meanings": [
-          "hurler"
+          "hurler fort",
+          "crier de colère",
+          "appeler fort"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 290,
         "conjugations": {
-          "present": {
-            "je": "crie",
-            "il": "crie"
-          }
+          "je": "crie",
+          "tu": "cries",
+          "il": "crie",
+          "nous": "crions",
+          "vous": "criez",
+          "ils": "crient"
         },
         "sentence": "Il aime crier au match."
       }
@@ -23776,85 +24308,104 @@
       "en": {
         "word": "to fly",
         "meanings": [
-          "move through the air"
+          "move through air",
+          "travel by plane",
+          "soar high"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 120,
         "conjugations": {
-          "present": {
-            "i": "fly",
-            "he": "flies"
-          }
+          "i": "fly",
+          "you": "fly",
+          "he": "flies",
+          "we": "fly",
+          "they": "fly"
         },
         "sentence": "Birds fly south in winter."
       },
       "de": {
         "word": "fliegen",
         "meanings": [
-          "sich durch die Luft bewegen"
+          "move through air",
+          "mit dem Flugzeug reisen",
+          "hoch fliegen"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 135,
         "conjugations": {
-          "present": {
-            "ich": "fliege",
-            "er": "fliegt"
-          }
+          "ich": "fliege",
+          "du": "fliegst",
+          "er": "fliegt",
+          "wir": "fliegen",
+          "ihr": "fliegt",
+          "sie": "fliegen"
         },
         "sentence": "Vögel fliegen im Winter nach Süden."
       },
       "it": {
         "word": "volare",
         "meanings": [
-          "muoversi nell'aria"
+          "move through air",
+          "volare in aereo",
+          "volare alto"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 128,
         "conjugations": {
-          "present": {
-            "io": "volo",
-            "lui": "vola"
-          }
+          "io": "volo",
+          "tu": "voli",
+          "lui": "vola",
+          "noi": "voliamo",
+          "voi": "volate",
+          "loro": "volano"
         },
         "sentence": "Gli uccelli volano a sud in inverno."
       },
       "es": {
         "word": "volar",
         "meanings": [
-          "moverse por el aire"
+          "move through air",
+          "viajar en avión",
+          "volar alto"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 130,
         "conjugations": {
-          "present": {
-            "yo": "vuelo",
-            "él": "vuela"
-          }
+          "yo": "vuelo",
+          "tú": "vuelas",
+          "él": "vuela",
+          "nosotros": "volamos",
+          "vosotros": "voláis",
+          "ellos": "vuelan"
         },
         "sentence": "Los pájaros vuelan al sur en invierno."
       },
       "fr": {
         "word": "voler",
         "meanings": [
-          "se déplacer dans les airs"
+          "move through air",
+          "voyager en avion",
+          "voler haut"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 125,
         "conjugations": {
-          "present": {
-            "je": "vole",
-            "il": "vole"
-          }
+          "je": "vole",
+          "tu": "voles",
+          "il": "vole",
+          "nous": "volons",
+          "vous": "volez",
+          "ils": "volent"
         },
         "sentence": "Les oiseaux volent vers le sud en hiver."
       }
@@ -25643,16 +26194,53 @@
       "en": {
         "word": "to glide",
         "meanings": [
-          "move smoothly"
+          "move smoothly",
+          "slide gracefully",
+          "soar effortlessly"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 700,
         "conjugations": {
-          "present": {
+          "en": {
             "i": "glide",
-            "he": "glides"
+            "you": "glide",
+            "he": "glides",
+            "we": "glide",
+            "they": "glide"
+          },
+          "de": {
+            "ich": "gleite",
+            "du": "gleitest",
+            "er": "gleitet",
+            "wir": "gleiten",
+            "ihr": "gleitet",
+            "sie": "gleiten"
+          },
+          "it": {
+            "io": "scivolo",
+            "tu": "scivoli",
+            "lui": "scivola",
+            "noi": "scivoliamo",
+            "voi": "scivolate",
+            "loro": "scivolano"
+          },
+          "es": {
+            "yo": "deslizo",
+            "tú": "deslizas",
+            "él": "desliza",
+            "nosotros": "deslizamos",
+            "vosotros": "deslizáis",
+            "ellos": "deslizan"
+          },
+          "fr": {
+            "je": "glisse",
+            "tu": "glisses",
+            "il": "glisse",
+            "nous": "glissons",
+            "vous": "glissez",
+            "ils": "glissent"
           }
         },
         "sentence": "The bird glides through the sky."
@@ -25660,16 +26248,53 @@
       "de": {
         "word": "gleiten",
         "meanings": [
-          "move smoothly"
+          "move smoothly",
+          "gleiten",
+          "schweben"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 680,
         "conjugations": {
-          "present": {
+          "en": {
+            "i": "glide",
+            "you": "glide",
+            "he": "glides",
+            "we": "glide",
+            "they": "glide"
+          },
+          "de": {
             "ich": "gleite",
-            "er": "gleitet"
+            "du": "gleitest",
+            "er": "gleitet",
+            "wir": "gleiten",
+            "ihr": "gleitet",
+            "sie": "gleiten"
+          },
+          "it": {
+            "io": "scivolo",
+            "tu": "scivoli",
+            "lui": "scivola",
+            "noi": "scivoliamo",
+            "voi": "scivolate",
+            "loro": "scivolano"
+          },
+          "es": {
+            "yo": "deslizo",
+            "tú": "deslizas",
+            "él": "desliza",
+            "nosotros": "deslizamos",
+            "vosotros": "deslizáis",
+            "ellos": "deslizan"
+          },
+          "fr": {
+            "je": "glisse",
+            "tu": "glisses",
+            "il": "glisse",
+            "nous": "glissons",
+            "vous": "glissez",
+            "ils": "glissent"
           }
         },
         "sentence": "Der Vogel gleitet durch den Himmel."
@@ -25677,16 +26302,53 @@
       "it": {
         "word": "scivolare",
         "meanings": [
-          "move smoothly"
+          "move smoothly",
+          "scivolare",
+          "scorrere"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 690,
         "conjugations": {
-          "present": {
+          "en": {
+            "i": "glide",
+            "you": "glide",
+            "he": "glides",
+            "we": "glide",
+            "they": "glide"
+          },
+          "de": {
+            "ich": "gleite",
+            "du": "gleitest",
+            "er": "gleitet",
+            "wir": "gleiten",
+            "ihr": "gleitet",
+            "sie": "gleiten"
+          },
+          "it": {
             "io": "scivolo",
-            "lui": "scivola"
+            "tu": "scivoli",
+            "lui": "scivola",
+            "noi": "scivoliamo",
+            "voi": "scivolate",
+            "loro": "scivolano"
+          },
+          "es": {
+            "yo": "deslizo",
+            "tú": "deslizas",
+            "él": "desliza",
+            "nosotros": "deslizamos",
+            "vosotros": "deslizáis",
+            "ellos": "deslizan"
+          },
+          "fr": {
+            "je": "glisse",
+            "tu": "glisses",
+            "il": "glisse",
+            "nous": "glissons",
+            "vous": "glissez",
+            "ils": "glissent"
           }
         },
         "sentence": "L'uccello scivola nel cielo."
@@ -25694,16 +26356,53 @@
       "es": {
         "word": "deslizarse",
         "meanings": [
-          "move smoothly"
+          "move smoothly",
+          "deslizarse",
+          "resbalar"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 670,
         "conjugations": {
-          "present": {
+          "en": {
+            "i": "glide",
+            "you": "glide",
+            "he": "glides",
+            "we": "glide",
+            "they": "glide"
+          },
+          "de": {
+            "ich": "gleite",
+            "du": "gleitest",
+            "er": "gleitet",
+            "wir": "gleiten",
+            "ihr": "gleitet",
+            "sie": "gleiten"
+          },
+          "it": {
+            "io": "scivolo",
+            "tu": "scivoli",
+            "lui": "scivola",
+            "noi": "scivoliamo",
+            "voi": "scivolate",
+            "loro": "scivolano"
+          },
+          "es": {
             "yo": "deslizo",
-            "él": "desliza"
+            "tú": "deslizas",
+            "él": "desliza",
+            "nosotros": "deslizamos",
+            "vosotros": "deslizáis",
+            "ellos": "deslizan"
+          },
+          "fr": {
+            "je": "glisse",
+            "tu": "glisses",
+            "il": "glisse",
+            "nous": "glissons",
+            "vous": "glissez",
+            "ils": "glissent"
           }
         },
         "sentence": "El pájaro se desliza por el cielo."
@@ -25711,16 +26410,53 @@
       "fr": {
         "word": "glisser",
         "meanings": [
-          "move smoothly"
+          "move smoothly",
+          "glisser",
+          "déraper"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 710,
         "conjugations": {
-          "present": {
+          "en": {
+            "i": "glide",
+            "you": "glide",
+            "he": "glides",
+            "we": "glide",
+            "they": "glide"
+          },
+          "de": {
+            "ich": "gleite",
+            "du": "gleitest",
+            "er": "gleitet",
+            "wir": "gleiten",
+            "ihr": "gleitet",
+            "sie": "gleiten"
+          },
+          "it": {
+            "io": "scivolo",
+            "tu": "scivoli",
+            "lui": "scivola",
+            "noi": "scivoliamo",
+            "voi": "scivolate",
+            "loro": "scivolano"
+          },
+          "es": {
+            "yo": "deslizo",
+            "tú": "deslizas",
+            "él": "desliza",
+            "nosotros": "deslizamos",
+            "vosotros": "deslizáis",
+            "ellos": "deslizan"
+          },
+          "fr": {
             "je": "glisse",
-            "il": "glisse"
+            "tu": "glisses",
+            "il": "glisse",
+            "nous": "glissons",
+            "vous": "glissez",
+            "ils": "glissent"
           }
         },
         "sentence": "L'oiseau glisse dans le ciel."
@@ -26753,90 +27489,104 @@
       "en": {
         "word": "to speak",
         "meanings": [
-          "talk",
-          "converse"
+          "talk verbally",
+          "communicate orally",
+          "express in words"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 30,
         "conjugations": {
-          "present": {
-            "i": "speak",
-            "he": "speaks"
-          }
+          "i": "speak",
+          "you": "speak",
+          "he": "speaks",
+          "we": "speak",
+          "they": "speak"
         },
         "sentence": "She speaks clearly."
       },
       "de": {
         "word": "sprechen",
         "meanings": [
-          "reden",
-          "sagen"
+          "talk verbally",
+          "mündlich kommunizieren",
+          "in Worten ausdrücken"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 35,
         "conjugations": {
-          "present": {
-            "ich": "spreche",
-            "er": "spricht"
-          }
+          "ich": "spreche",
+          "du": "sprichst",
+          "er": "spricht",
+          "wir": "sprechen",
+          "ihr": "sprecht",
+          "sie": "sprechen"
         },
         "sentence": "Sie spricht klar."
       },
       "it": {
         "word": "parlare",
         "meanings": [
-          "discorrere",
-          "chiacchierare"
+          "talk verbally",
+          "comunicare oralmente",
+          "esprimere a parole"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 32,
         "conjugations": {
-          "present": {
-            "io": "parlo",
-            "lui": "parla"
-          }
+          "io": "parlo",
+          "tu": "parli",
+          "lui": "parla",
+          "noi": "parliamo",
+          "voi": "parlate",
+          "loro": "parlano"
         },
         "sentence": "Lei parla chiaramente."
       },
       "es": {
         "word": "hablar",
         "meanings": [
-          "conversar",
-          "platicar"
+          "talk verbally",
+          "comunicar oralmente",
+          "expresar en palabras"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 28,
         "conjugations": {
-          "present": {
-            "yo": "hablo",
-            "él": "habla"
-          }
+          "yo": "hablo",
+          "tú": "hablas",
+          "él": "habla",
+          "nosotros": "hablamos",
+          "vosotros": "habláis",
+          "ellos": "hablan"
         },
         "sentence": "Ella habla claro."
       },
       "fr": {
         "word": "parler",
         "meanings": [
-          "discuter",
-          "causer"
+          "talk verbally",
+          "communiquer oralement",
+          "exprimer en mots"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 33,
         "conjugations": {
-          "present": {
-            "je": "parle",
-            "il": "parle"
-          }
+          "je": "parle",
+          "tu": "parles",
+          "il": "parle",
+          "nous": "parlons",
+          "vous": "parlez",
+          "ils": "parlent"
         },
         "sentence": "Elle parle clairement."
       }
@@ -28330,85 +29080,104 @@
       "en": {
         "word": "to cry",
         "meanings": [
-          "shed tears"
+          "to shed tears",
+          "to weep",
+          "express sorrow loudly"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 300,
         "conjugations": {
-          "present": {
-            "i": "cry",
-            "he": "cries"
-          }
+          "i": "cry",
+          "you": "cry",
+          "he": "cries",
+          "we": "cry",
+          "they": "cry"
         },
         "sentence": "Babies cry loudly."
       },
       "de": {
         "word": "weinen",
         "meanings": [
-          "Tränen vergießen"
+          "to shed tears",
+          "to weep",
+          "vor Trauer weinen"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 320,
         "conjugations": {
-          "present": {
-            "ich": "weine",
-            "er": "weint"
-          }
+          "ich": "weine",
+          "du": "weinst",
+          "er": "weint",
+          "wir": "weinen",
+          "ihr": "weint",
+          "sie": "weinen"
         },
         "sentence": "Babys weinen laut."
       },
       "it": {
         "word": "piangere",
         "meanings": [
-          "versare lacrime"
+          "to shed tears",
+          "to weep",
+          "esprimere tristezza"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 310,
         "conjugations": {
-          "present": {
-            "io": "piango",
-            "lui": "piange"
-          }
+          "io": "piango",
+          "tu": "piangi",
+          "lui": "piange",
+          "noi": "piangiamo",
+          "voi": "piangete",
+          "loro": "piangono"
         },
         "sentence": "I bambini piangono forte."
       },
       "es": {
         "word": "llorar",
         "meanings": [
-          "derramar lágrimas"
+          "to shed tears",
+          "to weep",
+          "expresar tristeza"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 290,
         "conjugations": {
-          "present": {
-            "yo": "lloro",
-            "él": "llora"
-          }
+          "yo": "lloro",
+          "tú": "lloras",
+          "él": "llora",
+          "nosotros": "lloramos",
+          "vosotros": "lloráis",
+          "ellos": "lloran"
         },
         "sentence": "Los bebés lloran fuerte."
       },
       "fr": {
         "word": "pleurer",
         "meanings": [
-          "verser des larmes"
+          "to shed tears",
+          "to weep",
+          "exprimer la tristesse"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 295,
         "conjugations": {
-          "present": {
-            "je": "pleure",
-            "il": "pleure"
-          }
+          "je": "pleure",
+          "tu": "pleures",
+          "il": "pleure",
+          "nous": "pleurons",
+          "vous": "pleurez",
+          "ils": "pleurent"
         },
         "sentence": "Les bébés pleurent fort."
       }
@@ -38262,85 +39031,104 @@
       "en": {
         "word": "to love",
         "meanings": [
-          "feel deep affection"
+          "adore",
+          "care deeply",
+          "feel strong affection"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 50,
         "conjugations": {
-          "present": {
-            "i": "love",
-            "he": "loves"
-          }
+          "i": "love",
+          "you": "love",
+          "he": "loves",
+          "we": "love",
+          "they": "love"
         },
         "sentence": "I love my family."
       },
       "de": {
         "word": "lieben",
         "meanings": [
-          "tiefe Zuneigung fühlen"
+          "vergöttern",
+          "tief mögen",
+          "stark lieben"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 60,
         "conjugations": {
-          "present": {
-            "ich": "liebe",
-            "er": "liebt"
-          }
+          "ich": "liebe",
+          "du": "liebst",
+          "er": "liebt",
+          "wir": "lieben",
+          "ihr": "liebt",
+          "sie": "lieben"
         },
         "sentence": "Ich liebe meine Familie."
       },
       "it": {
         "word": "amare",
         "meanings": [
-          "provare affetto profondo"
+          "adorare",
+          "voler bene",
+          "amare profondamente"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 55,
         "conjugations": {
-          "present": {
-            "io": "amo",
-            "lui": "ama"
-          }
+          "io": "amo",
+          "tu": "ami",
+          "lui": "ama",
+          "noi": "amiamo",
+          "voi": "amate",
+          "loro": "amano"
         },
         "sentence": "Io amo la mia famiglia."
       },
       "es": {
         "word": "amar",
         "meanings": [
-          "sentir afecto profundo"
+          "adorar",
+          "querer mucho",
+          "amar profundamente"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 65,
         "conjugations": {
-          "present": {
-            "yo": "amo",
-            "él": "ama"
-          }
+          "yo": "amo",
+          "tú": "amas",
+          "él": "ama",
+          "nosotros": "amamos",
+          "vosotros": "amáis",
+          "ellos": "aman"
         },
         "sentence": "Yo amo a mi familia."
       },
       "fr": {
         "word": "aimer",
         "meanings": [
-          "ressentir un profond attachement"
+          "adorer",
+          "bien vouloir",
+          "aimer profondément"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 45,
         "conjugations": {
-          "present": {
-            "je": "aime",
-            "il": "aime"
-          }
+          "je": "aime",
+          "tu": "aimes",
+          "il": "aime",
+          "nous": "aimons",
+          "vous": "aimez",
+          "ils": "aiment"
         },
         "sentence": "J'aime ma famille."
       }
@@ -42063,85 +42851,104 @@
       "en": {
         "word": "to discover",
         "meanings": [
-          "find something unknown"
+          "find out",
+          "uncover new info",
+          "detect something"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 170,
         "conjugations": {
-          "present": {
-            "i": "discover",
-            "he": "discovers"
-          }
+          "i": "discover",
+          "you": "discover",
+          "he": "discovers",
+          "we": "discover",
+          "they": "discover"
         },
         "sentence": "Discover new lands."
       },
       "de": {
         "word": "entdecken",
         "meanings": [
-          "etwas Unbekanntes finden"
+          "herausfinden",
+          "neue Infos aufdecken",
+          "entdecken"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 190,
         "conjugations": {
-          "present": {
-            "ich": "entdecke",
-            "er": "entdeckt"
-          }
+          "ich": "entdecke",
+          "du": "entdeckst",
+          "er": "entdeckt",
+          "wir": "entdecken",
+          "ihr": "entdeckt",
+          "sie": "entdecken"
         },
         "sentence": "Entdecke neue Länder."
       },
       "it": {
         "word": "scoprire",
         "meanings": [
-          "trovare qualcosa di sconosciuto"
+          "trovare",
+          "scoprire nuove info",
+          "rilevare"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 180,
         "conjugations": {
-          "present": {
-            "io": "scopro",
-            "lui": "scopre"
-          }
+          "io": "scopro",
+          "tu": "scopri",
+          "lui": "scopre",
+          "noi": "scopriamo",
+          "voi": "scoprite",
+          "loro": "scoprono"
         },
         "sentence": "Scopri nuove terre."
       },
       "es": {
         "word": "descubrir",
         "meanings": [
-          "encontrar algo desconocido"
+          "encontrar",
+          "descubrir nueva info",
+          "detectar"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 175,
         "conjugations": {
-          "present": {
-            "yo": "descubro",
-            "él": "descubre"
-          }
+          "yo": "descubro",
+          "tú": "descubres",
+          "él": "descubre",
+          "nosotros": "descubrimos",
+          "vosotros": "descubrís",
+          "ellos": "descubren"
         },
         "sentence": "Descubre nuevas tierras."
       },
       "fr": {
         "word": "découvrir",
         "meanings": [
-          "trouver quelque chose d'inconnu"
+          "trouver",
+          "découvrir nouvelles infos",
+          "détecter"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 165,
         "conjugations": {
-          "present": {
-            "je": "découvre",
-            "il": "découvre"
-          }
+          "je": "découvre",
+          "tu": "découvres",
+          "il": "découvre",
+          "nous": "découvrons",
+          "vous": "découvrez",
+          "ils": "découvrent"
         },
         "sentence": "Découvre de nouvelles terres."
       }
@@ -48921,16 +49728,53 @@
       "en": {
         "word": "to learn",
         "meanings": [
-          "acquire knowledge"
+          "acquire knowledge",
+          "gain understanding",
+          "study subject"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 70,
         "conjugations": {
-          "present": {
+          "en": {
             "i": "learn",
-            "he": "learns"
+            "you": "learn",
+            "he": "learns",
+            "we": "learn",
+            "they": "learn"
+          },
+          "de": {
+            "ich": "lerne",
+            "du": "lernst",
+            "er": "lernt",
+            "wir": "lernen",
+            "ihr": "lernt",
+            "sie": "lernen"
+          },
+          "it": {
+            "io": "imparo",
+            "tu": "impari",
+            "lui": "impara",
+            "noi": "impariamo",
+            "voi": "imparate",
+            "loro": "imparano"
+          },
+          "es": {
+            "yo": "aprendo",
+            "tú": "aprendes",
+            "él": "aprende",
+            "nosotros": "aprendemos",
+            "vosotros": "aprendéis",
+            "ellos": "aprenden"
+          },
+          "fr": {
+            "je": "apprends",
+            "tu": "apprends",
+            "il": "apprend",
+            "nous": "apprenons",
+            "vous": "apprenez",
+            "ils": "apprennent"
           }
         },
         "sentence": "We learn new things."
@@ -48938,16 +49782,53 @@
       "de": {
         "word": "lernen",
         "meanings": [
-          "acquire knowledge"
+          "acquire knowledge",
+          "gain understanding",
+          "study subject"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 75,
         "conjugations": {
-          "present": {
+          "en": {
+            "i": "learn",
+            "you": "learn",
+            "he": "learns",
+            "we": "learn",
+            "they": "learn"
+          },
+          "de": {
             "ich": "lerne",
-            "er": "lernt"
+            "du": "lernst",
+            "er": "lernt",
+            "wir": "lernen",
+            "ihr": "lernt",
+            "sie": "lernen"
+          },
+          "it": {
+            "io": "imparo",
+            "tu": "impari",
+            "lui": "impara",
+            "noi": "impariamo",
+            "voi": "imparate",
+            "loro": "imparano"
+          },
+          "es": {
+            "yo": "aprendo",
+            "tú": "aprendes",
+            "él": "aprende",
+            "nosotros": "aprendemos",
+            "vosotros": "aprendéis",
+            "ellos": "aprenden"
+          },
+          "fr": {
+            "je": "apprends",
+            "tu": "apprends",
+            "il": "apprend",
+            "nous": "apprenons",
+            "vous": "apprenez",
+            "ils": "apprennent"
           }
         },
         "sentence": "Wir lernen neue Dinge."
@@ -48955,16 +49836,53 @@
       "it": {
         "word": "imparare",
         "meanings": [
-          "acquire knowledge"
+          "acquire knowledge",
+          "gain understanding",
+          "study subject"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 72,
         "conjugations": {
-          "present": {
+          "en": {
+            "i": "learn",
+            "you": "learn",
+            "he": "learns",
+            "we": "learn",
+            "they": "learn"
+          },
+          "de": {
+            "ich": "lerne",
+            "du": "lernst",
+            "er": "lernt",
+            "wir": "lernen",
+            "ihr": "lernt",
+            "sie": "lernen"
+          },
+          "it": {
             "io": "imparo",
-            "lui": "impara"
+            "tu": "impari",
+            "lui": "impara",
+            "noi": "impariamo",
+            "voi": "imparate",
+            "loro": "imparano"
+          },
+          "es": {
+            "yo": "aprendo",
+            "tú": "aprendes",
+            "él": "aprende",
+            "nosotros": "aprendemos",
+            "vosotros": "aprendéis",
+            "ellos": "aprenden"
+          },
+          "fr": {
+            "je": "apprends",
+            "tu": "apprends",
+            "il": "apprend",
+            "nous": "apprenons",
+            "vous": "apprenez",
+            "ils": "apprennent"
           }
         },
         "sentence": "Impariamo cose nuove."
@@ -48972,16 +49890,53 @@
       "es": {
         "word": "aprender",
         "meanings": [
-          "acquire knowledge"
+          "acquire knowledge",
+          "gain understanding",
+          "study subject"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 71,
         "conjugations": {
-          "present": {
+          "en": {
+            "i": "learn",
+            "you": "learn",
+            "he": "learns",
+            "we": "learn",
+            "they": "learn"
+          },
+          "de": {
+            "ich": "lerne",
+            "du": "lernst",
+            "er": "lernt",
+            "wir": "lernen",
+            "ihr": "lernt",
+            "sie": "lernen"
+          },
+          "it": {
+            "io": "imparo",
+            "tu": "impari",
+            "lui": "impara",
+            "noi": "impariamo",
+            "voi": "imparate",
+            "loro": "imparano"
+          },
+          "es": {
             "yo": "aprendo",
-            "él": "aprende"
+            "tú": "aprendes",
+            "él": "aprende",
+            "nosotros": "aprendemos",
+            "vosotros": "aprendéis",
+            "ellos": "aprenden"
+          },
+          "fr": {
+            "je": "apprends",
+            "tu": "apprends",
+            "il": "apprend",
+            "nous": "apprenons",
+            "vous": "apprenez",
+            "ils": "apprennent"
           }
         },
         "sentence": "Aprendemos cosas nuevas."
@@ -48989,16 +49944,53 @@
       "fr": {
         "word": "apprendre",
         "meanings": [
-          "acquire knowledge"
+          "acquire knowledge",
+          "gain understanding",
+          "study subject"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 73,
         "conjugations": {
-          "present": {
+          "en": {
+            "i": "learn",
+            "you": "learn",
+            "he": "learns",
+            "we": "learn",
+            "they": "learn"
+          },
+          "de": {
+            "ich": "lerne",
+            "du": "lernst",
+            "er": "lernt",
+            "wir": "lernen",
+            "ihr": "lernt",
+            "sie": "lernen"
+          },
+          "it": {
+            "io": "imparo",
+            "tu": "impari",
+            "lui": "impara",
+            "noi": "impariamo",
+            "voi": "imparate",
+            "loro": "imparano"
+          },
+          "es": {
+            "yo": "aprendo",
+            "tú": "aprendes",
+            "él": "aprende",
+            "nosotros": "aprendemos",
+            "vosotros": "aprendéis",
+            "ellos": "aprenden"
+          },
+          "fr": {
             "je": "apprends",
-            "il": "apprend"
+            "tu": "apprends",
+            "il": "apprend",
+            "nous": "apprenons",
+            "vous": "apprenez",
+            "ils": "apprennent"
           }
         },
         "sentence": "Nous apprenons de nouvelles choses."
@@ -53214,85 +54206,104 @@
       "en": {
         "word": "to bake",
         "meanings": [
-          "cook in oven"
+          "cook in oven",
+          "prepare baked goods",
+          "roast in heat"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 220,
         "conjugations": {
-          "present": {
-            "i": "bake",
-            "he": "bakes"
-          }
+          "i": "bake",
+          "you": "bake",
+          "he": "bakes",
+          "we": "bake",
+          "they": "bake"
         },
         "sentence": "I bake cakes often."
       },
       "de": {
         "word": "backen",
         "meanings": [
-          "im Ofen kochen"
+          "im ofen kochen",
+          "backen von Kuchen",
+          "im Ofen rösten"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 250,
         "conjugations": {
-          "present": {
-            "ich": "backe",
-            "er": "bäckt"
-          }
+          "ich": "backe",
+          "du": "backst",
+          "er": "backt",
+          "wir": "backen",
+          "ihr": "backt",
+          "sie": "backen"
         },
         "sentence": "Ich backe oft Kuchen."
       },
       "it": {
         "word": "cuocere al forno",
         "meanings": [
-          "infornare"
+          "in forno",
+          "cuocere al forno",
+          "arrostire"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 270,
         "conjugations": {
-          "present": {
-            "io": "cuocio",
-            "lui": "cuoce"
-          }
+          "io": "cuocio",
+          "tu": "cuoci",
+          "lui": "cuoce",
+          "noi": "cuociamo",
+          "voi": "cuocete",
+          "loro": "cuociono"
         },
         "sentence": "Cuocio torte spesso."
       },
       "es": {
         "word": "hornear",
         "meanings": [
-          "cocinar al horno"
+          "cocinar al horno",
+          "hornear pasteles",
+          "asar al horno"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 260,
         "conjugations": {
-          "present": {
-            "yo": "horneo",
-            "él": "hornea"
-          }
+          "yo": "horneo",
+          "tú": "horneas",
+          "él": "hornea",
+          "nosotros": "horneamos",
+          "vosotros": "horneáis",
+          "ellos": "hornean"
         },
         "sentence": "Horneo pasteles a menudo."
       },
       "fr": {
         "word": "cuire au four",
         "meanings": [
-          "faire cuire au four"
+          "au four",
+          "cuire au four",
+          "rôtir"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 240,
         "conjugations": {
-          "present": {
-            "je": "cuis",
-            "il": "cuit"
-          }
+          "je": "cuis",
+          "tu": "cuis",
+          "il": "cuit",
+          "nous": "cuisons",
+          "vous": "cuisez",
+          "ils": "cuisent"
         },
         "sentence": "Je cuis des gâteaux souvent."
       }
@@ -57725,85 +58736,104 @@
       "en": {
         "word": "to feel",
         "meanings": [
-          "experience sensation"
+          "experience sensation",
+          "perceive by touch",
+          "have an emotion"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 50,
         "conjugations": {
-          "present": {
-            "i": "feel",
-            "he": "feels"
-          }
+          "i": "feel",
+          "you": "feel",
+          "he": "feels",
+          "we": "feel",
+          "they": "feel"
         },
         "sentence": "I feel good."
       },
       "de": {
         "word": "fühlen",
         "meanings": [
-          "empfindung erleben"
+          "empfindung erleben",
+          "berühren",
+          "eine Emotion haben"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 52,
         "conjugations": {
-          "present": {
-            "ich": "fühle",
-            "er": "fühlt"
-          }
+          "ich": "fühle",
+          "du": "fühlst",
+          "er": "fühlt",
+          "wir": "fühlen",
+          "ihr": "fühlt",
+          "sie": "fühlen"
         },
         "sentence": "Ich fühle mich gut."
       },
       "it": {
         "word": "sentire",
         "meanings": [
-          "provare sensazione"
+          "provare sensazione",
+          "toccare",
+          "provare un'emozione"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 51,
         "conjugations": {
-          "present": {
-            "io": "sento",
-            "lui": "sente"
-          }
+          "io": "sento",
+          "tu": "senti",
+          "lui": "sente",
+          "noi": "sentiamo",
+          "voi": "sentite",
+          "loro": "sentono"
         },
         "sentence": "Mi sento bene."
       },
       "es": {
         "word": "sentir",
         "meanings": [
-          "experimentar sensación"
+          "experimentar sensación",
+          "tocar",
+          "sentir una emoción"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 49,
         "conjugations": {
-          "present": {
-            "yo": "siento",
-            "él": "siente"
-          }
+          "yo": "siento",
+          "tú": "sientes",
+          "él": "siente",
+          "nosotros": "sentimos",
+          "vosotros": "sentís",
+          "ellos": "sienten"
         },
         "sentence": "Me siento bien."
       },
       "fr": {
         "word": "sentir",
         "meanings": [
-          "éprouver une sensation"
+          "éprouver une sensation",
+          "toucher",
+          "ressentir une émotion"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 48,
         "conjugations": {
-          "present": {
-            "je": "sens",
-            "il": "sent"
-          }
+          "je": "sens",
+          "tu": "sens",
+          "il": "sent",
+          "nous": "sentons",
+          "vous": "sentez",
+          "ils": "sentent"
         },
         "sentence": "Je me sens bien."
       }
@@ -69444,85 +70474,104 @@
       "en": {
         "word": "to negotiate",
         "meanings": [
-          "discuss terms"
+          "discuss terms",
+          "bargain for agreement",
+          "settle a deal"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 220,
         "conjugations": {
-          "present": {
-            "i": "negotiate",
-            "he": "negotiates"
-          }
+          "i": "negotiate",
+          "you": "negotiate",
+          "he": "negotiates",
+          "we": "negotiate",
+          "they": "negotiate"
         },
         "sentence": "They negotiate prices."
       },
       "de": {
         "word": "verhandeln",
         "meanings": [
-          "discuss terms"
+          "discuss terms",
+          "verhandeln um Einigung",
+          "einen Deal abschließen"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 240,
         "conjugations": {
-          "present": {
-            "ich": "verhandle",
-            "er": "verhandelt"
-          }
+          "ich": "verhandle",
+          "du": "verhandelst",
+          "er": "verhandelt",
+          "wir": "verhandeln",
+          "ihr": "verhandelt",
+          "sie": "verhandeln"
         },
         "sentence": "Sie verhandeln Preise."
       },
       "it": {
         "word": "negoziare",
         "meanings": [
-          "discuss terms"
+          "discuss terms",
+          "negoziare un accordo",
+          "contrattare"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 230,
         "conjugations": {
-          "present": {
-            "io": "negozio",
-            "lui": "negozia"
-          }
+          "io": "negozio",
+          "tu": "negozi",
+          "lui": "negozia",
+          "noi": "negoziamo",
+          "voi": "negoziate",
+          "loro": "negoziano"
         },
         "sentence": "Negoziano i prezzi."
       },
       "es": {
         "word": "negociar",
         "meanings": [
-          "discuss terms"
+          "discuss terms",
+          "negociar un acuerdo",
+          "regatear"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 225,
         "conjugations": {
-          "present": {
-            "yo": "negocio",
-            "él": "negocia"
-          }
+          "yo": "negocio",
+          "tú": "negocias",
+          "él": "negocia",
+          "nosotros": "negociamos",
+          "vosotros": "negociáis",
+          "ellos": "negocian"
         },
         "sentence": "Negocian precios."
       },
       "fr": {
         "word": "négocier",
         "meanings": [
-          "discuss terms"
+          "discuss terms",
+          "négocier un accord",
+          "marchander"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 235,
         "conjugations": {
-          "present": {
-            "je": "négocie",
-            "il": "négocie"
-          }
+          "je": "négocie",
+          "tu": "négocies",
+          "il": "négocie",
+          "nous": "négocions",
+          "vous": "négociez",
+          "ils": "négocient"
         },
         "sentence": "Ils négocient les prix."
       }
