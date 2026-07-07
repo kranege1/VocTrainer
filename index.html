@@ -71,7 +71,7 @@
         
         <!-- Build Timestamp on the bottom left -->
         <div id="build-timestamp" style="font-size: 0.65rem; color: var(--text-secondary); opacity: 0.5; font-family: monospace; padding-left: 16px; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.04); pointer-events: none; width: 100%;">
-          Build: 2026-07-07 06:17:02
+          Build: 2026-07-07 06:23:14
         </div>
       </nav>
     </header>
@@ -663,7 +663,7 @@
           <!-- Advanced Grammar Details Accordion -->
           <div style="margin-bottom: 16px; border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; background: rgba(255,255,255,0.01);">
             <button type="button" id="btn-toggle-grammar-details" class="btn btn-secondary btn-block" style="margin: 0; min-height: 40px; border-radius: 0; border: none; text-align: left; display: flex; justify-content: space-between; align-items: center; padding: 10px 16px;">
-              <span>✨ Advanced Grammar (Articles & Genders)</span>
+              <span>✨ Advanced Grammar & Sentences</span>
               <span id="grammar-toggle-icon">▼</span>
             </button>
             <div id="grammar-details-panel" style="display: none; padding: 16px; border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.1);">
@@ -703,6 +703,31 @@
                   <div class="form-group" style="margin: 0;">
                     <label style="font-size: 0.75rem;">🇮🇹 IT Feminine</label>
                     <input type="text" id="manual-gen-it-f" placeholder="f. form" style="margin: 0; min-height: 38px;">
+                  </div>
+                </div>
+              </div>
+              <div style="border-top: 1px solid rgba(255,255,255,0.04); padding-top: 12px; margin-top: 12px;">
+                <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--accent-color); margin-bottom: 8px;">Example Sentences</label>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <div class="form-group" style="margin: 0;">
+                    <label style="font-size: 0.75rem;">🇬🇧 EN Sentence</label>
+                    <input type="text" id="manual-sentence-en" placeholder="English example sentence..." style="margin: 0; min-height: 38px;">
+                  </div>
+                  <div class="form-group" style="margin: 0;">
+                    <label style="font-size: 0.75rem;">🇩🇪 DE Sentence</label>
+                    <input type="text" id="manual-sentence-de" placeholder="German example sentence..." style="margin: 0; min-height: 38px;">
+                  </div>
+                  <div class="form-group" style="margin: 0;">
+                    <label style="font-size: 0.75rem;">🇮🇹 IT Sentence</label>
+                    <input type="text" id="manual-sentence-it" placeholder="Italian example sentence..." style="margin: 0; min-height: 38px;">
+                  </div>
+                  <div class="form-group" style="margin: 0;">
+                    <label style="font-size: 0.75rem;">🇪🇸 ES Sentence</label>
+                    <input type="text" id="manual-sentence-es" placeholder="Spanish example sentence..." style="margin: 0; min-height: 38px;">
+                  </div>
+                  <div class="form-group" style="margin: 0;">
+                    <label style="font-size: 0.75rem;">🇫🇷 FR Sentence</label>
+                    <input type="text" id="manual-sentence-fr" placeholder="French example sentence..." style="margin: 0; min-height: 38px;">
                   </div>
                 </div>
               </div>
@@ -1117,6 +1142,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=20260707_0617"></script>
+  <script src="app.js?v=20260707_0623"></script>
 </body>
 </html>

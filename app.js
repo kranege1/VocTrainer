@@ -4604,6 +4604,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("manual-gen-de-f").value = "";
     document.getElementById("manual-gen-it-m").value = "";
     document.getElementById("manual-gen-it-f").value = "";
+    document.getElementById("manual-sentence-en").value = "";
+    document.getElementById("manual-sentence-de").value = "";
+    document.getElementById("manual-sentence-it").value = "";
+    document.getElementById("manual-sentence-es").value = "";
+    document.getElementById("manual-sentence-fr").value = "";
   };
 
   // Manual import submit action
@@ -4625,6 +4630,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const genDeF = document.getElementById("manual-gen-de-f").value.trim();
     const genItM = document.getElementById("manual-gen-it-m").value.trim();
     const genItF = document.getElementById("manual-gen-it-f").value.trim();
+    const sentEn = document.getElementById("manual-sentence-en").value.trim();
+    const sentDe = document.getElementById("manual-sentence-de").value.trim();
+    const sentIt = document.getElementById("manual-sentence-it").value.trim();
+    const sentEs = document.getElementById("manual-sentence-es").value.trim();
+    const sentFr = document.getElementById("manual-sentence-fr").value.trim();
 
     if (!en || !de || !it || !es || !fr) {
       alert("Please ensure all translation fields are filled before saving.");
@@ -4658,7 +4668,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             genderForms: {
               de: { m: genDeM, f: genDeF },
               it: { m: genItM, f: genItF }
-            }
+            },
+            sentences: { en: sentEn, de: sentDe, it: sentIt, es: sentEs, fr: sentFr }
           };
         }
       } else {
@@ -4677,7 +4688,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             genderForms: {
               de: { m: genDeM, f: genDeF },
               it: { m: genItM, f: genItF }
-            }
+            },
+            sentences: { en: sentEn, de: sentDe, it: sentIt, es: sentEs, fr: sentFr }
           }
         };
       }
@@ -4811,7 +4823,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           de: { m: genDeM, f: genDeF },
           it: { m: genItM, f: genItF }
         },
-        sentences: {},
+        sentences: { en: sentEn, de: sentDe, it: sentIt, es: sentEs, fr: sentFr },
         variations: {},
         synonyms: { en: [], de: [], it: [], es: [], fr: [] }
       }
@@ -6197,6 +6209,13 @@ window.triggerEditWord = function(key, isCustom) {
     document.getElementById("manual-gen-de-f").value = genders.de?.f || "";
     document.getElementById("manual-gen-it-m").value = genders.it?.m || "";
     document.getElementById("manual-gen-it-f").value = genders.it?.f || "";
+
+    const sents = det.sentences || {};
+    document.getElementById("manual-sentence-en").value = sents.en || "";
+    document.getElementById("manual-sentence-de").value = sents.de || "";
+    document.getElementById("manual-sentence-it").value = sents.it || "";
+    document.getElementById("manual-sentence-es").value = sents.es || "";
+    document.getElementById("manual-sentence-fr").value = sents.fr || "";
 
     // Change button text and title
     document.getElementById("btn-manual-submit").textContent = "💾 Save Changes";
