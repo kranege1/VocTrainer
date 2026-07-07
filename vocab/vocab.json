@@ -124,15 +124,53 @@
       "en": {
         "word": "to speak",
         "meanings": [
-          "to speak"
+          "to speak",
+          "to talk",
+          "to communicate"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 500,
         "conjugations": {
-          "present": {
-            "he": "He speaks."
+          "en": {
+            "i": "speak",
+            "you": "speak",
+            "he": "speaks",
+            "we": "speak",
+            "they": "speak"
+          },
+          "de": {
+            "ich": "spreche",
+            "du": "sprichst",
+            "er": "spricht",
+            "wir": "sprechen",
+            "ihr": "sprecht",
+            "sie": "sprechen"
+          },
+          "it": {
+            "io": "parlo",
+            "tu": "parli",
+            "lui": "parla",
+            "noi": "parliamo",
+            "voi": "parlate",
+            "loro": "parlano"
+          },
+          "es": {
+            "yo": "hablo",
+            "tú": "hablas",
+            "él": "habla",
+            "nosotros": "hablamos",
+            "vosotros": "habláis",
+            "ellos": "hablan"
+          },
+          "fr": {
+            "je": "parle",
+            "tu": "parles",
+            "il": "parle",
+            "nous": "parlons",
+            "vous": "parlez",
+            "ils": "parlent"
           }
         },
         "sentence": "I like to speak."
@@ -140,15 +178,53 @@
       "de": {
         "word": "sprechen",
         "meanings": [
-          "sprechen"
+          "sprechen",
+          "reden",
+          "sagen"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 500,
         "conjugations": {
-          "present": {
-            "he": "Er spricht."
+          "en": {
+            "i": "speak",
+            "you": "speak",
+            "he": "speaks",
+            "we": "speak",
+            "they": "speak"
+          },
+          "de": {
+            "ich": "spreche",
+            "du": "sprichst",
+            "er": "spricht",
+            "wir": "sprechen",
+            "ihr": "sprecht",
+            "sie": "sprechen"
+          },
+          "it": {
+            "io": "parlo",
+            "tu": "parli",
+            "lui": "parla",
+            "noi": "parliamo",
+            "voi": "parlate",
+            "loro": "parlano"
+          },
+          "es": {
+            "yo": "hablo",
+            "tú": "hablas",
+            "él": "habla",
+            "nosotros": "hablamos",
+            "vosotros": "habláis",
+            "ellos": "hablan"
+          },
+          "fr": {
+            "je": "parle",
+            "tu": "parles",
+            "il": "parle",
+            "nous": "parlons",
+            "vous": "parlez",
+            "ils": "parlent"
           }
         },
         "sentence": "Ich rede gern."
@@ -156,15 +232,53 @@
       "it": {
         "word": "parlare",
         "meanings": [
-          "parlare"
+          "parlare",
+          "discorrere",
+          "esprimersi"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 500,
         "conjugations": {
-          "present": {
-            "he": "Lui parla."
+          "en": {
+            "i": "speak",
+            "you": "speak",
+            "he": "speaks",
+            "we": "speak",
+            "they": "speak"
+          },
+          "de": {
+            "ich": "spreche",
+            "du": "sprichst",
+            "er": "spricht",
+            "wir": "sprechen",
+            "ihr": "sprecht",
+            "sie": "sprechen"
+          },
+          "it": {
+            "io": "parlo",
+            "tu": "parli",
+            "lui": "parla",
+            "noi": "parliamo",
+            "voi": "parlate",
+            "loro": "parlano"
+          },
+          "es": {
+            "yo": "hablo",
+            "tú": "hablas",
+            "él": "habla",
+            "nosotros": "hablamos",
+            "vosotros": "habláis",
+            "ellos": "hablan"
+          },
+          "fr": {
+            "je": "parle",
+            "tu": "parles",
+            "il": "parle",
+            "nous": "parlons",
+            "vous": "parlez",
+            "ils": "parlent"
           }
         },
         "sentence": "Mi piace parlare."
@@ -172,15 +286,53 @@
       "es": {
         "word": "hablar",
         "meanings": [
-          "hablar"
+          "hablar",
+          "charlar",
+          "conversar"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 500,
         "conjugations": {
-          "present": {
-            "he": "Él habla."
+          "en": {
+            "i": "speak",
+            "you": "speak",
+            "he": "speaks",
+            "we": "speak",
+            "they": "speak"
+          },
+          "de": {
+            "ich": "spreche",
+            "du": "sprichst",
+            "er": "spricht",
+            "wir": "sprechen",
+            "ihr": "sprecht",
+            "sie": "sprechen"
+          },
+          "it": {
+            "io": "parlo",
+            "tu": "parli",
+            "lui": "parla",
+            "noi": "parliamo",
+            "voi": "parlate",
+            "loro": "parlano"
+          },
+          "es": {
+            "yo": "hablo",
+            "tú": "hablas",
+            "él": "habla",
+            "nosotros": "hablamos",
+            "vosotros": "habláis",
+            "ellos": "hablan"
+          },
+          "fr": {
+            "je": "parle",
+            "tu": "parles",
+            "il": "parle",
+            "nous": "parlons",
+            "vous": "parlez",
+            "ils": "parlent"
           }
         },
         "sentence": "Me gusta hablar."
@@ -188,15 +340,53 @@
       "fr": {
         "word": "parler",
         "meanings": [
-          "parler"
+          "parler",
+          "discuter",
+          "s'exprimer"
         ],
         "article": "",
         "gender": "",
         "plural": "",
         "frequency_rank": 500,
         "conjugations": {
-          "present": {
-            "he": "Il parle."
+          "en": {
+            "i": "speak",
+            "you": "speak",
+            "he": "speaks",
+            "we": "speak",
+            "they": "speak"
+          },
+          "de": {
+            "ich": "spreche",
+            "du": "sprichst",
+            "er": "spricht",
+            "wir": "sprechen",
+            "ihr": "sprecht",
+            "sie": "sprechen"
+          },
+          "it": {
+            "io": "parlo",
+            "tu": "parli",
+            "lui": "parla",
+            "noi": "parliamo",
+            "voi": "parlate",
+            "loro": "parlano"
+          },
+          "es": {
+            "yo": "hablo",
+            "tú": "hablas",
+            "él": "habla",
+            "nosotros": "hablamos",
+            "vosotros": "habláis",
+            "ellos": "hablan"
+          },
+          "fr": {
+            "je": "parle",
+            "tu": "parles",
+            "il": "parle",
+            "nous": "parlons",
+            "vous": "parlez",
+            "ils": "parlent"
           }
         },
         "sentence": "J'aime parler."
