@@ -890,7 +890,10 @@ function speakWordWithCallback(text, langCode, rate = 1.0, callback) {
   }
 }
 
-function playNextInQueue() {
+let currentQueueId = 0;
+
+function playNextInQueue(queueId) {
+  if (queueId !== currentQueueId) return;
   const overlay = document.getElementById("conjugation-speech-overlay");
   
   if (currentSpeechIndex >= globalSpeechQueue.length) {
@@ -914,20 +917,25 @@ function playNextInQueue() {
   }
   
   speakWordWithCallback(chunk.text, chunk.lang, 1.0, () => {
-    setTimeout(playNextInQueue, 300);
+    if (queueId === currentQueueId) {
+      setTimeout(() => playNextInQueue(queueId), 300);
+    }
   });
 }
 
 function playSpeechQueue(queue) {
+  currentQueueId++;
+  const activeQueueId = currentQueueId;
   if (window.speechSynthesis) {
     window.speechSynthesis.cancel();
   }
   globalSpeechQueue = queue;
   currentSpeechIndex = 0;
-  playNextInQueue();
+  playNextInQueue(activeQueueId);
 }
 
 window.stopSpeechQueue = function() {
+  currentQueueId++;
   if (window.speechSynthesis) {
     window.speechSynthesis.cancel();
   }
