@@ -5539,7 +5539,6 @@ function renderBrowseWordsList(folderId) {
         <div style="display: flex; align-items: center; width: 100%; position: relative;">
           <input type="text" class="browse-edit-input" style="${boldStyle} color: ${color}; padding-right: 20px;" 
                  value="${esc(displayVal)}" placeholder="(empty)"
-                 onblur="window.saveInlineEdit('${esc(key)}', ${isCustom}, '${lang}', this.value)" 
                  onkeydown="if(event.key === 'Enter') this.blur()">
           ${commonStar ? `<span title="High Frequency / Common Word" style="position: absolute; right: 4px; color: #f59e0b; pointer-events: none; font-size: 0.8rem;">⭐</span>` : ''}
         </div>
@@ -5552,11 +5551,9 @@ function renderBrowseWordsList(folderId) {
       </td>
       <td style="padding: 10px 12px;">${inputHtml(base, vocab[base], true)}</td>
       <td style="padding: 10px 12px;">${inputHtml(state.browseTargetLang, vocab[state.browseTargetLang])}</td>
-      <td style="padding: 10px 12px; text-align: center;"><span class="badge" style="background: rgba(255,255,255,0.05); color: var(--text-secondary); font-size: 0.7rem; border-radius: 6px; position: static;">Box ${box}</span></td>
-      <td style="padding: 10px 12px; text-align: center;">${errors > 0 ? `<span class="badge" style="background: rgba(239, 71, 111, 0.1); color: var(--error-color); font-size: 0.7rem; border-radius: 6px; position: static;">⚠️ ${errors}</span>` : `<span style="color:var(--text-secondary); opacity: 0.3;">0</span>`}</td>
       <td style="padding: 10px 12px; text-align: center;">
         <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
-          <button class="tree-action-btn" title="Edit Grammar & Details" onclick="window.triggerEditWord('${key.replace(/'/g, "\\'")}', ${isCustom})">✏️</button>
+          <button class="tree-action-btn" title="Save Changes" onclick="window.saveRowChanges(this, '${esc(key)}', ${isCustom})">💾</button>
           <button class="tree-action-btn" title="Delete" style="color: var(--error-color);" onclick="window.triggerDeleteWord('${key.replace(/'/g, "\\'")}', ${isCustom})">❌</button>
         </div>
       </td>
@@ -5566,29 +5563,54 @@ function renderBrowseWordsList(folderId) {
   });
 }
 
-window.saveInlineEdit = function(originalKey, isCustom, lang, newValue) {
-  newValue = newValue.trim();
-  if (!newValue) return;
+window.saveRowChanges = function(buttonEl, originalKey, isCustom) {
+  const tr = buttonEl.closest("tr");
+  if (!tr) return;
   
-  const cleanVal = sanitizeWordTranslation(newValue, lang);
+  const inputs = tr.querySelectorAll("input.browse-edit-input");
+  if (inputs.length < 2) return;
   
-  if (lang === "en" && originalKey !== cleanVal) {
-    if (state.wordStats[originalKey]) {
-      state.wordStats[cleanVal] = state.wordStats[originalKey];
-      delete state.wordStats[originalKey];
+  const baseVal = inputs[0].value.trim();
+  const targetVal = inputs[1].value.trim();
+  
+  const base = state.baseLang || "en";
+  const target = state.browseTargetLang || "de";
+  
+  if (!baseVal || !targetVal) {
+    alert("Both translation fields must have a value.");
+    return;
+  }
+  
+  saveValueHelper(originalKey, isCustom, base, baseVal);
+  const updatedKey = base === "en" ? baseVal : originalKey;
+  saveValueHelper(updatedKey, isCustom, target, targetVal);
+  
+  saveState();
+  alert("Changes saved successfully!");
+  renderBrowseList();
+  updateCategoryCounts();
+};
+
+function saveValueHelper(key, isCustom, lang, value) {
+  const cleanVal = sanitizeWordTranslation(value, lang);
+  
+  if (lang === "en" && key !== cleanVal) {
+    if (state.wordStats[key]) {
+      state.wordStats[cleanVal] = state.wordStats[key];
+      delete state.wordStats[key];
     }
-    if (state.dictionaryCache && state.dictionaryCache[originalKey]) {
-      state.dictionaryCache[cleanVal] = state.dictionaryCache[originalKey];
-      delete state.dictionaryCache[originalKey];
+    if (state.dictionaryCache && state.dictionaryCache[key]) {
+      state.dictionaryCache[cleanVal] = state.dictionaryCache[key];
+      delete state.dictionaryCache[key];
     }
-    if (state.editedStarters[originalKey]) {
-      state.editedStarters[cleanVal] = state.editedStarters[originalKey];
-      delete state.editedStarters[originalKey];
+    if (state.editedStarters[key]) {
+      state.editedStarters[cleanVal] = state.editedStarters[key];
+      delete state.editedStarters[key];
     }
   }
   
   if (isCustom) {
-    const idx = state.customVocab.findIndex(v => v.en === originalKey || v.origEn === originalKey);
+    const idx = state.customVocab.findIndex(v => v.en === key || v.origEn === key);
     if (idx !== -1) {
       state.customVocab[idx][lang] = cleanVal;
       if (lang === "en") {
@@ -5600,11 +5622,11 @@ window.saveInlineEdit = function(originalKey, isCustom, lang, newValue) {
       }
     }
   } else {
-    if (!state.editedStarters[originalKey] && !state.editedStarters[cleanVal]) {
-      const starter = STARTER_VOCAB_RAW.find(v => v.en === originalKey || v.origEn === originalKey);
+    if (!state.editedStarters[key] && !state.editedStarters[cleanVal]) {
+      const starter = STARTER_VOCAB_RAW.find(v => v.en === key || v.origEn === key);
       if (starter) {
-        state.editedStarters[originalKey] = {
-          en: starter.en || starter.origEn || originalKey,
+        state.editedStarters[key] = {
+          en: starter.en || starter.origEn || key,
           de: starter.de || "",
           it: starter.it || "",
           es: starter.es || "",
@@ -5615,23 +5637,19 @@ window.saveInlineEdit = function(originalKey, isCustom, lang, newValue) {
       }
     }
     
-    const keyToUse = state.editedStarters[cleanVal] ? cleanVal : originalKey;
+    const keyToUse = state.editedStarters[cleanVal] ? cleanVal : key;
     if (state.editedStarters[keyToUse]) {
       state.editedStarters[keyToUse][lang] = cleanVal;
     }
-    if (lang === "en" && keyToUse === originalKey) {
-      if (state.editedStarters[originalKey]) {
-        state.editedStarters[originalKey].en = cleanVal;
-        state.editedStarters[cleanVal] = state.editedStarters[originalKey];
-        delete state.editedStarters[originalKey];
+    if (lang === "en" && keyToUse === key) {
+      if (state.editedStarters[key]) {
+        state.editedStarters[key].en = cleanVal;
+        state.editedStarters[cleanVal] = state.editedStarters[key];
+        delete state.editedStarters[key];
       }
     }
   }
-  
-  saveState();
-  renderBrowseList();
-  updateCategoryCounts();
-};
+}
 
 
 // ==========================================
