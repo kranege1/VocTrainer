@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>VocTrainer - Learn Languages</title>
   <!-- Google Fonts: Outfit (Clean, premium, rounded sans-serif following Apple HIG feel) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <!-- PDF.js library for client-side PDF parsing -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <!-- CSS Stylesheet -->
   <link rel="stylesheet" href="style.css?v=1.2">
 </head>
+
 <body>
   <!-- Background Decorative Blobs -->
   <div class="blob blob-1"></div>
@@ -68,10 +72,11 @@
         <button class="nav-item" data-view="view-grammar">
           <span class="icon">📖</span> Grammar Guide
         </button>
-        
+
         <!-- Build Timestamp on the bottom left -->
-        <div id="build-timestamp" style="font-size: 0.65rem; color: var(--text-secondary); opacity: 0.5; font-family: monospace; padding-left: 16px; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.04); pointer-events: none; width: 100%;">
-          Build: 2026-07-08 18:30:00
+        <div id="build-timestamp"
+          style="font-size: 0.65rem; color: var(--text-secondary); opacity: 0.5; font-family: monospace; padding-left: 16px; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.04); pointer-events: none; width: 100%;">
+          Build: 2026-07-08 19:05:00
         </div>
       </nav>
     </header>
@@ -85,17 +90,27 @@
 
       <div class="card selector-card">
         <h3>Start a Practice Session</h3>
-        
+
 
 
         <div class="form-group">
           <label>Target Language to Learn</label>
           <div class="lang-selector">
-            <button class="lang-btn" data-lang="en"><img src="https://flagcdn.com/16x12/gb.png" width="16" height="12" alt="en" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> English</button>
-            <button class="lang-btn active" data-lang="de"><img src="https://flagcdn.com/16x12/de.png" width="16" height="12" alt="de" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> German</button>
-            <button class="lang-btn" data-lang="it"><img src="https://flagcdn.com/16x12/it.png" width="16" height="12" alt="it" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> Italiano</button>
-            <button class="lang-btn" data-lang="es"><img src="https://flagcdn.com/16x12/es.png" width="16" height="12" alt="es" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> Spanish</button>
-            <button class="lang-btn" data-lang="fr"><img src="https://flagcdn.com/16x12/fr.png" width="16" height="12" alt="fr" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> French</button>
+            <button class="lang-btn" data-lang="en"><img src="https://flagcdn.com/16x12/gb.png" width="16" height="12"
+                alt="en" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">
+              English</button>
+            <button class="lang-btn active" data-lang="de"><img src="https://flagcdn.com/16x12/de.png" width="16"
+                height="12" alt="de"
+                style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> German</button>
+            <button class="lang-btn" data-lang="it"><img src="https://flagcdn.com/16x12/it.png" width="16" height="12"
+                alt="it" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">
+              Italiano</button>
+            <button class="lang-btn" data-lang="es"><img src="https://flagcdn.com/16x12/es.png" width="16" height="12"
+                alt="es" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">
+              Spanish</button>
+            <button class="lang-btn" data-lang="fr"><img src="https://flagcdn.com/16x12/fr.png" width="16" height="12"
+                alt="fr" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">
+              French</button>
           </div>
         </div>
 
@@ -134,9 +149,15 @@
         <div class="form-group">
           <label>Test Direction / Activity</label>
           <div class="segmented-control" id="test-direction-selector" style="display: flex; gap: 8px;">
-            <button class="seg-btn active" data-direction="forward" style="flex: 1; padding: 10px; font-size: 0.8rem; min-height: 40px; border-radius: 10px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="btn-direction-forward">➡️ Base → Target</button>
-            <button class="seg-btn" data-direction="reverse" style="flex: 1; padding: 10px; font-size: 0.8rem; min-height: 40px; border-radius: 10px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="btn-direction-reverse">⬅️ Target → Base</button>
-            <button class="seg-btn" data-direction="conjugation" style="flex: 1; padding: 10px; font-size: 0.8rem; min-height: 40px; border-radius: 10px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="btn-direction-conjugation">🎯 Conjugate</button>
+            <button class="seg-btn active" data-direction="forward"
+              style="flex: 1; padding: 10px; font-size: 0.8rem; min-height: 40px; border-radius: 10px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+              id="btn-direction-forward">➡️ Base → Target</button>
+            <button class="seg-btn" data-direction="reverse"
+              style="flex: 1; padding: 10px; font-size: 0.8rem; min-height: 40px; border-radius: 10px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+              id="btn-direction-reverse">⬅️ Target → Base</button>
+            <button class="seg-btn" data-direction="conjugation"
+              style="flex: 1; padding: 10px; font-size: 0.8rem; min-height: 40px; border-radius: 10px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+              id="btn-direction-conjugation">🎯 Conjugate</button>
           </div>
         </div>
 
@@ -176,11 +197,14 @@
         <div class="progress-bar-container">
           <div class="progress-bar-fill" id="test-progress-fill"></div>
         </div>
-        <div class="test-stats-mini" style="display: flex; gap: 10px; font-size: 0.85rem; font-weight: 700; align-items: center; margin-right: 8px;">
+        <div class="test-stats-mini"
+          style="display: flex; gap: 10px; font-size: 0.85rem; font-weight: 700; align-items: center; margin-right: 8px;">
           <span style="color: #4CAF50;">✅ <span id="test-correct-count">0</span></span>
           <span style="color: #F44336;">❌ <span id="test-wrong-count">0</span></span>
           <span style="color: #FFC107;">⭐ <span id="test-points-count">0</span> pts</span>
-          <span id="test-countdown-badge" style="display: none; background: #e02424; color: #fff; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; margin-left: 6px;">⏳ <span id="test-countdown-sec">0</span>s</span>
+          <span id="test-countdown-badge"
+            style="display: none; background: #e02424; color: #fff; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; margin-left: 6px;">⏳
+            <span id="test-countdown-sec">0</span>s</span>
         </div>
         <span class="progress-text" id="test-progress-text">Question 1/10</span>
       </div>
@@ -189,87 +213,98 @@
         <!-- LEFT PANE -->
         <div class="test-left-pane">
           <div class="question-container">
-        <div class="category-tag" id="test-category-tag">Verbs</div>
-        
-        <!-- Word Card with Dynamic Image Support -->
-        <div class="word-card-wrapper">
-          <div class="word-image-container" id="word-image-container">
-            <!-- Dynamic Picture Placeholder or Scraped Image -->
-            <img id="word-image" src="" alt="Word Illustration" style="display: none;">
-            <div id="word-image-placeholder" class="word-image-placeholder">🖼️</div>
-          </div>
-          
-          <div class="word-card">
-            <div id="word-badges-row" style="margin-top: -6px; margin-bottom: 8px; display: flex; gap: 6px; justify-content: center; align-items: center; flex-wrap: wrap;"></div>
-            <h2 id="test-prompt-word">Prompt Word</h2>
-            <div class="audio-controls-row">
-              <button id="btn-speak-prompt" class="btn-audio" title="Listen standard pronunciation">🔊</button>
-              <button id="btn-speak-prompt-slow" class="btn-audio btn-audio-slow" title="Listen at a slow pace">🐢 0.5x</button>
-              <button id="btn-play-custom-recording" class="btn-audio btn-audio-recorded" title="Play my custom voice recording" style="display: none;">👤 Play Mine</button>
-            </div>
-          </div>
-        </div>
+            <div class="category-tag" id="test-category-tag">Verbs</div>
 
-        <!-- Testing modes -->
-        <div class="test-input-area">
-          <!-- Typing Mode -->
-          <div id="test-mode-typing" class="test-mode-section active">
-            <input type="text" id="input-typing-answer" placeholder="Type the translation..." autocomplete="off">
-          </div>
-
-          <!-- Word Bubbles Mode -->
-          <div id="test-mode-bubbles" class="test-mode-section">
-            <div class="bubble-selected-zone" id="bubble-selected-zone">
-              <!-- Assembled pieces will go here -->
-            </div>
-            <div class="bubble-options-zone" id="bubble-options-zone">
-              <!-- Pieces to click will go here -->
-            </div>
-          </div>
-
-          <!-- Speech Mode -->
-          <div id="test-mode-speech" class="test-mode-section">
-            <p class="speech-instruction">Tap the microphone and speak the translation</p>
-            <button id="btn-mic" class="btn-mic-icon">🎙️</button>
-            <div class="speech-transcript" id="speech-transcript">...</div>
-          </div>
-
-          <!-- Word Compare Mode -->
-          <div id="test-mode-compare" class="test-mode-section">
-            <p class="speech-instruction" style="margin-bottom: 12px;">Match each word on the left with its translation on the right.</p>
-            <div class="compare-game-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px;">
-              <div class="compare-column" id="compare-col-left" style="display: flex; flex-direction: column; gap: 8px;">
-                <!-- 5 words from language 1 -->
+            <!-- Word Card with Dynamic Image Support -->
+            <div class="word-card-wrapper">
+              <div class="word-image-container" id="word-image-container">
+                <!-- Dynamic Picture Placeholder or Scraped Image -->
+                <img id="word-image" src="" alt="Word Illustration" style="display: none;">
+                <div id="word-image-placeholder" class="word-image-placeholder">🖼️</div>
               </div>
-              <div class="compare-column" id="compare-col-right" style="display: flex; flex-direction: column; gap: 8px;">
-                <!-- 5 translations -->
+
+              <div class="word-card">
+                <div id="word-badges-row"
+                  style="margin-top: -6px; margin-bottom: 8px; display: flex; gap: 6px; justify-content: center; align-items: center; flex-wrap: wrap;">
+                </div>
+                <h2 id="test-prompt-word">Prompt Word</h2>
+                <div class="audio-controls-row">
+                  <button id="btn-speak-prompt" class="btn-audio" title="Listen standard pronunciation">🔊</button>
+                  <button id="btn-speak-prompt-slow" class="btn-audio btn-audio-slow" title="Listen at a slow pace">🐢
+                    0.5x</button>
+                  <button id="btn-play-custom-recording" class="btn-audio btn-audio-recorded"
+                    title="Play my custom voice recording" style="display: none;">👤 Play Mine</button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Conjugation Mode -->
-          <div id="test-mode-conjugation" class="test-mode-section">
-            <p class="speech-instruction" style="margin-bottom: 12px;">Match each conjugation to its correct pronoun.</p>
-            <div class="conjugation-game-container" style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
-              <div id="conjugation-rows-container" style="display: flex; flex-direction: column; gap: 10px;">
-                <!-- 6 pronoun rows with slots -->
+            <!-- Testing modes -->
+            <div class="test-input-area">
+              <!-- Typing Mode -->
+              <div id="test-mode-typing" class="test-mode-section active">
+                <input type="text" id="input-typing-answer" placeholder="Type the translation..." autocomplete="off">
               </div>
-              <div id="conjugation-pool" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 12px; padding: 12px; border: 1px dashed var(--border-color); border-radius: 12px; min-height: 60px; background: rgba(255,255,255,0.01);">
-                <!-- Shuffled conjugation card pool -->
+
+              <!-- Word Bubbles Mode -->
+              <div id="test-mode-bubbles" class="test-mode-section">
+                <div class="bubble-selected-zone" id="bubble-selected-zone">
+                  <!-- Assembled pieces will go here -->
+                </div>
+                <div class="bubble-options-zone" id="bubble-options-zone">
+                  <!-- Pieces to click will go here -->
+                </div>
+              </div>
+
+              <!-- Speech Mode -->
+              <div id="test-mode-speech" class="test-mode-section">
+                <p class="speech-instruction">Tap the microphone and speak the translation</p>
+                <button id="btn-mic" class="btn-mic-icon">🎙️</button>
+                <div class="speech-transcript" id="speech-transcript">...</div>
+              </div>
+
+              <!-- Word Compare Mode -->
+              <div id="test-mode-compare" class="test-mode-section">
+                <p class="speech-instruction" style="margin-bottom: 12px;">Match each word on the left with its
+                  translation on the right.</p>
+                <div class="compare-game-container"
+                  style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px;">
+                  <div class="compare-column" id="compare-col-left"
+                    style="display: flex; flex-direction: column; gap: 8px;">
+                    <!-- 5 words from language 1 -->
+                  </div>
+                  <div class="compare-column" id="compare-col-right"
+                    style="display: flex; flex-direction: column; gap: 8px;">
+                    <!-- 5 translations -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Conjugation Mode -->
+              <div id="test-mode-conjugation" class="test-mode-section">
+                <p class="speech-instruction" style="margin-bottom: 12px;">Match each conjugation to its correct
+                  pronoun.</p>
+                <div class="conjugation-game-container"
+                  style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                  <div id="conjugation-rows-container" style="display: flex; flex-direction: column; gap: 10px;">
+                    <!-- 6 pronoun rows with slots -->
+                  </div>
+                  <div id="conjugation-pool"
+                    style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 12px; padding: 12px; border: 1px dashed var(--border-color); border-radius: 12px; min-height: 60px; background: rgba(255,255,255,0.01);">
+                    <!-- Shuffled conjugation card pool -->
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Mode Toggles in Test -->
-        <div class="test-mode-toggles">
-          <button class="mode-toggle-btn active" data-mode="typing">⌨️ Type</button>
-          <button class="mode-toggle-btn" data-mode="bubbles">🧩 Blocks</button>
-          <button class="mode-toggle-btn" data-mode="speech">🎙️ Speak</button>
-          <button class="mode-toggle-btn" data-mode="compare">🔄 Compare</button>
-        </div>
+            <!-- Mode Toggles in Test -->
+            <div class="test-mode-toggles">
+              <button class="mode-toggle-btn active" data-mode="typing">⌨️ Type</button>
+              <button class="mode-toggle-btn" data-mode="bubbles">🧩 Blocks</button>
+              <button class="mode-toggle-btn" data-mode="speech">🎙️ Speak</button>
+              <button class="mode-toggle-btn" data-mode="compare">🔄 Compare</button>
+            </div>
 
-        <button id="btn-submit-answer" class="btn btn-primary btn-block btn-lg">Check Answer</button>
+            <button id="btn-submit-answer" class="btn btn-primary btn-block btn-lg">Check Answer</button>
           </div>
         </div>
 
@@ -279,83 +314,112 @@
             <div class="feedback-icon" id="feedback-icon">🎉</div>
             <h3 id="feedback-title">Correct!</h3>
             <p id="feedback-desc" style="margin-bottom: 12px;"></p>
-            
-            <!-- Word Details Container (Directly Visible) -->
-            <div id="word-details-container" style="display: block; text-align: left; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color); font-size: 0.85rem; padding-bottom: 12px;">
-            <!-- Word & Translation Speakers -->
-            <div class="detail-section" style="display: flex; gap: 12px; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.06);">
-              <div style="flex: 1; cursor: pointer;" id="clickable-speak-base">
-                <span id="detail-base-label" style="font-size: 0.7rem; color: var(--text-secondary); display: block; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">DE 🔊</span>
-                <strong id="detail-base-word" style="font-size: 1rem; display: block; margin-top: 2px;">...</strong>
-              </div>
-              <div style="flex: 1; cursor: pointer;" id="clickable-speak-target">
-                <span id="detail-target-label" style="font-size: 0.7rem; color: var(--text-secondary); display: block; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">IT 🔊</span>
-                <strong id="detail-target-word" style="font-size: 1rem; color: var(--accent-color); display: block; margin-top: 2px;">...</strong>
-              </div>
-            </div>
 
-            <div id="section-sentence" class="detail-section" style="margin-top: 8px;">
-              <strong>Example Sentence:</strong>
-              <p id="detail-sentence" style="font-style: italic; margin-bottom: 2px;"></p>
-              <p id="detail-sentence-translation" style="color: var(--text-secondary); margin: 0;"></p>
-            </div>
-            <div id="section-variations" class="detail-section" style="margin-top: 8px;">
-              <strong>Plural / Gender / Variations:</strong>
-              <p id="detail-variations" style="margin: 0;">...</p>
-            </div>
-            <div id="section-synonyms" class="detail-section" style="margin-top: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px;">
-              <div style="flex: 1; min-width: 180px;">
-                <strong>Alternative Meanings:</strong>
-                <span id="detail-synonyms" style="margin-left: 4px;">...</span>
+            <!-- Word Details Container (Directly Visible) -->
+            <div id="word-details-container"
+              style="display: block; text-align: left; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color); font-size: 0.85rem; padding-bottom: 12px;">
+              <!-- Word & Translation Speakers -->
+              <div class="detail-section"
+                style="display: flex; gap: 12px; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                <div style="flex: 1; cursor: pointer;" id="clickable-speak-base">
+                  <span id="detail-base-label"
+                    style="font-size: 0.7rem; color: var(--text-secondary); display: block; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">DE
+                    🔊</span>
+                  <strong id="detail-base-word" style="font-size: 1rem; display: block; margin-top: 2px;">...</strong>
+                </div>
+                <div style="flex: 1; cursor: pointer;" id="clickable-speak-target">
+                  <span id="detail-target-label"
+                    style="font-size: 0.7rem; color: var(--text-secondary); display: block; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">IT
+                    🔊</span>
+                  <strong id="detail-target-word"
+                    style="font-size: 1rem; color: var(--accent-color); display: block; margin-top: 2px;">...</strong>
+                </div>
               </div>
-              <button id="btn-add-alternative-meaning" class="btn btn-secondary" style="margin: 0; min-height: 24px; padding: 2px 6px; font-size: 0.7rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; border: 1px dashed var(--border-color); background: rgba(255,255,255,0.03); color: var(--text-secondary); cursor: pointer;">
-                ➕ Add
+
+              <div id="section-sentence" class="detail-section" style="margin-top: 8px;">
+                <strong>Example Sentence:</strong>
+                <p id="detail-sentence" style="font-style: italic; margin-bottom: 2px;"></p>
+                <p id="detail-sentence-translation" style="color: var(--text-secondary); margin: 0;"></p>
+              </div>
+              <div id="section-variations" class="detail-section" style="margin-top: 8px;">
+                <strong>Plural / Gender / Variations:</strong>
+                <p id="detail-variations" style="margin: 0;">...</p>
+              </div>
+              <div id="section-synonyms" class="detail-section"
+                style="margin-top: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px;">
+                <div style="flex: 1; min-width: 180px;">
+                  <strong>Alternative Meanings:</strong>
+                  <span id="detail-synonyms" style="margin-left: 4px;">...</span>
+                </div>
+                <button id="btn-add-alternative-meaning" class="btn btn-secondary"
+                  style="margin: 0; min-height: 24px; padding: 2px 6px; font-size: 0.7rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; border: 1px dashed var(--border-color); background: rgba(255,255,255,0.03); color: var(--text-secondary); cursor: pointer;">
+                  ➕ Add
+                </button>
+              </div>
+
+              <!-- Input area for adding alternative meaning -->
+              <div id="add-meaning-input-wrap"
+                style="display: none; flex-direction: column; gap: 6px; margin-top: 6px; background: rgba(255,255,255,0.02); padding: 8px; border-radius: 8px; border: 1px solid var(--border-color); text-align: left; width: 100%;">
+                <input type="text" id="input-new-meaning" placeholder="Type new correct meaning..."
+                  style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: #fff; font-size: 0.8rem; min-height: 32px;" />
+                <div style="display: flex; gap: 6px; margin-top: 2px;">
+                  <button id="btn-save-new-meaning" class="btn btn-primary"
+                    style="flex: 1; margin: 0; min-height: 28px; padding: 2px 6px; font-size: 0.75rem; border-radius: 6px;">Save</button>
+                  <button id="btn-cancel-new-meaning" class="btn btn-secondary"
+                    style="flex: 1; margin: 0; min-height: 28px; padding: 2px 6px; font-size: 0.75rem; border-radius: 6px;">Cancel</button>
+                </div>
+              </div>
+
+              <!-- Combined Word Insights & Grammar Rules -->
+              <button id="btn-show-word-insights" class="btn btn-primary btn-block"
+                style="margin-top: 10px; min-height: 32px; padding: 4px 8px; font-size: 0.8rem; border-radius: 8px;">
+                ✨ Word Insights & Grammar Rules
               </button>
             </div>
 
-            <!-- Input area for adding alternative meaning -->
-            <div id="add-meaning-input-wrap" style="display: none; flex-direction: column; gap: 6px; margin-top: 6px; background: rgba(255,255,255,0.02); padding: 8px; border-radius: 8px; border: 1px solid var(--border-color); text-align: left; width: 100%;">
-              <input type="text" id="input-new-meaning" placeholder="Type new correct meaning..." style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: #fff; font-size: 0.8rem; min-height: 32px;" />
-              <div style="display: flex; gap: 6px; margin-top: 2px;">
-                <button id="btn-save-new-meaning" class="btn btn-primary" style="flex: 1; margin: 0; min-height: 28px; padding: 2px 6px; font-size: 0.75rem; border-radius: 6px;">Save</button>
-                <button id="btn-cancel-new-meaning" class="btn btn-secondary" style="flex: 1; margin: 0; min-height: 28px; padding: 2px 6px; font-size: 0.75rem; border-radius: 6px;">Cancel</button>
+            <!-- Word Difficulty Voting -->
+            <div class="difficulty-voting-container"
+              style="margin-top: 10px; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); text-align: center;">
+              <div
+                style="font-size: 0.65rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">
+                Rate Difficulty (Frequency Weight)</div>
+              <div style="display: flex; gap: 6px; justify-content: center;">
+                <button id="btn-vote-easy" class="btn btn-secondary"
+                  style="margin: 0; flex: 1; min-height: 32px; padding: 2px 6px; font-size: 0.75rem; border-radius: 6px;"
+                  onclick="voteDifficulty('easy')">🟢 Easy</button>
+                <button id="btn-vote-medium" class="btn btn-secondary"
+                  style="margin: 0; flex: 1; min-height: 32px; padding: 2px 6px; font-size: 0.75rem; border-radius: 6px;"
+                  onclick="voteDifficulty('medium')">🟡 Medium</button>
+                <button id="btn-vote-hard" class="btn btn-secondary"
+                  style="margin: 0; flex: 1; min-height: 32px; padding: 2px 6px; font-size: 0.75rem; border-radius: 6px;"
+                  onclick="voteDifficulty('hard')">🔴 Hard</button>
               </div>
             </div>
-            
-            <!-- Combined Word Insights & Grammar Rules -->
-            <button id="btn-show-word-insights" class="btn btn-primary btn-block" style="margin-top: 10px; min-height: 32px; padding: 4px 8px; font-size: 0.8rem; border-radius: 8px;">
-              ✨ Word Insights & Grammar Rules
-            </button>
-          </div>
 
-          <!-- Word Difficulty Voting -->
-          <div class="difficulty-voting-container" style="margin-top: 10px; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); text-align: center;">
-            <div style="font-size: 0.65rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">Rate Difficulty (Frequency Weight)</div>
-            <div style="display: flex; gap: 6px; justify-content: center;">
-              <button id="btn-vote-easy" class="btn btn-secondary" style="margin: 0; flex: 1; min-height: 32px; padding: 2px 6px; font-size: 0.75rem; border-radius: 6px;" onclick="voteDifficulty('easy')">🟢 Easy</button>
-              <button id="btn-vote-medium" class="btn btn-secondary" style="margin: 0; flex: 1; min-height: 32px; padding: 2px 6px; font-size: 0.75rem; border-radius: 6px;" onclick="voteDifficulty('medium')">🟡 Medium</button>
-              <button id="btn-vote-hard" class="btn btn-secondary" style="margin: 0; flex: 1; min-height: 32px; padding: 2px 6px; font-size: 0.75rem; border-radius: 6px;" onclick="voteDifficulty('hard')">🔴 Hard</button>
-            </div>
+            <button id="btn-next-question" class="btn btn-primary btn-block"
+              style="margin-top: 12px; min-height: 38px; font-size: 0.9rem; border-radius: 10px;">Continue</button>
           </div>
-
-          <button id="btn-next-question" class="btn btn-primary btn-block" style="margin-top: 12px; min-height: 38px; font-size: 0.9rem; border-radius: 10px;">Continue</button>
         </div>
       </div>
-    </div>
     </section>
 
     <!-- CONJUGATION DASHBOARD VIEW -->
     <section id="view-conjugation-dashboard" class="app-view">
       <div class="test-header" style="justify-content: space-between;">
         <button id="btn-quit-conjugation-dash" class="btn-close" style="margin: 0;">&times;</button>
-        <h2 style="font-size: 1.25rem; margin: 0; color: #fff; font-weight: 700;" id="conjugation-dash-title">Verb Conjugation Board</h2>
-        <button id="btn-play-all-conjugations" class="btn btn-primary btn-sm" style="margin: 0; min-height: 32px; font-size: 0.8rem;">🎯 Practice All</button>
+        <h2 style="font-size: 1.25rem; margin: 0; color: #fff; font-weight: 700;" id="conjugation-dash-title">Verb
+          Conjugation Board</h2>
+        <button id="btn-play-all-conjugations" class="btn btn-primary btn-sm"
+          style="margin: 0; min-height: 32px; font-size: 0.8rem;">🎯 Practice All</button>
       </div>
 
-      <p class="speech-instruction" style="margin: 10px 0 20px 0;">Select a verb to view its conjugations, hear the melody in one go, or practice matching.</p>
+      <p class="speech-instruction" style="margin: 10px 0 20px 0;">Select a verb to view its conjugations, hear the
+        melody in one go, or practice matching.</p>
 
-      <div class="conjugation-dashboard-layout" style="display: flex; flex-direction: column; gap: 16px; overflow-y: auto; flex: 1; padding-bottom: 20px;">
-        <div id="conjugation-dashboard-verbs-list" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+      <div class="conjugation-dashboard-layout"
+        style="display: flex; flex-direction: column; gap: 16px; overflow-y: auto; flex: 1; padding-bottom: 20px;">
+        <div id="conjugation-dashboard-verbs-list"
+          style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
           <!-- Verb Row Cards -->
         </div>
       </div>
@@ -428,7 +492,8 @@
             <option value="15">15 Seconds</option>
           </select>
         </div>
-        <div class="form-group toggle-group" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <div class="form-group toggle-group"
+          style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
           <label style="margin:0; font-weight: 600;">Allow Synonyms / Similar Words</label>
           <label class="switch">
             <input type="checkbox" id="setup-allow-synonyms">
@@ -444,24 +509,35 @@
       <div class="card">
         <h3>☁️ iCloud / Local Folder Sync</h3>
         <p class="import-help" style="margin-bottom: 16px;">
-          Select a folder (e.g., on your iCloud Drive) where your custom wordlists will be automatically saved as JSON files. You can select or deselect which lists are active in the trainer.
+          Select a folder (e.g., on your iCloud Drive) where your custom wordlists will be automatically saved as JSON
+          files. You can select or deselect which lists are active in the trainer.
         </p>
-        
+
         <div class="form-group" style="display: flex; gap: 10px; align-items: center; margin-bottom: 0;">
-          <button id="btn-select-icloud-folder" class="btn btn-secondary" style="margin: 0; flex: 1; min-height: 40px;">📂 Select Sync Folder</button>
-          <button id="btn-sync-folder-now" class="btn btn-secondary" style="margin: 0; min-height: 40px; display: none; gap: 6px;"><span class="icon">🔄</span> Sync Now</button>
-          <span id="icloud-folder-status" style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">No folder selected</span>
+          <button id="btn-select-icloud-folder" class="btn btn-secondary"
+            style="margin: 0; flex: 1; min-height: 40px;">📂 Select Sync Folder</button>
+          <button id="btn-sync-folder-now" class="btn btn-secondary"
+            style="margin: 0; min-height: 40px; display: none; gap: 6px;"><span class="icon">🔄</span> Sync Now</button>
+          <span id="icloud-folder-status" style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">No
+            folder selected</span>
         </div>
 
-        <div id="icloud-wordlists-container" style="display: none; margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px;">
-          <h4 style="margin-bottom: 10px; font-size: 0.9rem; color: var(--accent-color); font-weight: 700;">Syncable Wordlists in Folder</h4>
-          <div style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: 12px; background: rgba(0,0,0,0.15); margin-bottom: 12px;">
+        <div id="icloud-wordlists-container"
+          style="display: none; margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+          <h4 style="margin-bottom: 10px; font-size: 0.9rem; color: var(--accent-color); font-weight: 700;">Syncable
+            Wordlists in Folder</h4>
+          <div
+            style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: 12px; background: rgba(0,0,0,0.15); margin-bottom: 12px;">
             <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
               <thead>
                 <tr style="background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--border-color);">
-                  <th style="padding: 10px; width: 50px; text-align: center; font-weight: 700; color: var(--text-secondary);">Sync</th>
+                  <th
+                    style="padding: 10px; width: 50px; text-align: center; font-weight: 700; color: var(--text-secondary);">
+                    Sync</th>
                   <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">List Name</th>
-                  <th style="padding: 10px; width: 80px; text-align: center; font-weight: 700; color: var(--text-secondary);">Words</th>
+                  <th
+                    style="padding: 10px; width: 80px; text-align: center; font-weight: 700; color: var(--text-secondary);">
+                    Words</th>
                 </tr>
               </thead>
               <tbody id="icloud-lists-table-body">
@@ -475,42 +551,56 @@
       <!-- FREE ON-DEVICE VOICE SELECTOR -->
       <div class="card">
         <h3>Free On-Device Voices</h3>
-        <p class="import-help" style="margin-bottom: 16px;">Select which of your system's built-in voices to use for each language. This runs entirely locally and for 100% free.</p>
-        
+        <p class="import-help" style="margin-bottom: 16px;">Select which of your system's built-in voices to use for
+          each language. This runs entirely locally and for 100% free.</p>
+
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <div class="form-group" style="margin: 0;">
             <label>🇬🇧 English Voice</label>
             <div style="display: flex; gap: 8px;">
               <select id="voice-select-en" class="custom-select" style="flex: 1; margin: 0;"></select>
-              <button onclick="window.testSelectedVoice('en')" class="btn btn-secondary" style="width: auto; margin: 0; min-height: 40px;">🔊 Test</button>
+              <button onclick="window.testSelectedVoice('en')" class="btn btn-secondary"
+                style="width: auto; margin: 0; min-height: 40px;">🔊 Test</button>
             </div>
           </div>
           <div class="form-group" style="margin: 0;">
-            <label><img src="https://flagcdn.com/16x12/de.png" width="16" height="12" alt="de" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> German Voice</label>
+            <label><img src="https://flagcdn.com/16x12/de.png" width="16" height="12" alt="de"
+                style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> German
+              Voice</label>
             <div style="display: flex; gap: 8px;">
               <select id="voice-select-de" class="custom-select" style="flex: 1; margin: 0;"></select>
-              <button onclick="window.testSelectedVoice('de')" class="btn btn-secondary" style="width: auto; margin: 0; min-height: 40px;">🔊 Test</button>
+              <button onclick="window.testSelectedVoice('de')" class="btn btn-secondary"
+                style="width: auto; margin: 0; min-height: 40px;">🔊 Test</button>
             </div>
           </div>
           <div class="form-group" style="margin: 0;">
-            <label><img src="https://flagcdn.com/16x12/it.png" width="16" height="12" alt="it" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> Italian Voice</label>
+            <label><img src="https://flagcdn.com/16x12/it.png" width="16" height="12" alt="it"
+                style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> Italian
+              Voice</label>
             <div style="display: flex; gap: 8px;">
               <select id="voice-select-it" class="custom-select" style="flex: 1; margin: 0;"></select>
-              <button onclick="window.testSelectedVoice('it')" class="btn btn-secondary" style="width: auto; margin: 0; min-height: 40px;">🔊 Test</button>
+              <button onclick="window.testSelectedVoice('it')" class="btn btn-secondary"
+                style="width: auto; margin: 0; min-height: 40px;">🔊 Test</button>
             </div>
           </div>
           <div class="form-group" style="margin: 0;">
-            <label><img src="https://flagcdn.com/16x12/es.png" width="16" height="12" alt="es" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> Spanish Voice</label>
+            <label><img src="https://flagcdn.com/16x12/es.png" width="16" height="12" alt="es"
+                style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> Spanish
+              Voice</label>
             <div style="display: flex; gap: 8px;">
               <select id="voice-select-es" class="custom-select" style="flex: 1; margin: 0;"></select>
-              <button onclick="window.testSelectedVoice('es')" class="btn btn-secondary" style="width: auto; margin: 0; min-height: 40px;">🔊 Test</button>
+              <button onclick="window.testSelectedVoice('es')" class="btn btn-secondary"
+                style="width: auto; margin: 0; min-height: 40px;">🔊 Test</button>
             </div>
           </div>
           <div class="form-group" style="margin: 0;">
-            <label><img src="https://flagcdn.com/16x12/fr.png" width="16" height="12" alt="fr" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> French Voice</label>
+            <label><img src="https://flagcdn.com/16x12/fr.png" width="16" height="12" alt="fr"
+                style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> French
+              Voice</label>
             <div style="display: flex; gap: 8px;">
               <select id="voice-select-fr" class="custom-select" style="flex: 1; margin: 0;"></select>
-              <button onclick="window.testSelectedVoice('fr')" class="btn btn-secondary" style="width: auto; margin: 0; min-height: 40px;">🔊 Test</button>
+              <button onclick="window.testSelectedVoice('fr')" class="btn btn-secondary"
+                style="width: auto; margin: 0; min-height: 40px;">🔊 Test</button>
             </div>
           </div>
         </div>
@@ -520,14 +610,18 @@
       <div class="card">
         <h3>iPhone Speech Quality Tip</h3>
         <p class="import-help" style="margin-top: 0; line-height: 1.4;">
-          To get incredibly natural, premium pronunciation voices on iOS, download high-quality Siri voices directly in your iPhone settings:
-          <br><strong style="color: #fff;">Settings &rarr; Accessibility &rarr; Spoken Content &rarr; Voices</strong> &rarr; Select your Language (e.g. German, Italian) &rarr; Select & download <strong>Siri</strong> or <strong>Enhanced</strong>.
+          To get incredibly natural, premium pronunciation voices on iOS, download high-quality Siri voices directly in
+          your iPhone settings:
+          <br><strong style="color: #fff;">Settings &rarr; Accessibility &rarr; Spoken Content &rarr; Voices</strong>
+          &rarr; Select your Language (e.g. German, Italian) &rarr; Select & download <strong>Siri</strong> or
+          <strong>Enhanced</strong>.
         </p>
       </div>
 
       <div class="card">
         <h3>iCloud & Local Backups</h3>
-        <p class="import-help">Backup all words, stats, custom picture links, and audio recordings to a single JSON file or sync them.</p>
+        <p class="import-help">Backup all words, stats, custom picture links, and audio recordings to a single JSON file
+          or sync them.</p>
         <div class="backup-actions">
           <button id="btn-export-data" class="btn btn-secondary">💾 Export Backup</button>
           <label for="import-backup-file" class="btn btn-secondary" style="cursor: pointer; text-align: center;">
@@ -539,7 +633,8 @@
 
       <div class="card">
         <h3>On-Device LLM (iPhone/Local)</h3>
-        <p class="import-help">Note: On newer iPhones or laptops, you can run language learning models locally (e.g. WebLLM or Apple's Gemini Nano via Safari Experiments). Toggle standard Local evaluations.</p>
+        <p class="import-help">Note: On newer iPhones or laptops, you can run language learning models locally (e.g.
+          WebLLM or Apple's Gemini Nano via Safari Experiments). Toggle standard Local evaluations.</p>
         <button class="btn btn-secondary btn-block" disabled>On-Device LLM: Ready & Supported</button>
       </div>
 
@@ -565,25 +660,30 @@
         <div class="form-group">
           <label>OpenAI API Key (Optional)</label>
           <input type="text" id="setup-openai-key" placeholder="sk-..." type="password">
-          <span id="setup-openai-status" style="font-size:0.75rem; font-weight:600; display:block; margin-top:4px;"></span>
+          <span id="setup-openai-status"
+            style="font-size:0.75rem; font-weight:600; display:block; margin-top:4px;"></span>
         </div>
         <div class="form-group">
           <label>Grok (xAI) API Key (Optional)</label>
           <input type="text" id="setup-grok-key" placeholder="xai-..." type="password">
-          <span id="setup-grok-status" style="font-size:0.75rem; font-weight:600; display:block; margin-top:4px;"></span>
+          <span id="setup-grok-status"
+            style="font-size:0.75rem; font-weight:600; display:block; margin-top:4px;"></span>
         </div>
         <div class="form-group">
           <label>Google Gemini API Key (Optional)</label>
           <input type="text" id="setup-gemini-key" placeholder="AIzaSy..." type="password">
-          <span id="setup-gemini-status" style="font-size:0.75rem; font-weight:600; display:block; margin-top:4px;"></span>
+          <span id="setup-gemini-status"
+            style="font-size:0.75rem; font-weight:600; display:block; margin-top:4px;"></span>
         </div>
         <div class="form-group">
           <label>Anthropic Claude API Key (Optional)</label>
           <input type="text" id="setup-anthropic-key" placeholder="sk-ant-..." type="password">
-          <span id="setup-anthropic-status" style="font-size:0.75rem; font-weight:600; display:block; margin-top:4px;"></span>
+          <span id="setup-anthropic-status"
+            style="font-size:0.75rem; font-weight:600; display:block; margin-top:4px;"></span>
           <p class="input-hint">Used for premium AI Text-To-Speech (TTS), translation or custom evaluations.</p>
         </div>
-        <button id="btn-save-api-keys" class="btn btn-primary btn-block" style="margin-top: 16px;">Save API Keys</button>
+        <button id="btn-save-api-keys" class="btn btn-primary btn-block" style="margin-top: 16px;">Save API
+          Keys</button>
       </div>
     </section>
 
@@ -612,30 +712,43 @@
               <input type="text" id="manual-input-word" placeholder="e.g. nuss, apple, mangiare..." style="margin: 0;">
             </div>
           </div>
-          
-          <button id="btn-manual-ai-process" class="btn btn-secondary btn-block" style="margin-bottom: 20px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">🤖 Auto-Translate & Classify Word</button>
+
+          <button id="btn-manual-ai-process" class="btn btn-secondary btn-block"
+            style="margin-bottom: 20px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">🤖
+            Auto-Translate & Classify Word</button>
 
           <!-- Step 2: Auto-filled translations (all 5 languages) -->
-          <h4 style="margin-bottom: 12px; color: var(--accent-color); font-weight: 700; font-size: 0.95rem;">🌐 Multi-Language Translations</h4>
+          <h4 style="margin-bottom: 12px; color: var(--accent-color); font-weight: 700; font-size: 0.95rem;">🌐
+            Multi-Language Translations</h4>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
             <div class="form-group" style="margin: 0;">
-              <label><img src="https://flagcdn.com/16x12/gb.png" width="16" height="12" alt="en" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> English</label>
+              <label><img src="https://flagcdn.com/16x12/gb.png" width="16" height="12" alt="en"
+                  style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">
+                English</label>
               <input type="text" id="manual-lang-en" placeholder="English translation..." style="margin: 0;">
             </div>
             <div class="form-group" style="margin: 0;">
-              <label><img src="https://flagcdn.com/16x12/de.png" width="16" height="12" alt="de" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> German</label>
+              <label><img src="https://flagcdn.com/16x12/de.png" width="16" height="12" alt="de"
+                  style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">
+                German</label>
               <input type="text" id="manual-lang-de" placeholder="German translation..." style="margin: 0;">
             </div>
             <div class="form-group" style="margin: 0;">
-              <label><img src="https://flagcdn.com/16x12/it.png" width="16" height="12" alt="it" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> Italian</label>
+              <label><img src="https://flagcdn.com/16x12/it.png" width="16" height="12" alt="it"
+                  style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">
+                Italian</label>
               <input type="text" id="manual-lang-it" placeholder="Italian translation..." style="margin: 0;">
             </div>
             <div class="form-group" style="margin: 0;">
-              <label><img src="https://flagcdn.com/16x12/es.png" width="16" height="12" alt="es" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> Spanish</label>
+              <label><img src="https://flagcdn.com/16x12/es.png" width="16" height="12" alt="es"
+                  style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">
+                Spanish</label>
               <input type="text" id="manual-lang-es" placeholder="Spanish translation..." style="margin: 0;">
             </div>
             <div class="form-group" style="grid-column: span 2; margin: 0;">
-              <label><img src="https://flagcdn.com/16x12/fr.png" width="16" height="12" alt="fr" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> French</label>
+              <label><img src="https://flagcdn.com/16x12/fr.png" width="16" height="12" alt="fr"
+                  style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">
+                French</label>
               <input type="text" id="manual-lang-fr" placeholder="French translation..." style="margin: 0;">
             </div>
           </div>
@@ -643,13 +756,15 @@
           <!-- Category, Image & Recording -->
           <div class="form-group">
             <label>Category (Pocket)</label>
-            <input type="text" id="manual-category" placeholder="e.g. nouns, verbs, technology..." style="margin-bottom: 12px;">
+            <input type="text" id="manual-category" placeholder="e.g. nouns, verbs, technology..."
+              style="margin-bottom: 12px;">
           </div>
           <div class="form-group">
             <label>Image URL (Optional)</label>
-            <input type="text" id="manual-image-url" placeholder="https://example.com/image.png" style="margin-bottom: 12px;">
+            <input type="text" id="manual-image-url" placeholder="https://example.com/image.png"
+              style="margin-bottom: 12px;">
           </div>
-          
+
           <!-- Custom Audio Recording Block inside Add Custom Word -->
           <div class="form-group">
             <label>Pronunciation Recording</label>
@@ -659,18 +774,22 @@
               <span id="record-status-text" class="record-status">No audio recorded</span>
             </div>
           </div>
-          
+
           <!-- Advanced Grammar Details Accordion -->
-          <div style="margin-bottom: 16px; border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; background: rgba(255,255,255,0.01);">
-            <button type="button" id="btn-toggle-grammar-details" class="btn btn-secondary btn-block" style="margin: 0; min-height: 40px; border-radius: 0; border: none; text-align: left; display: flex; justify-content: space-between; align-items: center; padding: 10px 16px;">
+          <div
+            style="margin-bottom: 16px; border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; background: rgba(255,255,255,0.01);">
+            <button type="button" id="btn-toggle-grammar-details" class="btn btn-secondary btn-block"
+              style="margin: 0; min-height: 40px; border-radius: 0; border: none; text-align: left; display: flex; justify-content: space-between; align-items: center; padding: 10px 16px;">
               <span>✨ Advanced Grammar & Sentences</span>
               <span id="grammar-toggle-icon">▼</span>
             </button>
-            <div id="grammar-details-panel" style="display: none; padding: 16px; border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.1);">
+            <div id="grammar-details-panel"
+              style="display: none; padding: 16px; border-top: 1px solid var(--border-color); background: rgba(0,0,0,0.1);">
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
                 <div class="form-group" style="margin: 0;">
                   <label style="font-size: 0.75rem;">🇩🇪 DE Article</label>
-                  <input type="text" id="manual-art-de" placeholder="der / die / das" style="margin: 0; min-height: 38px;">
+                  <input type="text" id="manual-art-de" placeholder="der / die / das"
+                    style="margin: 0; min-height: 38px;">
                 </div>
                 <div class="form-group" style="margin: 0;">
                   <label style="font-size: 0.75rem;">🇮🇹 IT Article</label>
@@ -686,7 +805,9 @@
                 </div>
               </div>
               <div style="border-top: 1px solid rgba(255,255,255,0.04); padding-top: 12px;">
-                <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--accent-color); margin-bottom: 8px;">Gender Variations (DE & IT)</label>
+                <label
+                  style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--accent-color); margin-bottom: 8px;">Gender
+                  Variations (DE & IT)</label>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px;">
                   <div class="form-group" style="margin: 0;">
                     <label style="font-size: 0.75rem;">🇩🇪 DE Masculine</label>
@@ -707,41 +828,56 @@
                 </div>
               </div>
               <div style="border-top: 1px solid rgba(255,255,255,0.04); padding-top: 12px; margin-top: 12px;">
-                <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--accent-color); margin-bottom: 8px;">Example Sentences</label>
+                <label
+                  style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--accent-color); margin-bottom: 8px;">Example
+                  Sentences</label>
                 <div style="display: flex; flex-direction: column; gap: 8px;">
                   <div class="form-group" style="margin: 0;">
                     <label style="font-size: 0.75rem;">🇬🇧 EN Sentence</label>
-                    <input type="text" id="manual-sentence-en" placeholder="English example sentence..." style="margin: 0; min-height: 38px;">
+                    <input type="text" id="manual-sentence-en" placeholder="English example sentence..."
+                      style="margin: 0; min-height: 38px;">
                   </div>
                   <div class="form-group" style="margin: 0;">
                     <label style="font-size: 0.75rem;">🇩🇪 DE Sentence</label>
-                    <input type="text" id="manual-sentence-de" placeholder="German example sentence..." style="margin: 0; min-height: 38px;">
+                    <input type="text" id="manual-sentence-de" placeholder="German example sentence..."
+                      style="margin: 0; min-height: 38px;">
                   </div>
                   <div class="form-group" style="margin: 0;">
                     <label style="font-size: 0.75rem;">🇮🇹 IT Sentence</label>
-                    <input type="text" id="manual-sentence-it" placeholder="Italian example sentence..." style="margin: 0; min-height: 38px;">
+                    <input type="text" id="manual-sentence-it" placeholder="Italian example sentence..."
+                      style="margin: 0; min-height: 38px;">
                   </div>
                   <div class="form-group" style="margin: 0;">
                     <label style="font-size: 0.75rem;">🇪🇸 ES Sentence</label>
-                    <input type="text" id="manual-sentence-es" placeholder="Spanish example sentence..." style="margin: 0; min-height: 38px;">
+                    <input type="text" id="manual-sentence-es" placeholder="Spanish example sentence..."
+                      style="margin: 0; min-height: 38px;">
                   </div>
                   <div class="form-group" style="margin: 0;">
                     <label style="font-size: 0.75rem;">🇫🇷 FR Sentence</label>
-                    <input type="text" id="manual-sentence-fr" placeholder="French example sentence..." style="margin: 0; min-height: 38px;">
+                    <input type="text" id="manual-sentence-fr" placeholder="French example sentence..."
+                      style="margin: 0; min-height: 38px;">
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          
-          <button id="btn-manual-submit" class="btn btn-primary btn-block" style="margin-top: 12px; margin-bottom: 24px;">💾 Save Custom Word</button>
+
+          <button id="btn-manual-submit" class="btn btn-primary btn-block"
+            style="margin-top: 12px; margin-bottom: 24px;">💾 Save Custom Word</button>
 
           <!-- Step 3: Synonyms & Alternatives Suggestions Widget -->
-          <div style="background: rgba(255, 255, 255, 0.02); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color);" id="manual-synonyms-card">
-            <h4 style="margin-top: 0; margin-bottom: 8px; color: var(--text-primary); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">🔍 Synonyms & Translation Variations</h4>
-            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0; margin-bottom: 12px;">Review related synonyms. Click any synonym to instantly load it as the active word above.</p>
-            <ul id="manual-synonyms-container" style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
-              <li style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; padding: 12px;">Enter a word above and run AI Translate to suggest synonyms.</li>
+          <div
+            style="background: rgba(255, 255, 255, 0.02); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color);"
+            id="manual-synonyms-card">
+            <h4
+              style="margin-top: 0; margin-bottom: 8px; color: var(--text-primary); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">
+              🔍 Synonyms & Translation Variations</h4>
+            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0; margin-bottom: 12px;">Review
+              related synonyms. Click any synonym to instantly load it as the active word above.</p>
+            <ul id="manual-synonyms-container"
+              style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+              <li style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; padding: 12px;">Enter a
+                word above and run AI Translate to suggest synonyms.</li>
             </ul>
           </div>
         </div>
@@ -750,13 +886,16 @@
       <!-- Bulk List Import tab -->
       <div id="tab-bulk" class="tab-content">
         <div class="card">
-          <p class="import-help">Paste a list of words (one per line). You can use separators like commas, hyphens, colons, or just enter single words without translations.</p>
-          
+          <p class="import-help">Paste a list of words (one per line). You can use separators like commas, hyphens,
+            colons, or just enter single words without translations.</p>
+
           <div class="form-group">
             <label>Paste List Here</label>
-            <textarea id="bulk-import-text" rows="6" placeholder="apple, Apfel&#10;banana, Banane&#10;orange (or just: apple)" class="custom-select" style="width: 100%; font-family: monospace; resize: vertical; min-height: 120px; padding: 12px; background: rgba(255,255,255,0.02); color: #fff; border: 1px solid var(--border-color); border-radius: 12px; font-size: 0.9rem; line-height: 1.5;"></textarea>
+            <textarea id="bulk-import-text" rows="6"
+              placeholder="apple, Apfel&#10;banana, Banane&#10;orange (or just: apple)" class="custom-select"
+              style="width: 100%; font-family: monospace; resize: vertical; min-height: 120px; padding: 12px; background: rgba(255,255,255,0.02); color: #fff; border: 1px solid var(--border-color); border-radius: 12px; font-size: 0.9rem; line-height: 1.5;"></textarea>
           </div>
-          
+
           <div class="form-group">
             <label>Separator</label>
             <select id="bulk-separator" class="custom-select">
@@ -769,30 +908,43 @@
               <option value="none">None (Words Only)</option>
             </select>
           </div>
-          
+
           <div class="form-group">
             <label>Category Tag</label>
             <input type="text" id="bulk-category" value="custom-list" placeholder="e.g. food, travel">
           </div>
-          
+
           <div class="form-group" style="display: flex; gap: 12px; margin-top: 16px;">
-            <button id="btn-bulk-preview" class="btn btn-secondary" style="flex: 1; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">🔍 Preview Import</button>
-            <button id="btn-bulk-swap" class="btn btn-secondary" style="flex: 1; min-height: 44px; display: none; align-items: center; justify-content: center; gap: 8px;">🔄 Swap Columns</button>
+            <button id="btn-bulk-preview" class="btn btn-secondary"
+              style="flex: 1; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">🔍
+              Preview Import</button>
+            <button id="btn-bulk-swap" class="btn btn-secondary"
+              style="flex: 1; min-height: 44px; display: none; align-items: center; justify-content: center; gap: 8px;">🔄
+              Swap Columns</button>
           </div>
 
           <!-- Preview Area -->
-          <div id="bulk-preview-area" style="display: none; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px;">
-              <h4 style="margin: 0; color: var(--accent-color); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">✨ Preview & Edit Words</h4>
-              <button id="btn-bulk-confirm-top" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.85rem; min-height: 32px; border-radius: 10px; margin: 0; width: auto;">🚀 Start Import</button>
+          <div id="bulk-preview-area"
+            style="display: none; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px;">
+              <h4
+                style="margin: 0; color: var(--accent-color); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">
+                ✨ Preview & Edit Words</h4>
+              <button id="btn-bulk-confirm-top" class="btn btn-primary"
+                style="padding: 6px 14px; font-size: 0.85rem; min-height: 32px; border-radius: 10px; margin: 0; width: auto;">🚀
+                Start Import</button>
             </div>
-            <div style="overflow-x: auto; max-height: 250px; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 16px; background: rgba(0,0,0,0.15);">
+            <div
+              style="overflow-x: auto; max-height: 250px; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 16px; background: rgba(0,0,0,0.15);">
               <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
                 <thead>
                   <tr style="background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--border-color);">
                     <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">Word</th>
                     <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">Translation</th>
-                    <th style="padding: 10px; width: 60px; text-align: center; font-weight: 700; color: var(--text-secondary);">Use</th>
+                    <th
+                      style="padding: 10px; width: 60px; text-align: center; font-weight: 700; color: var(--text-secondary);">
+                      Use</th>
                   </tr>
                 </thead>
                 <tbody id="bulk-preview-table-body">
@@ -802,15 +954,20 @@
             </div>
             <!-- Import progress bar -->
             <div id="bulk-import-progress-container" style="display: none; margin-bottom: 16px;">
-              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 6px;">
+              <div
+                style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 6px;">
                 <span id="bulk-import-progress-status">Translating & importing...</span>
                 <span id="bulk-import-progress-percent">0%</span>
               </div>
-              <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; border: 1px solid var(--border-color);">
-                <div id="bulk-import-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--accent-color)); border-radius: 4px; transition: width 0.2s ease;"></div>
+              <div
+                style="width: 100%; height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; border: 1px solid var(--border-color);">
+                <div id="bulk-import-progress-bar"
+                  style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--accent-color)); border-radius: 4px; transition: width 0.2s ease;">
+                </div>
               </div>
             </div>
-            <button id="btn-bulk-confirm" class="btn btn-primary btn-block" style="min-height: 46px;">🚀 Import Selected Words Now!</button>
+            <button id="btn-bulk-confirm" class="btn btn-primary btn-block" style="min-height: 46px;">🚀 Import Selected
+              Words Now!</button>
           </div>
         </div>
       </div>
@@ -818,11 +975,15 @@
       <!-- Semicolon CSV Import tab -->
       <div id="tab-csv" class="tab-content">
         <div class="card">
-          <p class="import-help">Paste a pre-translated list where each line contains 5 translations in this exact order: <strong>English; German; Italian; Spanish; French</strong>. Semicolons (;) must separate each language. No external AI translation is required!</p>
-          
+          <p class="import-help">Paste a pre-translated list where each line contains 5 translations in this exact
+            order: <strong>English; German; Italian; Spanish; French</strong>. Semicolons (;) must separate each
+            language. No external AI translation is required!</p>
+
           <div class="form-group">
             <label>Paste Semicolon CSV Here</label>
-            <textarea id="csv-import-text" rows="6" placeholder="apple;Apfel;mela;manzana;pomme&#10;banana;Banane;banana;plátano;banane" class="custom-select" style="width: 100%; font-family: monospace; resize: vertical; min-height: 120px; padding: 12px; background: rgba(255,255,255,0.02); color: #fff; border: 1px solid var(--border-color); border-radius: 12px; font-size: 0.9rem; line-height: 1.5;"></textarea>
+            <textarea id="csv-import-text" rows="6"
+              placeholder="apple;Apfel;mela;manzana;pomme&#10;banana;Banane;banana;plátano;banane" class="custom-select"
+              style="width: 100%; font-family: monospace; resize: vertical; min-height: 120px; padding: 12px; background: rgba(255,255,255,0.02); color: #fff; border: 1px solid var(--border-color); border-radius: 12px; font-size: 0.9rem; line-height: 1.5;"></textarea>
           </div>
 
           <div class="form-group">
@@ -830,26 +991,34 @@
             <input type="text" id="csv-category" value="csv-import" placeholder="e.g. basic-nouns, travel">
           </div>
 
-          <button id="btn-csv-import-submit" class="btn btn-primary btn-block" style="min-height: 44px;">🚀 Import CSV Direct (No AI needed)</button>
+          <button id="btn-csv-import-submit" class="btn btn-primary btn-block" style="min-height: 44px;">🚀 Import CSV
+            Direct (No AI needed)</button>
         </div>
       </div>
 
       <!-- File Upload Import tab -->
       <div id="tab-file" class="tab-content">
         <div class="card">
-          <p class="import-help">Upload a text file (.txt, .csv) or PDF document (.pdf) containing phrases or vocabulary terms. We will automatically parse and extract words for your training set.</p>
-          
-          <div class="file-drop-zone" id="file-drop-zone" style="border: 2px dashed var(--border-color); border-radius: 15px; padding: 30px 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; background: rgba(255,255,255,0.01); margin-bottom: 16px;">
+          <p class="import-help">Upload a text file (.txt, .csv) or PDF document (.pdf) containing phrases or vocabulary
+            terms. We will automatically parse and extract words for your training set.</p>
+
+          <div class="file-drop-zone" id="file-drop-zone"
+            style="border: 2px dashed var(--border-color); border-radius: 15px; padding: 30px 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; background: rgba(255,255,255,0.01); margin-bottom: 16px;">
             <span style="font-size: 2.5rem; display: block; margin-bottom: 10px;">📄</span>
-            <strong style="color: #fff; font-size: 0.95rem; display: block; margin-bottom: 4px;">Drag & Drop File Here</strong>
-            <span style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 12px;">Supports .txt, .csv, and .pdf documents</span>
-            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('file-import-input').click()" style="width: auto; min-height: 32px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 16px; margin: 0 auto;">Browse Files</button>
+            <strong style="color: #fff; font-size: 0.95rem; display: block; margin-bottom: 4px;">Drag & Drop File
+              Here</strong>
+            <span style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 12px;">Supports
+              .txt, .csv, and .pdf documents</span>
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('file-import-input').click()"
+              style="width: auto; min-height: 32px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 16px; margin: 0 auto;">Browse
+              Files</button>
             <input type="file" id="file-import-input" accept=".txt,.csv,.pdf" style="display: none;">
           </div>
 
           <div class="form-group">
             <label>Category Tag</label>
-            <input type="text" id="file-import-category" value="document-import" placeholder="e.g. business, literature">
+            <input type="text" id="file-import-category" value="document-import"
+              placeholder="e.g. business, literature">
           </div>
 
           <div class="loading-spinner" id="file-spinner" style="display: none;">
@@ -858,18 +1027,27 @@
           </div>
 
           <!-- File Scraped Preview Area -->
-          <div id="file-preview-area" style="display: none; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px;">
-              <h4 style="margin: 0; color: var(--accent-color); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">✨ Preview Extracted Words</h4>
-              <button id="btn-file-confirm-top" class="btn btn-primary" style="padding: 6px 14px; font-size: 0.85rem; min-height: 32px; border-radius: 10px; margin: 0; width: auto;">🚀 Start Import</button>
+          <div id="file-preview-area"
+            style="display: none; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px;">
+              <h4
+                style="margin: 0; color: var(--accent-color); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">
+                ✨ Preview Extracted Words</h4>
+              <button id="btn-file-confirm-top" class="btn btn-primary"
+                style="padding: 6px 14px; font-size: 0.85rem; min-height: 32px; border-radius: 10px; margin: 0; width: auto;">🚀
+                Start Import</button>
             </div>
-            <div style="overflow-x: auto; max-height: 250px; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 16px; background: rgba(0,0,0,0.15);">
+            <div
+              style="overflow-x: auto; max-height: 250px; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 16px; background: rgba(0,0,0,0.15);">
               <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
                 <thead>
                   <tr style="background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--border-color);">
                     <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">Word</th>
                     <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">Translation</th>
-                    <th style="padding: 10px; width: 60px; text-align: center; font-weight: 700; color: var(--text-secondary);">Use</th>
+                    <th
+                      style="padding: 10px; width: 60px; text-align: center; font-weight: 700; color: var(--text-secondary);">
+                      Use</th>
                   </tr>
                 </thead>
                 <tbody id="file-preview-table-body">
@@ -879,15 +1057,20 @@
             </div>
             <!-- Import progress bar -->
             <div id="file-import-progress-container" style="display: none; margin-bottom: 16px;">
-              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 6px;">
+              <div
+                style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 6px;">
                 <span id="file-import-progress-status">Translating & importing...</span>
                 <span id="file-import-progress-percent">0%</span>
               </div>
-              <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; border: 1px solid var(--border-color);">
-                <div id="file-import-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--accent-color)); border-radius: 4px; transition: width 0.2s ease;"></div>
+              <div
+                style="width: 100%; height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; border: 1px solid var(--border-color);">
+                <div id="file-import-progress-bar"
+                  style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--accent-color)); border-radius: 4px; transition: width 0.2s ease;">
+                </div>
               </div>
             </div>
-            <button id="btn-file-confirm" class="btn btn-primary btn-block" style="min-height: 46px;">🚀 Import Selected Words Now!</button>
+            <button id="btn-file-confirm" class="btn btn-primary btn-block" style="min-height: 46px;">🚀 Import Selected
+              Words Now!</button>
           </div>
         </div>
       </div>
@@ -933,16 +1116,23 @@
 
       <!-- Folder Manager Card & Directory Tree -->
       <div class="card" id="browse-folders-card" style="margin-bottom: 20px; width: 100%;">
-        <div id="folders-header-full" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <div id="folders-header-full"
+          style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
           <h3 style="margin: 0; color: #fff; font-weight: 700; font-size: 1.1rem;">📁 Folders & Lists</h3>
-          <button id="btn-create-folder" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0;">➕ New Folder</button>
+          <button id="btn-create-folder" class="btn btn-secondary"
+            style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0;">➕
+            New Folder</button>
         </div>
 
-        <div id="folders-header-compact" style="display: none; justify-content: space-between; align-items: center; width: 100%;">
-          <h3 style="margin: 0; color: #fff; font-weight: 700; font-size: 1.05rem;">📁 Selected List: <span id="browse-active-folder-name" style="color: var(--accent-color);">None</span></h3>
-          <button id="btn-expand-folders-tree" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0;">📂 Pick Another List</button>
+        <div id="folders-header-compact"
+          style="display: none; justify-content: space-between; align-items: center; width: 100%;">
+          <h3 style="margin: 0; color: #fff; font-weight: 700; font-size: 1.05rem;">📁 Selected List: <span
+              id="browse-active-folder-name" style="color: var(--accent-color);">None</span></h3>
+          <button id="btn-expand-folders-tree" class="btn btn-secondary"
+            style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0;">📂
+            Pick Another List</button>
         </div>
-        
+
         <!-- Folder Directory Tree -->
         <div id="browse-directory-tree" class="directory-tree-container" style="margin-top: 12px;">
           <!-- Populated dynamically via JS -->
@@ -950,27 +1140,40 @@
       </div>
 
       <!-- Word List Card -->
-      <div class="card" id="browse-words-card" style="display: none; overflow-x: auto; margin-bottom: 20px; width: 100%;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-          <h3 id="browse-list-title" style="margin: 0; font-size: 1.1rem; color: var(--accent-color); font-weight: bold;">Vocabulary Word List</h3>
+      <div class="card" id="browse-words-card"
+        style="display: none; overflow-x: auto; margin-bottom: 20px; width: 100%;">
+        <div
+          style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <h3 id="browse-list-title"
+            style="margin: 0; font-size: 1.1rem; color: var(--accent-color); font-weight: bold;">Vocabulary Word List
+          </h3>
           <div style="display: flex; gap: 8px;">
-            <button id="btn-fix-selected-translations" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0; display: inline-flex; align-items: center; gap: 6px;">🔄 Fix Translations</button>
-            <button id="btn-add-word-to-folder" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0;">➕ Add Word</button>
+            <button id="btn-fix-selected-translations" class="btn btn-secondary"
+              style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0; display: inline-flex; align-items: center; gap: 6px;">🔄
+              Fix Translations</button>
+            <button id="btn-add-word-to-folder" class="btn btn-secondary"
+              style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0;">➕
+              Add Word</button>
           </div>
         </div>
 
         <!-- Language Selector Flags Row -->
-        <div id="browse-lang-selectors-row" style="display: flex; gap: 10px; align-items: center; margin: 12px 0 16px 0; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid var(--border-color); flex-wrap: wrap;">
+        <div id="browse-lang-selectors-row"
+          style="display: flex; gap: 10px; align-items: center; margin: 12px 0 16px 0; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid var(--border-color); flex-wrap: wrap;">
           <!-- Dynamic flag buttons for selecting study language will go here -->
         </div>
 
         <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; min-width: 600px;">
           <thead>
             <tr style="border-bottom: 1px solid rgba(255,255,255,0.08); text-transform: uppercase;">
-              <th style="padding: 8px; width: 40px; text-align: center;"><input type="checkbox" id="chk-select-all-browse" style="cursor: pointer; width: 16px; height: 16px;"></th>
-              <th id="browse-hdr-base" style="padding: 8px; color: var(--text-secondary); font-weight: 600; width: 44%;">Base Language</th>
-              <th id="browse-hdr-target" style="padding: 8px; color: var(--text-secondary); font-weight: 600; width: 44%;">Study Language</th>
-              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600; text-align: center; width: 12%;">Actions</th>
+              <th style="padding: 8px; width: 40px; text-align: center;"><input type="checkbox"
+                  id="chk-select-all-browse" style="cursor: pointer; width: 16px; height: 16px;"></th>
+              <th id="browse-hdr-base"
+                style="padding: 8px; color: var(--text-secondary); font-weight: 600; width: 44%;">Base Language</th>
+              <th id="browse-hdr-target"
+                style="padding: 8px; color: var(--text-secondary); font-weight: 600; width: 44%;">Study Language</th>
+              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600; text-align: center; width: 12%;">
+                Actions</th>
             </tr>
           </thead>
           <tbody id="browse-words-table-body">
@@ -991,21 +1194,37 @@
       <div class="card">
         <h3 style="margin-bottom: 12px; color: #fff; font-weight: 700; font-size: 1.1rem;">📈 Global Progress</h3>
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px;">
-          <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
-            <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Total Sessions</span>
-            <strong id="stats-total-sessions" style="font-size: 1.3rem; color: var(--accent-color); display: block; margin-top: 4px;">0</strong>
+          <div
+            style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
+            <span
+              style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Total
+              Sessions</span>
+            <strong id="stats-total-sessions"
+              style="font-size: 1.3rem; color: var(--accent-color); display: block; margin-top: 4px;">0</strong>
           </div>
-          <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
-            <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Avg Accuracy</span>
-            <strong id="stats-avg-accuracy" style="font-size: 1.3rem; color: #4CAF50; display: block; margin-top: 4px;">0%</strong>
+          <div
+            style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
+            <span
+              style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Avg
+              Accuracy</span>
+            <strong id="stats-avg-accuracy"
+              style="font-size: 1.3rem; color: #4CAF50; display: block; margin-top: 4px;">0%</strong>
           </div>
-          <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
-            <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Current Streak</span>
-            <strong id="stats-streak-count" style="font-size: 1.3rem; color: #FF9800; display: block; margin-top: 4px;">0</strong>
+          <div
+            style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
+            <span
+              style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Current
+              Streak</span>
+            <strong id="stats-streak-count"
+              style="font-size: 1.3rem; color: #FF9800; display: block; margin-top: 4px;">0</strong>
           </div>
-          <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color); display: none;">
-            <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Total XP Earned</span>
-            <strong id="stats-xp-points" style="font-size: 1.3rem; color: #E91E63; display: block; margin-top: 4px;">0</strong>
+          <div
+            style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color); display: none;">
+            <span
+              style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Total
+              XP Earned</span>
+            <strong id="stats-xp-points"
+              style="font-size: 1.3rem; color: #E91E63; display: block; margin-top: 4px;">0</strong>
           </div>
         </div>
       </div>
@@ -1013,56 +1232,89 @@
       <!-- Folder Performance Insights Card -->
       <div class="card" id="statistics-insights-card" style="margin-top: 16px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <h3 style="margin: 0; color: var(--accent-color); font-weight: 700; font-size: 1rem;">📊 Folder Performance Insights</h3>
-          <select id="stats-select-folder" class="custom-select" style="width: auto; margin: 0; min-height: 32px; padding: 4px 8px; font-size: 0.85rem; background: #1f2335; border-color: rgba(255,255,255,0.1); color: #fff;">
+          <h3 style="margin: 0; color: var(--accent-color); font-weight: 700; font-size: 1rem;">📊 Folder Performance
+            Insights</h3>
+          <select id="stats-select-folder" class="custom-select"
+            style="width: auto; margin: 0; min-height: 32px; padding: 4px 8px; font-size: 0.85rem; background: #1f2335; border-color: rgba(255,255,255,0.1); color: #fff;">
             <option value="all">📚 All Words Combined</option>
             <!-- Categories / Folders populated dynamically -->
           </select>
         </div>
-        
+
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
-          <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
-            <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Average Accuracy</span>
-            <strong id="stats-folder-accuracy" style="font-size: 1.3rem; color: #4CAF50; display: block; margin-top: 4px;">N/A</strong>
+          <div
+            style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
+            <span
+              style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Average
+              Accuracy</span>
+            <strong id="stats-folder-accuracy"
+              style="font-size: 1.3rem; color: #4CAF50; display: block; margin-top: 4px;">N/A</strong>
           </div>
-          <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
-            <span style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Set Mastery Level</span>
-            <strong id="stats-folder-mastery" style="font-size: 1.3rem; color: var(--accent-color); display: block; margin-top: 4px;">N/A</strong>
+          <div
+            style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
+            <span
+              style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-transform: uppercase;">Set
+              Mastery Level</span>
+            <strong id="stats-folder-mastery"
+              style="font-size: 1.3rem; color: var(--accent-color); display: block; margin-top: 4px;">N/A</strong>
           </div>
         </div>
-        
-        <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; margin-bottom: 16px; border: 1px solid var(--border-color);">
-          <span style="font-size: 0.8rem; font-weight: bold; color: var(--text-secondary); display: block; margin-bottom: 8px;">Leitner Boxes Mastery distribution</span>
-          <div style="display: flex; gap: 6px; height: 16px; border-radius: 8px; overflow: hidden; background: rgba(255,255,255,0.05);" id="stats-leitner-bar">
+
+        <div
+          style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; margin-bottom: 16px; border: 1px solid var(--border-color);">
+          <span
+            style="font-size: 0.8rem; font-weight: bold; color: var(--text-secondary); display: block; margin-bottom: 8px;">Leitner
+            Boxes Mastery distribution</span>
+          <div
+            style="display: flex; gap: 6px; height: 16px; border-radius: 8px; overflow: hidden; background: rgba(255,255,255,0.05);"
+            id="stats-leitner-bar">
             <!-- Box colors distribution bar -->
           </div>
-          <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-secondary); margin-top: 6px;">
+          <div
+            style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-secondary); margin-top: 6px;">
             <span>Box 1: New/Wrong</span>
             <span>Box 5: Mastered</span>
           </div>
         </div>
 
-        <div style="background: rgba(239, 71, 111, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(239, 71, 111, 0.15);" id="stats-hardest-words-section">
-          <span style="font-size: 0.8rem; font-weight: bold; color: var(--error-color); display: block; margin-bottom: 6px;">🔥 Hardest Words (Need Practice)</span>
-          <ul id="stats-hardest-words-list" style="margin: 0; padding-left: 18px; font-size: 0.8rem; color: var(--text-primary); line-height: 1.5; text-align: left;">
+        <div
+          style="background: rgba(239, 71, 111, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(239, 71, 111, 0.15);"
+          id="stats-hardest-words-section">
+          <span
+            style="font-size: 0.8rem; font-weight: bold; color: var(--error-color); display: block; margin-bottom: 6px;">🔥
+            Hardest Words (Need Practice)</span>
+          <ul id="stats-hardest-words-list"
+            style="margin: 0; padding-left: 18px; font-size: 0.8rem; color: var(--text-primary); line-height: 1.5; text-align: left;">
             <!-- Hardest words listed here -->
           </ul>
         </div>
 
         <!-- Word-by-Word Folder Stats Card -->
         <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 20px;">
-          <h3 style="margin-bottom: 12px; color: #fff; font-weight: 700; font-size: 1rem;">📊 Word-by-Word Statistics</h3>
-          <p class="import-help" style="margin-bottom: 16px;">Shows the ratio of correct and false attempts for each word in the selected set.</p>
-          <div style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: 12px; background: rgba(0,0,0,0.15); max-height: 350px;">
+          <h3 style="margin-bottom: 12px; color: #fff; font-weight: 700; font-size: 1rem;">📊 Word-by-Word Statistics
+          </h3>
+          <p class="import-help" style="margin-bottom: 16px;">Shows the ratio of correct and false attempts for each
+            word in the selected set.</p>
+          <div
+            style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: 12px; background: rgba(0,0,0,0.15); max-height: 350px;">
             <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.8rem;">
               <thead>
-                <tr style="background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 10;">
+                <tr
+                  style="background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 10;">
                   <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">Word (EN)</th>
                   <th style="padding: 10px; font-weight: 700; color: var(--text-secondary);">Translation</th>
-                  <th style="padding: 10px; text-align: center; font-weight: 700; color: var(--text-secondary); width: 75px;">Difficulty</th>
-                  <th style="padding: 10px; text-align: center; font-weight: 700; color: var(--text-secondary); width: 55px;">Correct</th>
-                  <th style="padding: 10px; text-align: center; font-weight: 700; color: var(--text-secondary); width: 55px;">False</th>
-                  <th style="padding: 10px; text-align: center; font-weight: 700; color: var(--text-secondary); width: 65px;">Ratio</th>
+                  <th
+                    style="padding: 10px; text-align: center; font-weight: 700; color: var(--text-secondary); width: 75px;">
+                    Difficulty</th>
+                  <th
+                    style="padding: 10px; text-align: center; font-weight: 700; color: var(--text-secondary); width: 55px;">
+                    Correct</th>
+                  <th
+                    style="padding: 10px; text-align: center; font-weight: 700; color: var(--text-secondary); width: 55px;">
+                    False</th>
+                  <th
+                    style="padding: 10px; text-align: center; font-weight: 700; color: var(--text-secondary); width: 65px;">
+                    Ratio</th>
                 </tr>
               </thead>
               <tbody id="stats-words-table-body">
@@ -1083,15 +1335,19 @@
 
       <div class="card" style="margin-bottom: 16px;">
         <div style="display: flex; gap: 8px; margin-bottom: 0;">
-          <input type="text" id="grammar-search" placeholder="Search grammar topics (e.g. Artikel, Pronomina)..." style="flex: 1;" />
-          <button id="btn-clear-grammar-search" class="btn btn-secondary" style="margin: 0; min-height: 48px; border-radius: 14px;">Clear</button>
+          <input type="text" id="grammar-search" placeholder="Search grammar topics (e.g. Artikel, Pronomina)..."
+            style="flex: 1;" />
+          <button id="btn-clear-grammar-search" class="btn btn-secondary"
+            style="margin: 0; min-height: 48px; border-radius: 14px;">Clear</button>
         </div>
       </div>
 
       <div class="card" style="flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0;">
-        <div id="grammar-content" class="markdown-body" style="padding: 24px; overflow-y: auto; max-height: calc(100vh - 300px); line-height: 1.6; font-size: 0.95rem; text-align: left;">
+        <div id="grammar-content" class="markdown-body"
+          style="padding: 24px; overflow-y: auto; max-height: calc(100vh - 300px); line-height: 1.6; font-size: 0.95rem; text-align: left;">
           <div style="text-align: center; color: var(--text-secondary); padding: 40px;">
-            <span class="spinner" style="display: inline-block; width: 24px; height: 24px; border: 2px solid var(--accent-color); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 12px;"></span>
+            <span class="spinner"
+              style="display: inline-block; width: 24px; height: 24px; border: 2px solid var(--accent-color); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 12px;"></span>
             <p>Loading grammar guide...</p>
           </div>
         </div>
@@ -1115,42 +1371,53 @@
 
   <!-- Word Insights & Grammar Rules Modal -->
   <div id="word-insights-modal" class="modal-overlay" style="z-index: 1100;">
-    <div class="modal-card" style="max-width: 960px; width: 95%; height: 90vh; display: flex; flex-direction: column; overflow: hidden; padding: 24px;">
-      <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
+    <div class="modal-card"
+      style="max-width: 960px; width: 95%; height: 90vh; display: flex; flex-direction: column; overflow: hidden; padding: 24px;">
+      <div class="modal-header"
+        style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
         <div style="display: flex; align-items: center; gap: 8px;">
           <span class="modal-icon" style="font-size: 1.5rem; margin-right: 0;">✨</span>
           <h3 id="insights-modal-title" style="margin: 0; font-size: 1.25rem;">Word Insights & Grammar Rules</h3>
         </div>
-        <button id="btn-close-insights" class="btn-close" style="position: static; font-size: 1.8rem; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; line-height: 1; padding: 0;">&times;</button>
+        <button id="btn-close-insights" class="btn-close"
+          style="position: static; font-size: 1.8rem; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; line-height: 1; padding: 0;">&times;</button>
       </div>
-      
+
       <div class="insights-container">
         <!-- Left Pane: AI Usage Insights -->
         <div class="insights-left-pane">
-          <h4 style="margin-top: 0; margin-bottom: 12px; color: var(--accent-color); font-size: 1.05rem; display: flex; align-items: center; gap: 6px;">
+          <h4
+            style="margin-top: 0; margin-bottom: 12px; color: var(--accent-color); font-size: 1.05rem; display: flex; align-items: center; gap: 6px;">
             <span>🤖</span> AI Vocabulary Insights
           </h4>
-          <div id="insights-ai-content" class="markdown-body" style="overflow-y: auto; flex-grow: 1; padding-right: 8px; max-height: 100%;">
+          <div id="insights-ai-content" class="markdown-body"
+            style="overflow-y: auto; flex-grow: 1; padding-right: 8px; max-height: 100%;">
             <!-- Loading state -->
           </div>
         </div>
-        
+
         <!-- Right Pane: Grammar Reference Sheets -->
         <div class="insights-right-pane">
-          <h4 style="margin-top: 0; margin-bottom: 12px; color: var(--primary-color); font-size: 1.05rem; display: flex; align-items: center; gap: 6px;">
+          <h4
+            style="margin-top: 0; margin-bottom: 12px; color: var(--primary-color); font-size: 1.05rem; display: flex; align-items: center; gap: 6px;">
             <span>📖</span> Relevant Grammar Rules
           </h4>
-          <div id="insights-grammar-content" class="markdown-body" style="overflow-y: auto; flex-grow: 1; padding-right: 8px; max-height: 100%;">
+          <div id="insights-grammar-content" class="markdown-body"
+            style="overflow-y: auto; flex-grow: 1; padding-right: 8px; max-height: 100%;">
             <!-- Loading state -->
           </div>
         </div>
       </div>
     </div>
-  <div id="conjugation-speech-overlay" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.95); z-index: 10000; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; backdrop-filter: blur(10px);">
-    <div id="cso-spoken" style="font-size: 5rem; font-weight: 800; color: #fff; margin-bottom: 20px; text-shadow: 0 4px 15px rgba(0,0,0,0.5);"></div>
-    <div id="cso-translation" style="font-size: 2.5rem; color: var(--accent-color); font-weight: 600;"></div>
-  </div>
+    <div id="conjugation-speech-overlay"
+      style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.95); z-index: 10000; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; backdrop-filter: blur(10px);">
+      <div id="cso-spoken"
+        style="font-size: 5rem; font-weight: 800; color: #fff; margin-bottom: 20px; text-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+      </div>
+      <div id="cso-translation" style="font-size: 2.5rem; color: var(--accent-color); font-weight: 600;"></div>
+    </div>
 
-  <script src="app.js?v=20260708_1905"></script>
+    <script src="app.js?v=20260708_1905"></script>
 </body>
+
 </html>
