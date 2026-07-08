@@ -5576,8 +5576,6 @@ function renderBrowseWordsList(folderId) {
 }
 
 window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTargetKey, isCustom) {
-  console.log("saveRowChanges triggered:", { originalBaseKey, originalTargetKey, isCustom });
-  
   // CRITICAL: Read input values IMMEDIATELY before any await (Edge compatibility)
   const tr = buttonEl.closest("tr");
   if (!tr) {
@@ -5597,8 +5595,6 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
   const base = state.baseLang || "en";
   const target = state.browseTargetLang || "de";
   
-  console.log("Row input values:", { baseVal, targetVal, base, target });
-  
   if (!baseVal || !targetVal) {
     alert("Both translation fields must have a value.");
     return;
@@ -5612,7 +5608,6 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
     try {
       const perm = await state.icloudHandle.queryPermission({ mode: "readwrite" });
       if (perm !== "granted") {
-        console.log("Requesting directory write permission under user gesture context...");
         const req = await state.icloudHandle.requestPermission({ mode: "readwrite" });
         if (req !== "granted") {
           alert("Directory write permission denied. Changes cannot be saved to folder files.");
@@ -5643,7 +5638,7 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
       (v[base] || "").toLowerCase() === originalBaseKey.toLowerCase() &&
       (v[target] || "").toLowerCase() === originalTargetKey.toLowerCase()
     );
-    console.log("Custom vocab match index:", idx);
+    
     if (idx !== -1) {
       state.customVocab[idx][base] = cleanBaseVal;
       state.customVocab[idx][target] = cleanTargetVal;
@@ -5666,7 +5661,6 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
       
       // Auto-save to iCloud if enabled
       if (state.icloudHandle) {
-        console.log("Syncing custom wordlist update to iCloud folder:", state.customVocab[idx].category);
         saveWordlistToICloud(state.customVocab[idx].category);
       }
     } else {
@@ -5675,13 +5669,11 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
     }
   } else {
     // Standard starter vocabulary:
-    console.log("Standard starter override lookup key:", originalBaseKey);
     if (!state.editedStarters[originalBaseKey]) {
       const starter = STARTER_VOCAB_RAW.find(v => 
         v.category === state.selectedBrowseFolderId &&
         (v[base] || "").toLowerCase() === originalBaseKey.toLowerCase()
       );
-      console.log("Starter vocab raw search result:", starter);
       if (starter) {
         state.editedStarters[originalBaseKey] = {
           en: starter.en || starter.origEn || (base === "en" ? originalBaseKey : ""),
@@ -5720,8 +5712,10 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
   // Update input default values so they reflect the saved state
   inputs[0].value = cleanBaseVal;
   inputs[0].defaultValue = cleanBaseVal;
+  inputs[0].setAttribute("value", cleanBaseVal);
   inputs[1].value = cleanTargetVal;
   inputs[1].defaultValue = cleanTargetVal;
+  inputs[1].setAttribute("value", cleanTargetVal);
   
   // Update the save button's onclick to use the new keys for the next save
   const saveBtn = tr.querySelector('button[title="Save Changes"]');
@@ -5752,7 +5746,6 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
     setTimeout(() => { saveBtn.textContent = "💾"; }, 1200);
   }
   
-  console.log("Save completed successfully:", { cleanBaseVal, cleanTargetVal });
   updateCategoryCounts();
 };
 
