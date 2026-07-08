@@ -1782,29 +1782,31 @@ body.device-ios .app-container {
 }
 
 /* Inline Edit Input Styling */
-.browse-edit-input {
-  background: transparent;
-  border: 1px solid transparent;
-  color: inherit;
-  font-family: var(--font-family);
-  font-size: 0.85rem;
-  padding: 4px 6px;
-  width: 100%;
-  border-radius: 6px;
-  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
-  outline: none;
-  min-height: unset; /* Override default input min-height */
-  height: 28px;
+input[type="text"].browse-edit-input {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  color: inherit !important;
+  font-family: var(--font-family) !important;
+  font-size: 0.9rem !important;
+  padding: 4px 8px !important;
+  width: 100% !important;
+  border-radius: 6px !important;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s !important;
+  outline: none !important;
+  min-height: unset !important; /* Override global min-height */
+  height: 32px !important;      /* Explicit height */
+  box-shadow: none !important;
 }
 
-.browse-edit-input:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.1);
+input[type="text"].browse-edit-input:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-.browse-edit-input:focus {
+input[type="text"].browse-edit-input:focus {
   background: rgba(0, 0, 0, 0.3) !important;
   border-color: var(--accent-color) !important;
   box-shadow: 0 0 8px var(--accent-glow) !important;
   color: #fff !important;
 }
+
