@@ -5553,8 +5553,8 @@ function renderBrowseWordsList(folderId) {
       <td style="padding: 10px 12px;">${inputHtml(state.browseTargetLang, vocab[state.browseTargetLang])}</td>
       <td style="padding: 10px 12px; text-align: center;">
         <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
-          <button class="tree-action-btn" title="Save Changes" onclick="window.saveRowChanges(this, '${esc(key)}', ${isCustom})">💾</button>
-          <button class="tree-action-btn" title="Delete" style="color: var(--error-color);" onclick="window.triggerDeleteWord('${key.replace(/'/g, "\\'")}', ${isCustom})">❌</button>
+          <button type="button" class="tree-action-btn" title="Save Changes" onclick="event.preventDefault(); event.stopPropagation(); window.saveRowChanges(this, '${esc(key)}', ${isCustom})">💾</button>
+          <button type="button" class="tree-action-btn" title="Delete" style="color: var(--error-color);" onclick="event.preventDefault(); event.stopPropagation(); window.triggerDeleteWord('${key.replace(/'/g, "\\'")}', ${isCustom})">❌</button>
         </div>
       </td>
     `;
@@ -5563,9 +5563,26 @@ function renderBrowseWordsList(folderId) {
   });
 }
 
-window.saveRowChanges = function(buttonEl, originalKey, isCustom) {
+window.saveRowChanges = async function(buttonEl, originalKey, isCustom) {
   console.log("saveRowChanges triggered:", { originalKey, isCustom });
   
+  // Directly query/request directory write permissions within the click event user gesture context
+  if (isCustom && state.icloudHandle) {
+    try {
+      const perm = await state.icloudHandle.queryPermission({ mode: "readwrite" });
+      if (perm !== "granted") {
+        console.log("Requesting directory write permission under user gesture context...");
+        const req = await state.icloudHandle.requestPermission({ mode: "readwrite" });
+        if (req !== "granted") {
+          alert("Directory write permission denied. Changes cannot be saved to folder files.");
+          return;
+        }
+      }
+    } catch (err) {
+      console.error("FS Permission check error:", err);
+    }
+  }
+
   const tr = buttonEl.closest("tr");
   if (!tr) {
     console.error("Row element not found");
