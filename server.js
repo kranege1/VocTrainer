@@ -20,8 +20,16 @@ app.use((req, res, next) => {
   next();
 });
 
-// Serve static files from root directory
-app.use(express.static(path.join(__dirname)));
+// Serve static files from root directory with caching disabled for HTML, JS, CSS
+app.use(express.static(path.join(__dirname), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.html') || filePath.endsWith('.js') || filePath.endsWith('.css')) {
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
+  }
+}));
 
 // Directory to store temporary sync data
 const SYNC_DIR = path.join(__dirname, 'sync_data');
