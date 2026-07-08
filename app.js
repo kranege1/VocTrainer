@@ -1606,41 +1606,6 @@ function sanitizeWordTranslation(text, lang) {
     clean = clean.substring(0, clean.length - 1).trim();
   }
   
-  const words = clean.split(/\s+/);
-  if (words.length === 1) {
-    const w = words[0].toLowerCase();
-    
-    if (lang === "de") {
-      const lowercaseGermanWords = [
-        "ich", "du", "er", "sie", "es", "wir", "ihr", "und", "oder", "aber", "auf", "unter", "in", 
-        "aus", "mit", "von", "zu", "nach", "bei", "für", "gegen", "ohne", "um", "durch", "über", 
-        "vor", "hinter", "neben", "zwischen", "der", "die", "das", "ein", "eine", "einer", "eines", 
-        "einem", "einen", "mein", "dein", "sein", "ihr", "unser", "euer", "schön", "gut", "groß", 
-        "klein", "neu", "alt", "jung", "alt", "schnell", "langsam", "gehen", "laufen", "kommen", 
-        "sehen", "hören", "sprechen", "schreiben", "lesen", "lernen", "essen", "trinken", "schlafen", 
-        "arbeiten", "spielen", "machen", "tun", "haben", "sein", "werden", "können", "müssen", 
-        "sollen", "wollen", "dürfen", "mögen", "nicht", "kein", "sehr", "viel", "wenig", "mehr", "weniger"
-      ];
-      if (!lowercaseGermanWords.includes(w)) {
-        clean = clean.charAt(0).toUpperCase() + clean.slice(1);
-      }
-    } else {
-      const properNouns = [
-        "english", "german", "italian", "spanish", "french", "deutsch", "italiano", "español", 
-        "français", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche", 
-        "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", 
-        "january", "february", "march", "april", "may", "june", "july", "august", "september", 
-        "october", "november", "december", "januar", "februar", "märz", "mai", "juni", "juli", 
-        "oktober", "dezember"
-      ];
-      if (properNouns.includes(w)) {
-        clean = clean.charAt(0).toUpperCase() + clean.slice(1);
-      } else {
-        clean = clean.toLowerCase();
-      }
-    }
-  }
-  
   return clean;
 }
 
