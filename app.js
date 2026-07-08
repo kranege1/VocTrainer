@@ -5581,82 +5581,80 @@ window.saveRowChanges = function(buttonEl, originalKey, isCustom) {
     return;
   }
   
-  saveValueHelper(originalKey, isCustom, base, baseVal);
-  const updatedKey = originalKey !== baseVal ? baseVal : originalKey;
-  saveValueHelper(updatedKey, isCustom, target, targetVal);
+  const cleanBaseVal = sanitizeWordTranslation(baseVal, base);
+  const cleanTargetVal = sanitizeWordTranslation(targetVal, target);
   
-  saveState();
-  alert("Changes saved successfully!");
-  renderBrowseList();
-  updateCategoryCounts();
-};
-
-function saveValueHelper(key, isCustom, lang, value) {
-  const cleanVal = sanitizeWordTranslation(value, lang);
-  const base = state.baseLang || "en";
-  
-  if (lang === base && key !== cleanVal) {
-    if (state.wordStats[key]) {
-      state.wordStats[cleanVal] = state.wordStats[key];
-      delete state.wordStats[key];
+  // 1. Migrate stats and cache if base word is edited
+  if (originalKey !== cleanBaseVal) {
+    if (state.wordStats[originalKey]) {
+      state.wordStats[cleanBaseVal] = state.wordStats[originalKey];
+      delete state.wordStats[originalKey];
     }
-    if (state.dictionaryCache && state.dictionaryCache[key]) {
-      state.dictionaryCache[cleanVal] = state.dictionaryCache[key];
-      delete state.dictionaryCache[key];
-    }
-    if (state.editedStarters[key]) {
-      state.editedStarters[cleanVal] = state.editedStarters[key];
-      delete state.editedStarters[key];
+    if (state.dictionaryCache && state.dictionaryCache[originalKey]) {
+      state.dictionaryCache[cleanBaseVal] = state.dictionaryCache[originalKey];
+      delete state.dictionaryCache[originalKey];
     }
   }
   
   if (isCustom) {
-    const idx = state.customVocab.findIndex(v => v[base] === key || v.en === key || v.origEn === key);
+    const idx = state.customVocab.findIndex(v => v[base] === originalKey || v.en === originalKey || v.origEn === originalKey);
     if (idx !== -1) {
-      state.customVocab[idx][lang] = cleanVal;
-      if (lang === base) {
-        state.customVocab[idx][base] = cleanVal;
-        if (base === "en") {
-          state.customVocab[idx].en = cleanVal;
-          if (state.customVocab[idx].origEn) state.customVocab[idx].origEn = cleanVal;
-        }
+      state.customVocab[idx][base] = cleanBaseVal;
+      state.customVocab[idx][target] = cleanTargetVal;
+      
+      // Keep compatibility fields
+      if (base === "en") {
+        state.customVocab[idx].en = cleanBaseVal;
+        if (state.customVocab[idx].origEn) state.customVocab[idx].origEn = cleanBaseVal;
       }
-      if (lang === state.selectedLang) {
-        state.customVocab[idx].target = cleanVal;
+      if (target === "en") {
+        state.customVocab[idx].en = cleanTargetVal;
+        if (state.customVocab[idx].origEn) state.customVocab[idx].origEn = cleanTargetVal;
+      }
+      if (base === state.selectedLang) {
+        state.customVocab[idx].target = cleanBaseVal;
+      }
+      if (target === state.selectedLang) {
+        state.customVocab[idx].target = cleanTargetVal;
       }
     }
   } else {
-    if (!state.editedStarters[key] && !state.editedStarters[cleanVal]) {
-      const starter = STARTER_VOCAB_RAW.find(v => v[base] === key || v.en === key || v.origEn === key);
+    // Standard starter vocabulary:
+    // We MUST keep originalKey as the lookup key in state.editedStarters
+    // so that override lookup continues to match item[base] from STARTER_VOCAB_RAW.
+    if (!state.editedStarters[originalKey]) {
+      const starter = STARTER_VOCAB_RAW.find(v => v[base] === originalKey || v.en === originalKey || v.origEn === originalKey);
       if (starter) {
-        state.editedStarters[key] = {
-          en: starter.en || starter.origEn || key,
-          de: starter.de || "",
-          it: starter.it || "",
-          es: starter.es || "",
-          fr: starter.fr || "",
+        state.editedStarters[originalKey] = {
+          en: starter.en || starter.origEn || (base === "en" ? originalKey : ""),
+          de: starter.de || (base === "de" ? originalKey : ""),
+          it: starter.it || (base === "it" ? originalKey : ""),
+          es: starter.es || (base === "es" ? originalKey : ""),
+          fr: starter.fr || (base === "fr" ? originalKey : ""),
           category: starter.category,
           image: starter.image || starter.en
         };
       }
     }
     
-    const keyToUse = state.editedStarters[cleanVal] ? cleanVal : key;
-    if (state.editedStarters[keyToUse]) {
-      state.editedStarters[keyToUse][lang] = cleanVal;
-    }
-    if (lang === base && keyToUse === key) {
-      if (state.editedStarters[key]) {
-        state.editedStarters[key][base] = cleanVal;
-        if (base === "en") {
-          state.editedStarters[key].en = cleanVal;
-        }
-        state.editedStarters[cleanVal] = state.editedStarters[key];
-        delete state.editedStarters[key];
+    if (state.editedStarters[originalKey]) {
+      state.editedStarters[originalKey][base] = cleanBaseVal;
+      state.editedStarters[originalKey][target] = cleanTargetVal;
+      // If base or target is English, update .en compatibility helper field
+      if (base === "en") {
+        state.editedStarters[originalKey].en = cleanBaseVal;
+      }
+      if (target === "en") {
+        state.editedStarters[originalKey].en = cleanTargetVal;
       }
     }
   }
-}
+  
+  saveState();
+  alert("Changes saved successfully!");
+  renderBrowseList();
+  updateCategoryCounts();
+};
 
 
 // ==========================================
