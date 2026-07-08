@@ -5582,7 +5582,7 @@ window.saveRowChanges = function(buttonEl, originalKey, isCustom) {
   }
   
   saveValueHelper(originalKey, isCustom, base, baseVal);
-  const updatedKey = base === "en" ? baseVal : originalKey;
+  const updatedKey = originalKey !== baseVal ? baseVal : originalKey;
   saveValueHelper(updatedKey, isCustom, target, targetVal);
   
   saveState();
@@ -5593,8 +5593,9 @@ window.saveRowChanges = function(buttonEl, originalKey, isCustom) {
 
 function saveValueHelper(key, isCustom, lang, value) {
   const cleanVal = sanitizeWordTranslation(value, lang);
+  const base = state.baseLang || "en";
   
-  if (lang === "en" && key !== cleanVal) {
+  if (lang === base && key !== cleanVal) {
     if (state.wordStats[key]) {
       state.wordStats[cleanVal] = state.wordStats[key];
       delete state.wordStats[key];
@@ -5610,12 +5611,15 @@ function saveValueHelper(key, isCustom, lang, value) {
   }
   
   if (isCustom) {
-    const idx = state.customVocab.findIndex(v => v.en === key || v.origEn === key);
+    const idx = state.customVocab.findIndex(v => v[base] === key || v.en === key || v.origEn === key);
     if (idx !== -1) {
       state.customVocab[idx][lang] = cleanVal;
-      if (lang === "en") {
-        state.customVocab[idx].en = cleanVal;
-        if (state.customVocab[idx].origEn) state.customVocab[idx].origEn = cleanVal;
+      if (lang === base) {
+        state.customVocab[idx][base] = cleanVal;
+        if (base === "en") {
+          state.customVocab[idx].en = cleanVal;
+          if (state.customVocab[idx].origEn) state.customVocab[idx].origEn = cleanVal;
+        }
       }
       if (lang === state.selectedLang) {
         state.customVocab[idx].target = cleanVal;
@@ -5623,7 +5627,7 @@ function saveValueHelper(key, isCustom, lang, value) {
     }
   } else {
     if (!state.editedStarters[key] && !state.editedStarters[cleanVal]) {
-      const starter = STARTER_VOCAB_RAW.find(v => v.en === key || v.origEn === key);
+      const starter = STARTER_VOCAB_RAW.find(v => v[base] === key || v.en === key || v.origEn === key);
       if (starter) {
         state.editedStarters[key] = {
           en: starter.en || starter.origEn || key,
@@ -5641,9 +5645,12 @@ function saveValueHelper(key, isCustom, lang, value) {
     if (state.editedStarters[keyToUse]) {
       state.editedStarters[keyToUse][lang] = cleanVal;
     }
-    if (lang === "en" && keyToUse === key) {
+    if (lang === base && keyToUse === key) {
       if (state.editedStarters[key]) {
-        state.editedStarters[key].en = cleanVal;
+        state.editedStarters[key][base] = cleanVal;
+        if (base === "en") {
+          state.editedStarters[key].en = cleanVal;
+        }
         state.editedStarters[cleanVal] = state.editedStarters[key];
         delete state.editedStarters[key];
       }
