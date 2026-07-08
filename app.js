@@ -5435,18 +5435,26 @@ function renderBrowseWordsList(folderId) {
 
       let count = 0;
       for (const chk of selected) {
-        const key = chk.dataset.key;
+        const baseKey = chk.dataset.baseKey;
+        const targetKey = chk.dataset.targetKey;
         const isCustom = chk.dataset.custom === "true";
         
         let item = null;
         if (isCustom) {
-          item = state.customVocab.find(v => v.en === key);
+          item = state.customVocab.find(v => 
+            v.category === folderId &&
+            (v[base] || "").toLowerCase() === baseKey.toLowerCase() &&
+            (v[target] || "").toLowerCase() === targetKey.toLowerCase()
+          );
         } else {
-          const override = state.editedStarters[key] || {};
-          const starter = STARTER_VOCAB_RAW.find(v => v.en === key || v.de === key || v.it === key || v.es === key || v.fr === key || v.origEn === key);
+          const override = state.editedStarters[baseKey] || {};
+          const starter = STARTER_VOCAB_RAW.find(v => 
+            v.category === folderId &&
+            (v[base] || "").toLowerCase() === baseKey.toLowerCase()
+          );
           if (starter) {
             item = {
-              en: override.en || starter.en || key,
+              en: override.en || starter.en || baseKey,
               de: override.de || starter.de || "",
               it: override.it || starter.it || "",
               es: override.es || starter.es || "",
@@ -5455,7 +5463,7 @@ function renderBrowseWordsList(folderId) {
               image: starter.image,
               details: override.details || starter.details || {},
               isStarter: true,
-              origEn: key
+              origEn: baseKey
             };
           }
         }
@@ -5479,12 +5487,16 @@ function renderBrowseWordsList(folderId) {
           }
 
           if (isCustom) {
-            const idx = state.customVocab.findIndex(v => v.en === key);
+            const idx = state.customVocab.findIndex(v => 
+              v.category === folderId &&
+              (v[base] || "").toLowerCase() === baseKey.toLowerCase() &&
+              (v[target] || "").toLowerCase() === targetKey.toLowerCase()
+            );
             if (idx !== -1) {
               state.customVocab[idx] = { ...state.customVocab[idx], ...item };
             }
           } else {
-            state.editedStarters[key] = {
+            state.editedStarters[baseKey] = {
               en: item.en,
               de: item.de,
               it: item.it,
@@ -5547,14 +5559,14 @@ function renderBrowseWordsList(folderId) {
 
     tr.innerHTML = `
       <td style="padding: 10px 12px; text-align: center;">
-        <input type="checkbox" class="chk-select-browse" data-key="${key.replace(/'/g, "\\'")}" data-custom="${isCustom}" style="cursor: pointer; width: 16px; height: 16px;">
+        <input type="checkbox" class="chk-select-browse" data-base-key="${esc(vocab[base])}" data-target-key="${esc(vocab[state.browseTargetLang])}" data-custom="${isCustom}" style="cursor: pointer; width: 16px; height: 16px;">
       </td>
       <td style="padding: 10px 12px;">${inputHtml(base, vocab[base], true)}</td>
       <td style="padding: 10px 12px;">${inputHtml(state.browseTargetLang, vocab[state.browseTargetLang])}</td>
       <td style="padding: 10px 12px; text-align: center;">
         <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
-          <button type="button" class="tree-action-btn" title="Save Changes" onclick="event.preventDefault(); event.stopPropagation(); window.saveRowChanges(this, '${esc(key)}', ${isCustom})">💾</button>
-          <button type="button" class="tree-action-btn" title="Delete" style="color: var(--error-color);" onclick="event.preventDefault(); event.stopPropagation(); window.triggerDeleteWord('${key.replace(/'/g, "\\'")}', ${isCustom})">❌</button>
+          <button type="button" class="tree-action-btn" title="Save Changes" onclick="event.preventDefault(); event.stopPropagation(); window.saveRowChanges(this, '${esc(vocab[base])}', '${esc(vocab[state.browseTargetLang])}', ${isCustom})">💾</button>
+          <button type="button" class="tree-action-btn" title="Delete" style="color: var(--error-color);" onclick="event.preventDefault(); event.stopPropagation(); window.triggerDeleteWord('${esc(vocab[base])}', '${esc(vocab[state.browseTargetLang])}', ${isCustom})">❌</button>
         </div>
       </td>
     `;
@@ -5563,8 +5575,8 @@ function renderBrowseWordsList(folderId) {
   });
 }
 
-window.saveRowChanges = async function(buttonEl, originalKey, isCustom) {
-  console.log("saveRowChanges triggered:", { originalKey, isCustom });
+window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTargetKey, isCustom) {
+  console.log("saveRowChanges triggered:", { originalBaseKey, originalTargetKey, isCustom });
   
   // Directly query/request directory write permissions within the click event user gesture context
   if (isCustom && state.icloudHandle) {
@@ -5612,22 +5624,23 @@ window.saveRowChanges = async function(buttonEl, originalKey, isCustom) {
   const cleanTargetVal = sanitizeWordTranslation(targetVal, target);
   
   // 1. Migrate stats and cache if base word is edited
-  if (originalKey !== cleanBaseVal) {
-    if (state.wordStats[originalKey]) {
-      state.wordStats[cleanBaseVal] = state.wordStats[originalKey];
-      delete state.wordStats[originalKey];
+  if (originalBaseKey !== cleanBaseVal) {
+    if (state.wordStats[originalBaseKey]) {
+      state.wordStats[cleanBaseVal] = state.wordStats[originalBaseKey];
+      delete state.wordStats[originalBaseKey];
     }
-    if (state.dictionaryCache && state.dictionaryCache[originalKey]) {
-      state.dictionaryCache[cleanBaseVal] = state.dictionaryCache[originalKey];
-      delete state.dictionaryCache[originalKey];
+    if (state.dictionaryCache && state.dictionaryCache[originalBaseKey]) {
+      state.dictionaryCache[cleanBaseVal] = state.dictionaryCache[originalBaseKey];
+      delete state.dictionaryCache[originalBaseKey];
     }
   }
   
   if (isCustom) {
+    const folderId = state.selectedBrowseFolderId;
     const idx = state.customVocab.findIndex(v => 
-      (v[base] && v[base].toLowerCase() === originalKey.toLowerCase()) || 
-      (v.en && v.en.toLowerCase() === originalKey.toLowerCase()) || 
-      (v.origEn && v.origEn.toLowerCase() === originalKey.toLowerCase())
+      v.category === folderId &&
+      (v[base] || "").toLowerCase() === originalBaseKey.toLowerCase() &&
+      (v[target] || "").toLowerCase() === originalTargetKey.toLowerCase()
     );
     console.log("Custom vocab match index:", idx);
     if (idx !== -1) {
@@ -5656,43 +5669,43 @@ window.saveRowChanges = async function(buttonEl, originalKey, isCustom) {
         saveWordlistToICloud(state.customVocab[idx].category);
       }
     } else {
-      alert(`Error: Word "${originalKey}" could not be found in custom vocabulary database.`);
+      alert(`Error: Word "${originalBaseKey}" could not be found in custom vocabulary database.`);
       return;
     }
   } else {
     // Standard starter vocabulary:
-    console.log("Standard starter override lookup key:", originalKey);
-    if (!state.editedStarters[originalKey]) {
+    console.log("Standard starter override lookup key:", originalBaseKey);
+    if (!state.editedStarters[originalBaseKey]) {
       const starter = STARTER_VOCAB_RAW.find(v => 
-        (v[base] && v[base].toLowerCase() === originalKey.toLowerCase()) || 
-        (v.en && v.en.toLowerCase() === originalKey.toLowerCase()) || 
-        (v.origEn && v.origEn.toLowerCase() === originalKey.toLowerCase())
+        v.category === state.selectedBrowseFolderId &&
+        (v[base] || "").toLowerCase() === originalBaseKey.toLowerCase()
       );
       console.log("Starter vocab raw search result:", starter);
       if (starter) {
-        state.editedStarters[originalKey] = {
-          en: starter.en || starter.origEn || (base === "en" ? originalKey : ""),
-          de: starter.de || (base === "de" ? originalKey : ""),
-          it: starter.it || (base === "it" ? originalKey : ""),
-          es: starter.es || (base === "es" ? originalKey : ""),
-          fr: starter.fr || (base === "fr" ? originalKey : ""),
+        state.editedStarters[originalBaseKey] = {
+          en: starter.en || starter.origEn || (base === "en" ? originalBaseKey : ""),
+          de: starter.de || (base === "de" ? originalBaseKey : ""),
+          it: starter.it || (base === "it" ? originalBaseKey : ""),
+          es: starter.es || (base === "es" ? originalBaseKey : ""),
+          fr: starter.fr || (base === "fr" ? originalBaseKey : ""),
           category: starter.category,
           image: starter.image || starter.en
         };
       }
     }
     
-    if (state.editedStarters[originalKey]) {
-      state.editedStarters[originalKey][base] = cleanBaseVal;
-      state.editedStarters[originalKey][target] = cleanTargetVal;
+    if (state.editedStarters[originalBaseKey]) {
+      state.editedStarters[originalBaseKey][base] = cleanBaseVal;
+      state.editedStarters[originalKey] = state.editedStarters[originalBaseKey]; // compatibility
+      state.editedStarters[originalBaseKey][target] = cleanTargetVal;
       if (base === "en") {
-        state.editedStarters[originalKey].en = cleanBaseVal;
+        state.editedStarters[originalBaseKey].en = cleanBaseVal;
       }
       if (target === "en") {
-        state.editedStarters[originalKey].en = cleanTargetVal;
+        state.editedStarters[originalBaseKey].en = cleanTargetVal;
       }
     } else {
-      alert(`Error: Starter word "${originalKey}" could not be resolved.`);
+      alert(`Error: Starter word "${originalBaseKey}" could not be resolved.`);
       return;
     }
   }
@@ -6461,15 +6474,30 @@ window.triggerEditWord = function(key, isCustom) {
   }
 };
 
-window.triggerDeleteWord = async function(key, isCustom) {
-  const confirmDel = await showCustomConfirm(`Are you sure you want to delete "${key}"?`);
+window.triggerDeleteWord = async function(originalBaseKey, originalTargetKey, isCustom) {
+  const displayLabel = originalBaseKey || originalTargetKey || "this word";
+  const confirmDel = await showCustomConfirm(`Are you sure you want to delete "${displayLabel}"?`);
   if (!confirmDel) return;
 
+  const base = state.baseLang || "en";
+  const target = state.browseTargetLang || "de";
+  const folderId = state.selectedBrowseFolderId;
+
   if (isCustom) {
-    state.customVocab = state.customVocab.filter(v => v.en !== key);
+    state.customVocab = state.customVocab.filter(v => 
+      !(v.category === folderId &&
+        (v[base] || "").toLowerCase() === originalBaseKey.toLowerCase() &&
+        (v[target] || "").toLowerCase() === originalTargetKey.toLowerCase())
+    );
+    
+    // Auto-save to iCloud if enabled
+    if (state.icloudHandle) {
+      saveWordlistToICloud(folderId);
+    }
   } else {
-    if (!state.deletedStarters.includes(key)) {
-      state.deletedStarters.push(key);
+    // For standard, originalBaseKey is the lookup key
+    if (!state.deletedStarters.includes(originalBaseKey)) {
+      state.deletedStarters.push(originalBaseKey);
     }
   }
   saveState();
