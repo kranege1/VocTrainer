@@ -5547,14 +5547,14 @@ function renderBrowseWordsList(folderId) {
     };
 
     tr.innerHTML = `
-      <td style="padding: 6px 8px; text-align: center;">
+      <td style="padding: 10px 12px; text-align: center;">
         <input type="checkbox" class="chk-select-browse" data-key="${key.replace(/'/g, "\\'")}" data-custom="${isCustom}" style="cursor: pointer; width: 16px; height: 16px;">
       </td>
-      <td style="padding: 6px 8px;">${inputHtml(base, vocab[base], true)}</td>
-      <td style="padding: 6px 8px;">${inputHtml(state.browseTargetLang, vocab[state.browseTargetLang])}</td>
-      <td style="padding: 6px 8px; text-align: center;"><span class="badge" style="background: rgba(255,255,255,0.05); color: var(--text-secondary); font-size: 0.7rem; border-radius: 6px; position: static;">Box ${box}</span></td>
-      <td style="padding: 6px 8px; text-align: center;">${errors > 0 ? `<span class="badge" style="background: rgba(239, 71, 111, 0.1); color: var(--error-color); font-size: 0.7rem; border-radius: 6px; position: static;">⚠️ ${errors}</span>` : `<span style="color:var(--text-secondary); opacity: 0.3;">0</span>`}</td>
-      <td style="padding: 6px 8px; text-align: center;">
+      <td style="padding: 10px 12px;">${inputHtml(base, vocab[base], true)}</td>
+      <td style="padding: 10px 12px;">${inputHtml(state.browseTargetLang, vocab[state.browseTargetLang])}</td>
+      <td style="padding: 10px 12px; text-align: center;"><span class="badge" style="background: rgba(255,255,255,0.05); color: var(--text-secondary); font-size: 0.7rem; border-radius: 6px; position: static;">Box ${box}</span></td>
+      <td style="padding: 10px 12px; text-align: center;">${errors > 0 ? `<span class="badge" style="background: rgba(239, 71, 111, 0.1); color: var(--error-color); font-size: 0.7rem; border-radius: 6px; position: static;">⚠️ ${errors}</span>` : `<span style="color:var(--text-secondary); opacity: 0.3;">0</span>`}</td>
+      <td style="padding: 10px 12px; text-align: center;">
         <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
           <button class="tree-action-btn" title="Edit Grammar & Details" onclick="window.triggerEditWord('${key.replace(/'/g, "\\'")}', ${isCustom})">✏️</button>
           <button class="tree-action-btn" title="Delete" style="color: var(--error-color);" onclick="window.triggerDeleteWord('${key.replace(/'/g, "\\'")}', ${isCustom})">❌</button>
@@ -6649,8 +6649,7 @@ window.onTreeToggleExpand = function(e, folderId) {
 window.onTreeFolderClick = function(e, folderId) {
   state.selectedBrowseFolderId = folderId;
   saveState();
-  renderDirectoryTree();
-  renderBrowseWordsList(folderId);
+  renderBrowseList();
 };
 
 window.onTreeRenameFolder = function(e, folderId) {

@@ -1773,14 +1773,14 @@ input[type="text"].browse-edit-input {
   border: 1px solid transparent !important;
   color: inherit !important;
   font-family: var(--font-family) !important;
-  font-size: 0.9rem !important;
-  padding: 4px 8px !important;
+  font-size: 0.95rem !important;
+  padding: 6px 12px !important;
   width: 100% !important;
-  border-radius: 6px !important;
+  border-radius: 8px !important;
   transition: background 0.15s, border-color 0.15s, box-shadow 0.15s !important;
   outline: none !important;
   min-height: unset !important; /* Override global min-height */
-  height: 32px !important;      /* Explicit height */
+  height: 38px !important;      /* Explicit height */
   box-shadow: none !important;
 }
 
