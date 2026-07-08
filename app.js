@@ -5654,11 +5654,16 @@ function renderBrowseWordsList(folderId) {
 }
 
 window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTargetKey, isCustom) {
+  console.log("=== saveRowChanges triggered ===");
   if (originalBaseKey === undefined) {
     originalBaseKey = buttonEl.dataset.originalBase;
     originalTargetKey = buttonEl.dataset.originalTarget;
     isCustom = buttonEl.dataset.custom === "true";
   }
+  console.log("originalBaseKey:", originalBaseKey);
+  console.log("originalTargetKey:", originalTargetKey);
+  console.log("isCustom:", isCustom);
+  
   // CRITICAL: Read input values IMMEDIATELY before any await (Edge compatibility)
   const tr = buttonEl.closest("tr");
   if (!tr) {
@@ -5667,6 +5672,7 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
   }
   
   const inputs = tr.querySelectorAll("input.browse-edit-input");
+  console.log("Inputs count in row:", inputs.length);
   if (inputs.length < 2) {
     console.error("Required inputs not found in row");
     return;
@@ -5674,9 +5680,11 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
   
   const baseVal = inputs[0].value.trim();
   const targetVal = inputs[1].value.trim();
+  console.log("Read input values -> base:", baseVal, "target:", targetVal);
   
   const base = state.baseLang || "en";
   const target = state.browseTargetLang || "de";
+  console.log("Active languages -> baseLang:", base, "browseTargetLang:", target);
   
   if (!baseVal || !targetVal) {
     alert("Both translation fields must have a value.");
@@ -5685,13 +5693,17 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
   
   const cleanBaseVal = sanitizeWordTranslation(baseVal, base);
   const cleanTargetVal = sanitizeWordTranslation(targetVal, target);
+  console.log("Cleaned values -> base:", cleanBaseVal, "target:", cleanTargetVal);
 
   // Directly query/request directory write permissions within the click event user gesture context
   if (isCustom && state.icloudHandle) {
+    console.log("Checking iCloud/local sync folder write permissions...");
     try {
       const perm = await state.icloudHandle.queryPermission({ mode: "readwrite" });
+      console.log("Current permission status:", perm);
       if (perm !== "granted") {
         const req = await state.icloudHandle.requestPermission({ mode: "readwrite" });
+        console.log("Requested permission outcome:", req);
         if (req !== "granted") {
           alert("Directory write permission denied. Changes cannot be saved to folder files.");
           return;
@@ -5704,6 +5716,7 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
   
   // 1. Migrate stats and cache if base word is edited
   if (originalBaseKey !== cleanBaseVal) {
+    console.log("Base word edited. Migrating stats & cache...");
     if (state.wordStats[originalBaseKey]) {
       state.wordStats[cleanBaseVal] = state.wordStats[originalBaseKey];
       delete state.wordStats[originalBaseKey];
@@ -5716,11 +5729,13 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
   
   if (isCustom) {
     const folderId = state.selectedBrowseFolderId;
+    console.log("Searching in customVocab for category:", folderId);
     const idx = state.customVocab.findIndex(v => 
       v.category === folderId &&
       (v[base] || "").toLowerCase() === originalBaseKey.toLowerCase() &&
       (v[target] || "").toLowerCase() === originalTargetKey.toLowerCase()
     );
+    console.log("findIndex result index:", idx);
     
     if (idx !== -1) {
       state.customVocab[idx][base] = cleanBaseVal;
