@@ -1766,6 +1766,45 @@ body.device-ios .app-container {
   color: var(--accent-color);
 }
 
+/* Browse Vocabulary Grid & Split Layout */
+.browse-split-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  align-items: start;
+  width: 100%;
+}
 
+@media (min-width: 768px) {
+  .browse-split-layout {
+    grid-template-columns: 320px 1fr;
+  }
+}
 
+/* Inline Edit Input Styling */
+.browse-edit-input {
+  background: transparent;
+  border: 1px solid transparent;
+  color: inherit;
+  font-family: var(--font-family);
+  font-size: 0.85rem;
+  padding: 4px 6px;
+  width: 100%;
+  border-radius: 6px;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+  min-height: unset; /* Override default input min-height */
+  height: 28px;
+}
 
+.browse-edit-input:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.browse-edit-input:focus {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 8px var(--accent-glow) !important;
+  color: #fff !important;
+}

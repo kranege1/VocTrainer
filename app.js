@@ -5421,6 +5421,8 @@ function renderBrowseWordsList(folderId) {
     };
   }
   
+  const esc = (s) => (s || "").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+
   pool.forEach(vocab => {
     const isCustom = !vocab.isStarter;
     const key = isCustom ? vocab.en : vocab.origEn;
@@ -5441,23 +5443,38 @@ function renderBrowseWordsList(folderId) {
       tr.style.opacity = "1";
     };
 
-    const emptySpan = '<span style="color:var(--error-color);opacity:0.6;font-style:italic;">(empty)</span>';
-    const star = (txt, l) => isCommonWord(txt, l) ? ' <span title="High Frequency / Common Word" style="color: #f59e0b; cursor: help; font-size: 0.85rem;">⭐</span>' : '';
+    const star = (txt, l) => isCommonWord(txt, l) ? '⭐' : '';
+    
+    const inputHtml = (lang, val, isBold = false) => {
+      const color = getLangColor(lang);
+      const boldStyle = isBold ? "font-weight: 700;" : "";
+      const displayVal = val || "";
+      const commonStar = star(val, lang);
+      return `
+        <div style="display: flex; align-items: center; width: 100%; position: relative;">
+          <input type="text" class="browse-edit-input" style="${boldStyle} color: ${color}; padding-right: 20px;" 
+                 value="${esc(displayVal)}" placeholder="(empty)"
+                 onblur="window.saveInlineEdit('${esc(key)}', ${isCustom}, '${lang}', this.value)" 
+                 onkeydown="if(event.key === 'Enter') this.blur()">
+          ${commonStar ? `<span title="High Frequency / Common Word" style="position: absolute; right: 4px; color: #f59e0b; pointer-events: none; font-size: 0.8rem;">⭐</span>` : ''}
+        </div>
+      `;
+    };
 
     tr.innerHTML = `
-      <td style="padding: 10px 8px; text-align: center;">
+      <td style="padding: 6px 8px; text-align: center;">
         <input type="checkbox" class="chk-select-browse" data-key="${key.replace(/'/g, "\\'")}" data-custom="${isCustom}" style="cursor: pointer; width: 16px; height: 16px;">
       </td>
-      <td style="padding: 10px 8px; font-weight: 700; color: ${getLangColor('en')};">${vocab.en || emptySpan}${star(vocab.en, 'en')}</td>
-      <td style="padding: 10px 8px; color: ${getLangColor('de')};">${vocab.de || emptySpan}${star(vocab.de, 'de')}</td>
-      <td style="padding: 10px 8px; color: ${getLangColor('it')};">${vocab.it || emptySpan}${star(vocab.it, 'it')}</td>
-      <td style="padding: 10px 8px; color: ${getLangColor('es')};">${vocab.es || emptySpan}${star(vocab.es, 'es')}</td>
-      <td style="padding: 10px 8px; color: ${getLangColor('fr')};">${vocab.fr || emptySpan}${star(vocab.fr, 'fr')}</td>
-      <td style="padding: 10px 8px; text-align: center;"><span class="badge" style="background: rgba(255,255,255,0.05); color: var(--text-secondary); font-size: 0.7rem; border-radius: 6px;">Box ${box}</span></td>
-      <td style="padding: 10px 8px; text-align: center;">${errors > 0 ? `<span class="badge" style="background: rgba(239, 71, 111, 0.1); color: var(--error-color); font-size: 0.7rem; border-radius: 6px;">⚠️ ${errors}</span>` : `<span style="color:var(--text-secondary); opacity: 0.3;">0</span>`}</td>
-      <td style="padding: 10px 8px; text-align: center;">
+      <td style="padding: 6px 8px;">${inputHtml('en', vocab.en, true)}</td>
+      <td style="padding: 6px 8px;">${inputHtml('de', vocab.de)}</td>
+      <td style="padding: 6px 8px;">${inputHtml('it', vocab.it)}</td>
+      <td style="padding: 6px 8px;">${inputHtml('es', vocab.es)}</td>
+      <td style="padding: 6px 8px;">${inputHtml('fr', vocab.fr)}</td>
+      <td style="padding: 6px 8px; text-align: center;"><span class="badge" style="background: rgba(255,255,255,0.05); color: var(--text-secondary); font-size: 0.7rem; border-radius: 6px; position: static;">Box ${box}</span></td>
+      <td style="padding: 6px 8px; text-align: center;">${errors > 0 ? `<span class="badge" style="background: rgba(239, 71, 111, 0.1); color: var(--error-color); font-size: 0.7rem; border-radius: 6px; position: static;">⚠️ ${errors}</span>` : `<span style="color:var(--text-secondary); opacity: 0.3;">0</span>`}</td>
+      <td style="padding: 6px 8px; text-align: center;">
         <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
-          <button class="tree-action-btn" title="Edit" onclick="window.triggerEditWord('${key.replace(/'/g, "\\'")}', ${isCustom})">✏️</button>
+          <button class="tree-action-btn" title="Edit Grammar & Details" onclick="window.triggerEditWord('${key.replace(/'/g, "\\'")}', ${isCustom})">✏️</button>
           <button class="tree-action-btn" title="Delete" style="color: var(--error-color);" onclick="window.triggerDeleteWord('${key.replace(/'/g, "\\'")}', ${isCustom})">❌</button>
         </div>
       </td>
@@ -5466,6 +5483,74 @@ function renderBrowseWordsList(folderId) {
     wordsTableBody.appendChild(tr);
   });
 }
+
+window.saveInlineEdit = function(originalKey, isCustom, lang, newValue) {
+  newValue = newValue.trim();
+  if (!newValue) return;
+  
+  const cleanVal = sanitizeWordTranslation(newValue, lang);
+  
+  if (lang === "en" && originalKey !== cleanVal) {
+    if (state.wordStats[originalKey]) {
+      state.wordStats[cleanVal] = state.wordStats[originalKey];
+      delete state.wordStats[originalKey];
+    }
+    if (state.dictionaryCache && state.dictionaryCache[originalKey]) {
+      state.dictionaryCache[cleanVal] = state.dictionaryCache[originalKey];
+      delete state.dictionaryCache[originalKey];
+    }
+    if (state.editedStarters[originalKey]) {
+      state.editedStarters[cleanVal] = state.editedStarters[originalKey];
+      delete state.editedStarters[originalKey];
+    }
+  }
+  
+  if (isCustom) {
+    const idx = state.customVocab.findIndex(v => v.en === originalKey || v.origEn === originalKey);
+    if (idx !== -1) {
+      state.customVocab[idx][lang] = cleanVal;
+      if (lang === "en") {
+        state.customVocab[idx].en = cleanVal;
+        if (state.customVocab[idx].origEn) state.customVocab[idx].origEn = cleanVal;
+      }
+      if (lang === state.selectedLang) {
+        state.customVocab[idx].target = cleanVal;
+      }
+    }
+  } else {
+    if (!state.editedStarters[originalKey] && !state.editedStarters[cleanVal]) {
+      const starter = STARTER_VOCAB_RAW.find(v => v.en === originalKey || v.origEn === originalKey);
+      if (starter) {
+        state.editedStarters[originalKey] = {
+          en: starter.en || starter.origEn || originalKey,
+          de: starter.de || "",
+          it: starter.it || "",
+          es: starter.es || "",
+          fr: starter.fr || "",
+          category: starter.category,
+          image: starter.image || starter.en
+        };
+      }
+    }
+    
+    const keyToUse = state.editedStarters[cleanVal] ? cleanVal : originalKey;
+    if (state.editedStarters[keyToUse]) {
+      state.editedStarters[keyToUse][lang] = cleanVal;
+    }
+    if (lang === "en" && keyToUse === originalKey) {
+      if (state.editedStarters[originalKey]) {
+        state.editedStarters[originalKey].en = cleanVal;
+        state.editedStarters[cleanVal] = state.editedStarters[originalKey];
+        delete state.editedStarters[originalKey];
+      }
+    }
+  }
+  
+  saveState();
+  renderBrowseList();
+  updateCategoryCounts();
+};
+
 
 // ==========================================
 // 9. Word Details & AI/Web Lookups

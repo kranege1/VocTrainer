@@ -71,7 +71,7 @@
         
         <!-- Build Timestamp on the bottom left -->
         <div id="build-timestamp" style="font-size: 0.65rem; color: var(--text-secondary); opacity: 0.5; font-family: monospace; padding-left: 16px; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.04); pointer-events: none; width: 100%;">
-          Build: 2026-07-07 06:23:14
+          Build: 2026-07-08 11:34:49
         </div>
       </nav>
     </header>
@@ -931,46 +931,48 @@
         <h2>Browse Vocabulary</h2>
       </div>
 
-      <!-- Folder Manager Card & Directory Tree -->
-      <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-          <h3 style="margin: 0; color: #fff; font-weight: 700; font-size: 1.1rem;">📁 Folders & Lists</h3>
-          <button id="btn-create-folder" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0;">➕ New Folder</button>
-        </div>
-        
-        <!-- Folder Directory Tree -->
-        <div id="browse-directory-tree" class="directory-tree-container">
-          <!-- Populated dynamically via JS -->
-        </div>
-      </div>
-
-      <!-- Word List Card -->
-      <div class="card" id="browse-words-card" style="display: none; margin-top: 16px; overflow-x: auto;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <h3 id="browse-list-title" style="margin: 0; font-size: 1rem; color: var(--accent-color); font-weight: bold;">Vocabulary Word List</h3>
-          <div style="display: flex; gap: 8px;">
-            <button id="btn-fix-selected-translations" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0; display: inline-flex; align-items: center; gap: 6px;">🔄 Fix Translations</button>
-            <button id="btn-add-word-to-folder" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0;">➕ Add Word</button>
+      <div class="browse-split-layout">
+        <!-- Folder Manager Card & Directory Tree -->
+        <div class="card" style="margin: 0;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 style="margin: 0; color: #fff; font-weight: 700; font-size: 1.1rem;">📁 Folders & Lists</h3>
+            <button id="btn-create-folder" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0;">➕ New Folder</button>
+          </div>
+          
+          <!-- Folder Directory Tree -->
+          <div id="browse-directory-tree" class="directory-tree-container">
+            <!-- Populated dynamically via JS -->
           </div>
         </div>
-        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; min-width: 600px;">
-          <thead>
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.08); text-transform: uppercase;">
-              <th style="padding: 8px; width: 40px; text-align: center;"><input type="checkbox" id="chk-select-all-browse" style="cursor: pointer; width: 16px; height: 16px;"></th>
-              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600;"><img src="https://flagcdn.com/16x12/gb.png" width="16" height="12" alt="en" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> EN</th>
-              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600;"><img src="https://flagcdn.com/16x12/de.png" width="16" height="12" alt="de" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> DE</th>
-              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600;"><img src="https://flagcdn.com/16x12/it.png" width="16" height="12" alt="it" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> IT</th>
-              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600;"><img src="https://flagcdn.com/16x12/es.png" width="16" height="12" alt="es" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> ES</th>
-              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600;"><img src="https://flagcdn.com/16x12/fr.png" width="16" height="12" alt="fr" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> FR</th>
-              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600; text-align: center;">Box</th>
-              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600; text-align: center;">Errors</th>
-              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600; text-align: center;">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="browse-words-table-body">
-            <!-- Populated dynamically -->
-          </tbody>
-        </table>
+
+        <!-- Word List Card -->
+        <div class="card" id="browse-words-card" style="display: none; overflow-x: auto; margin: 0;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 id="browse-list-title" style="margin: 0; font-size: 1rem; color: var(--accent-color); font-weight: bold;">Vocabulary Word List</h3>
+            <div style="display: flex; gap: 8px;">
+              <button id="btn-fix-selected-translations" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0; display: inline-flex; align-items: center; gap: 6px;">🔄 Fix Translations</button>
+              <button id="btn-add-word-to-folder" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; min-height: 32px; border-radius: 10px; width: auto; margin: 0;">➕ Add Word</button>
+            </div>
+          </div>
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; min-width: 600px;">
+            <thead>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.08); text-transform: uppercase;">
+                <th style="padding: 8px; width: 40px; text-align: center;"><input type="checkbox" id="chk-select-all-browse" style="cursor: pointer; width: 16px; height: 16px;"></th>
+                <th style="padding: 8px; color: var(--text-secondary); font-weight: 600;"><img src="https://flagcdn.com/16x12/gb.png" width="16" height="12" alt="en" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> EN</th>
+                <th style="padding: 8px; color: var(--text-secondary); font-weight: 600;"><img src="https://flagcdn.com/16x12/de.png" width="16" height="12" alt="de" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> DE</th>
+                <th style="padding: 8px; color: var(--text-secondary); font-weight: 600;"><img src="https://flagcdn.com/16x12/it.png" width="16" height="12" alt="it" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> IT</th>
+                <th style="padding: 8px; color: var(--text-secondary); font-weight: 600;"><img src="https://flagcdn.com/16x12/es.png" width="16" height="12" alt="es" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> ES</th>
+                <th style="padding: 8px; color: var(--text-secondary); font-weight: 600;"><img src="https://flagcdn.com/16x12/fr.png" width="16" height="12" alt="fr" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);"> FR</th>
+                <th style="padding: 8px; color: var(--text-secondary); font-weight: 600; text-align: center;">Box</th>
+                <th style="padding: 8px; color: var(--text-secondary); font-weight: 600; text-align: center;">Errors</th>
+                <th style="padding: 8px; color: var(--text-secondary); font-weight: 600; text-align: center;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="browse-words-table-body">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -1142,6 +1144,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=20260707_0623"></script>
+  <script src="app.js?v=20260708_1134"></script>
 </body>
 </html>
