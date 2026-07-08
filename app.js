@@ -5564,17 +5564,27 @@ function renderBrowseWordsList(folderId) {
 }
 
 window.saveRowChanges = function(buttonEl, originalKey, isCustom) {
+  console.log("saveRowChanges triggered:", { originalKey, isCustom });
+  
   const tr = buttonEl.closest("tr");
-  if (!tr) return;
+  if (!tr) {
+    console.error("Row element not found");
+    return;
+  }
   
   const inputs = tr.querySelectorAll("input.browse-edit-input");
-  if (inputs.length < 2) return;
+  if (inputs.length < 2) {
+    console.error("Required inputs not found in row");
+    return;
+  }
   
   const baseVal = inputs[0].value.trim();
   const targetVal = inputs[1].value.trim();
   
   const base = state.baseLang || "en";
   const target = state.browseTargetLang || "de";
+  
+  console.log("Row input values:", { baseVal, targetVal, base, target });
   
   if (!baseVal || !targetVal) {
     alert("Both translation fields must have a value.");
@@ -5597,7 +5607,12 @@ window.saveRowChanges = function(buttonEl, originalKey, isCustom) {
   }
   
   if (isCustom) {
-    const idx = state.customVocab.findIndex(v => v[base] === originalKey || v.en === originalKey || v.origEn === originalKey);
+    const idx = state.customVocab.findIndex(v => 
+      (v[base] && v[base].toLowerCase() === originalKey.toLowerCase()) || 
+      (v.en && v.en.toLowerCase() === originalKey.toLowerCase()) || 
+      (v.origEn && v.origEn.toLowerCase() === originalKey.toLowerCase())
+    );
+    console.log("Custom vocab match index:", idx);
     if (idx !== -1) {
       state.customVocab[idx][base] = cleanBaseVal;
       state.customVocab[idx][target] = cleanTargetVal;
@@ -5617,13 +5632,26 @@ window.saveRowChanges = function(buttonEl, originalKey, isCustom) {
       if (target === state.selectedLang) {
         state.customVocab[idx].target = cleanTargetVal;
       }
+      
+      // Auto-save to iCloud if enabled
+      if (state.icloudHandle) {
+        console.log("Syncing custom wordlist update to iCloud folder:", state.customVocab[idx].category);
+        saveWordlistToICloud(state.customVocab[idx].category);
+      }
+    } else {
+      alert(`Error: Word "${originalKey}" could not be found in custom vocabulary database.`);
+      return;
     }
   } else {
     // Standard starter vocabulary:
-    // We MUST keep originalKey as the lookup key in state.editedStarters
-    // so that override lookup continues to match item[base] from STARTER_VOCAB_RAW.
+    console.log("Standard starter override lookup key:", originalKey);
     if (!state.editedStarters[originalKey]) {
-      const starter = STARTER_VOCAB_RAW.find(v => v[base] === originalKey || v.en === originalKey || v.origEn === originalKey);
+      const starter = STARTER_VOCAB_RAW.find(v => 
+        (v[base] && v[base].toLowerCase() === originalKey.toLowerCase()) || 
+        (v.en && v.en.toLowerCase() === originalKey.toLowerCase()) || 
+        (v.origEn && v.origEn.toLowerCase() === originalKey.toLowerCase())
+      );
+      console.log("Starter vocab raw search result:", starter);
       if (starter) {
         state.editedStarters[originalKey] = {
           en: starter.en || starter.origEn || (base === "en" ? originalKey : ""),
@@ -5640,13 +5668,15 @@ window.saveRowChanges = function(buttonEl, originalKey, isCustom) {
     if (state.editedStarters[originalKey]) {
       state.editedStarters[originalKey][base] = cleanBaseVal;
       state.editedStarters[originalKey][target] = cleanTargetVal;
-      // If base or target is English, update .en compatibility helper field
       if (base === "en") {
         state.editedStarters[originalKey].en = cleanBaseVal;
       }
       if (target === "en") {
         state.editedStarters[originalKey].en = cleanTargetVal;
       }
+    } else {
+      alert(`Error: Starter word "${originalKey}" could not be resolved.`);
+      return;
     }
   }
   
