@@ -5091,6 +5091,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.getElementById("btn-browse-back").onclick = () => showView("view-dashboard");
 
+  const btnExpandTree = document.getElementById("btn-expand-folders-tree");
+  if (btnExpandTree) {
+    btnExpandTree.onclick = () => {
+      state.selectedBrowseFolderId = null;
+      saveState();
+      renderBrowseList();
+    };
+  }
+
   // Browse selection change filters
   document.querySelectorAll("#browse-lang-selector .lang-btn").forEach(btn => {
     btn.onclick = () => {
@@ -5202,14 +5211,37 @@ function renderHistoryList() {
 
 // Render the vocabulary list browser
 function renderBrowseList() {
+  const fullHeader = document.getElementById("folders-header-full");
+  const compactHeader = document.getElementById("folders-header-compact");
+  const treeContainer = document.getElementById("browse-directory-tree");
+  const activeFolderName = document.getElementById("browse-active-folder-name");
+  const wordsCard = document.getElementById("browse-words-card");
+
   // Render Directory Tree
   renderDirectoryTree();
   
-  // If a folder/category is currently selected, render its words
   if (state.selectedBrowseFolderId) {
+    if (fullHeader) fullHeader.style.display = "none";
+    if (treeContainer) treeContainer.style.display = "none";
+    if (compactHeader) compactHeader.style.display = "flex";
+    
+    const allFolders = [
+      { id: "verbs", name: "Verbs" },
+      { id: "nouns", name: "Nouns" },
+      { id: "technology", name: "Technology" },
+      { id: "biology", name: "Biology" },
+      { id: "phrases", name: "Phrases" },
+      ...state.customFolders
+    ];
+    const folder = allFolders.find(f => f.id === state.selectedBrowseFolderId);
+    if (activeFolderName) activeFolderName.textContent = folder ? folder.name : state.selectedBrowseFolderId;
+
+    if (wordsCard) wordsCard.style.display = "block";
     renderBrowseWordsList(state.selectedBrowseFolderId);
   } else {
-    const wordsCard = document.getElementById("browse-words-card");
+    if (fullHeader) fullHeader.style.display = "flex";
+    if (treeContainer) treeContainer.style.display = "block";
+    if (compactHeader) compactHeader.style.display = "none";
     if (wordsCard) wordsCard.style.display = "none";
   }
 }
@@ -5281,8 +5313,61 @@ function renderBrowseWordsList(folderId) {
   const folderName = folder ? folder.name : folderId;
   
   const base = state.baseLang || "en";
-  const selectedLang = state.selectedLang || "de";
   
+  // Set default browse study language if not set or matches base language
+  const languages = ["en", "de", "it", "es", "fr"];
+  if (!state.browseTargetLang) {
+    state.browseTargetLang = state.selectedLang || "de";
+  }
+  if (state.browseTargetLang === base) {
+    state.browseTargetLang = languages.find(l => l !== base) || "de";
+  }
+
+  // Populate dynamic flag picker
+  const flagRow = document.getElementById("browse-lang-selectors-row");
+  if (flagRow) {
+    flagRow.innerHTML = `<span style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase;">Study Language:</span>`;
+    languages.forEach(lang => {
+      if (lang === base) return; // skip base language flag
+      const btn = document.createElement("button");
+      btn.className = `lang-btn ${state.browseTargetLang === lang ? 'active' : ''}`;
+      btn.style.padding = "6px 12px";
+      btn.style.fontSize = "0.8rem";
+      btn.style.minHeight = "32px";
+      btn.style.borderRadius = "8px";
+      btn.style.display = "inline-flex";
+      btn.style.alignItems = "center";
+      btn.style.gap = "4px";
+      btn.style.margin = "0";
+      btn.style.width = "auto";
+      btn.style.flexDirection = "row";
+      
+      const labelNames = { en: "English", de: "German", it: "Italiano", es: "Spanish", fr: "French" };
+      btn.innerHTML = `${getFlagHtml(lang)} ${labelNames[lang] || lang}`;
+      
+      btn.onclick = () => {
+        state.browseTargetLang = lang;
+        saveState();
+        renderBrowseWordsList(folderId);
+      };
+      flagRow.appendChild(btn);
+    });
+  }
+
+  // Populate table headers with flags and names
+  const hdrBase = document.getElementById("browse-hdr-base");
+  const hdrTarget = document.getElementById("browse-hdr-target");
+  const langNames = { en: "English", de: "German", it: "Italiano", es: "Spanish", fr: "French" };
+  if (hdrBase) {
+    hdrBase.innerHTML = `${getFlagHtml(base)} ${langNames[base] || base.toUpperCase()}`;
+    hdrBase.style.color = getLangColor(base);
+  }
+  if (hdrTarget) {
+    const target = state.browseTargetLang;
+    hdrTarget.innerHTML = `${getFlagHtml(target)} ${langNames[target] || target.toUpperCase()}`;
+    hdrTarget.style.color = getLangColor(target);
+  }
+
   let pool = [];
   const isStandard = ["verbs", "nouns", "technology", "biology", "phrases"].includes(folderId);
   
@@ -5319,7 +5404,7 @@ function renderBrowseWordsList(folderId) {
   titleEl.textContent = `Words in Folder: ${folderName} (${pool.length})`;
   
   if (pool.length === 0) {
-    wordsTableBody.innerHTML = `<tr><td colspan="9" class="empty-state" style="padding: 16px; text-align: center; color: var(--text-secondary);">No words in this folder yet. Drag and drop words here or manually add.</td></tr>`;
+    wordsTableBody.innerHTML = `<tr><td colspan="6" class="empty-state" style="padding: 16px; text-align: center; color: var(--text-secondary);">No words in this folder yet. Drag and drop words here or manually add.</td></tr>`;
     return;
   }
 
@@ -5465,11 +5550,8 @@ function renderBrowseWordsList(folderId) {
       <td style="padding: 6px 8px; text-align: center;">
         <input type="checkbox" class="chk-select-browse" data-key="${key.replace(/'/g, "\\'")}" data-custom="${isCustom}" style="cursor: pointer; width: 16px; height: 16px;">
       </td>
-      <td style="padding: 6px 8px;">${inputHtml('en', vocab.en, true)}</td>
-      <td style="padding: 6px 8px;">${inputHtml('de', vocab.de)}</td>
-      <td style="padding: 6px 8px;">${inputHtml('it', vocab.it)}</td>
-      <td style="padding: 6px 8px;">${inputHtml('es', vocab.es)}</td>
-      <td style="padding: 6px 8px;">${inputHtml('fr', vocab.fr)}</td>
+      <td style="padding: 6px 8px;">${inputHtml(base, vocab[base], true)}</td>
+      <td style="padding: 6px 8px;">${inputHtml(state.browseTargetLang, vocab[state.browseTargetLang])}</td>
       <td style="padding: 6px 8px; text-align: center;"><span class="badge" style="background: rgba(255,255,255,0.05); color: var(--text-secondary); font-size: 0.7rem; border-radius: 6px; position: static;">Box ${box}</span></td>
       <td style="padding: 6px 8px; text-align: center;">${errors > 0 ? `<span class="badge" style="background: rgba(239, 71, 111, 0.1); color: var(--error-color); font-size: 0.7rem; border-radius: 6px; position: static;">⚠️ ${errors}</span>` : `<span style="color:var(--text-secondary); opacity: 0.3;">0</span>`}</td>
       <td style="padding: 6px 8px; text-align: center;">

@@ -1766,20 +1766,6 @@ body.device-ios .app-container {
   color: var(--accent-color);
 }
 
-/* Browse Vocabulary Grid & Split Layout */
-.browse-split-layout {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-  align-items: start;
-  width: 100%;
-}
-
-@media (min-width: 768px) {
-  .browse-split-layout {
-    grid-template-columns: 320px 1fr;
-  }
-}
 
 /* Inline Edit Input Styling */
 input[type="text"].browse-edit-input {
