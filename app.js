@@ -5628,6 +5628,7 @@ function renderBrowseWordsList(folderId) {
         <div style="display: flex; align-items: center; width: 100%; position: relative;">
           <input type="text" class="browse-edit-input" style="${boldStyle} color: ${color}; padding-right: 20px;" 
                  value="${esc(displayVal)}" placeholder="(empty)"
+                 autocomplete="off" spellcheck="false"
                  onkeydown="if(event.key === 'Enter') this.blur()">
           ${commonStar ? `<span title="High Frequency / Common Word" style="position: absolute; right: 4px; color: #f59e0b; pointer-events: none; font-size: 0.8rem;">⭐</span>` : ''}
         </div>
@@ -5642,8 +5643,8 @@ function renderBrowseWordsList(folderId) {
       <td style="padding: 10px 12px;">${inputHtml(state.browseTargetLang, vocab[state.browseTargetLang])}</td>
       <td style="padding: 10px 12px; text-align: center;">
         <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
-          <button type="button" class="tree-action-btn" title="Save Changes" onclick="event.preventDefault(); event.stopPropagation(); window.saveRowChanges(this, '${esc(vocab[base])}', '${esc(vocab[state.browseTargetLang])}', ${isCustom})">💾</button>
-          <button type="button" class="tree-action-btn" title="Delete" style="color: var(--error-color);" onclick="event.preventDefault(); event.stopPropagation(); window.triggerDeleteWord('${esc(vocab[base])}', '${esc(vocab[state.browseTargetLang])}', ${isCustom})">❌</button>
+          <button type="button" class="tree-action-btn" title="Save Changes" data-original-base="${esc(vocab[base])}" data-original-target="${esc(vocab[state.browseTargetLang])}" data-custom="${isCustom}" onclick="event.preventDefault(); event.stopPropagation(); window.saveRowChanges(this)">💾</button>
+          <button type="button" class="tree-action-btn" title="Delete" style="color: var(--error-color);" data-original-base="${esc(vocab[base])}" data-original-target="${esc(vocab[state.browseTargetLang])}" data-custom="${isCustom}" onclick="event.preventDefault(); event.stopPropagation(); window.triggerDeleteWord(this)">❌</button>
         </div>
       </td>
     `;
@@ -5653,6 +5654,11 @@ function renderBrowseWordsList(folderId) {
 }
 
 window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTargetKey, isCustom) {
+  if (originalBaseKey === undefined) {
+    originalBaseKey = buttonEl.dataset.originalBase;
+    originalTargetKey = buttonEl.dataset.originalTarget;
+    isCustom = buttonEl.dataset.custom === "true";
+  }
   // CRITICAL: Read input values IMMEDIATELY before any await (Edge compatibility)
   const tr = buttonEl.closest("tr");
   if (!tr) {
@@ -5794,20 +5800,17 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
   inputs[1].defaultValue = cleanTargetVal;
   inputs[1].setAttribute("value", cleanTargetVal);
   
-  // Update the save button's onclick to use the new keys for the next save
+  // Update the save and delete buttons dataset attributes for the next action
   const saveBtn = tr.querySelector('button[title="Save Changes"]');
   if (saveBtn) {
-    saveBtn.setAttribute("onclick", 
-      `event.preventDefault(); event.stopPropagation(); window.saveRowChanges(this, '${esc(cleanBaseVal)}', '${esc(cleanTargetVal)}', ${isCustom})`
-    );
+    saveBtn.dataset.originalBase = cleanBaseVal;
+    saveBtn.dataset.originalTarget = cleanTargetVal;
   }
   
-  // Update the delete button's onclick to use the new keys
   const delBtn = tr.querySelector('button[title="Delete"]');
   if (delBtn) {
-    delBtn.setAttribute("onclick",
-      `event.preventDefault(); event.stopPropagation(); window.triggerDeleteWord('${esc(cleanBaseVal)}', '${esc(cleanTargetVal)}', ${isCustom})`
-    );
+    delBtn.dataset.originalBase = cleanBaseVal;
+    delBtn.dataset.originalTarget = cleanTargetVal;
   }
   
   // Update the checkbox data attributes
@@ -6585,6 +6588,12 @@ window.triggerEditWord = function(key, isCustom) {
 };
 
 window.triggerDeleteWord = async function(originalBaseKey, originalTargetKey, isCustom) {
+  if (originalBaseKey instanceof HTMLElement || (originalBaseKey && typeof originalBaseKey === 'object' && originalBaseKey.dataset)) {
+    const buttonEl = originalBaseKey;
+    originalBaseKey = buttonEl.dataset.originalBase;
+    originalTargetKey = buttonEl.dataset.originalTarget;
+    isCustom = buttonEl.dataset.custom === "true";
+  }
   const displayLabel = originalBaseKey || originalTargetKey || "this word";
   const confirmDel = await showCustomConfirm(`Are you sure you want to delete "${displayLabel}"?`);
   if (!confirmDel) return;
