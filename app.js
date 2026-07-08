@@ -927,6 +927,18 @@ function playSpeechQueue(queue) {
   playNextInQueue();
 }
 
+window.stopSpeechQueue = function() {
+  if (window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+  }
+  globalSpeechQueue = [];
+  currentSpeechIndex = 0;
+  const overlay = document.getElementById("conjugation-speech-overlay");
+  if (overlay) {
+    overlay.style.display = "none";
+  }
+};
+
 function speakMultilingualText(text, targetLang) {
   const baseLang = state.baseLang || "en";
   const germanStopwords = ["der", "die", "das", "ein", "eine", "einer", "einem", "einen", "und", "ist", "sind", "mit", "vor", "nach", "für", "bei", "oder", "wird", "werden", "von", "zu", "im", "in", "dem", "den", "des", "das", "als", "wie", "an", "zur", "zum", "zur", "formen", "verwendung", "beispiele", "beispiel", "merke", "achtung", "regel", "regeln", "grammatik", "artikel", "nomen", "verb", "verben", "adjektiv", "pronomina", "pronomen", "vorwort", "inhaltsverzeichnis"];
@@ -3780,6 +3792,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadFrequencyLists();
   loadState();
   await initICloudSync();
+
+  // Close speech overlay when clicking the background
+  const speechOverlay = document.getElementById("conjugation-speech-overlay");
+  if (speechOverlay) {
+    speechOverlay.onclick = (e) => {
+      if (e.target === speechOverlay) {
+        window.stopSpeechQueue();
+      }
+    };
+  }
 
   // Navigation Links
   document.getElementById("btn-go-import").onclick = () => showView("view-import");
