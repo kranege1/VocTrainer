@@ -5578,23 +5578,7 @@ function renderBrowseWordsList(folderId) {
 window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTargetKey, isCustom) {
   console.log("saveRowChanges triggered:", { originalBaseKey, originalTargetKey, isCustom });
   
-  // Directly query/request directory write permissions within the click event user gesture context
-  if (isCustom && state.icloudHandle) {
-    try {
-      const perm = await state.icloudHandle.queryPermission({ mode: "readwrite" });
-      if (perm !== "granted") {
-        console.log("Requesting directory write permission under user gesture context...");
-        const req = await state.icloudHandle.requestPermission({ mode: "readwrite" });
-        if (req !== "granted") {
-          alert("Directory write permission denied. Changes cannot be saved to folder files.");
-          return;
-        }
-      }
-    } catch (err) {
-      console.error("FS Permission check error:", err);
-    }
-  }
-
+  // CRITICAL: Read input values IMMEDIATELY before any await (Edge compatibility)
   const tr = buttonEl.closest("tr");
   if (!tr) {
     console.error("Row element not found");
@@ -5622,6 +5606,23 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
   
   const cleanBaseVal = sanitizeWordTranslation(baseVal, base);
   const cleanTargetVal = sanitizeWordTranslation(targetVal, target);
+
+  // Directly query/request directory write permissions within the click event user gesture context
+  if (isCustom && state.icloudHandle) {
+    try {
+      const perm = await state.icloudHandle.queryPermission({ mode: "readwrite" });
+      if (perm !== "granted") {
+        console.log("Requesting directory write permission under user gesture context...");
+        const req = await state.icloudHandle.requestPermission({ mode: "readwrite" });
+        if (req !== "granted") {
+          alert("Directory write permission denied. Changes cannot be saved to folder files.");
+          return;
+        }
+      }
+    } catch (err) {
+      console.error("FS Permission check error:", err);
+    }
+  }
   
   // 1. Migrate stats and cache if base word is edited
   if (originalBaseKey !== cleanBaseVal) {
@@ -5696,7 +5697,6 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
     
     if (state.editedStarters[originalBaseKey]) {
       state.editedStarters[originalBaseKey][base] = cleanBaseVal;
-      state.editedStarters[originalKey] = state.editedStarters[originalBaseKey]; // compatibility
       state.editedStarters[originalBaseKey][target] = cleanTargetVal;
       if (base === "en") {
         state.editedStarters[originalBaseKey].en = cleanBaseVal;
@@ -5711,8 +5711,48 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
   }
   
   saveState();
-  alert("Changes saved successfully!");
-  renderBrowseList();
+
+  // Update the row IN-PLACE instead of rebuilding the entire DOM.
+  // This avoids Edge's aggressive form-value restoration that reverts input values
+  // when the DOM is torn down and rebuilt via renderBrowseList().
+  const esc = (s) => (s || "").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  
+  // Update input default values so they reflect the saved state
+  inputs[0].value = cleanBaseVal;
+  inputs[0].defaultValue = cleanBaseVal;
+  inputs[1].value = cleanTargetVal;
+  inputs[1].defaultValue = cleanTargetVal;
+  
+  // Update the save button's onclick to use the new keys for the next save
+  const saveBtn = tr.querySelector('button[title="Save Changes"]');
+  if (saveBtn) {
+    saveBtn.setAttribute("onclick", 
+      `event.preventDefault(); event.stopPropagation(); window.saveRowChanges(this, '${esc(cleanBaseVal)}', '${esc(cleanTargetVal)}', ${isCustom})`
+    );
+  }
+  
+  // Update the delete button's onclick to use the new keys
+  const delBtn = tr.querySelector('button[title="Delete"]');
+  if (delBtn) {
+    delBtn.setAttribute("onclick",
+      `event.preventDefault(); event.stopPropagation(); window.triggerDeleteWord('${esc(cleanBaseVal)}', '${esc(cleanTargetVal)}', ${isCustom})`
+    );
+  }
+  
+  // Update the checkbox data attributes
+  const chk = tr.querySelector(".chk-select-browse");
+  if (chk) {
+    chk.dataset.baseKey = cleanBaseVal;
+    chk.dataset.targetKey = cleanTargetVal;
+  }
+  
+  // Brief visual feedback on the save button
+  if (saveBtn) {
+    saveBtn.textContent = "✅";
+    setTimeout(() => { saveBtn.textContent = "💾"; }, 1200);
+  }
+  
+  console.log("Save completed successfully:", { cleanBaseVal, cleanTargetVal });
   updateCategoryCounts();
 };
 
