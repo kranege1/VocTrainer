@@ -891,14 +891,27 @@ function speakWordWithCallback(text, langCode, rate = 1.0, callback) {
 }
 
 function playNextInQueue() {
+  const overlay = document.getElementById("conjugation-speech-overlay");
+  
   if (currentSpeechIndex >= globalSpeechQueue.length) {
     globalSpeechQueue = [];
     currentSpeechIndex = 0;
+    if (overlay) overlay.style.display = "none";
     return;
   }
   
   const chunk = globalSpeechQueue[currentSpeechIndex];
   currentSpeechIndex++;
+  
+  if (overlay) {
+    if (chunk.showOverlay) {
+      overlay.style.display = "flex";
+      document.getElementById("cso-spoken").textContent = chunk.text;
+      document.getElementById("cso-translation").textContent = chunk.translation || "";
+    } else {
+      overlay.style.display = "none";
+    }
+  }
   
   speakWordWithCallback(chunk.text, chunk.lang, 1.0, () => {
     setTimeout(playNextInQueue, 300);
@@ -2303,19 +2316,53 @@ function renderConjugationDashboard() {
 
     card.querySelector(`#btn-melody-pronoun-${idx}`).onclick = (e) => {
       e.stopPropagation();
-      const speechQueue = pronouns.map((pr, i) => ({
-        text: `${pr} ${conjugations[i]}`,
-        lang: lang
-      }));
+      let transConjs = null;
+      let basePronouns = PRONOUNS.en;
+      if (baseLang !== "en") {
+        try {
+          const fakeBaseObj = { target: translation, origEn: verb.en || translation, category: "verbs" };
+          transConjs = getConjugationsForVerb(fakeBaseObj, baseLang);
+          basePronouns = PRONOUNS[baseLang] || PRONOUNS.en;
+        } catch(err) {}
+      }
+      
+      const speechQueue = pronouns.map((pr, i) => {
+        let transText = translation;
+        if (transConjs && transConjs[i]) {
+          transText = `${basePronouns[i]} ${transConjs[i]}`;
+        }
+        return {
+          text: `${pr} ${conjugations[i]}`,
+          lang: lang,
+          showOverlay: true,
+          translation: transText
+        };
+      });
       playSpeechQueue(speechQueue);
     };
 
     card.querySelector(`#btn-melody-verb-${idx}`).onclick = (e) => {
       e.stopPropagation();
-      const speechQueue = conjugations.map(conj => ({
-        text: conj,
-        lang: lang
-      }));
+      let transConjs = null;
+      if (baseLang !== "en") {
+        try {
+          const fakeBaseObj = { target: translation, origEn: verb.en || translation, category: "verbs" };
+          transConjs = getConjugationsForVerb(fakeBaseObj, baseLang);
+        } catch(err) {}
+      }
+
+      const speechQueue = conjugations.map((conj, i) => {
+        let transText = translation;
+        if (transConjs && transConjs[i]) {
+          transText = transConjs[i];
+        }
+        return {
+          text: conj,
+          lang: lang,
+          showOverlay: true,
+          translation: transText
+        };
+      });
       playSpeechQueue(speechQueue);
     };
 
