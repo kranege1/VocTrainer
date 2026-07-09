@@ -7632,6 +7632,11 @@ async function initBackupFile() {
       const selectBtn = document.getElementById("btn-select-backup-file");
       if (selectBtn) {
         selectBtn.textContent = "🔑 Grant Access";
+        selectBtn.className = "btn btn-secondary";
+      }
+      const changeBtn = document.getElementById("btn-change-backup-file");
+      if (changeBtn) {
+        changeBtn.style.display = "inline-block";
       }
     }
   } catch (err) {
@@ -7639,23 +7644,25 @@ async function initBackupFile() {
   }
 }
 
-window.selectBackupFile = async function() {
+window.handleBackupFileButtonClick = async function() {
   if (!window.showSaveFilePicker) {
     alert("Persistent Backup File Access is not supported in this browser or context.\n\nRequirements:\n1. Use a modern desktop browser (Chrome, Edge, Opera).\n2. Access the app via http://localhost:8080 or https:// (secure context).\n\nIf you are on iOS, Safari, or Firefox, please use the standard Export Backup button.");
     return;
   }
-  try {
-    if (state.backupFileHandle) {
-      const perm = await state.backupFileHandle.queryPermission({ mode: "readwrite" });
-      if (perm !== "granted") {
-        const req = await state.backupFileHandle.requestPermission({ mode: "readwrite" });
-        if (req === "granted") {
-          onBackupFileAccessGranted();
-          return;
-        }
-      }
-    }
 
+  if (!state.backupFileHandle) {
+    await window.changeBackupFile();
+  } else {
+    await window.writeBackupToFile();
+  }
+};
+
+window.changeBackupFile = async function() {
+  if (!window.showSaveFilePicker) {
+    alert("Persistent Backup File Access is not supported in this browser.");
+    return;
+  }
+  try {
     const handle = await window.showSaveFilePicker({
       suggestedName: "voctrainer_backup.json",
       types: [{
@@ -7666,12 +7673,38 @@ window.selectBackupFile = async function() {
     state.backupFileHandle = handle;
     await idb.set("backup_file_handle", handle);
     onBackupFileAccessGranted();
+    
+    // Auto-save backup after selecting
+    await window.writeBackupToFile();
   } catch (err) {
     if (err.name !== "AbortError") {
       alert("Failed to set backup file: " + err.message);
     }
   }
-}
+};
+
+window.writeBackupToFile = async function() {
+  if (!state.backupFileHandle) return;
+  try {
+    const perm = await state.backupFileHandle.queryPermission({ mode: "readwrite" });
+    let granted = perm === "granted";
+    if (!granted) {
+      const req = await state.backupFileHandle.requestPermission({ mode: "readwrite" });
+      granted = req === "granted";
+    }
+    if (granted) {
+      const writable = await state.backupFileHandle.createWritable();
+      await writable.write(JSON.stringify(state, null, 2));
+      await writable.close();
+      onBackupFileAccessGranted();
+      showCustomAlert("🎉 Backup successfully exported and updated in your fixed file!");
+    } else {
+      alert("Write permission denied. Could not write backup.");
+    }
+  } catch (err) {
+    alert("Failed to write backup: " + err.message);
+  }
+};
 
 function onBackupFileAccessGranted() {
   const statusSpan = document.getElementById("backup-file-status");
@@ -7681,7 +7714,12 @@ function onBackupFileAccessGranted() {
   }
   const selectBtn = document.getElementById("btn-select-backup-file");
   if (selectBtn) {
-    selectBtn.textContent = "🔁 Change Backup File";
+    selectBtn.textContent = "💾 Save Backup to File";
+    selectBtn.className = "btn btn-primary";
+  }
+  const changeBtn = document.getElementById("btn-change-backup-file");
+  if (changeBtn) {
+    changeBtn.style.display = "inline-block";
   }
 }
 
