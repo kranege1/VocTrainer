@@ -807,6 +807,71 @@ body {
   100% { transform: scale(1); }
 }
 
+.pulse-ring {
+  width: 72px;
+  height: 72px;
+  background: transparent;
+  border: 4px solid var(--error-color);
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  opacity: 0;
+  box-sizing: border-box;
+}
+
+.btn-mic-icon.listening + .pulse-ring {
+  animation: pulsating 1.5s infinite ease-out;
+}
+
+@keyframes pulsating {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.word-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-secondary);
+}
+
+.word-badge.correct {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #34d399;
+}
+
+.word-badge.close {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+}
+
+.word-badge.missed {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #f87171;
+}
+
+.word-badge .pct {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  font-weight: bold;
+}
+
 .speech-transcript {
   background: rgba(255, 255, 255, 0.03);
   border-radius: 12px;

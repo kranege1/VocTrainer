@@ -3329,6 +3329,10 @@ function renderQuestion() {
   }
   document.getElementById("bubble-selected-zone").innerHTML = "";
   document.getElementById("speech-transcript").textContent = "...";
+  const pronFeedback = document.getElementById("pronunciation-feedback");
+  if (pronFeedback) pronFeedback.style.display = "none";
+  const wordAccList = document.getElementById("word-accuracy-list");
+  if (wordAccList) wordAccList.innerHTML = "";
   
   const detailsContainer = document.getElementById("word-details-container");
   if (detailsContainer) detailsContainer.style.display = "none";
@@ -3486,11 +3490,43 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     const transcript = event.results[0][0].transcript;
     document.getElementById("speech-transcript").textContent = transcript;
     document.getElementById("btn-mic").classList.remove("listening");
+
+    // Pronunciation accuracy matching
+    const tState = state.currentTest;
+    const currentWord = tState?.words[tState.index];
+    if (currentWord) {
+      const targetPhrase = currentWord.target;
+      const analysis = window.analyzePronunciation(targetPhrase, transcript);
+      
+      // Update overall score
+      document.getElementById("overall-accuracy-pct").textContent = `${analysis.overallScore}%`;
+      
+      // Update word badges
+      const listEl = document.getElementById("word-accuracy-list");
+      listEl.innerHTML = "";
+      analysis.wordBreakdown.forEach(item => {
+        const badge = document.createElement("span");
+        badge.className = "word-badge";
+        if (item.score >= 90) {
+          badge.classList.add("correct");
+        } else if (item.score >= 50) {
+          badge.classList.add("close");
+        } else {
+          badge.classList.add("missed");
+        }
+        badge.innerHTML = `${item.originalWord} <span class="pct">${item.score}%</span>`;
+        listEl.appendChild(badge);
+      });
+      
+      document.getElementById("pronunciation-feedback").style.display = "block";
+    }
   };
 
   recognition.onerror = () => {
     document.getElementById("speech-transcript").textContent = "[Retry speaking]";
     document.getElementById("btn-mic").classList.remove("listening");
+    const feedback = document.getElementById("pronunciation-feedback");
+    if (feedback) feedback.style.display = "none";
   };
 }
 
@@ -3620,6 +3656,15 @@ function submitAnswer() {
   } else if (activeMode === "speech") {
     studentAnswer = document.getElementById("speech-transcript").textContent.trim();
   }
+  let isSpeechPronunciationCorrect = false;
+  let speechScore = 0;
+  if (activeMode === "speech") {
+    const analysis = window.analyzePronunciation(currentWord.target, studentAnswer);
+    speechScore = analysis.overallScore;
+    if (speechScore >= 80) {
+      isSpeechPronunciationCorrect = true;
+    }
+  }
 
   const cleanAns = studentAnswer.toLowerCase().replace(/[¿?¡!.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").trim();
   const cleanTarget = currentWord.target.toLowerCase().replace(/[¿?¡!.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").trim();
@@ -3667,7 +3712,7 @@ function submitAnswer() {
   });
   const isSynonymMatch = state.allowSynonyms && cleanSyns.includes(studentNoun);
 
-  const isCorrect = articleIsCorrect && (isExactMatch || isCloseMatch || isTypo || isSynonymMatch);
+  const isCorrect = (articleIsCorrect && (isExactMatch || isCloseMatch || isTypo || isSynonymMatch)) || isSpeechPronunciationCorrect;
   const overlay = document.getElementById("feedback-overlay");
   const fTitle = document.getElementById("feedback-title");
   const fDesc = document.getElementById("feedback-desc");
@@ -3679,7 +3724,9 @@ function submitAnswer() {
     fTitle.textContent = "Correct!";
     fIcon.textContent = "🎉";
     
-    if (isExactMatch) {
+    if (isSpeechPronunciationCorrect) {
+      fDesc.textContent = `Correct pronunciation! You scored ${speechScore}% accuracy. Target: "${currentWord.target}".`;
+    } else if (isExactMatch) {
       fDesc.textContent = `Excellent job! "${currentWord.en}" is indeed "${currentWord.target}".`;
     } else if (isSynonymMatch) {
       fDesc.textContent = `Correct! "${studentAnswer}" is a similar word/synonym of "${currentWord.target}".`;
