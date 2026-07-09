@@ -76,7 +76,7 @@
         <!-- Build Timestamp on the bottom left -->
         <div id="build-timestamp"
           style="font-size: 0.75rem; color: var(--text-secondary); opacity: 0.5; font-family: monospace; padding-left: 16px; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.04); pointer-events: none; width: 100%;">
-          Build: 2026-07-09 07:42:00
+          Build: 2026-07-09 07:44:00
         </div>
       </nav>
     </header>
@@ -617,7 +617,7 @@
         <p class="import-help">Backup all words, stats, custom picture links, and audio recordings to a single JSON file
           or sync them.</p>
         <div class="backup-actions">
-          <button id="btn-export-data" class="btn btn-secondary">💾 Export Backup</button>
+          <button id="btn-export-data" class="btn btn-secondary" onclick="exportBackupData()">💾 Export Backup</button>
           <label for="import-backup-file" class="btn btn-secondary" style="cursor: pointer; text-align: center;">
             📥 Import Backup
           </label>
@@ -626,7 +626,7 @@
         <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06);">
           <label style="display: block; margin-bottom: 8px; font-weight: 500;">Persistent Backup File (Fixed Location)</label>
           <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
-            <button id="btn-select-backup-file" class="btn btn-secondary">📂 Set Backup File</button>
+            <button id="btn-select-backup-file" class="btn btn-secondary" onclick="selectBackupFile()">📂 Set Backup File</button>
             <span id="backup-file-status" style="font-size: 0.9rem; color: var(--text-secondary);">No persistent backup file set</span>
           </div>
           <p class="import-help">If set, clicking "Export Backup" always updates this specific file directly on disk, avoiding browser version duplicates.</p>
@@ -1480,7 +1480,7 @@
       }
     </style>
 
-    <script src="app.js?v=20260709_0742"></script>
+    <script src="app.js?v=20260709_0744"></script>
 </body>
 
 </html>

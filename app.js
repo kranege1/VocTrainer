@@ -4309,7 +4309,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Export Backups
-  document.getElementById("btn-export-data").onclick = async () => {
+  window.exportBackupData = async () => {
     // If a persistent backup file is set, attempt to write directly to it
     if (state.backupFileHandle) {
       try {
@@ -4341,11 +4341,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     downloadAnchor.click();
     downloadAnchor.remove();
   };
-
-  const btnSelectBackup = document.getElementById("btn-select-backup-file");
-  if (btnSelectBackup) {
-    btnSelectBackup.onclick = selectBackupFile;
-  }
 
   const btnSelectICloud = document.getElementById("btn-select-icloud-folder");
   if (btnSelectICloud) {
@@ -7614,14 +7609,8 @@ async function initBackupFile() {
   if (!window.showSaveFilePicker) {
     const statusSpan = document.getElementById("backup-file-status");
     if (statusSpan) {
-      statusSpan.textContent = "❌ Not supported on this browser";
+      statusSpan.textContent = "⚠️ Not supported in this browser/context";
       statusSpan.style.color = "var(--error-color)";
-    }
-    const selectBtn = document.getElementById("btn-select-backup-file");
-    if (selectBtn) {
-      selectBtn.disabled = true;
-      selectBtn.style.opacity = "0.5";
-      selectBtn.style.cursor = "not-allowed";
     }
     return;
   }
@@ -7644,9 +7633,9 @@ async function initBackupFile() {
   }
 }
 
-async function selectBackupFile() {
+window.selectBackupFile = async function() {
   if (!window.showSaveFilePicker) {
-    alert("Persistent File Access is not supported in this browser.");
+    alert("Persistent Backup File Access is not supported in this browser or context.\n\nRequirements:\n1. Use a modern desktop browser (Chrome, Edge, Opera).\n2. Access the app via http://localhost:8080 or https:// (secure context).\n\nIf you are on iOS, Safari, or Firefox, please use the standard Export Backup button.");
     return;
   }
   try {
