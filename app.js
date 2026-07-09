@@ -3915,6 +3915,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadFrequencyLists();
   loadState();
   await initICloudSync();
+  await initBackupFile();
 
   // Close speech overlay when clicking the background
   const speechOverlay = document.getElementById("conjugation-speech-overlay");
@@ -4308,7 +4309,30 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Export Backups
-  document.getElementById("btn-export-data").onclick = () => {
+  document.getElementById("btn-export-data").onclick = async () => {
+    // If a persistent backup file is set, attempt to write directly to it
+    if (state.backupFileHandle) {
+      try {
+        const perm = await state.backupFileHandle.queryPermission({ mode: "readwrite" });
+        let granted = perm === "granted";
+        if (!granted) {
+          const req = await state.backupFileHandle.requestPermission({ mode: "readwrite" });
+          granted = req === "granted";
+        }
+        if (granted) {
+          const writable = await state.backupFileHandle.createWritable();
+          await writable.write(JSON.stringify(state));
+          await writable.close();
+          onBackupFileAccessGranted();
+          showCustomAlert("🎉 Backup successfully exported and updated in your fixed file!");
+          return;
+        }
+      } catch (err) {
+        console.error("Failed to write to persistent backup file, falling back to download:", err);
+      }
+    }
+
+    // Fallback: standard browser download anchor
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute("href", dataStr);
@@ -4317,6 +4341,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     downloadAnchor.click();
     downloadAnchor.remove();
   };
+
+  const btnSelectBackup = document.getElementById("btn-select-backup-file");
+  if (btnSelectBackup) {
+    btnSelectBackup.onclick = selectBackupFile;
+  }
 
   const btnSelectICloud = document.getElementById("btn-select-icloud-folder");
   if (btnSelectICloud) {
@@ -7579,6 +7608,88 @@ const idb = {
 };
 
 state.icloudHandle = null;
+state.backupFileHandle = null;
+
+async function initBackupFile() {
+  if (!window.showSaveFilePicker) {
+    const statusSpan = document.getElementById("backup-file-status");
+    if (statusSpan) {
+      statusSpan.textContent = "❌ Not supported on this browser";
+      statusSpan.style.color = "var(--error-color)";
+    }
+    const selectBtn = document.getElementById("btn-select-backup-file");
+    if (selectBtn) {
+      selectBtn.disabled = true;
+      selectBtn.style.opacity = "0.5";
+      selectBtn.style.cursor = "not-allowed";
+    }
+    return;
+  }
+  try {
+    const handle = await idb.get("backup_file_handle");
+    if (handle) {
+      state.backupFileHandle = handle;
+      const statusSpan = document.getElementById("backup-file-status");
+      if (statusSpan) {
+        statusSpan.textContent = `📁 ${handle.name} (Access Needed)`;
+        statusSpan.style.color = "#FF9800";
+      }
+      const selectBtn = document.getElementById("btn-select-backup-file");
+      if (selectBtn) {
+        selectBtn.textContent = "🔑 Grant Access";
+      }
+    }
+  } catch (err) {
+    console.error("Failed to load backup file handle:", err);
+  }
+}
+
+async function selectBackupFile() {
+  if (!window.showSaveFilePicker) {
+    alert("Persistent File Access is not supported in this browser.");
+    return;
+  }
+  try {
+    if (state.backupFileHandle) {
+      const perm = await state.backupFileHandle.queryPermission({ mode: "readwrite" });
+      if (perm !== "granted") {
+        const req = await state.backupFileHandle.requestPermission({ mode: "readwrite" });
+        if (req === "granted") {
+          onBackupFileAccessGranted();
+          return;
+        }
+      }
+    }
+
+    const handle = await window.showSaveFilePicker({
+      suggestedName: "voctrainer_backup.json",
+      types: [{
+        description: "JSON Backup File",
+        accept: { "application/json": [".json"] }
+      }]
+    });
+    state.backupFileHandle = handle;
+    await idb.set("backup_file_handle", handle);
+    onBackupFileAccessGranted();
+  } catch (err) {
+    if (err.name !== "AbortError") {
+      alert("Failed to set backup file: " + err.message);
+    }
+  }
+}
+
+function onBackupFileAccessGranted() {
+  const statusSpan = document.getElementById("backup-file-status");
+  if (statusSpan && state.backupFileHandle) {
+    statusSpan.textContent = `📁 ${state.backupFileHandle.name} (Ready)`;
+    statusSpan.style.color = "var(--success-color)";
+  }
+  const selectBtn = document.getElementById("btn-select-backup-file");
+  if (selectBtn) {
+    selectBtn.textContent = "🔁 Change Backup File";
+  }
+}
+
 
 async function initICloudSync() {
   if (!window.showDirectoryPicker) {
