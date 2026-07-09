@@ -219,6 +219,7 @@ let state = {
   questionTimer: 0, // Per-question timer limit (0, 5, 10, 15)
   history: [], // Completed tests history
   deletedStarters: [], // Deleted starter vocab terms
+  deletedCustomVocab: [], // Deleted custom vocab terms: [{ category, en, lastUpdated }]
   editedStarters: {}, // Edited starter vocab terms overrides
   customFolders: [], // Custom folder objects: [{ id, name, parentId }]
   expandedFolders: {}, // Toggle expand/collapse states for custom directories: { [id]: boolean }
@@ -272,6 +273,7 @@ function saveState() {
     selectedLang: state.selectedLang,
     history: state.history,
     deletedStarters: state.deletedStarters,
+    deletedCustomVocab: state.deletedCustomVocab,
     editedStarters: state.editedStarters,
     customFolders: state.customFolders,
     wordStats: state.wordStats,
@@ -330,6 +332,7 @@ function loadState() {
     state.selectedLang = parsed.selectedLang || "de";
     state.history = parsed.history || [];
     state.deletedStarters = parsed.deletedStarters || [];
+    state.deletedCustomVocab = parsed.deletedCustomVocab || [];
     state.editedStarters = parsed.editedStarters || {};
     state.customFolders = (parsed.customFolders || []).map(f => {
       if (typeof f === "string") {
@@ -585,6 +588,74 @@ function populateManualCategoryDropdown() {
   } else if (state.selectedBrowseFolderId && Array.from(selectEl.options).some(o => o.value === state.selectedBrowseFolderId)) {
     selectEl.value = state.selectedBrowseFolderId;
   }
+}
+
+function mergeCustomVocab(incomingVocab, incomingDeleted) {
+  if (!Array.isArray(incomingVocab)) return;
+  if (!incomingDeleted) incomingDeleted = [];
+  
+  // 1. Merge the deleted tracking array
+  incomingDeleted.forEach(incDel => {
+    const exists = state.deletedCustomVocab.some(locDel => 
+      locDel.category === incDel.category && 
+      (locDel.en || "").toLowerCase() === (incDel.en || "").toLowerCase()
+    );
+    if (!exists) {
+      state.deletedCustomVocab.push(incDel);
+    } else {
+      const locDelIndex = state.deletedCustomVocab.findIndex(locDel => 
+        locDel.category === incDel.category && 
+        (locDel.en || "").toLowerCase() === (incDel.en || "").toLowerCase()
+      );
+      if (locDelIndex !== -1 && incDel.lastUpdated > state.deletedCustomVocab[locDelIndex].lastUpdated) {
+        state.deletedCustomVocab[locDelIndex].lastUpdated = incDel.lastUpdated;
+      }
+    }
+  });
+
+  // 2. Build map of local vocab for quick lookup
+  const localMap = {};
+  state.customVocab.forEach(item => {
+    const key = `${item.category.toLowerCase()}|||${(item.en || "").toLowerCase()}`;
+    localMap[key] = item;
+  });
+
+  // 3. Process incoming vocab items
+  incomingVocab.forEach(incItem => {
+    const key = `${incItem.category.toLowerCase()}|||${(incItem.en || "").toLowerCase()}`;
+    const localItem = localMap[key];
+    
+    // Check if it was deleted locally/cloud
+    const isDeletedLocally = state.deletedCustomVocab.some(del => 
+      del.category === incItem.category && 
+      (del.en || "").toLowerCase() === (incItem.en || "").toLowerCase() &&
+      del.lastUpdated >= (incItem.lastUpdated || 0)
+    );
+    
+    if (isDeletedLocally) {
+      return;
+    }
+    
+    if (localItem) {
+      const incTime = incItem.lastUpdated || 0;
+      const localTime = localItem.lastUpdated || 0;
+      if (incTime > localTime) {
+        Object.assign(localItem, incItem);
+      }
+    } else {
+      state.customVocab.push(incItem);
+    }
+  });
+
+  // 4. Remove local items marked as deleted
+  state.customVocab = state.customVocab.filter(item => {
+    const wasDeleted = state.deletedCustomVocab.some(del => 
+      del.category === item.category && 
+      (del.en || "").toLowerCase() === (item.en || "").toLowerCase() &&
+      del.lastUpdated >= (item.lastUpdated || 0)
+    );
+    return !wasDeleted;
+  });
 }
 
 // ==========================================
@@ -1541,6 +1612,7 @@ async function addCustomWord(english, translation, lang, category, imageUrl = ""
     category: category || "imported",
     image: imageUrl || english,
     audio: audioBase64,
+    lastUpdated: Date.now(),
     details: {
       articles: {},
       sentences: {},
@@ -4782,6 +4854,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           state.customVocab[idx].fr = cleanFr;
           state.customVocab[idx].category = category;
           state.customVocab[idx].image = imageUrl || cleanEn;
+          state.customVocab[idx].lastUpdated = Date.now();
           state.customVocab[idx].details = {
             ...state.customVocab[idx].details,
             articles: { de: artDe, it: artIt, es: artEs, fr: artFr },
@@ -4872,6 +4945,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               state.customVocab[idx].fr = cleanFr;
               state.customVocab[idx].category = category;
               state.customVocab[idx].image = imageUrl || cleanEn;
+              state.customVocab[idx].lastUpdated = Date.now();
               state.customVocab[idx].details = {
                 ...state.customVocab[idx].details,
                 articles: { de: artDe, it: artIt, es: artEs, fr: artFr },
@@ -4946,7 +5020,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         sentences: { en: sentEn, de: sentDe, it: sentIt, es: sentEs, fr: sentFr },
         variations: {},
         synonyms: { en: [], de: [], it: [], es: [], fr: [] }
-      }
+      },
+      lastUpdated: Date.now()
     };
 
     newWord.lang = state.selectedLang;
@@ -5799,6 +5874,8 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
       if (target === state.selectedLang) {
         state.customVocab[idx].target = cleanTargetVal;
       }
+      
+      state.customVocab[idx].lastUpdated = Date.now();
       
       // Auto-save to iCloud if enabled
       if (state.icloudHandle) {
@@ -6661,6 +6738,18 @@ window.triggerDeleteWord = async function(originalBaseKey, originalTargetKey, is
   const folderId = state.selectedBrowseFolderId;
 
   if (isCustom) {
+    const matched = state.customVocab.find(v => 
+      v.category === folderId &&
+      (v[base] || "").toLowerCase() === originalBaseKey.toLowerCase() &&
+      (v[target] || "").toLowerCase() === originalTargetKey.toLowerCase()
+    );
+    if (matched) {
+      state.deletedCustomVocab.push({
+        category: folderId,
+        en: matched.origEn || matched.en,
+        lastUpdated: Date.now()
+      });
+    }
     state.customVocab = state.customVocab.filter(v => 
       !(v.category === folderId &&
         (v[base] || "").toLowerCase() === originalBaseKey.toLowerCase() &&
@@ -7834,7 +7923,8 @@ async function executeCSVImport() {
         },
         variations: {},
         synonyms: { en: [], de: [], it: [], es: [], fr: [] }
-      }
+      },
+      lastUpdated: Date.now()
     };
 
     // Ensure custom category folder exists if not standard
@@ -7951,6 +8041,7 @@ function getSanitizedSyncPayload() {
     selectedLang: state.selectedLang,
     history: state.history,
     deletedStarters: state.deletedStarters,
+    deletedCustomVocab: state.deletedCustomVocab,
     editedStarters: state.editedStarters,
     customFolders: state.customFolders,
     wordStats: state.wordStats,
@@ -8056,7 +8147,10 @@ async function pullFromCloud() {
       if (data.streak !== undefined) state.streak = data.streak;
       if (data.hearts !== undefined) state.hearts = data.hearts;
       if (data.level !== undefined) state.level = data.level;
-      if (data.customVocab !== undefined) state.customVocab = data.customVocab;
+      if (data.deletedCustomVocab !== undefined) state.deletedCustomVocab = data.deletedCustomVocab;
+      if (data.customVocab !== undefined) {
+        mergeCustomVocab(data.customVocab, data.deletedCustomVocab);
+      }
       if (data.mistakes !== undefined) state.mistakes = data.mistakes;
       if (data.openaiKey !== undefined) state.openaiKey = data.openaiKey;
       if (data.grokKey !== undefined) state.grokKey = data.grokKey;
@@ -8179,7 +8273,10 @@ async function linkCloudSyncDevice(code) {
       if (data.streak !== undefined) state.streak = data.streak;
       if (data.hearts !== undefined) state.hearts = data.hearts;
       if (data.level !== undefined) state.level = data.level;
-      if (data.customVocab !== undefined) state.customVocab = data.customVocab;
+      if (data.deletedCustomVocab !== undefined) state.deletedCustomVocab = data.deletedCustomVocab;
+      if (data.customVocab !== undefined) {
+        mergeCustomVocab(data.customVocab, data.deletedCustomVocab);
+      }
       if (data.mistakes !== undefined) state.mistakes = data.mistakes;
       if (data.openaiKey !== undefined) state.openaiKey = data.openaiKey;
       if (data.grokKey !== undefined) state.grokKey = data.grokKey;
@@ -8280,7 +8377,10 @@ async function connectGitHubGist() {
       if (parsedData.streak !== undefined) state.streak = parsedData.streak;
       if (parsedData.hearts !== undefined) state.hearts = parsedData.hearts;
       if (parsedData.level !== undefined) state.level = parsedData.level;
-      if (parsedData.customVocab !== undefined) state.customVocab = parsedData.customVocab;
+      if (parsedData.deletedCustomVocab !== undefined) state.deletedCustomVocab = parsedData.deletedCustomVocab;
+      if (parsedData.customVocab !== undefined) {
+        mergeCustomVocab(parsedData.customVocab, parsedData.deletedCustomVocab);
+      }
       if (parsedData.mistakes !== undefined) state.mistakes = parsedData.mistakes;
       if (parsedData.openaiKey !== undefined) state.openaiKey = parsedData.openaiKey;
       if (parsedData.grokKey !== undefined) state.grokKey = parsedData.grokKey;
@@ -8417,7 +8517,10 @@ async function pullFromGitHubGist() {
       if (parsedData.streak !== undefined) state.streak = parsedData.streak;
       if (parsedData.hearts !== undefined) state.hearts = parsedData.hearts;
       if (parsedData.level !== undefined) state.level = parsedData.level;
-      if (parsedData.customVocab !== undefined) state.customVocab = parsedData.customVocab;
+      if (parsedData.deletedCustomVocab !== undefined) state.deletedCustomVocab = parsedData.deletedCustomVocab;
+      if (parsedData.customVocab !== undefined) {
+        mergeCustomVocab(parsedData.customVocab, parsedData.deletedCustomVocab);
+      }
       if (parsedData.mistakes !== undefined) state.mistakes = parsedData.mistakes;
       if (parsedData.openaiKey !== undefined) state.openaiKey = parsedData.openaiKey;
       if (parsedData.grokKey !== undefined) state.grokKey = parsedData.grokKey;
