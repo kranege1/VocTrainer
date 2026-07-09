@@ -4332,14 +4332,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    // Fallback: standard browser download anchor
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
+    // Fallback: standard browser download anchor using safe Blob URL
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
     const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("href", url);
     downloadAnchor.setAttribute("download", "voctrainer_backup.json");
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
+    URL.revokeObjectURL(url);
   };
 
   const btnSelectICloud = document.getElementById("btn-select-icloud-folder");
@@ -4362,7 +4364,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
-        const importedState = JSON.parse(event.target.result);
+        let content = event.target.result.trim();
+        if (content.startsWith("%7B") || content.startsWith("%7b")) {
+          content = decodeURIComponent(content);
+        }
+        const importedState = JSON.parse(content);
         state = { ...state, ...importedState };
         saveState();
         loadState();
