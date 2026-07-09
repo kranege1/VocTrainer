@@ -3100,17 +3100,19 @@ function renderQuestion() {
   const imgEl = document.getElementById("word-image");
   const placeholderEl = document.getElementById("word-image-placeholder");
   
-  if (currentWord.image) {
-    if (currentWord.image.startsWith("http")) {
-      imgEl.src = currentWord.image;
+  if (imgEl && placeholderEl) {
+    if (currentWord.image) {
+      if (currentWord.image.startsWith("http")) {
+        imgEl.src = currentWord.image;
+      } else {
+        imgEl.src = `https://loremflickr.com/320/240/${encodeURIComponent(currentWord.image)}`;
+      }
+      imgEl.style.display = "block";
+      placeholderEl.style.display = "none";
     } else {
-      imgEl.src = `https://loremflickr.com/320/240/${encodeURIComponent(currentWord.image)}`;
+      imgEl.style.display = "none";
+      placeholderEl.style.display = "block";
     }
-    imgEl.style.display = "block";
-    placeholderEl.style.display = "none";
-  } else {
-    imgEl.style.display = "none";
-    placeholderEl.style.display = "block";
   }
 
   // Audio Buttons Setup
