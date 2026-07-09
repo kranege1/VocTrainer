@@ -255,6 +255,26 @@ body {
   }
 }
 
+/* iPad landscape full screen stretch override */
+@media (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) {
+  body {
+    align-items: stretch !important;
+    justify-content: stretch !important;
+    overflow: hidden !important;
+  }
+  
+  body .app-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+  }
+}
+
 .user-badge {
   background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
   color: white;
