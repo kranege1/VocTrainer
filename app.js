@@ -2119,6 +2119,47 @@ function selectCompareWord(side, btn, word) {
   }
 }
 
+function showCompareFeedback(batch) {
+  const tState = state.currentTest;
+  if (!tState) return;
+
+  saveState();
+
+  const overlay = document.getElementById("feedback-overlay");
+  const fTitle = document.getElementById("feedback-title");
+  const fDesc = document.getElementById("feedback-desc");
+  const fIcon = document.getElementById("feedback-icon");
+  
+  if (overlay) {
+    overlay.className = "test-right-pane active correct-ans";
+    fTitle.textContent = "Compare Set Complete!";
+    fIcon.textContent = "🏆";
+    fDesc.textContent = `Great matching! You successfully completed this comparison set.`;
+    
+    // Hide details container and difficulty voting
+    const detailsContainer = document.getElementById("word-details-container");
+    if (detailsContainer) detailsContainer.style.display = "none";
+    
+    const diffVoting = document.querySelector(".difficulty-voting-container");
+    if (diffVoting) diffVoting.style.display = "none";
+
+    const nextBtn = document.getElementById("btn-next-question");
+    if (nextBtn) {
+      nextBtn.style.display = "block";
+      nextBtn.textContent = "Continue";
+      nextBtn.onclick = () => {
+        overlay.classList.remove("active");
+        tState.index += batch.length; // Advance by the size of the matched batch (5)
+        if (tState.index < tState.words.length) {
+          buildCompareMode();
+        } else {
+          finishTestRound();
+        }
+      };
+    }
+  }
+}
+
 const IMPORTANT_VERBS = {
   de: [
     { target: "sein", translations: { de: "sein", en: "to be", it: "essere", es: "ser/estar", fr: "être" } },
