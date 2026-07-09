@@ -84,7 +84,7 @@ window.analyzePronunciation = function(targetPhrase, spokenPhrase) {
 };
 
 // Global recognition wrapper
-let recognition = null;
+let speechEngineInstance = null;
 let isRecordingPronunciation = false;
 
 window.initSpeechRecognition = function(langCode, onStart, onResult, onError, onEnd) {
@@ -94,15 +94,15 @@ window.initSpeechRecognition = function(langCode, onStart, onResult, onError, on
     return false;
   }
   
-  if (recognition) {
+  if (speechEngineInstance) {
     try {
-      recognition.abort();
+      speechEngineInstance.abort();
     } catch(e){}
   }
   
-  recognition = new SpeechRecognition();
-  recognition.continuous = false;
-  recognition.interimResults = false;
+  speechEngineInstance = new SpeechRecognition();
+  speechEngineInstance.continuous = false;
+  speechEngineInstance.interimResults = false;
   
   // Map standard languages
   let localLang = "en-US";
@@ -111,24 +111,24 @@ window.initSpeechRecognition = function(langCode, onStart, onResult, onError, on
   if (langCode === "es") localLang = "es-ES";
   if (langCode === "fr") localLang = "fr-FR";
   
-  recognition.lang = localLang;
+  speechEngineInstance.lang = localLang;
   
-  recognition.onstart = () => {
+  speechEngineInstance.onstart = () => {
     isRecordingPronunciation = true;
     if (onStart) onStart();
   };
   
-  recognition.onresult = (event) => {
+  speechEngineInstance.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
     if (onResult) onResult(transcript);
   };
   
-  recognition.onerror = (event) => {
+  speechEngineInstance.onerror = (event) => {
     console.error("Speech recognition error:", event.error);
     if (onError) onError(event.error);
   };
   
-  recognition.onend = () => {
+  speechEngineInstance.onend = () => {
     isRecordingPronunciation = false;
     if (onEnd) onEnd();
   };
@@ -137,9 +137,9 @@ window.initSpeechRecognition = function(langCode, onStart, onResult, onError, on
 };
 
 window.startListeningPronunciation = function() {
-  if (recognition && !isRecordingPronunciation) {
+  if (speechEngineInstance && !isRecordingPronunciation) {
     try {
-      recognition.start();
+      speechEngineInstance.start();
       return true;
     } catch(e) {
       console.error("Failed to start speech recognition:", e);
@@ -149,9 +149,9 @@ window.startListeningPronunciation = function() {
 };
 
 window.stopListeningPronunciation = function() {
-  if (recognition && isRecordingPronunciation) {
+  if (speechEngineInstance && isRecordingPronunciation) {
     try {
-      recognition.stop();
+      speechEngineInstance.stop();
     } catch(e){}
   }
 };
