@@ -549,6 +549,41 @@ function showView(viewId) {
     loadGrammarGuide();
   } else if (viewId === "view-conjugation-dashboard") {
     renderConjugationDashboard();
+  } else if (viewId === "view-import") {
+    populateManualCategoryDropdown();
+  }
+}
+
+function populateManualCategoryDropdown() {
+  const selectEl = document.getElementById("manual-category");
+  if (!selectEl) return;
+  
+  const originalValue = selectEl.value;
+  selectEl.innerHTML = "";
+  
+  // Standard categories
+  const standardCats = ["verbs", "nouns", "technology", "biology", "phrases"];
+  standardCats.forEach(cat => {
+    const opt = document.createElement("option");
+    opt.value = cat;
+    opt.textContent = cat.charAt(0).toUpperCase() + cat.slice(1) + " (Standard)";
+    selectEl.appendChild(opt);
+  });
+  
+  // Custom folders
+  const allFolders = state.customFolders || [];
+  allFolders.forEach(folder => {
+    const opt = document.createElement("option");
+    opt.value = folder.id;
+    opt.textContent = folder.name + " (Custom)";
+    selectEl.appendChild(opt);
+  });
+  
+  // Restore value or prefill from browse active folder
+  if (originalValue && Array.from(selectEl.options).some(o => o.value === originalValue)) {
+    selectEl.value = originalValue;
+  } else if (state.selectedBrowseFolderId && Array.from(selectEl.options).some(o => o.value === state.selectedBrowseFolderId)) {
+    selectEl.value = state.selectedBrowseFolderId;
   }
 }
 
@@ -4929,7 +4964,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("manual-lang-it").value = "";
     document.getElementById("manual-lang-es").value = "";
     document.getElementById("manual-lang-fr").value = "";
-    document.getElementById("manual-category").value = "";
+    populateManualCategoryDropdown();
     document.getElementById("manual-image-url").value = "";
     document.getElementById("manual-synonyms-container").innerHTML = `<li style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; padding: 12px;">Enter a word above and run AI Translate to suggest synonyms.</li>`;
     currentRecordingBase64 = "";
