@@ -4056,6 +4056,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       setTimeout(startQuickTranslateSpeech, 300);
     };
   }
+  
+  const quickSaveBtn = document.getElementById("btn-quick-translate-save");
+  if (quickSaveBtn) {
+    quickSaveBtn.onclick = saveQuickTranslateWord;
+  }
 
   // Navigation Links
   document.getElementById("btn-go-import").onclick = () => showView("view-import");
@@ -9062,5 +9067,121 @@ async function runQuickTranslate(text) {
   // Set status
   const status = document.getElementById("quick-translate-status");
   if (status) status.textContent = "Translation Complete!";
+
+  // Show and populate save-to-list section!
+  populateQuickTranslateFolders();
+  const saveBox = document.getElementById("quick-translate-save-box");
+  if (saveBox) saveBox.style.display = "flex";
+}
+
+function populateQuickTranslateFolders() {
+  const selectEl = document.getElementById("quick-translate-save-folder");
+  if (!selectEl) return;
+  selectEl.innerHTML = "";
+  
+  // Custom folders
+  if (state.customFolders && state.customFolders.length > 0) {
+    state.customFolders.forEach(folder => {
+      const opt = document.createElement("option");
+      opt.value = folder.id;
+      opt.textContent = folder.name;
+      selectEl.appendChild(opt);
+    });
+  } else {
+    // Fallback static folders
+    const staticFolders = [
+      { id: "nouns", name: "Nouns" },
+      { id: "verbs", name: "Verbs" },
+      { id: "technology", name: "Technology" },
+      { id: "biology", name: "Biology" },
+      { id: "phrases", name: "Phrases" }
+    ];
+    staticFolders.forEach(folder => {
+      const opt = document.createElement("option");
+      opt.value = folder.id;
+      opt.textContent = folder.name;
+      selectEl.appendChild(opt);
+    });
+  }
+}
+
+async function saveQuickTranslateWord() {
+  const sourceLang = document.getElementById("quick-translate-lang").value;
+  const spokenText = document.getElementById("quick-translate-input-display").textContent.trim();
+  const folderId = document.getElementById("quick-translate-save-folder").value;
+  
+  if (!spokenText || spokenText === "...") {
+    showCustomAlert("Please speak a word or phrase first!");
+    return;
+  }
+
+  // Show temporary loading indicator on save button
+  const saveBtn = document.getElementById("btn-quick-translate-save");
+  const originalHtml = saveBtn ? saveBtn.innerHTML : "";
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = `🔄 Saving...`;
+  }
+  
+  try {
+    // Translate to all 5 languages to store complete details
+    const langs = ["de", "en", "it", "es", "fr"];
+    const wordData = {};
+    
+    for (const lang of langs) {
+      if (lang === sourceLang) {
+        wordData[lang] = spokenText;
+      } else {
+        wordData[lang] = await translateTextGTX(spokenText, sourceLang, lang);
+      }
+    }
+    
+    // Create new custom vocabulary item
+    const newWord = {
+      id: Date.now().toString(),
+      en: wordData.en,
+      de: wordData.de,
+      it: wordData.it,
+      es: wordData.es,
+      fr: wordData.fr,
+      category: folderId,
+      details: {
+        articles: {},
+        sentences: {},
+        variations: {},
+        synonyms: {}
+      }
+    };
+    
+    // Deduplicate: check if already exists in customVocab
+    const base = state.baseLang || "en";
+    const duplicate = state.customVocab.find(v => (v[base] || "").toLowerCase() === (newWord[base] || "").toLowerCase());
+    if (duplicate) {
+      showCustomAlert("This word is already in your custom list!");
+      return;
+    }
+    
+    state.customVocab.push(newWord);
+    saveState();
+    
+    // Sync to iCloud folder if selected
+    if (state.icloudHandle) {
+      await saveWordlistToICloud(folderId);
+    }
+    
+    showCustomAlert(`🎉 Word successfully saved to list!`);
+    
+    // Hide save box after saving
+    const saveBox = document.getElementById("quick-translate-save-box");
+    if (saveBox) saveBox.style.display = "none";
+  } catch (err) {
+    console.error("Failed to save word:", err);
+    showCustomAlert("Failed to save word to list.");
+  } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = originalHtml;
+    }
+  }
 }
 

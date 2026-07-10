@@ -73,7 +73,7 @@
         <!-- Build Timestamp on the bottom left -->
         <div id="build-timestamp"
           style="font-size: 0.75rem; color: var(--text-secondary); opacity: 0.5; font-family: monospace; padding-left: 16px; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.04); pointer-events: none; width: 100%;">
-          Build: 2026-07-10 10:32:00
+          Build: 2026-07-10 10:35:00
         </div>
       </nav>
     </header>
@@ -500,6 +500,15 @@
         <!-- Spoken Text Display -->
         <div id="quick-translate-input-display" style="font-size: 1.8rem; font-weight: 700; line-height: 1.4; color: #fff; min-height: 60px; background: rgba(0,0,0,0.2); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color); max-width: 600px; margin: 0 auto; word-wrap: break-word; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
           ...
+        </div>
+
+        <!-- Store in Wordlist Area -->
+        <div id="quick-translate-save-box" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.06); align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
+          <label style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">Save to List:</label>
+          <select id="quick-translate-save-folder" class="custom-select" style="max-width: 220px; margin: 0; height: 38px; font-size: 0.85rem; padding: 0 10px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: #fff;"></select>
+          <button id="btn-quick-translate-save" class="btn btn-primary" style="margin: 0; min-height: 38px; padding: 0 18px; font-size: 0.85rem; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px var(--primary-glow);">
+            📥 Store Word
+          </button>
         </div>
       </div>
 
@@ -1566,8 +1575,8 @@
       }
     </style>
 
-    <script src="speech.js?v=20260710_1032"></script>
-    <script src="app.js?v=20260710_1032"></script>
+    <script src="speech.js?v=20260710_1035"></script>
+    <script src="app.js?v=20260710_1035"></script>
 </body>
 
 </html>
