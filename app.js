@@ -1947,61 +1947,48 @@ function startTestSession(language, category, count, isMistakesOnly = false, cus
     return;
   }
 
-  // Divide pool into Group A ("Correct") and Group B ("Difficult/Untested")
-  const groupA = []; // Correct: attempts > 0 and errors === 0
-  const groupB = []; // Difficult/Untested: errors > 0 or attempts === 0
+  // Sort pool based on the requested priority:
+  // 1. Untested words (attempts === 0)
+  // 2. Wrong words (attempts > 0 && errors > 0)
+  // 3. Correct words (attempts > 0 && errors === 0) with "easy" rating at the very end
+  pool.sort((a, b) => {
+    const statsA = state.wordStats[a.origEn || a.en] || { attempts: 0, errors: 0, difficulty: "medium" };
+    const statsB = state.wordStats[b.origEn || b.en] || { attempts: 0, errors: 0, difficulty: "medium" };
 
-  pool.forEach(word => {
-    const stats = state.wordStats[word.origEn || word.en] || { attempts: 0, errors: 0 };
-    if (stats.attempts > 0 && (stats.errors || 0) === 0) {
-      groupA.push(word);
-    } else {
-      groupB.push(word);
+    // Get Tier of A
+    let tierA = 3; // default: Correct
+    if ((statsA.attempts || 0) === 0) {
+      tierA = 1; // Untested
+    } else if ((statsA.errors || 0) > 0) {
+      tierA = 2; // Wrong
     }
+
+    // Get Tier of B
+    let tierB = 3;
+    if ((statsB.attempts || 0) === 0) {
+      tierB = 1;
+    } else if ((statsB.errors || 0) > 0) {
+      tierB = 2;
+    }
+
+    if (tierA !== tierB) {
+      return tierA - tierB; // Sort by tier ascending (1 first, then 2, then 3)
+    }
+
+    // Within Tier 3 (Correct words), put "easy" words at the very end
+    if (tierA === 3) {
+      const isEasyA = (statsA.difficulty === "easy") ? 1 : 0;
+      const isEasyB = (statsB.difficulty === "easy") ? 1 : 0;
+      if (isEasyA !== isEasyB) {
+        return isEasyA - isEasyB; // 0 (non-easy) comes before 1 (easy)
+      }
+    }
+
+    // Secondary sort: randomize within the same tier
+    return Math.random() - 0.5;
   });
 
-  // Calculate target numbers (only pick 10-20% correct words, rest are difficult/untested)
-  const targetA = Math.round(count * 0.15);
-  const targetB = count - targetA;
-
-  // Custom difficulty/frequency weight selection helper
-  const getSelectionWeight = (word) => {
-    const stats = state.wordStats[word.origEn || word.en] || { attempts: 0, errors: 0 };
-    let diffWeight = 1.0;
-    if (stats.difficulty === "easy") diffWeight = 0.2;
-    else if (stats.difficulty === "hard") diffWeight = 3.0;
-    return diffWeight;
-  };
-
-  // Perform weighted random sorting based on difficulty weights
-  const weightedSort = (arr) => {
-    return arr.map(item => ({
-      item,
-      score: Math.random() * getSelectionWeight(item)
-    }))
-    .sort((a, b) => b.score - a.score)
-    .map(wrapper => wrapper.item);
-  };
-
-  const sortedA = weightedSort(groupA);
-  const sortedB = weightedSort(groupB);
-
-  const pickedA = sortedA.slice(0, targetA);
-  const pickedB = sortedB.slice(0, targetB);
-
-  let selected = [...pickedA, ...pickedB];
-
-  // If one of the groups was too small and we don't have enough words, fill from remaining
-  if (selected.length < count) {
-    const remainingPool = pool.filter(w => !selected.includes(w));
-    const sortedRemaining = weightedSort(remainingPool);
-    const needed = count - selected.length;
-    selected = [...selected, ...sortedRemaining.slice(0, needed)];
-  }
-
-  // Shuffle the final selections randomly
-  selected.sort(() => 0.5 - Math.random());
-  const wordsToTest = selected.slice(0, count);
+  const wordsToTest = pool.slice(0, count);
 
   const activeMode = document.querySelector(".mode-toggle-btn.active")?.dataset.mode || "typing";
   
