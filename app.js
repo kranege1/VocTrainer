@@ -136,12 +136,26 @@ async function fetchAndCacheWordDetails(wordObj) {
     const audioUrl = phonetics.find(p => p.audio)?.audio || "";
     const phoneticText = entry.phonetic || (phonetics.find(p => p.text)?.text || "");
 
+    let targetPartOfSpeech = "";
+    const category = (wordObj.category || "").toLowerCase();
+    if (category === "verbs" || wordKey.toLowerCase().startsWith("to ")) {
+      targetPartOfSpeech = "verb";
+    } else if (category === "nouns" || category === "technology" || category === "biology") {
+      targetPartOfSpeech = "noun";
+    } else if (category === "adjectives") {
+      targetPartOfSpeech = "adjective";
+    }
+
     const enSyns = [];
     const enDefs = [];
     let enSentence = "";
 
     if (entry.meanings) {
       entry.meanings.forEach(m => {
+        // Filter by Part of Speech if known to prevent noun/verb/adjective cross-contamination
+        if (targetPartOfSpeech && m.partOfSpeech && m.partOfSpeech.toLowerCase() !== targetPartOfSpeech) {
+          return;
+        }
         if (m.synonyms) enSyns.push(...m.synonyms);
         if (m.definitions) {
           m.definitions.forEach(d => {
