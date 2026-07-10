@@ -3484,19 +3484,22 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   const SpeechGen = window.SpeechRecognition || window.webkitSpeechRecognition;
   recognition = new SpeechGen();
   recognition.continuous = false;
-  recognition.interimResults = false;
+  recognition.interimResults = true;
 
   recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    document.getElementById("speech-transcript").textContent = transcript;
-    document.getElementById("btn-mic").classList.remove("listening");
+    let transcriptText = "";
+    for (let i = 0; i < event.results.length; ++i) {
+      transcriptText += event.results[i][0].transcript;
+    }
+    transcriptText = transcriptText.trim();
+    document.getElementById("speech-transcript").textContent = transcriptText || "...";
 
     // Pronunciation accuracy matching
     const tState = state.currentTest;
     const currentWord = tState?.words[tState.index];
-    if (currentWord) {
+    if (currentWord && transcriptText) {
       const targetPhrase = currentWord.target;
-      const analysis = window.analyzePronunciation(targetPhrase, transcript);
+      const analysis = window.analyzePronunciation(targetPhrase, transcriptText);
       
       // Update overall score
       document.getElementById("overall-accuracy-pct").textContent = `${analysis.overallScore}%`;
@@ -3527,6 +3530,10 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     document.getElementById("btn-mic").classList.remove("listening");
     const feedback = document.getElementById("pronunciation-feedback");
     if (feedback) feedback.style.display = "none";
+  };
+
+  recognition.onend = () => {
+    document.getElementById("btn-mic").classList.remove("listening");
   };
 }
 
