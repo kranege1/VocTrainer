@@ -4027,10 +4027,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btn-import-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-mistakes-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-setup-back").onclick = () => showView("view-dashboard");
-  document.getElementById("btn-api-back").onclick = () => showView("view-dashboard");
+  document.getElementById("btn-api-back").onclick = () => showView("view-setup");
   document.getElementById("btn-statistics-back").onclick = () => showView("view-dashboard");
   if (document.getElementById("btn-grammar-back")) {
-    document.getElementById("btn-grammar-back").onclick = () => showView("view-dashboard");
+    document.getElementById("btn-grammar-back").onclick = () => showView("view-setup");
   }
   document.getElementById("btn-report-home").onclick = () => showView("view-dashboard");
 

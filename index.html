@@ -66,17 +66,11 @@
         <button class="nav-item" data-view="view-setup">
           <span class="icon">⚙️</span> Preferences
         </button>
-        <button class="nav-item" data-view="view-api">
-          <span class="icon">🔑</span> API Keys
-        </button>
-        <button class="nav-item" data-view="view-grammar">
-          <span class="icon">📖</span> Grammar Guide
-        </button>
 
         <!-- Build Timestamp on the bottom left -->
         <div id="build-timestamp"
           style="font-size: 0.75rem; color: var(--text-secondary); opacity: 0.5; font-family: monospace; padding-left: 16px; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.04); pointer-events: none; width: 100%;">
-          Build: 2026-07-10 08:48:00
+          Build: 2026-07-10 08:53:00
         </div>
       </nav>
     </header>
@@ -471,6 +465,15 @@
       <div class="view-header">
         <button id="btn-setup-back" class="btn-back">← Back</button>
         <h2>Preferences & Audio</h2>
+      </div>
+
+      <div class="card" style="display: flex; gap: 12px; flex-wrap: wrap; background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border: 1px solid var(--border-color);">
+        <button class="btn btn-secondary" onclick="showView('view-api')" style="flex: 1; min-width: 150px; margin: 0; min-height: 44px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.08);">
+          🔑 Configure API Keys
+        </button>
+        <button class="btn btn-secondary" onclick="showView('view-grammar')" style="flex: 1; min-width: 150px; margin: 0; min-height: 44px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.08);">
+          📖 Open Grammar Guide
+        </button>
       </div>
 
       <div class="card">
@@ -1496,8 +1499,8 @@
       }
     </style>
 
-    <script src="speech.js?v=20260710_0848"></script>
-    <script src="app.js?v=20260710_0848"></script>
+    <script src="speech.js?v=20260710_0853"></script>
+    <script src="app.js?v=20260710_0853"></script>
 </body>
 
 </html>
