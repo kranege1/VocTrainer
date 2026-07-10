@@ -4058,6 +4058,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Navigation Links
+  const goQuickBtn = document.getElementById("btn-go-quick-translate");
+  if (goQuickBtn) {
+    goQuickBtn.onclick = () => showView("view-quick-translate");
+  }
   document.getElementById("btn-go-import").onclick = () => showView("view-import");
   document.getElementById("btn-go-mistakes").onclick = () => showView("view-mistakes");
   document.getElementById("btn-go-setup").onclick = () => showView("view-setup");
