@@ -66,11 +66,14 @@
         <button class="nav-item" data-view="view-setup">
           <span class="icon">⚙️</span> Preferences
         </button>
+        <button class="nav-item" data-view="view-quick-translate">
+          <span class="icon">⚡</span> Quick Translate
+        </button>
 
         <!-- Build Timestamp on the bottom left -->
         <div id="build-timestamp"
           style="font-size: 0.75rem; color: var(--text-secondary); opacity: 0.5; font-family: monospace; padding-left: 16px; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.04); pointer-events: none; width: 100%;">
-          Build: 2026-07-10 08:53:00
+          Build: 2026-07-10 09:01:00
         </div>
       </nav>
     </header>
@@ -457,6 +460,52 @@
         </div>
 
         <button id="btn-report-home" class="btn btn-secondary btn-block">Back to Dashboard</button>
+      </div>
+    </section>
+
+    <!-- QUICK TRANSLATE VIEW -->
+    <section id="view-quick-translate" class="app-view">
+      <div class="view-header">
+        <button id="btn-quick-translate-back" class="btn-back">← Back</button>
+        <h2>⚡ Quick Translate</h2>
+      </div>
+
+      <div class="card" style="text-align: center; padding: 30px 20px; background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid var(--border-color); border-radius: 16px;">
+        <h3 style="margin-top: 0; margin-bottom: 20px; font-size: 1.3rem;">Speak a word or sentence</h3>
+        
+        <!-- Language Selector -->
+        <div class="form-group" style="max-width: 320px; margin: 0 auto 24px auto; text-align: left;">
+          <label style="font-weight: 600; display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">I am speaking in:</label>
+          <select id="quick-translate-lang" class="custom-select" style="text-align: center; font-weight: 600; height: 44px; font-size: 0.95rem; border-radius: 8px;">
+            <option value="de">🇩🇪 German (Deutsch)</option>
+            <option value="en" selected>🇬🇧 English</option>
+            <option value="it">🇮🇹 Italian (Italiano)</option>
+            <option value="es">🇪🇸 Spanish (Español)</option>
+            <option value="fr">🇫🇷 French (Français)</option>
+          </select>
+        </div>
+
+        <!-- Huge Mic Start/Stop Button with pulsating rings -->
+        <div style="position: relative; width: 100px; height: 100px; margin: 0 auto 24px auto; display: flex; align-items: center; justify-content: center;">
+          <div id="quick-translate-pulse" class="pulse-ring" style="width: 90px; height: 90px; border-radius: 50%; position: absolute; z-index: 1;"></div>
+          <button id="btn-quick-translate-mic" class="btn-mic-large" style="width: 76px; height: 76px; border-radius: 50%; border: none; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); color: white; font-size: 2.2rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 8px 24px rgba(14, 165, 233, 0.4); position: relative; z-index: 2; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); outline: none;">
+            🎙️
+          </button>
+        </div>
+
+        <div id="quick-translate-status" style="font-weight: 600; font-size: 1rem; color: var(--text-secondary); margin-bottom: 16px; letter-spacing: 0.5px;">
+          Tap microphone to start speaking
+        </div>
+
+        <!-- Spoken Text Display -->
+        <div id="quick-translate-input-display" style="font-size: 1.8rem; font-weight: 700; line-height: 1.4; color: #fff; min-height: 60px; background: rgba(0,0,0,0.2); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color); max-width: 600px; margin: 0 auto; word-wrap: break-word; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+          ...
+        </div>
+      </div>
+
+      <!-- Translations Grid -->
+      <div id="quick-translate-results" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 20px;">
+        <!-- Language Translation Cards get rendered dynamically here -->
       </div>
     </section>
 
@@ -1468,6 +1517,24 @@
     </div>
 
     <style>
+      .btn-mic-large:hover {
+        transform: scale(1.05) !important;
+        box-shadow: 0 10px 28px rgba(14, 165, 233, 0.6) !important;
+      }
+      .btn-mic-large:active {
+        transform: scale(0.95) !important;
+      }
+      .btn-mic-large.listening {
+        background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
+        box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4) !important;
+        animation: pulse-mic 1.5s infinite !important;
+      }
+      @keyframes pulse-mic {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.08); }
+        100% { transform: scale(1); }
+      }
+
       @keyframes modalFadeIn {
         from {
           transform: scale(0.95);
@@ -1499,8 +1566,8 @@
       }
     </style>
 
-    <script src="speech.js?v=20260710_0853"></script>
-    <script src="app.js?v=20260710_0853"></script>
+    <script src="speech.js?v=20260710_0901"></script>
+    <script src="app.js?v=20260710_0901"></script>
 </body>
 
 </html>

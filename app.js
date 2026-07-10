@@ -559,6 +559,10 @@ function updateCategoryCounts() {
 // 3. UI Navigation & Helpers
 // ==========================================
 function showView(viewId) {
+  if (typeof stopQuickTranslateSpeech === "function") {
+    stopQuickTranslateSpeech();
+  }
+
   document.querySelectorAll(".app-view").forEach(view => {
     view.classList.remove("active");
   });
@@ -583,6 +587,14 @@ function showView(viewId) {
     renderBrowseList();
   } else if (viewId === "view-grammar") {
     loadGrammarGuide();
+  } else if (viewId === "view-quick-translate") {
+    setTimeout(() => {
+      const display = document.getElementById("quick-translate-input-display");
+      if (display) display.textContent = "...";
+      const grid = document.getElementById("quick-translate-results");
+      if (grid) grid.innerHTML = "";
+      startQuickTranslateSpeech();
+    }, 300);
   } else if (viewId === "view-conjugation-dashboard") {
     renderConjugationDashboard();
   } else if (viewId === "view-import") {
@@ -4011,6 +4023,28 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (e.target === speechOverlay) {
         window.stopSpeechQueue();
       }
+    };
+  }
+
+  // Quick Translate Button Click Handlers
+  const quickMicBtn = document.getElementById("btn-quick-translate-mic");
+  if (quickMicBtn) {
+    quickMicBtn.onclick = toggleQuickTranslateSpeech;
+  }
+  const quickBackBtn = document.getElementById("btn-quick-translate-back");
+  if (quickBackBtn) {
+    quickBackBtn.onclick = () => showView("view-dashboard");
+  }
+  const quickLangSelect = document.getElementById("quick-translate-lang");
+  if (quickLangSelect) {
+    quickLangSelect.onchange = () => {
+      stopQuickTranslateSpeech();
+      const display = document.getElementById("quick-translate-input-display");
+      if (display) display.textContent = "...";
+      const grid = document.getElementById("quick-translate-results");
+      if (grid) grid.innerHTML = "";
+      // Restart speech engine with new language after brief delay
+      setTimeout(startQuickTranslateSpeech, 300);
     };
   }
 
@@ -8810,10 +8844,214 @@ async function pullFromGitHubGist() {
 }
 
 // Obsolete sync placeholders from previous version to prevent ReferenceErrors
+// Obsolete sync placeholders from previous version to prevent ReferenceErrors
 function loadCloudWordSets() {
   console.log("loadCloudWordSets placeholder called.");
 }
 function uploadActiveVocabToCloud() {
   console.log("uploadActiveVocabToCloud placeholder called.");
+}
+
+// ==========================================
+// 19. Quick Translate Engine & Controllers
+// ==========================================
+let quickTranslateRecognition;
+let isQuickTranslateListening = false;
+
+function initQuickTranslateSpeech() {
+  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+    return;
+  }
+  const SpeechGen = window.SpeechRecognition || window.webkitSpeechRecognition;
+  quickTranslateRecognition = new SpeechGen();
+  quickTranslateRecognition.continuous = false;
+  quickTranslateRecognition.interimResults = true;
+
+  quickTranslateRecognition.onstart = () => {
+    isQuickTranslateListening = true;
+    const micBtn = document.getElementById("btn-quick-translate-mic");
+    const status = document.getElementById("quick-translate-status");
+    const pulse = document.getElementById("quick-translate-pulse");
+    if (micBtn) micBtn.classList.add("listening");
+    if (status) status.textContent = "Listening... Speak now!";
+    if (pulse) pulse.classList.add("listening");
+  };
+
+  quickTranslateRecognition.onresult = async (event) => {
+    let transcriptText = "";
+    for (let i = 0; i < event.results.length; ++i) {
+      transcriptText += event.results[i][0].transcript;
+    }
+    transcriptText = transcriptText.trim();
+    
+    const display = document.getElementById("quick-translate-input-display");
+    if (display) display.textContent = transcriptText || "...";
+
+    // If it is final, trigger the translation query!
+    const isFinal = event.results[event.results.length - 1].isFinal;
+    if (isFinal && transcriptText) {
+      runQuickTranslate(transcriptText);
+    }
+  };
+
+  quickTranslateRecognition.onerror = (e) => {
+    console.error("Quick translate speech error:", e);
+    const status = document.getElementById("quick-translate-status");
+    if (status) status.textContent = "Error: Try speaking again.";
+    stopQuickTranslateSpeech();
+  };
+
+  quickTranslateRecognition.onend = () => {
+    stopQuickTranslateSpeech();
+  };
+}
+
+function startQuickTranslateSpeech() {
+  if (!quickTranslateRecognition) {
+    initQuickTranslateSpeech();
+  }
+  if (!quickTranslateRecognition) return;
+  
+  try {
+    const speakLang = document.getElementById("quick-translate-lang").value;
+    quickTranslateRecognition.lang = speakLang;
+    quickTranslateRecognition.start();
+  } catch (e) {
+    console.error("Failed to start speech:", e);
+  }
+}
+
+function stopQuickTranslateSpeech() {
+  isQuickTranslateListening = false;
+  const micBtn = document.getElementById("btn-quick-translate-mic");
+  const status = document.getElementById("quick-translate-status");
+  const pulse = document.getElementById("quick-translate-pulse");
+  if (micBtn) micBtn.classList.remove("listening");
+  if (status && status.textContent === "Listening... Speak now!") {
+    status.textContent = "Processing...";
+  } else if (status && status.textContent.startsWith("Error")) {
+    // leave error
+  } else if (status) {
+    status.textContent = "Tap microphone to start speaking";
+  }
+  if (pulse) pulse.classList.remove("listening");
+  
+  if (quickTranslateRecognition) {
+    try {
+      quickTranslateRecognition.stop();
+    } catch(e) {}
+  }
+}
+
+function toggleQuickTranslateSpeech() {
+  if (isQuickTranslateListening) {
+    stopQuickTranslateSpeech();
+  } else {
+    startQuickTranslateSpeech();
+  }
+}
+
+async function runQuickTranslate(text) {
+  const sourceLang = document.getElementById("quick-translate-lang").value;
+  const targetGrid = document.getElementById("quick-translate-results");
+  if (!targetGrid) return;
+  
+  targetGrid.innerHTML = `
+    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-secondary); font-size: 1.1rem; font-weight: 600;">
+      <span style="display: inline-block; animation: spin 1s linear infinite; margin-right: 8px;">🔄</span> Translating to other languages...
+    </div>
+  `;
+  
+  const langs = [
+    { code: "de", name: "German", flag: "de" },
+    { code: "en", name: "English", flag: "gb" },
+    { code: "it", name: "Italian", flag: "it" },
+    { code: "es", name: "Spanish", flag: "es" },
+    { code: "fr", name: "French", flag: "fr" }
+  ];
+  
+  // Filter out the source language
+  const targets = langs.filter(l => l.code !== sourceLang);
+  
+  // Is it a single word?
+  const isSingleWord = !text.trim().includes(" ");
+  let englishBaseWord = "";
+  let englishSynonyms = [];
+  
+  if (isSingleWord) {
+    // If source language is not English, translate the single word to English first to fetch synonyms
+    if (sourceLang !== "en") {
+      englishBaseWord = await translateTextGTX(text, sourceLang, "en");
+    } else {
+      englishBaseWord = text;
+    }
+    
+    // Look up in dictionary API for English synonyms
+    try {
+      const dictRes = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(englishBaseWord)}`);
+      if (dictRes.ok) {
+        const dictData = await dictRes.json();
+        const entry = dictData[0];
+        if (entry && entry.meanings) {
+          entry.meanings.forEach(m => {
+            if (m.synonyms) englishSynonyms.push(...m.synonyms);
+          });
+        }
+      }
+    } catch (e) {
+      console.warn("Dictionary look up failed for synonyms:", e);
+    }
+    englishSynonyms = [...new Set(englishSynonyms)].slice(0, 5);
+  }
+  
+  // Translate to all other languages in parallel
+  const resultsHtml = await Promise.all(targets.map(async (target) => {
+    // 1. Core translation
+    const translation = await translateTextGTX(text, sourceLang, target.code);
+    
+    // 2. Synonyms translation
+    let synonymsHtml = "";
+    if (isSingleWord && englishSynonyms.length > 0) {
+      const translatedSyns = await Promise.all(
+        englishSynonyms.map(s => translateTextGTX(s, "en", target.code))
+      );
+      const uniqueSyns = [...new Set(translatedSyns)].filter(s => s.toLowerCase() !== translation.toLowerCase());
+      if (uniqueSyns.length > 0) {
+        synonymsHtml = `
+          <div style="margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px;">
+            <strong style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Synonyms:</strong>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+              ${uniqueSyns.map(s => `<span class="badge" style="background: rgba(255,255,255,0.04); color: var(--text-secondary); font-size: 0.8rem; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: 500;">${s}</span>`).join("")}
+            </div>
+          </div>
+        `;
+      }
+    }
+    
+    const flagUrl = target.code === "en" ? "https://flagcdn.com/16x12/gb.png" : `https://flagcdn.com/16x12/${target.code}.png`;
+    const flagStyle = `vertical-align: middle; margin-right: 8px; border-radius: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5);`;
+    const langColor = getLangColor(target.code);
+    
+    return `
+      <div class="card" style="margin: 0; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; border-left: 5px solid ${langColor}; background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border-radius: 12px; border-top: 1px solid rgba(255,255,255,0.04); border-right: 1px solid rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.04); box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+        <div>
+          <div style="display: flex; align-items: center; margin-bottom: 14px;">
+            <img src="${flagUrl}" width="16" height="12" style="${flagStyle}">
+            <strong style="color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">${target.name}</strong>
+          </div>
+          <div style="font-size: 1.8rem; font-weight: 800; color: ${langColor}; word-wrap: break-word; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            ${translation}
+          </div>
+        </div>
+        ${synonymsHtml}
+      </div>
+    `;
+  }));
+  
+  targetGrid.innerHTML = resultsHtml.join("");
+  
+  // Set status
+  const status = document.getElementById("quick-translate-status");
+  if (status) status.textContent = "Translation Complete!";
 }
 
