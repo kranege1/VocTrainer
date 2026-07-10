@@ -589,6 +589,10 @@ function showView(viewId) {
     loadGrammarGuide();
   } else if (viewId === "view-quick-translate") {
     setTimeout(() => {
+      const selectEl = document.getElementById("quick-translate-lang");
+      if (selectEl) {
+        selectEl.value = state.quickTranslateLastLang || state.selectedLang || "en";
+      }
       const display = document.getElementById("quick-translate-input-display");
       if (display) display.textContent = "...";
       const grid = document.getElementById("quick-translate-results");
@@ -4039,6 +4043,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (quickLangSelect) {
     quickLangSelect.onchange = () => {
       stopQuickTranslateSpeech();
+      
+      // Save last selected language
+      state.quickTranslateLastLang = quickLangSelect.value;
+      saveState();
+      
       const display = document.getElementById("quick-translate-input-display");
       if (display) display.textContent = "...";
       const grid = document.getElementById("quick-translate-results");
