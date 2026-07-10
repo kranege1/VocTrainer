@@ -4061,6 +4061,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (quickSaveBtn) {
     quickSaveBtn.onclick = saveQuickTranslateWord;
   }
+  
+  const quickSaveFolderSelect = document.getElementById("quick-translate-save-folder");
+  if (quickSaveFolderSelect) {
+    quickSaveFolderSelect.onchange = () => {
+      state.quickTranslateLastFolder = quickSaveFolderSelect.value;
+      saveState();
+    };
+  }
 
   // Navigation Links
   document.getElementById("btn-go-import").onclick = () => showView("view-import");
@@ -9077,6 +9085,10 @@ async function runQuickTranslate(text) {
 function populateQuickTranslateFolders() {
   const selectEl = document.getElementById("quick-translate-save-folder");
   if (!selectEl) return;
+  
+  // Save current selection if any
+  const currentSelection = selectEl.value || state.quickTranslateLastFolder;
+  
   selectEl.innerHTML = "";
   
   // Custom folders
@@ -9102,6 +9114,11 @@ function populateQuickTranslateFolders() {
       opt.textContent = folder.name;
       selectEl.appendChild(opt);
     });
+  }
+  
+  // Restore selection if it exists in the newly built list
+  if (currentSelection) {
+    selectEl.value = currentSelection;
   }
 }
 
@@ -9162,6 +9179,7 @@ async function saveQuickTranslateWord() {
     }
     
     state.customVocab.push(newWord);
+    state.quickTranslateLastFolder = folderId;
     saveState();
     
     // Sync to iCloud folder if selected
