@@ -91,7 +91,26 @@ async function translateTextGTX(text, fromLang, toLang) {
 function getWordDetails(wordObj) {
   if (!wordObj) return { articles: {}, sentences: {}, variations: {}, synonyms: {} };
   const wordKey = wordObj.origEn || wordObj.en || "";
-  const localDetails = wordObj.details || { articles: {}, sentences: {}, variations: {}, synonyms: {} };
+  
+  // Try to find default details from STARTER_VOCAB_RAW database
+  let starterDetails = { articles: {}, sentences: {}, variations: {}, synonyms: {} };
+  if (wordKey && typeof STARTER_VOCAB_RAW !== "undefined") {
+    const starter = STARTER_VOCAB_RAW.find(v => {
+      return (v.en && v.en.toLowerCase() === wordKey.toLowerCase()) || 
+             (v.origEn && v.origEn.toLowerCase() === wordKey.toLowerCase()) ||
+             (v.de && v.de.toLowerCase() === wordKey.toLowerCase()) ||
+             (v.it && v.it.toLowerCase() === wordKey.toLowerCase()) ||
+             (v.es && v.es.toLowerCase() === wordKey.toLowerCase()) ||
+             (v.fr && v.fr.toLowerCase() === wordKey.toLowerCase());
+    });
+    if (starter && starter.details) {
+      // Create a copy to prevent mutation issues
+      starterDetails = JSON.parse(JSON.stringify(starter.details));
+    }
+  }
+
+  const localDetails = wordObj.details || starterDetails;
+  
   if (wordKey && state.dictionaryCache && state.dictionaryCache[wordKey]) {
     return {
       ...localDetails,
