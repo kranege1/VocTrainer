@@ -8907,7 +8907,11 @@ function initQuickTranslateSpeech() {
     transcriptText = transcriptText.trim();
     
     const display = document.getElementById("quick-translate-input-display");
-    if (display) display.textContent = transcriptText || "...";
+    if (display) {
+      const folderId = document.getElementById("quick-translate-save-folder")?.value || "nouns";
+      const speakLang = document.getElementById("quick-translate-lang")?.value || "en";
+      display.textContent = normalizeWordCasing(transcriptText, speakLang, folderId) || "...";
+    }
 
     // If it is final, trigger the translation query!
     const isFinal = event.results[event.results.length - 1].isFinal;
@@ -9027,16 +9031,19 @@ async function runQuickTranslate(text) {
   }
   
   // Translate to all other languages in parallel
+  const folderId = document.getElementById("quick-translate-save-folder")?.value || "nouns";
   const resultsHtml = await Promise.all(targets.map(async (target) => {
     // 1. Core translation
-    const translation = await translateTextGTX(text, sourceLang, target.code);
+    let translation = await translateTextGTX(text, sourceLang, target.code);
+    translation = normalizeWordCasing(translation, target.code, folderId);
     
     // 2. Synonyms translation
     let synonymsHtml = "";
     if (isSingleWord && englishSynonyms.length > 0) {
-      const translatedSyns = await Promise.all(
+      let translatedSyns = await Promise.all(
         englishSynonyms.map(s => translateTextGTX(s, "en", target.code))
       );
+      translatedSyns = translatedSyns.map(s => normalizeWordCasing(s, target.code, folderId));
       const uniqueSyns = [...new Set(translatedSyns)].filter(s => s.toLowerCase() !== translation.toLowerCase());
       if (uniqueSyns.length > 0) {
         synonymsHtml = `
@@ -9147,9 +9154,10 @@ async function saveQuickTranslateWord() {
     
     for (const lang of langs) {
       if (lang === sourceLang) {
-        wordData[lang] = spokenText;
+        wordData[lang] = normalizeWordCasing(spokenText, lang, folderId);
       } else {
-        wordData[lang] = await translateTextGTX(spokenText, sourceLang, lang);
+        const trans = await translateTextGTX(spokenText, sourceLang, lang);
+        wordData[lang] = normalizeWordCasing(trans, lang, folderId);
       }
     }
     
@@ -9201,5 +9209,27 @@ async function saveQuickTranslateWord() {
       saveBtn.innerHTML = originalHtml;
     }
   }
+}
+
+function normalizeWordCasing(text, lang, category = "") {
+  if (!text) return "";
+  let clean = text.trim();
+  
+  // Rule: Only German nouns should have a capital first letter!
+  // All other languages (en, it, es, fr) should generally be lowercase.
+  // Also, German verbs/adjectives should be lowercase!
+  const isGerman = (lang === "de");
+  const isNoun = (category.toLowerCase() === "nouns" || category.toLowerCase() === "technology" || category.toLowerCase() === "biology");
+  
+  if (isGerman && isNoun) {
+    // Capitalize first letter
+    return clean.charAt(0).toUpperCase() + clean.slice(1);
+  } else {
+    // Lowercase first letter if it is uppercase
+    if (clean.length > 0) {
+      return clean.charAt(0).toLowerCase() + clean.slice(1);
+    }
+  }
+  return clean;
 }
 
