@@ -4451,7 +4451,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     btnAltMeaning.onclick = () => {
       btnAltMeaning.style.display = "none";
       wrapAltMeaning.style.display = "flex";
-      inputNewMeaningVal.value = "";
+      
+      // Look up existing synonyms in database or cache for prefilling
+      let prefill = "";
+      const tState = state.currentTest;
+      const currentWord = tState ? tState.words[tState.index] : null;
+      if (currentWord) {
+        const ansLang = currentWord.answerLang || state.selectedLang;
+        const details = getWordDetails(currentWord);
+        const syns = (details && details.synonyms && details.synonyms[ansLang]) ? details.synonyms[ansLang] : [];
+        if (syns.length > 0) {
+          prefill = syns.join(", ");
+        }
+      }
+      
+      inputNewMeaningVal.value = prefill;
       inputNewMeaningVal.focus();
     };
 
