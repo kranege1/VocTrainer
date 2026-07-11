@@ -2439,6 +2439,11 @@ function renderConjugationDashboard() {
   const verbs = IMPORTANT_VERBS[lang] || IMPORTANT_VERBS.it;
   const baseLang = state.baseLang || "en";
   
+  const searchInput = document.getElementById("conjugation-search-input");
+  if (searchInput) {
+    searchInput.value = "";
+  }
+  
   const langNames = { en: "English", de: "German", it: "Italian", es: "Spanish", fr: "French" };
   const targetName = langNames[lang] || lang.toUpperCase();
   document.getElementById("conjugation-dash-title").textContent = `Conjugations (${targetName})`;
@@ -4314,6 +4319,34 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (btnPlayAllConjugations) {
     btnPlayAllConjugations.onclick = () => {
       startAllVerbsConjugationTest();
+    };
+  }
+
+  const conjSearchInput = document.getElementById("conjugation-search-input");
+  if (conjSearchInput) {
+    conjSearchInput.oninput = () => {
+      const val = conjSearchInput.value.toLowerCase().trim();
+      const cards = document.querySelectorAll(".verb-dash-card");
+      cards.forEach(card => {
+        const targetText = card.querySelector("h3")?.textContent.toLowerCase() || "";
+        const transText = card.querySelector("span")?.textContent.toLowerCase() || "";
+        if (targetText.includes(val) || transText.includes(val)) {
+          card.style.display = "flex";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    };
+  }
+
+  const btnClearConjSearch = document.getElementById("btn-clear-conjugation-search");
+  if (btnClearConjSearch) {
+    btnClearConjSearch.onclick = () => {
+      if (conjSearchInput) {
+        conjSearchInput.value = "";
+        conjSearchInput.dispatchEvent(new Event("input"));
+        conjSearchInput.focus();
+      }
     };
   }
 

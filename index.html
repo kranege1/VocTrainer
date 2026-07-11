@@ -79,7 +79,7 @@
         <h1>VocTrainer</h1>
         <div id="build-timestamp"
           style="font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6; font-family: monospace; margin-top: -6px; margin-bottom: 8px; pointer-events: none;">
-          Build: 2026-07-11 09:18:00
+          Build: 2026-07-11 12:22:00
         </div>
         <p>Master languages with premium gamified learning!</p>
       </div>
@@ -421,8 +421,14 @@
           style="margin: 0; min-height: 32px; font-size: 0.8rem;">🎯 Practice All</button>
       </div>
 
-      <p class="speech-instruction" style="margin: 10px 0 20px 0;">Select a verb to view its conjugations, hear the
+      <p class="speech-instruction" style="margin: 10px 0 12px 0;">Select a verb to view its conjugations, hear the
         melody in one go, or practice matching.</p>
+
+      <!-- Search Box inside Conjugation Board -->
+      <div style="max-width: 100%; margin-bottom: 16px; display: flex; gap: 8px;">
+        <input type="text" id="conjugation-search-input" placeholder="Search for a verb or translation..." class="custom-select" style="margin: 0; flex: 1; height: 42px; padding: 0 14px; font-size: 0.9rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: #fff;">
+        <button id="btn-clear-conjugation-search" class="btn btn-secondary" style="margin: 0; min-height: 42px; display: flex; align-items: center; justify-content: center; width: 42px; padding: 0; font-size: 1rem; border-radius: 8px;">✕</button>
+      </div>
 
       <div class="conjugation-dashboard-layout"
         style="display: flex; flex-direction: column; gap: 16px; overflow-y: auto; flex: 1; padding-bottom: 20px;">
@@ -1585,8 +1591,8 @@
       }
     </style>
 
-    <script src="speech.js?v=20260711_0918"></script>
-    <script src="app.js?v=20260711_0918"></script>
+    <script src="speech.js?v=20260711_1222"></script>
+    <script src="app.js?v=20260711_1222"></script>
 </body>
 
 </html>
