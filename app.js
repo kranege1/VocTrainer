@@ -9060,12 +9060,25 @@ async function runQuickTranslate(text) {
       englishSynonyms = [...new Set(englishSynonyms)].slice(0, 5);
     }
     
+    // Check if input word or its English translation is a verb
+    const isInputVerb = isVerbCheck(text, sourceLang) || isVerbCheck(englishBaseWord || text, "en");
+    let translationSource = text;
+    let translationSourceLang = sourceLang;
+    
+    if (isInputVerb && englishBaseWord) {
+      if (!englishBaseWord.toLowerCase().startsWith("to ")) {
+        englishBaseWord = "to " + englishBaseWord;
+      }
+      translationSource = englishBaseWord;
+      translationSourceLang = "en";
+    }
+
     // Translate to all other languages in parallel
     const folderId = document.getElementById("quick-translate-save-folder")?.value || "nouns";
     const resultsHtml = await Promise.all(targets.map(async (target) => {
       try {
         // 1. Core translation
-        let translation = await translateTextGTX(text, sourceLang, target.code);
+        let translation = await translateTextGTX(translationSource, translationSourceLang, target.code);
         translation = normalizeWordCasing(translation, target.code, folderId);
         
         // 2. Synonyms translation
@@ -9220,17 +9233,32 @@ async function saveQuickTranslateWord() {
   }
   
   try {
+    // Check if input word or its English translation is a verb
+    const isInputVerb = isVerbCheck(spokenText, sourceLang);
+    let englishBaseWord = "";
+    if (sourceLang !== "en") {
+      englishBaseWord = await translateTextGTX(spokenText, sourceLang, "en");
+    } else {
+      englishBaseWord = spokenText;
+    }
+
+    let translationSource = spokenText;
+    let translationSourceLang = sourceLang;
+    if (isInputVerb && englishBaseWord) {
+      if (!englishBaseWord.toLowerCase().startsWith("to ")) {
+        englishBaseWord = "to " + englishBaseWord;
+      }
+      translationSource = englishBaseWord;
+      translationSourceLang = "en";
+    }
+
     // Translate to all 5 languages to store complete details
     const langs = ["de", "en", "it", "es", "fr"];
     const wordData = {};
     
     for (const lang of langs) {
-      if (lang === sourceLang) {
-        wordData[lang] = normalizeWordCasing(spokenText, lang, folderId);
-      } else {
-        const trans = await translateTextGTX(spokenText, sourceLang, lang);
-        wordData[lang] = normalizeWordCasing(trans, lang, folderId);
-      }
+      const trans = await translateTextGTX(translationSource, translationSourceLang, lang);
+      wordData[lang] = normalizeWordCasing(trans, lang, folderId);
     }
     
     // Create new custom vocabulary item
