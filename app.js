@@ -9001,140 +9001,164 @@ function toggleQuickTranslateSpeech() {
 }
 
 async function runQuickTranslate(text) {
-  const sourceLang = document.getElementById("quick-translate-lang").value;
-  const targetGrid = document.getElementById("quick-translate-results");
-  if (!targetGrid) return;
-  
-  targetGrid.innerHTML = `
-    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-secondary); font-size: 1.1rem; font-weight: 600;">
-      <span style="display: inline-block; animation: spin 1s linear infinite; margin-right: 8px;">🔄</span> Translating to other languages...
-    </div>
-  `;
-  
-  const langs = [
-    { code: "de", name: "German", flag: "de" },
-    { code: "en", name: "English", flag: "gb" },
-    { code: "it", name: "Italian", flag: "it" },
-    { code: "es", name: "Spanish", flag: "es" },
-    { code: "fr", name: "French", flag: "fr" }
-  ];
-  
-  // Filter out the source language
-  const targets = langs.filter(l => l.code !== sourceLang);
-  
-  // Is it a single word?
-  const isSingleWord = !text.trim().includes(" ");
-  let englishBaseWord = "";
-  let englishSynonyms = [];
-  
-  if (isSingleWord) {
-    // If source language is not English, translate the single word to English first to fetch synonyms
-    if (sourceLang !== "en") {
-      englishBaseWord = await translateTextGTX(text, sourceLang, "en");
-    } else {
-      englishBaseWord = text;
-    }
+  try {
+    const sourceLang = document.getElementById("quick-translate-lang").value;
+    const targetGrid = document.getElementById("quick-translate-results");
+    if (!targetGrid) return;
     
-    // Look up in dictionary API for English synonyms
-    try {
-      const dictRes = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(englishBaseWord)}`);
-      if (dictRes.ok) {
-        const dictData = await dictRes.json();
-        const entry = dictData[0];
-        if (entry && entry.meanings) {
-          entry.meanings.forEach(m => {
-            if (m.synonyms) englishSynonyms.push(...m.synonyms);
-          });
-        }
-      }
-    } catch (e) {
-      console.warn("Dictionary look up failed for synonyms:", e);
-    }
-    englishSynonyms = [...new Set(englishSynonyms)].slice(0, 5);
-  }
-  
-  // Translate to all other languages in parallel
-  const folderId = document.getElementById("quick-translate-save-folder")?.value || "nouns";
-  const resultsHtml = await Promise.all(targets.map(async (target) => {
-    // 1. Core translation
-    let translation = await translateTextGTX(text, sourceLang, target.code);
-    translation = normalizeWordCasing(translation, target.code, folderId);
-    
-    // 2. Synonyms translation
-    let synonymsHtml = "";
-    if (isSingleWord && englishSynonyms.length > 0) {
-      let translatedSyns = await Promise.all(
-        englishSynonyms.map(s => translateTextGTX(s, "en", target.code))
-      );
-      translatedSyns = translatedSyns.map(s => normalizeWordCasing(s, target.code, folderId));
-      const uniqueSyns = [...new Set(translatedSyns)].filter(s => s.toLowerCase() !== translation.toLowerCase());
-      if (uniqueSyns.length > 0) {
-        synonymsHtml = `
-          <div style="margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px;">
-            <strong style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Synonyms:</strong>
-            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-              ${uniqueSyns.map(s => `<span class="badge" style="background: rgba(255,255,255,0.04); color: var(--text-secondary); font-size: 0.8rem; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: 500;">${s}</span>`).join("")}
-            </div>
-          </div>
-        `;
-      }
-    }
-
-    // 3. Conjugations check
-    let conjugationsHtml = "";
-    const isVerb = isVerbCheck(translation, target.code) || isVerbCheck(englishBaseWord || text, "en");
-    if (isVerb) {
-      const fakeWordObj = { target: translation, en: englishBaseWord || text, category: "verbs" };
-      const conjugations = getConjugationsForVerb(fakeWordObj, target.code);
-      const pronouns = PRONOUNS[target.code] || PRONOUNS.en;
-      if (conjugations && conjugations.length > 0) {
-        conjugationsHtml = `
-          <div style="margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px;">
-            <strong style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Conjugations:</strong>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; font-size: 0.85rem; color: var(--text-primary); text-align: left;">
-              ${pronouns.slice(0, 6).map((pronoun, i) => `
-                <div style="display: flex; gap: 4px; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.02); padding-bottom: 2px;">
-                  <span style="color: var(--text-secondary); font-weight: 500;">${pronoun}</span>
-                  <span style="font-weight: 600; color: ${langColor};">${conjugations[i] || ""}</span>
-                </div>
-              `).join("")}
-            </div>
-          </div>
-        `;
-      }
-    }
-    
-    const flagUrl = target.code === "en" ? "https://flagcdn.com/16x12/gb.png" : `https://flagcdn.com/16x12/${target.code}.png`;
-    const flagStyle = `vertical-align: middle; margin-right: 8px; border-radius: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5);`;
-    const langColor = getLangColor(target.code);
-    
-    return `
-      <div class="card" style="margin: 0; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; border-left: 5px solid ${langColor}; background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border-radius: 12px; border-top: 1px solid rgba(255,255,255,0.04); border-right: 1px solid rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.04); box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
-        <div>
-          <div style="display: flex; align-items: center; margin-bottom: 14px;">
-            <img src="${flagUrl}" width="16" height="12" style="${flagStyle}">
-            <strong style="color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">${target.name}</strong>
-          </div>
-          <div style="font-size: 1.8rem; font-weight: 800; color: ${langColor}; word-wrap: break-word; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-            ${translation}
-          </div>
-        </div>
-        ${synonymsHtml}
-        ${conjugationsHtml}
+    targetGrid.innerHTML = `
+      <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-secondary); font-size: 1.1rem; font-weight: 600;">
+        <span style="display: inline-block; animation: spin 1s linear infinite; margin-right: 8px;">🔄</span> Translating to other languages...
       </div>
     `;
-  }));
-  
-  targetGrid.innerHTML = resultsHtml.join("");
-  
-  // Set status
-  const status = document.getElementById("quick-translate-status");
-  if (status) status.textContent = "Translation Complete!";
+    
+    const langs = [
+      { code: "de", name: "German", flag: "de" },
+      { code: "en", name: "English", flag: "gb" },
+      { code: "it", name: "Italian", flag: "it" },
+      { code: "es", name: "Spanish", flag: "es" },
+      { code: "fr", name: "French", flag: "fr" }
+    ];
+    
+    // Filter out the source language
+    const targets = langs.filter(l => l.code !== sourceLang);
+    
+    // Is it a single word?
+    const isSingleWord = !text.trim().includes(" ");
+    let englishBaseWord = "";
+    let englishSynonyms = [];
+    
+    if (isSingleWord) {
+      // If source language is not English, translate the single word to English first to fetch synonyms
+      try {
+        if (sourceLang !== "en") {
+          englishBaseWord = await translateTextGTX(text, sourceLang, "en");
+        } else {
+          englishBaseWord = text;
+        }
+      } catch (err) {
+        console.warn("Failed to get englishBaseWord", err);
+      }
+      
+      // Look up in dictionary API for English synonyms
+      if (englishBaseWord) {
+        try {
+          const dictRes = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(englishBaseWord)}`);
+          if (dictRes.ok) {
+            const dictData = await dictRes.json();
+            const entry = dictData[0];
+            if (entry && entry.meanings) {
+              entry.meanings.forEach(m => {
+                if (m.synonyms) englishSynonyms.push(...m.synonyms);
+              });
+            }
+          }
+        } catch (e) {
+          console.warn("Dictionary look up failed for synonyms:", e);
+        }
+      }
+      englishSynonyms = [...new Set(englishSynonyms)].slice(0, 5);
+    }
+    
+    // Translate to all other languages in parallel
+    const folderId = document.getElementById("quick-translate-save-folder")?.value || "nouns";
+    const resultsHtml = await Promise.all(targets.map(async (target) => {
+      try {
+        // 1. Core translation
+        let translation = await translateTextGTX(text, sourceLang, target.code);
+        translation = normalizeWordCasing(translation, target.code, folderId);
+        
+        // 2. Synonyms translation
+        let synonymsHtml = "";
+        if (isSingleWord && englishSynonyms.length > 0) {
+          try {
+            let translatedSyns = await Promise.all(
+              englishSynonyms.map(s => translateTextGTX(s, "en", target.code))
+            );
+            translatedSyns = translatedSyns.map(s => normalizeWordCasing(s, target.code, folderId));
+            const uniqueSyns = [...new Set(translatedSyns)].filter(s => s.toLowerCase() !== translation.toLowerCase());
+            if (uniqueSyns.length > 0) {
+              synonymsHtml = `
+                <div style="margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px;">
+                  <strong style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Synonyms:</strong>
+                  <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                    ${uniqueSyns.map(s => `<span class="badge" style="background: rgba(255,255,255,0.04); color: var(--text-secondary); font-size: 0.8rem; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: 500;">${s}</span>`).join("")}
+                  </div>
+                </div>
+              `;
+            }
+          } catch (e) {
+            console.warn("Synonyms processing failed for", target.code, e);
+          }
+        }
 
-  // Show and populate save-to-list section!
-  populateQuickTranslateFolders();
-  const saveBox = document.getElementById("quick-translate-save-box");
-  if (saveBox) saveBox.style.display = "flex";
+        // 3. Conjugations check
+        let conjugationsHtml = "";
+        try {
+          const isVerb = isVerbCheck(translation, target.code) || isVerbCheck(englishBaseWord || text, "en");
+          if (isVerb) {
+            const fakeWordObj = { target: translation, en: englishBaseWord || text, category: "verbs" };
+            const conjugations = getConjugationsForVerb(fakeWordObj, target.code);
+            const pronouns = PRONOUNS[target.code] || PRONOUNS.en;
+            if (conjugations && conjugations.length > 0) {
+              conjugationsHtml = `
+                <div style="margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px;">
+                  <strong style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Conjugations:</strong>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; font-size: 0.85rem; color: var(--text-primary); text-align: left;">
+                    ${pronouns.slice(0, 6).map((pronoun, i) => `
+                      <div style="display: flex; gap: 4px; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.02); padding-bottom: 2px;">
+                        <span style="color: var(--text-secondary); font-weight: 500;">${pronoun}</span>
+                        <span style="font-weight: 600; color: ${getLangColor(target.code)};">${conjugations[i] || ""}</span>
+                      </div>
+                    `).join("")}
+                  </div>
+                </div>
+              `;
+            }
+          }
+        } catch (e) {
+          console.warn("Conjugations failed for", target.code, e);
+        }
+        
+        const flagUrl = target.code === "en" ? "https://flagcdn.com/16x12/gb.png" : `https://flagcdn.com/16x12/${target.code}.png`;
+        const flagStyle = `vertical-align: middle; margin-right: 8px; border-radius: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5);`;
+        const langColor = getLangColor(target.code);
+        
+        return `
+          <div class="card" style="margin: 0; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; border-left: 5px solid ${langColor}; background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border-radius: 12px; border-top: 1px solid rgba(255,255,255,0.04); border-right: 1px solid rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.04); box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+            <div>
+              <div style="display: flex; align-items: center; margin-bottom: 14px;">
+                <img src="${flagUrl}" width="16" height="12" style="${flagStyle}">
+                <strong style="color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">${target.name}</strong>
+              </div>
+              <div style="font-size: 1.8rem; font-weight: 800; color: ${langColor}; word-wrap: break-word; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                ${translation}
+              </div>
+            </div>
+            ${synonymsHtml}
+            ${conjugationsHtml}
+          </div>
+        `;
+      } catch (err) {
+        console.error("Card render failed for", target.code, err);
+        return `<div class="card" style="margin:0; padding:22px; color:var(--error-color);">Error loading ${target.name}</div>`;
+      }
+    }));
+    
+    targetGrid.innerHTML = resultsHtml.join("");
+    
+    // Set status
+    const status = document.getElementById("quick-translate-status");
+    if (status) status.textContent = "Translation Complete!";
+
+    // Show and populate save-to-list section!
+    populateQuickTranslateFolders();
+    const saveBox = document.getElementById("quick-translate-save-box");
+    if (saveBox) saveBox.style.display = "flex";
+  } catch (err) {
+    console.error("runQuickTranslate crash:", err);
+    alert("Error: " + err.message + "\nStack: " + err.stack);
+  }
 }
 
 function populateQuickTranslateFolders() {
