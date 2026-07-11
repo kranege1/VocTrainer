@@ -9061,7 +9061,7 @@ async function runQuickTranslate(text) {
     }
     
     // Check if input word or its English translation is a verb
-    const isInputVerb = isVerbCheck(text, sourceLang) || isVerbCheck(englishBaseWord || text, "en");
+    const isInputVerb = isVerbAnyLanguage(text) || (englishBaseWord && isVerbAnyLanguage(englishBaseWord));
     let translationSource = text;
     let translationSourceLang = sourceLang;
     
@@ -9108,7 +9108,7 @@ async function runQuickTranslate(text) {
         // 3. Conjugations check
         let conjugationsHtml = "";
         try {
-          const isVerb = isVerbCheck(translation, target.code) || isVerbCheck(englishBaseWord || text, "en");
+          const isVerb = isVerbAnyLanguage(translation) || isVerbAnyLanguage(englishBaseWord || text);
           if (isVerb) {
             const fakeWordObj = { target: translation, en: englishBaseWord || text, category: "verbs" };
             const conjugations = getConjugationsForVerb(fakeWordObj, target.code);
@@ -9234,7 +9234,7 @@ async function saveQuickTranslateWord() {
   
   try {
     // Check if input word or its English translation is a verb
-    const isInputVerb = isVerbCheck(spokenText, sourceLang);
+    const isInputVerb = isVerbAnyLanguage(spokenText) || (englishBaseWord && isVerbAnyLanguage(englishBaseWord));
     let englishBaseWord = "";
     if (sourceLang !== "en") {
       englishBaseWord = await translateTextGTX(spokenText, sourceLang, "en");
@@ -9350,6 +9350,15 @@ function isVerbCheck(text, lang) {
   }
   if (lang === "fr") {
     return clean.endsWith("er") || clean.endsWith("ir") || clean.endsWith("re") || clean.endsWith("oir") || clean.startsWith("se ") || clean.startsWith("s'");
+  }
+  return false;
+}
+
+function isVerbAnyLanguage(text) {
+  if (!text) return false;
+  const langs = ["de", "en", "it", "es", "fr"];
+  for (const lang of langs) {
+    if (isVerbCheck(text, lang)) return true;
   }
   return false;
 }
