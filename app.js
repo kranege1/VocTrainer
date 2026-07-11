@@ -4057,6 +4057,38 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
   }
 
+  const handleManualTranslate = () => {
+    const inputEl = document.getElementById("quick-translate-text-input");
+    if (!inputEl) return;
+    const val = inputEl.value.trim();
+    if (!val) return;
+    
+    stopQuickTranslateSpeech();
+    
+    const display = document.getElementById("quick-translate-input-display");
+    if (display) {
+      const folderId = document.getElementById("quick-translate-save-folder")?.value || "nouns";
+      const speakLang = document.getElementById("quick-translate-lang")?.value || "en";
+      display.textContent = normalizeWordCasing(val, speakLang, folderId) || "...";
+    }
+    
+    runQuickTranslate(val);
+    inputEl.value = "";
+  };
+
+  const quickSubmitBtn = document.getElementById("btn-quick-translate-submit");
+  if (quickSubmitBtn) {
+    quickSubmitBtn.onclick = handleManualTranslate;
+  }
+  const quickTextInput = document.getElementById("quick-translate-text-input");
+  if (quickTextInput) {
+    quickTextInput.onkeydown = (e) => {
+      if (e.key === "Enter") {
+        handleManualTranslate();
+      }
+    };
+  }
+
   // Navigation Links
   const goQuickBtn = document.getElementById("btn-go-quick-translate");
   if (goQuickBtn) {
@@ -9047,6 +9079,30 @@ async function runQuickTranslate(text) {
         `;
       }
     }
+
+    // 3. Conjugations check
+    let conjugationsHtml = "";
+    const isVerb = isVerbCheck(translation, target.code) || isVerbCheck(englishBaseWord || text, "en");
+    if (isVerb) {
+      const fakeWordObj = { target: translation, en: englishBaseWord || text, category: "verbs" };
+      const conjugations = getConjugationsForVerb(fakeWordObj, target.code);
+      const pronouns = PRONOUNS[target.code] || PRONOUNS.en;
+      if (conjugations && conjugations.length > 0) {
+        conjugationsHtml = `
+          <div style="margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px;">
+            <strong style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Conjugations:</strong>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; font-size: 0.85rem; color: var(--text-primary); text-align: left;">
+              ${pronouns.slice(0, 6).map((pronoun, i) => `
+                <div style="display: flex; gap: 4px; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.02); padding-bottom: 2px;">
+                  <span style="color: var(--text-secondary); font-weight: 500;">${pronoun}</span>
+                  <span style="font-weight: 600; color: ${langColor};">${conjugations[i] || ""}</span>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        `;
+      }
+    }
     
     const flagUrl = target.code === "en" ? "https://flagcdn.com/16x12/gb.png" : `https://flagcdn.com/16x12/${target.code}.png`;
     const flagStyle = `vertical-align: middle; margin-right: 8px; border-radius: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5);`;
@@ -9064,6 +9120,7 @@ async function runQuickTranslate(text) {
           </div>
         </div>
         ${synonymsHtml}
+        ${conjugationsHtml}
       </div>
     `;
   }));
@@ -9222,5 +9279,26 @@ function normalizeWordCasing(text, lang, category = "") {
     }
   }
   return clean;
+}
+
+function isVerbCheck(text, lang) {
+  if (!text) return false;
+  const clean = text.toLowerCase().trim();
+  if (lang === "en") {
+    return clean.startsWith("to ");
+  }
+  if (lang === "de") {
+    return clean.startsWith("zu ") || clean.endsWith("en");
+  }
+  if (lang === "it") {
+    return clean.endsWith("are") || clean.endsWith("ere") || clean.endsWith("ire") || clean.endsWith("arsi") || clean.endsWith("ersi") || clean.endsWith("irsi");
+  }
+  if (lang === "es") {
+    return clean.endsWith("ar") || clean.endsWith("er") || clean.endsWith("ir") || clean.endsWith("arse") || clean.endsWith("erse") || clean.endsWith("irse");
+  }
+  if (lang === "fr") {
+    return clean.endsWith("er") || clean.endsWith("ir") || clean.endsWith("re") || clean.endsWith("oir") || clean.startsWith("se ") || clean.startsWith("s'");
+  }
+  return false;
 }
 
