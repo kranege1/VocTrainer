@@ -2457,6 +2457,18 @@ function renderConjugationDashboard() {
     const conjugations = getConjugationsForVerb(fakeWordObj, lang);
     const pronouns = PRONOUNS[lang] || PRONOUNS.en;
 
+    // Get translations for the conjugations
+    let transConjs = null;
+    let basePronouns = PRONOUNS[baseLang] || PRONOUNS.en;
+    try {
+      const fakeBaseObj = { target: translation, origEn: verb.en || translation, category: "verbs" };
+      transConjs = getConjugationsForVerb(fakeBaseObj, baseLang);
+    } catch(err) {
+      console.warn("Failed to get base language conjugations for dashboard:", err);
+    }
+
+    const baseLangName = langNames[baseLang] || baseLang.toUpperCase();
+
     const card = document.createElement("div");
     card.className = "verb-dash-card";
     card.style.cssText = "background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; transition: all 0.2s ease; cursor: default;";
@@ -2477,14 +2489,20 @@ function renderConjugationDashboard() {
       <div class="verb-details-panel" id="verb-details-${idx}" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 0.85rem;">
         <div style="display: grid; grid-template-columns: 1fr 1fr; font-weight: bold; padding: 4px 8px; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.04); margin-bottom: 4px;">
           <span>With Pronoun</span>
-          <span>Without Pronoun</span>
+          <span>Meaning (${baseLangName})</span>
         </div>
-        ${pronouns.map((pr, i) => `
-          <div style="display: grid; grid-template-columns: 1fr 1fr; padding: 6px 8px; background: rgba(255,255,255,0.01); border-radius: 6px; border-bottom: 1px solid rgba(255,255,255,0.02);">
-            <div style="color: #fff;"><span style="color: var(--text-secondary); font-weight: 500; margin-right: 6px;">${pr}</span> <strong>${conjugations[i]}</strong></div>
-            <div style="color: var(--accent-color); font-weight: 600;">${conjugations[i]}</div>
-          </div>
-        `).join("")}
+        ${pronouns.map((pr, i) => {
+          let transText = translation;
+          if (transConjs && transConjs[i]) {
+            transText = `${basePronouns[i]} ${transConjs[i]}`;
+          }
+          return `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; padding: 6px 8px; background: rgba(255,255,255,0.01); border-radius: 6px; border-bottom: 1px solid rgba(255,255,255,0.02);">
+              <div style="color: #fff;"><span style="color: var(--text-secondary); font-weight: 500; margin-right: 6px;">${pr}</span> <strong>${conjugations[i]}</strong></div>
+              <div style="color: var(--accent-color); font-weight: 600;">${transText}</div>
+            </div>
+          `;
+        }).join("")}
       </div>
     `;
 
