@@ -4112,6 +4112,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
   }
 
+  const quickCopyBtn = document.getElementById("btn-quick-translate-copy");
+  if (quickCopyBtn) {
+    quickCopyBtn.onclick = () => {
+      const display = document.getElementById("quick-translate-input-display");
+      if (display) {
+        const text = display.textContent.trim();
+        if (text && text !== "...") {
+          navigator.clipboard.writeText(text).then(() => {
+            showCustomAlert("📋 Copied to clipboard!");
+          }).catch(err => {
+            console.error("Failed to copy text:", err);
+          });
+        }
+      }
+    };
+  }
+
   // Navigation Links
   const goQuickBtn = document.getElementById("btn-go-quick-translate");
   if (goQuickBtn) {
@@ -9071,8 +9088,8 @@ async function runQuickTranslate(text) {
       { code: "fr", name: "French", flag: "fr" }
     ];
     
-    // Filter out the source language
-    const targets = langs.filter(l => l.code !== sourceLang);
+    // Include all languages (including source)
+    const targets = langs;
     
     // Is it a single word?
     const isSingleWord = !text.trim().includes(" ");
@@ -9129,7 +9146,12 @@ async function runQuickTranslate(text) {
     const resultsHtml = await Promise.all(targets.map(async (target) => {
       try {
         // 1. Core translation
-        let translation = await translateTextGTX(translationSource, translationSourceLang, target.code);
+        let translation = "";
+        if (target.code === sourceLang) {
+          translation = text;
+        } else {
+          translation = await translateTextGTX(translationSource, translationSourceLang, target.code);
+        }
         translation = normalizeWordCasing(translation, target.code, folderId);
         
         // 2. Synonyms translation
@@ -9195,8 +9217,9 @@ async function runQuickTranslate(text) {
                 <img src="${flagUrl}" width="16" height="12" style="${flagStyle}">
                 <strong style="color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">${target.name}</strong>
               </div>
-              <div style="font-size: 1.8rem; font-weight: 800; color: ${langColor}; word-wrap: break-word; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                ${translation}
+              <div style="font-size: 1.8rem; font-weight: 800; color: ${langColor}; word-wrap: break-word; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.2); cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 8px;" onclick="speakWord('${translation.replace(/'/g, "\\'")}', '${target.code}')" title="Click to hear pronunciation">
+                <span>${translation}</span>
+                <span style="font-size: 1.1rem; opacity: 0.5; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5;">🔊</span>
               </div>
             </div>
             ${synonymsHtml}
