@@ -9095,6 +9095,7 @@ async function runQuickTranslate(text) {
     const isSingleWord = !text.trim().includes(" ");
     let englishBaseWord = "";
     let englishSynonyms = [];
+    let isVerbFromDict = false;
     
     if (isSingleWord) {
       // If source language is not English, translate the single word to English first to fetch synonyms
@@ -9109,7 +9110,6 @@ async function runQuickTranslate(text) {
       }
       
       // Look up in dictionary API for English synonyms and verify verb status
-      let isVerbFromDict = false;
       if (englishBaseWord) {
         try {
           const dictRes = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(englishBaseWord)}`);
