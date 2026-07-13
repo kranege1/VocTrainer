@@ -9108,7 +9108,8 @@ async function runQuickTranslate(text) {
         console.warn("Failed to get englishBaseWord", err);
       }
       
-      // Look up in dictionary API for English synonyms
+      // Look up in dictionary API for English synonyms and verify verb status
+      let isVerbFromDict = false;
       if (englishBaseWord) {
         try {
           const dictRes = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(englishBaseWord)}`);
@@ -9118,6 +9119,7 @@ async function runQuickTranslate(text) {
             if (entry && entry.meanings) {
               entry.meanings.forEach(m => {
                 if (m.synonyms) englishSynonyms.push(...m.synonyms);
+                if (m.partOfSpeech === "verb") isVerbFromDict = true;
               });
             }
           }
@@ -9129,7 +9131,7 @@ async function runQuickTranslate(text) {
     }
     
     // Check if input word or its English translation is a verb
-    const isInputVerb = isVerbAnyLanguage(text) || (englishBaseWord && isVerbAnyLanguage(englishBaseWord));
+    const isInputVerb = isVerbCheck(text, sourceLang) || (englishBaseWord && isVerbCheck(englishBaseWord, "en")) || (isSingleWord && isVerbFromDict);
     let translationSource = text;
     let translationSourceLang = sourceLang;
     
@@ -9186,8 +9188,10 @@ async function runQuickTranslate(text) {
         // 3. Conjugations check
         let conjugationsHtml = "";
         try {
-          const isVerb = isVerbAnyLanguage(translation) || isVerbAnyLanguage(englishBaseWord || text);
-          if (isVerb) {
+          // Only show conjugation if the translated word is actually a verb in the target language
+          const isTargetVerb = isVerbCheck(translation, target.code) || 
+                               (target.code === "en" && (translation.startsWith("to ") || isVerbAnyLanguage(translationSource)));
+          if (isTargetVerb) {
             const fakeWordObj = { target: translation, en: englishBaseWord || text, category: "verbs" };
             const conjugations = getConjugationsForVerb(fakeWordObj, target.code);
             const pronouns = PRONOUNS[target.code] || PRONOUNS.en;
