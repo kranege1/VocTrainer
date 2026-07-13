@@ -9133,7 +9133,12 @@ async function runQuickTranslate(text) {
     let translationSource = text;
     let translationSourceLang = sourceLang;
     
-    if (isInputVerb && englishBaseWord) {
+    const isValidEnglishVerb = englishBaseWord && (
+      sourceLang === "en" || 
+      englishBaseWord.toLowerCase().trim() !== text.toLowerCase().trim()
+    );
+    
+    if (isInputVerb && isValidEnglishVerb) {
       if (!englishBaseWord.toLowerCase().startsWith("to ")) {
         englishBaseWord = "to " + englishBaseWord;
       }
@@ -9307,8 +9312,6 @@ async function saveQuickTranslateWord() {
   }
   
   try {
-    // Check if input word or its English translation is a verb
-    const isInputVerb = isVerbAnyLanguage(spokenText) || (englishBaseWord && isVerbAnyLanguage(englishBaseWord));
     let englishBaseWord = "";
     if (sourceLang !== "en") {
       englishBaseWord = await translateTextGTX(spokenText, sourceLang, "en");
@@ -9316,9 +9319,18 @@ async function saveQuickTranslateWord() {
       englishBaseWord = spokenText;
     }
 
+    // Check if input word or its English translation is a verb
+    const isInputVerb = isVerbAnyLanguage(spokenText) || (englishBaseWord && isVerbAnyLanguage(englishBaseWord));
+
     let translationSource = spokenText;
     let translationSourceLang = sourceLang;
-    if (isInputVerb && englishBaseWord) {
+    
+    const isValidEnglishVerb = englishBaseWord && (
+      sourceLang === "en" || 
+      englishBaseWord.toLowerCase().trim() !== spokenText.toLowerCase().trim()
+    );
+    
+    if (isInputVerb && isValidEnglishVerb) {
       if (!englishBaseWord.toLowerCase().startsWith("to ")) {
         englishBaseWord = "to " + englishBaseWord;
       }
