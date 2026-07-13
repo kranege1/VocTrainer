@@ -9161,27 +9161,31 @@ async function runQuickTranslate(text) {
         }
         translation = normalizeWordCasing(translation, target.code, folderId);
         
-        // 2. Synonyms translation
+        // 2. Synonyms translation/fetching
         let synonymsHtml = "";
-        if (isSingleWord && englishSynonyms.length > 0) {
-          try {
-            let translatedSyns = await Promise.all(
-              englishSynonyms.map(s => translateTextGTX(s, "en", target.code))
-            );
-            translatedSyns = translatedSyns.map(s => normalizeWordCasing(s, target.code, folderId));
-            const uniqueSyns = [...new Set(translatedSyns)].filter(s => s.toLowerCase() !== translation.toLowerCase());
-            if (uniqueSyns.length > 0) {
-              synonymsHtml = `
-                <div style="margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px;">
-                  <strong style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Synonyms:</strong>
-                  <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-                    ${uniqueSyns.map(s => `<span class="badge" style="background: rgba(255,255,255,0.04); color: var(--text-secondary); font-size: 0.8rem; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: 500;">${s}</span>`).join("")}
-                  </div>
+        let synonyms = [];
+        try {
+          synonyms = await fetchSynonymsForTarget(translation, target.code, sourceLang);
+        } catch (e) {
+          console.warn("Failed to get synonyms for", target.code, e);
+        }
+        
+        // Fallback to English dictionary synonyms if target is English and we didn't get any
+        if (synonyms.length === 0 && target.code === "en" && englishSynonyms.length > 0) {
+          synonyms = englishSynonyms;
+        }
+
+        if (synonyms.length > 0) {
+          const uniqueSyns = [...new Set(synonyms)].filter(s => s.toLowerCase() !== translation.toLowerCase());
+          if (uniqueSyns.length > 0) {
+            synonymsHtml = `
+              <div style="margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px;">
+                <strong style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Synonyms:</strong>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                  ${uniqueSyns.map(s => `<span class="badge" style="background: rgba(255,255,255,0.04); color: var(--text-secondary); font-size: 0.8rem; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: 500; cursor: pointer;" onclick="speakWord('${s.replace(/'/g, "\\'")}', '${target.code}')" title="Click to hear pronunciation">${s}</span>`).join("")}
                 </div>
-              `;
-            }
-          } catch (e) {
-            console.warn("Synonyms processing failed for", target.code, e);
+              </div>
+            `;
           }
         }
 
@@ -9451,5 +9455,50 @@ function isVerbAnyLanguage(text) {
     if (isVerbCheck(text, lang)) return true;
   }
   return false;
+}
+
+async function fetchSynonymsForTarget(word, targetLang, sourceLang = "de") {
+  if (!word || word === "...") return [];
+  
+  // Clean translation if it contains articles
+  const cleanWord = stripArticles(word, targetLang).trim();
+  
+  // Try using AI if key is configured
+  const hasKey = state.openaiKey || state.grokKey || state.geminiKey || state.anthropicKey;
+  if (hasKey) {
+    try {
+      const prompt = `Give me exactly 5 synonyms (single words or very short phrases) for the word "${cleanWord}" in language "${targetLang}". 
+      Return ONLY a JSON array of strings, for example: ["syn1", "syn2", "syn3", "syn4", "syn5"]. 
+      Do not include formatting or explanations.`;
+      const resText = await callLLM(prompt, "You are a helpful dictionary assistant.");
+      const cleanJson = resText.replace(/```json/g, "").replace(/```/g, "").trim();
+      const parsed = JSON.parse(cleanJson);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.map(s => s.trim()).slice(0, 5);
+      }
+    } catch (e) {
+      console.warn("AI Synonyms fetch failed:", e);
+    }
+  }
+
+  // Fallback to Google Translate alternative translations
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=at&q=${encodeURIComponent(cleanWord)}`;
+    const res = await fetch(url);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data[5] && data[5][0] && data[5][0][2]) {
+        const alts = data[5][0][2].map(item => item[0]);
+        const uniqueAlts = alts.filter(a => a.toLowerCase() !== cleanWord.toLowerCase() && a.toLowerCase() !== word.toLowerCase());
+        if (uniqueAlts.length > 0) {
+          return uniqueAlts.slice(0, 5);
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("Google Translate synonyms fetch failed:", e);
+  }
+
+  return [];
 }
 
