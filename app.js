@@ -9070,15 +9070,28 @@ function toggleQuickTranslateSpeech() {
 
 async function runQuickTranslate(text) {
   try {
-    const sourceLang = document.getElementById("quick-translate-lang").value;
     const targetGrid = document.getElementById("quick-translate-results");
     if (!targetGrid) return;
     
     targetGrid.innerHTML = `
       <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-secondary); font-size: 1.1rem; font-weight: 600;">
-        <span style="display: inline-block; animation: spin 1s linear infinite; margin-right: 8px;">🔄</span> Translating to other languages...
+        <span style="display: inline-block; animation: spin 1s linear infinite; margin-right: 8px;">🔄</span> Auto-detecting language & translating...
       </div>
     `;
+    
+    // Auto detect source language
+    const { detectedLang, translation: enTranslation } = await detectLanguageAndTranslateToEn(text);
+    
+    const supportedLangs = ["de", "en", "it", "es", "fr"];
+    const sourceLang = supportedLangs.includes(detectedLang) ? detectedLang : (document.getElementById("quick-translate-lang")?.value || "en");
+    
+    // Update dropdown in UI to show detected language
+    const quickLangSelect = document.getElementById("quick-translate-lang");
+    if (quickLangSelect) {
+      quickLangSelect.value = sourceLang;
+      state.quickTranslateLastLang = sourceLang;
+      saveState();
+    }
     
     const langs = [
       { code: "de", name: "German", flag: "de" },
@@ -9093,21 +9106,11 @@ async function runQuickTranslate(text) {
     
     // Is it a single word?
     const isSingleWord = !text.trim().includes(" ");
-    let englishBaseWord = "";
+    let englishBaseWord = enTranslation;
     let englishSynonyms = [];
     let isVerbFromDict = false;
     
     if (isSingleWord) {
-      // If source language is not English, translate the single word to English first to fetch synonyms
-      try {
-        if (sourceLang !== "en") {
-          englishBaseWord = await translateTextGTX(text, sourceLang, "en");
-        } else {
-          englishBaseWord = text;
-        }
-      } catch (err) {
-        console.warn("Failed to get englishBaseWord", err);
-      }
       
       // Look up in dictionary API for English synonyms and verify verb status
       if (englishBaseWord) {
@@ -9302,7 +9305,6 @@ function populateQuickTranslateFolders() {
 }
 
 async function saveQuickTranslateWord() {
-  const sourceLang = document.getElementById("quick-translate-lang").value;
   const spokenText = document.getElementById("quick-translate-input-display").textContent.trim();
   const folderId = document.getElementById("quick-translate-save-folder").value;
   
@@ -9320,12 +9322,13 @@ async function saveQuickTranslateWord() {
   }
   
   try {
-    let englishBaseWord = "";
-    if (sourceLang !== "en") {
-      englishBaseWord = await translateTextGTX(spokenText, sourceLang, "en");
-    } else {
-      englishBaseWord = spokenText;
-    }
+    // Auto detect source language
+    const { detectedLang, translation: enTranslation } = await detectLanguageAndTranslateToEn(spokenText);
+    
+    const supportedLangs = ["de", "en", "it", "es", "fr"];
+    const sourceLang = supportedLangs.includes(detectedLang) ? detectedLang : (document.getElementById("quick-translate-lang")?.value || "en");
+    
+    let englishBaseWord = enTranslation;
 
     // Check if input word or its English translation is a verb
     const isInputVerb = isVerbAnyLanguage(spokenText) || (englishBaseWord && isVerbAnyLanguage(englishBaseWord));
@@ -9455,6 +9458,22 @@ function isVerbAnyLanguage(text) {
     if (isVerbCheck(text, lang)) return true;
   }
   return false;
+}
+
+async function detectLanguageAndTranslateToEn(text) {
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(text)}`;
+    const response = await fetch(url);
+    if (response.ok) {
+      const data = await response.json();
+      const detectedLang = data[2] || "en";
+      const translation = data[0].map(item => item[0]).join("");
+      return { detectedLang, translation };
+    }
+  } catch (e) {
+    console.warn("Language detection failed:", e);
+  }
+  return { detectedLang: "en", translation: text };
 }
 
 async function fetchSynonymsForTarget(word, targetLang, sourceLang = "de") {
