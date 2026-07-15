@@ -391,12 +391,48 @@ export function renderConjugationDashboard() {
   const query = (document.getElementById("conjugation-search-input")?.value || "").toLowerCase().trim();
   
   verbs.forEach((verb, idx) => {
+    const base = state.baseLang || "en";
+    
+    // 1. Resolve base translation of the infinitive verb
+    let baseTrans = "";
+    const starterMatch = (window.STARTER_VOCAB_RAW || []).find(v => (v[lang] || "").toLowerCase() === verb.target.toLowerCase());
+    if (starterMatch) {
+      baseTrans = starterMatch[base] || "";
+    }
+    if (!baseTrans) {
+      const customMatch = (state.customVocab || []).find(v => (v[lang] || "").toLowerCase() === verb.target.toLowerCase());
+      if (customMatch) {
+        baseTrans = customMatch[base] || "";
+      }
+    }
+    if (!baseTrans) {
+      // Find matching index equivalent from base lists if exists
+      const importantVerbsBaseList = IMPORTANT_VERBS[base];
+      if (importantVerbsBaseList && importantVerbsBaseList[idx]) {
+        baseTrans = importantVerbsBaseList[idx].target;
+      }
+    }
+    if (!baseTrans) {
+      baseTrans = verb.en;
+    }
+
     if (query) {
       const matchTarget = verb.target.toLowerCase();
       const matchEn = verb.en.toLowerCase();
-      if (!matchTarget.includes(query) && !matchEn.includes(query)) {
+      const matchBase = baseTrans.toLowerCase();
+      if (!matchTarget.includes(query) && !matchEn.includes(query) && !matchBase.includes(query)) {
         return; // Filter out search mismatches
       }
+    }
+
+
+    // 2. Resolve equivalent base conjugations
+    let baseLabels = [];
+    if (baseTrans) {
+      const fakeBaseWordObj = { target: baseTrans, en: verb.en, category: "verbs" };
+      const baseConjugations = getConjugationsForVerb(fakeBaseWordObj, base);
+      const basePronouns = PRONOUNS[base] || PRONOUNS.en;
+      baseLabels = basePronouns.map((pr, i) => `${pr} ${baseConjugations[i] || ""}`);
     }
 
     const fakeWordObj = { target: verb.target, en: verb.en, category: "verbs" };
@@ -407,24 +443,31 @@ export function renderConjugationDashboard() {
     card.className = "verb-dash-card";
     card.style.cssText = "background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; transition: all 0.2s ease; cursor: pointer;";
     
+    const order = [0, 3, 1, 4, 2, 5]; // Singular indices (0, 1, 2) in Col 1, Plural indices (3, 4, 5) in Col 2
+    
     card.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <div>
           <h3 style="margin: 0; font-size: 1.15rem; color: var(--accent-color); font-weight: 700;">${verb.target}</h3>
-          <span style="font-size: 0.85rem; color: var(--text-secondary);">${verb.en}</span>
+          <span style="font-size: 0.85rem; color: var(--text-secondary);">${baseTrans}</span>
         </div>
         <div style="display: flex; gap: 8px;" onclick="event.stopPropagation();">
           <button class="btn btn-secondary btn-sm" style="margin: 0; padding: 6px 12px; min-height: 32px; font-size: 0.75rem;" id="btn-melody-${idx}">🔊 Melody</button>
           <button class="btn btn-primary btn-sm" style="margin: 0; padding: 6px 12px; min-height: 32px; font-size: 0.75rem;" id="btn-practice-${idx}">🎯 Match</button>
         </div>
       </div>
-      <div class="verb-details-panel" id="verb-details-${idx}" style="display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 0.85rem;">
-        ${pronouns.map((pr, i) => `
-          <div style="display: flex; justify-content: space-between; padding: 4px 8px; background: rgba(255,255,255,0.01); border-radius: 6px;">
-            <span style="color: var(--text-secondary); font-weight: 600;">${pr}</span>
-            <strong style="color: #fff;">${conjugations[i] || ""}</strong>
-          </div>
-        `).join("")}
+      <div class="verb-details-panel" id="verb-details-${idx}" style="display: none; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 0.85rem;">
+        ${order.map(i => {
+          const pr = pronouns[i] || "";
+          const conj = conjugations[i] || "";
+          const baseText = baseLabels[i] ? ` <span style="font-size: 0.75rem; color: var(--text-secondary); opacity: 0.8; font-weight: 400; margin-left: 4px;">(${baseLabels[i]})</span>` : "";
+          return `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: rgba(255,255,255,0.015); border-radius: 8px; border: 1px solid rgba(255,255,255,0.03);">
+              <span style="color: var(--text-secondary); font-weight: 600;">${pr}</span>
+              <strong style="color: #fff;">${conj}${baseText}</strong>
+            </div>
+          `;
+        }).join("")}
       </div>
     `;
     
