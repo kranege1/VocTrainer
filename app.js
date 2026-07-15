@@ -18,6 +18,26 @@ import { initApp, renderHistoryList, renderBrowseList } from './modules/init.js'
 // ==========================================
 // 9. Word Details & AI/Web Lookups
 // ==========================================
+function stripArticles(text, lang) {
+  const articles = {
+    en: ["the ", "a ", "an "],
+    de: ["der ", "die ", "das ", "ein ", "eine "],
+    es: ["el ", "la ", "los ", "las ", "un ", "una ", "unos ", "unas "],
+    it: ["il ", "lo ", "la ", "i ", "gli ", "le ", "un ", "uno ", "una ", "un' "],
+    fr: ["le ", "la ", "les ", "un ", "une ", "des ", "l' "]
+  };
+  
+  let cleanText = text.trim().toLowerCase();
+  const list = articles[lang] || [];
+  
+  for (const article of list) {
+    if (cleanText.startsWith(article)) {
+      return cleanText.substring(article.length).trim();
+    }
+  }
+  return cleanText;
+}
+
 function getArticleAndNoun(text, lang, currentWord) {
   const articles = {
     en: ["the ", "a ", "an "],
@@ -1696,6 +1716,7 @@ window.isVerbAnyLanguage = isVerbAnyLanguage;
 window.detectLanguageAndTranslateToEn = detectLanguageAndTranslateToEn;
 window.getLangColor = getLangColor;
 window.isCommonWord = isCommonWord;
+window.stripArticles = stripArticles;
 
 // Expose functions globally to window for modules/state.js and inline html event handlers
 window.updateHeaderUI = updateHeaderUI;

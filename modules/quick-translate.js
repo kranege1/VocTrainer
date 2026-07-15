@@ -2,6 +2,7 @@
 import { state, saveState, updateCategoryCounts } from './state.js';
 
 const getLangColor = (...args) => window.getLangColor?.(...args);
+const stripArticles = (...args) => window.stripArticles?.(...args);
 
 // ==========================================
 // 19. Quick Translate Engine & Controllers
