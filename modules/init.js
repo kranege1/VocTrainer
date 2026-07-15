@@ -299,6 +299,12 @@ export async function initApp() {
       } else if (targetView === "view-mistakes") {
         renderMistakesList();
       } else if (targetView === "view-import") {
+        state.editingWordKey = null;
+        state.isEditingCustom = null;
+        const submitBtn = document.getElementById("btn-manual-submit");
+        if (submitBtn) submitBtn.textContent = "💾 Save Custom Word";
+        const header = document.querySelector("#tab-manual h3");
+        if (header) header.textContent = "✏️ Add Custom (Manual)";
         renderImportedList();
       }
     };
@@ -1808,6 +1814,53 @@ function renderDirectoryTree() {
   const btnAddWord = document.getElementById("btn-add-word-to-folder");
   if (btnAddWord) {
     btnAddWord.onclick = () => {
+      // Clear editing state so we are adding, not editing
+      state.editingWordKey = null;
+      state.isEditingCustom = null;
+      
+      const submitBtn = document.getElementById("btn-manual-submit");
+      if (submitBtn) submitBtn.textContent = "💾 Save Custom Word";
+      
+      const header = document.querySelector("#tab-manual h3");
+      if (header) header.textContent = "✏️ Add Custom (Manual)";
+
+      // Clear input fields
+      document.getElementById("manual-input-word").value = "";
+      document.getElementById("manual-lang-en").value = "";
+      document.getElementById("manual-lang-de").value = "";
+      document.getElementById("manual-lang-it").value = "";
+      document.getElementById("manual-lang-es").value = "";
+      document.getElementById("manual-lang-fr").value = "";
+      document.getElementById("manual-image-url").value = "";
+      
+      // Clear advanced grammar fields
+      document.getElementById("manual-art-de").value = "";
+      document.getElementById("manual-art-it").value = "";
+      document.getElementById("manual-art-es").value = "";
+      document.getElementById("manual-art-fr").value = "";
+      document.getElementById("manual-gen-de-m").value = "";
+      document.getElementById("manual-gen-de-f").value = "";
+      document.getElementById("manual-gen-it-m").value = "";
+      document.getElementById("manual-gen-it-f").value = "";
+      document.getElementById("manual-sentence-en").value = "";
+      document.getElementById("manual-sentence-de").value = "";
+      document.getElementById("manual-sentence-it").value = "";
+      document.getElementById("manual-sentence-es").value = "";
+      document.getElementById("manual-sentence-fr").value = "";
+      
+      // Clear synonyms list
+      const synContainer = document.getElementById("manual-synonyms-container");
+      if (synContainer) {
+        synContainer.innerHTML = `<li style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; padding: 12px;">Enter a word above and run AI Translate to suggest synonyms.</li>`;
+      }
+      
+      // Reset custom recording variables
+      if (window.currentRecordingBase64 !== undefined) window.currentRecordingBase64 = "";
+      const recordBtnPlay = document.getElementById("btn-record-play");
+      if (recordBtnPlay) recordBtnPlay.disabled = true;
+      const recordStatus = document.getElementById("record-status-text");
+      if (recordStatus) recordStatus.textContent = "No audio recorded";
+
       showView("view-import");
       const importTabBtn = document.querySelector('[data-tab="tab-manual"]');
       if (importTabBtn) importTabBtn.click();
