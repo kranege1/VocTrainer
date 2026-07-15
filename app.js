@@ -13,7 +13,7 @@ import {
   renderImportedList
 } from './modules/import.js';
 import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes } from './modules/test-runner.js';
-import './modules/init.js';
+import { initApp } from './modules/init.js';
 
 // ==========================================
 // 9. Word Details & AI/Web Lookups
@@ -1695,4 +1695,8 @@ window.detectLanguageAndTranslateToEn = detectLanguageAndTranslateToEn;
 window.fetchSynonymsForTarget = fetchSynonymsForTarget;
 window.FREQUENCY_LISTS = FREQUENCY_LISTS;
 
-
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initApp);
+} else {
+  initApp();
+}
