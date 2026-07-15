@@ -1671,12 +1671,7 @@ window.renderHistoryList = renderHistoryList;
 window.updateCloudSyncUI = updateCloudSyncUI;
 window.voteDifficulty = voteDifficulty;
 window.showView = showView;
-window.exportBackupData = exportBackupData;
-window.handleBackupFileButtonClick = handleBackupFileButtonClick;
-window.changeBackupFile = changeBackupFile;
-window.stopSpeechQueue = stopSpeechQueue;
 window.speakWord = speakWord;
-window.speakQuickTranslation = speakQuickTranslation;
 
 // Expose internal functions for modules/init.js and on-device features
 window.loadStarterVocab = loadStarterVocab;
