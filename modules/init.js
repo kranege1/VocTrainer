@@ -2068,20 +2068,29 @@ function renderBrowseWordsList(folderId) {
       tr.style.opacity = "1";
     };
 
-    const star = (txt, l) => isCommonWord(txt, l) ? '⭐' : '';
+    const checkIsCommon = () => {
+      if (vocab.isCommon !== undefined) return vocab.isCommon;
+      const checkLangs = ["en", "de", "it", "es", "fr"];
+      for (const lang of checkLangs) {
+        const val = vocab[lang];
+        if (val && isCommonWord(val, lang)) {
+          return true;
+        }
+      }
+      return false;
+    };
+    const isCommon = checkIsCommon();
     
     const inputHtml = (lang, val, isBold = false) => {
       const color = getLangColor(lang);
       const boldStyle = isBold ? "font-weight: 700;" : "";
       const displayVal = val || "";
-      const commonStar = star(val, lang);
       return `
         <div style="display: flex; align-items: center; width: 100%; position: relative;">
-          <input type="text" class="browse-edit-input" style="${boldStyle} color: ${color}; padding-right: 20px;" 
+          <input type="text" class="browse-edit-input" style="${boldStyle} color: ${color};" 
                  value="${esc(displayVal)}" placeholder="(empty)"
                  autocomplete="off" spellcheck="false"
                  onkeydown="if(event.key === 'Enter') this.blur()">
-          ${commonStar ? `<span title="High Frequency / Common Word" style="position: absolute; right: 4px; color: #f59e0b; pointer-events: none; font-size: 0.8rem;">⭐</span>` : ''}
         </div>
       `;
     };
@@ -2089,6 +2098,15 @@ function renderBrowseWordsList(folderId) {
     tr.innerHTML = `
       <td style="padding: 4px 8px; text-align: center;">
         <input type="checkbox" class="chk-select-browse" data-base-key="${esc(vocab[base])}" data-target-key="${esc(vocab[state.browseTargetLang])}" data-custom="${isCustom}" style="cursor: pointer; width: 16px; height: 16px;">
+      </td>
+      <td style="padding: 4px 8px; text-align: center;">
+        <button type="button" class="star-toggle-btn" style="background: none; border: none; cursor: pointer; font-size: 1.1rem; padding: 0; outline: none; transition: transform 0.1s; ${isCommon ? 'color: #f59e0b; opacity: 1;' : 'color: var(--text-secondary); opacity: 0.15;'}" 
+                data-word-key="${esc(key)}" data-custom="${isCustom}" title="${isCommon ? 'Common Word (Click to remove)' : 'Not Common Word (Click to mark)'}" 
+                onclick="event.preventDefault(); event.stopPropagation(); window.toggleCommonWord(this)"
+                onmouseover="this.style.opacity='0.8'; this.style.transform='scale(1.2)'"
+                onmouseout="this.style.opacity='${isCommon ? '1' : '0.15'}'; this.style.transform='scale(1)'">
+          ${isCommon ? '⭐' : '☆'}
+        </button>
       </td>
       <td style="padding: 4px 8px;">${inputHtml(base, vocab[base], true)}</td>
       <td style="padding: 4px 8px;">${inputHtml(state.browseTargetLang, vocab[state.browseTargetLang])}</td>
@@ -2103,6 +2121,42 @@ function renderBrowseWordsList(folderId) {
     wordsTableBody.appendChild(tr);
   });
 }
+
+window.toggleCommonWord = function(buttonEl) {
+  const wordKey = buttonEl.dataset.wordKey;
+  const isCustom = buttonEl.dataset.custom === "true";
+  const base = state.baseLang || "en";
+  const target = state.browseTargetLang || "de";
+  
+  if (isCustom) {
+    const idx = state.customVocab.findIndex(v => v.en === wordKey);
+    if (idx !== -1) {
+      const vocab = state.customVocab[idx];
+      const currentVal = vocab.isCommon !== undefined 
+        ? vocab.isCommon 
+        : (isCommonWord(vocab[base], base) || isCommonWord(vocab[target], target));
+      state.customVocab[idx].isCommon = !currentVal;
+    }
+  } else {
+    if (!state.editedStarters[wordKey]) {
+      state.editedStarters[wordKey] = {};
+    }
+    const starterVocabRaw = window.STARTER_VOCAB_RAW || [];
+    const starterMatch = starterVocabRaw.find(w => w.en === wordKey || w.origEn === wordKey);
+    let currentVal = false;
+    if (state.editedStarters[wordKey].isCommon !== undefined) {
+      currentVal = state.editedStarters[wordKey].isCommon;
+    } else if (starterMatch) {
+      currentVal = (isCommonWord(starterMatch[base], base) || isCommonWord(starterMatch[target], target));
+    }
+    state.editedStarters[wordKey].isCommon = !currentVal;
+  }
+  
+  saveState();
+  const folderSelect = document.getElementById("select-folder");
+  const folderId = folderSelect ? folderSelect.value : "all";
+  renderBrowseWordsList(folderId);
+};
 
 window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTargetKey, isCustom) {
   console.log("=== saveRowChanges triggered ===");
