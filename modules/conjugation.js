@@ -362,9 +362,9 @@ export function getConjugationsForVerb(wordObj, lang) {
   const hasKey = state.openaiKey || state.grokKey || state.geminiKey || state.anthropicKey;
   if (hasKey) {
     fetchConjugationsWithAI(cleanInfinitive, lang, wordKey).then(aiArr => {
-      if (aiArr && state.currentTest && state.currentTest.selectedMode === "conjugation") {
+      if (aiArr && state.currentTest && state.currentTest.selectedMode === "conjugation" && state.currentTest.words) {
         const currentWord = state.currentTest.words[state.currentTest.index];
-        if ((currentWord.origEn || currentWord.en) === wordKey) {
+        if (currentWord && (currentWord.origEn || currentWord.en) === wordKey) {
           // If we are currently matches-based conjugation test, refresh it!
           if (window.buildConjugationMode) {
             window.buildConjugationMode();
