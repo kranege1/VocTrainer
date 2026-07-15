@@ -1,18 +1,18 @@
 // VocTrainer - Import & Scraper Module
 import { state, saveState, updateCategoryCounts } from './state.js';
 
-export // ==========================================
+// ==========================================
 // 4. Scraper & Custom Add Functionality
 // ==========================================
-let urlScrapedRows = [];
-let fileScrapedRows = [];
+export let urlScrapedRows = [];
+export let fileScrapedRows = [];
 
 // Configure PDF.js global worker path if available
 if (window.pdfjsLib) {
   window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 }
 
-async export function importFromUrl(url, category) {
+export async function importFromUrl(url, category) {
   const spinner = document.getElementById("import-spinner");
   const previewArea = document.getElementById("url-preview-area");
   const tableBody = document.getElementById("url-preview-table-body");
@@ -223,7 +223,7 @@ window.toggleUrlScrapedRow = (id, checked) => {
 };
 
 // File Upload Processing Functions
-async export function handleFileSelect(file) {
+export async function handleFileSelect(file) {
   const spinner = document.getElementById("file-spinner");
   const spinnerText = document.getElementById("file-spinner-text");
   const previewArea = document.getElementById("file-preview-area");
@@ -359,7 +359,7 @@ window.toggleFileScrapedRow = (id, checked) => {
   if (row) row.active = checked;
 };
 
-async export function executeFileImport() {
+export async function executeFileImport() {
   const category = document.getElementById("file-import-category").value.trim() || "document-import";
   const btnConfirm = document.getElementById("btn-file-confirm");
   const btnConfirmTop = document.getElementById("btn-file-confirm-top");
@@ -423,7 +423,7 @@ async export function executeFileImport() {
   }
 }
 
-async export function detectLanguage(text) {
+export async function detectLanguage(text) {
   if (!text || text.trim().length === 0) return null;
   try {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(text.trim())}`;
@@ -444,7 +444,7 @@ async export function detectLanguage(text) {
   return null;
 }
 
-async export function translateAndDetectWithAI(word) {
+export async function translateAndDetectWithAI(word) {
   const prompt = `Identify the source language (en, de, it, es, or fr) of the phrase "${word}" and translate it into all 5 languages: English (en), German (de), Italian (it), Spanish (es), and French (fr).
   Output your response ONLY as a clean, parseable JSON object with keys "detectedLang" (the 2-letter code), "en", "de", "it", "es", "fr". Do not wrap in markdown code blocks. Do not write extra commentary.
   Example: {"detectedLang": "it", "en": "the book is on the table", "de": "das Buch ist auf dem Tisch", "it": "il libro è sul tavolo", "es": "el libro está en la mesa", "fr": "le livre est sur la table"}`;
@@ -460,7 +460,7 @@ async export function translateAndDetectWithAI(word) {
   }
 }
 
-async export function addCustomWord(english, translation, lang, category, imageUrl = "", audioBase64 = "") {
+export async function addCustomWord(english, translation, lang, category, imageUrl = "", audioBase64 = "") {
   const base = state.baseLang || "en";
   const cleanEnglish = english.trim().toLowerCase();
 
@@ -583,7 +583,7 @@ export function sanitizeWordTranslation(text, lang) {
   return clean;
 }
 
-async export function fillMissingTranslations(wordObj, sourceLang) {
+export async function fillMissingTranslations(wordObj, sourceLang) {
   const langs = ["en", "de", "it", "es", "fr"];
   const sourceText = wordObj[sourceLang];
   if (!sourceText) return;

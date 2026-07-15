@@ -536,6 +536,13 @@ function playSound(soundId) {
   }
 }
 
+function playFeedbackSound(type) {
+  playSound("sound-" + type);
+}
+
+window.playSound = playSound;
+window.playFeedbackSound = playFeedbackSound;
+
 function playSynthesizedSound(type) {
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
   if (!AudioCtx) return;
@@ -869,24 +876,30 @@ function playCustomAudio(base64Data) {
 }
 
 import {
-  triggerLocalWordScraper,
-  scrapeCustomWordDefinition,
-  executeAddCustomWordDirectly,
-  triggerDeleteWord,
-  confirmDeleteWord,
-  deleteSelectedWords,
-  renderImportedList,
-  sanitizeWordTranslation
+  importFromUrl,
+  renderUrlPreview,
+  handleFileSelect,
+  renderFilePreview,
+  executeFileImport,
+  detectLanguage,
+  translateAndDetectWithAI,
+  addCustomWord,
+  sanitizeWordTranslation,
+  fillMissingTranslations,
+  renderImportedList
 } from './modules/import.js';
 
-window.triggerLocalWordScraper = triggerLocalWordScraper;
-window.scrapeCustomWordDefinition = scrapeCustomWordDefinition;
-window.executeAddCustomWordDirectly = executeAddCustomWordDirectly;
-window.triggerDeleteWord = triggerDeleteWord;
-window.confirmDeleteWord = confirmDeleteWord;
-window.deleteSelectedWords = deleteSelectedWords;
-window.renderImportedList = renderImportedList;
+window.importFromUrl = importFromUrl;
+window.renderUrlPreview = renderUrlPreview;
+window.handleFileSelect = handleFileSelect;
+window.renderFilePreview = renderFilePreview;
+window.executeFileImport = executeFileImport;
+window.detectLanguage = detectLanguage;
+window.translateAndDetectWithAI = translateAndDetectWithAI;
+window.addCustomWord = addCustomWord;
 window.sanitizeWordTranslation = sanitizeWordTranslation;
+window.fillMissingTranslations = fillMissingTranslations;
+window.renderImportedList = renderImportedList;
 
 // ==========================================
 // 5. Mistakes Vault Implementation
@@ -1585,7 +1598,6 @@ You can read more directly on Wiktionary: https://en.wiktionary.org/wiki/${encod
 import {
   showCustomAlert,
   showCustomConfirm,
-  playFeedbackSound,
   testApiKey,
   renderFoldersList,
   buildTreeHTML,
@@ -1604,7 +1616,6 @@ import {
 
 window.showCustomAlert = showCustomAlert;
 window.showCustomConfirm = showCustomConfirm;
-window.playFeedbackSound = playFeedbackSound;
 window.testApiKey = testApiKey;
 window.renderFoldersList = renderFoldersList;
 window.getFolderWordsRecursive = getFolderWordsRecursive;

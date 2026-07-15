@@ -2,7 +2,7 @@
 import { state, saveState, loadState, updateCategoryCounts } from './state.js';
 
 // Export everything we declare
-export // ==========================================
+// ==========================================
 // 11. iCloud / Local Folder Synchronization
 // ==========================================
 export const idb = {
@@ -49,7 +49,7 @@ export const idb = {
 state.icloudHandle = null;
 state.backupFileHandle = null;
 
-async export function initBackupFile() {
+export async function initBackupFile() {
   if (!window.showSaveFilePicker) {
     const statusSpan = document.getElementById("backup-file-status");
     if (statusSpan) {
@@ -162,7 +162,7 @@ export function onBackupFileAccessGranted() {
 }
 
 
-async export function initICloudSync() {
+export async function initICloudSync() {
   if (!window.showDirectoryPicker) {
     const statusSpan = document.getElementById("icloud-folder-status");
     if (statusSpan) {
@@ -203,7 +203,7 @@ async export function initICloudSync() {
   }
 }
 
-async export function selectICloudFolder() {
+export async function selectICloudFolder() {
   if (!window.showDirectoryPicker) {
     alert("Folder Syncing (File System Access API) is not supported in this browser. Please use a desktop Chromium browser (e.g. Chrome, Edge) for live folder synchronization. On iOS, Safari, or Firefox, you can use the manual Import/Export backups below.");
     return;
@@ -231,7 +231,7 @@ async export function selectICloudFolder() {
   }
 }
 
-async export function onICloudFolderAccessGranted() {
+export async function onICloudFolderAccessGranted() {
   const statusSpan = document.getElementById("icloud-folder-status");
   if (statusSpan) {
     statusSpan.textContent = `📁 ${state.icloudHandle.name}`;
@@ -249,7 +249,7 @@ async export function onICloudFolderAccessGranted() {
   await syncICloudFolder();
 }
 
-async export function syncICloudFolder() {
+export async function syncICloudFolder() {
   if (!state.icloudHandle) return;
 
   const container = document.getElementById("icloud-wordlists-container");
@@ -434,7 +434,7 @@ window.downloadAndImportCloudSet = () => {};
 window.deleteCloudSet = () => {};
 
 // 12. Direct Semicolon CSV Import
-async export function executeCSVImport() {
+export async function executeCSVImport() {
   const textInput = document.getElementById("csv-import-text");
   const catInput = document.getElementById("csv-category");
   if (!textInput || !catInput) return;
@@ -653,7 +653,7 @@ export function getSanitizedSyncPayload() {
   return payload;
 }
 
-async export function pushToCloud() {
+export async function pushToCloud() {
   if (state.syncProvider === "github") {
     await pushToGitHubGist();
     return;
@@ -699,7 +699,7 @@ async export function pushToCloud() {
   }
 }
 
-async export function pullFromCloud() {
+export async function pullFromCloud() {
   if (state.syncProvider === "github") {
     await pullFromGitHubGist();
     return;
@@ -778,7 +778,7 @@ async export function pullFromCloud() {
   }
 }
 
-async export function generateCloudSyncCode() {
+export async function generateCloudSyncCode() {
   if (window.location.protocol === "file:") {
     alert("Browser Security Block:\nYou are running the app directly from your hard drive (file://). Browsers block all external cloud database requests in this mode.\n\nPlease start your local server and open 'http://localhost:8080' in your browser to use Cloud Sync!");
     return;
@@ -825,7 +825,7 @@ async export function generateCloudSyncCode() {
   }
 }
 
-async export function linkCloudSyncDevice(code) {
+export async function linkCloudSyncDevice(code) {
   if (window.location.protocol === "file:") {
     alert("Browser Security Block:\nYou are running the app directly from your hard drive (file://). Browsers block all external cloud database requests in this mode.\n\nPlease start your local server and open 'http://localhost:8080' in your browser to use Cloud Sync!");
     return;
@@ -916,7 +916,7 @@ export function unlinkCloudSyncDevice() {
 // ==========================================
 // 13. GitHub Gist Cloud Sync Implementation
 // ==========================================
-async export function connectGitHubGist() {
+export async function connectGitHubGist() {
   const token = document.getElementById("input-github-token").value.trim();
   const gistId = document.getElementById("input-github-gist-id").value.trim();
   
@@ -1033,7 +1033,7 @@ async export function connectGitHubGist() {
   }
 }
 
-async export function pushToGitHubGist() {
+export async function pushToGitHubGist() {
   const statusMsg = document.getElementById("cloud-sync-status-msg");
   if (statusMsg) {
     statusMsg.textContent = "⏳ Syncing with GitHub Gist...";
@@ -1075,7 +1075,7 @@ async export function pushToGitHubGist() {
   }
 }
 
-async export function pullFromGitHubGist() {
+export async function pullFromGitHubGist() {
   const statusMsg = document.getElementById("cloud-sync-status-msg");
   if (statusMsg) {
     statusMsg.textContent = "⏳ Fetching from GitHub Gist...";

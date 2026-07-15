@@ -2,6 +2,8 @@
 import { state, saveState, loadState, getFolderFullPath, updateCategoryCounts } from './state.js';
 import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes } from './test-runner.js';
 
+const playSound = (id) => { if (window.playSound) window.playSound(id); };
+
 // ==========================================
 // 8. Event Listeners & Initialization
 // ==========================================

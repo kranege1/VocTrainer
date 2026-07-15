@@ -1,7 +1,9 @@
 // VocTrainer - Modals & Global UI Module
 import { state, saveState } from './state.js';
 
-export // ==========================================
+const playSound = (id) => { if (window.playSound) window.playSound(id); };
+
+// ==========================================
 // 10. Custom Modal Overlays (Alert & Confirm) & Global Click Sound
 // ==========================================
 

@@ -1,7 +1,7 @@
 // VocTrainer - Quick Translate Module
 import { state, saveState, updateCategoryCounts } from './state.js';
 
-export // ==========================================
+// ==========================================
 // 19. Quick Translate Engine & Controllers
 // ==========================================
 export let quickTranslateRecognition;
@@ -104,7 +104,7 @@ export function toggleQuickTranslateSpeech() {
   }
 }
 
-async export function runQuickTranslate(text) {
+export async function runQuickTranslate(text) {
   try {
     const targetGrid = document.getElementById("quick-translate-results");
     if (!targetGrid) return;
@@ -340,7 +340,7 @@ export function populateQuickTranslateFolders() {
   }
 }
 
-async export function saveQuickTranslateWord() {
+export async function saveQuickTranslateWord() {
   const spokenText = document.getElementById("quick-translate-input-display").textContent.trim();
   const folderId = document.getElementById("quick-translate-save-folder").value;
   
@@ -496,7 +496,7 @@ export function isVerbAnyLanguage(text) {
   return false;
 }
 
-async export function detectLanguageAndTranslateToEn(text) {
+export async function detectLanguageAndTranslateToEn(text) {
   try {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(text)}`;
     const response = await fetch(url);
@@ -512,7 +512,7 @@ async export function detectLanguageAndTranslateToEn(text) {
   return { detectedLang: "en", translation: text };
 }
 
-async export function fetchSynonymsForTarget(word, targetLang, sourceLang = "de") {
+export async function fetchSynonymsForTarget(word, targetLang, sourceLang = "de") {
   if (!word || word === "...") return [];
   
   // Clean translation if it contains articles
