@@ -1,6 +1,7 @@
 // VocTrainer - Event Listeners & Initialization Module
 import { state, saveState, loadState, getFolderFullPath, updateCategoryCounts, getFlagHtml } from './state.js';
 import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes, submitAnswer, toggleListening } from './test-runner.js';
+import { executeCSVImport } from './sync.js';
 
 // Window proxy shims — init.js is a module and cannot access app.js scope directly.
 // These shims forward calls to the functions assigned to window by app.js.
