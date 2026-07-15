@@ -79,7 +79,7 @@
         <h1>VocTrainer</h1>
         <div id="build-timestamp"
           style="font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6; font-family: monospace; margin-top: -6px; margin-bottom: 8px; pointer-events: none;">
-          Build: 2026-07-15 08:15:00
+          Build: 2026-07-15 08:32:00
         </div>
         <p>Master languages with premium gamified learning!</p>
       </div>
@@ -251,8 +251,9 @@
               <!-- Speech Mode -->
               <div id="test-mode-speech" class="test-mode-section">
                 <p class="speech-instruction">Tap the microphone and speak the translation</p>
-                
-                <div class="speech-mic-container" style="position: relative; display: inline-block; margin: 20px auto; text-align: center;">
+
+                <div class="speech-mic-container"
+                  style="position: relative; display: inline-block; margin: 20px auto; text-align: center;">
                   <button id="btn-mic" class="btn-mic-icon">🎙️</button>
                   <div class="pulse-ring"></div>
                 </div>
@@ -261,10 +262,12 @@
 
                 <!-- Pronunciation Feedback Section -->
                 <div id="pronunciation-feedback" style="display: none; margin-top: 20px; width: 100%;">
-                  <div class="overall-accuracy-badge" id="overall-accuracy-badge" style="font-size: 1.15rem; font-weight: bold; margin-bottom: 12px; color: var(--accent-color); text-align: center;">
+                  <div class="overall-accuracy-badge" id="overall-accuracy-badge"
+                    style="font-size: 1.15rem; font-weight: bold; margin-bottom: 12px; color: var(--accent-color); text-align: center;">
                     Pronunciation Accuracy: <span id="overall-accuracy-pct">0%</span>
                   </div>
-                  <div class="word-accuracy-list" id="word-accuracy-list" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
+                  <div class="word-accuracy-list" id="word-accuracy-list"
+                    style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
                     <!-- Word accuracy badges will be populated dynamically -->
                   </div>
                 </div>
@@ -426,8 +429,11 @@
 
       <!-- Search Box inside Conjugation Board -->
       <div style="max-width: 100%; margin-bottom: 16px; display: flex; gap: 8px;">
-        <input type="text" id="conjugation-search-input" placeholder="Search for a verb or translation..." class="custom-select" style="margin: 0; flex: 1; height: 42px; padding: 0 14px; font-size: 0.9rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: #fff;">
-        <button id="btn-clear-conjugation-search" class="btn btn-secondary" style="margin: 0; min-height: 42px; display: flex; align-items: center; justify-content: center; width: 42px; padding: 0; font-size: 1rem; border-radius: 8px;">✕</button>
+        <input type="text" id="conjugation-search-input" placeholder="Search for a verb or translation..."
+          class="custom-select"
+          style="margin: 0; flex: 1; height: 42px; padding: 0 14px; font-size: 0.9rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: #fff;">
+        <button id="btn-clear-conjugation-search" class="btn btn-secondary"
+          style="margin: 0; min-height: 42px; display: flex; align-items: center; justify-content: center; width: 42px; padding: 0; font-size: 1rem; border-radius: 8px;">✕</button>
       </div>
 
       <div class="conjugation-dashboard-layout"
@@ -478,13 +484,17 @@
         <h2>⚡ Quick Translate</h2>
       </div>
 
-      <div class="card" style="text-align: center; padding: 16px 20px; background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid var(--border-color); border-radius: 16px; margin-bottom: 12px;">
+      <div class="card"
+        style="text-align: center; padding: 16px 20px; background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid var(--border-color); border-radius: 16px; margin-bottom: 12px;">
         <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 1.15rem;">Speak a word or sentence</h3>
-        
+
         <!-- Language Selector -->
         <div class="form-group" style="max-width: 320px; margin: 0 auto 12px auto; text-align: left;">
-          <label style="font-weight: 600; display: block; margin-bottom: 6px; color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">I am speaking in:</label>
-          <select id="quick-translate-lang" class="custom-select" style="text-align: center; font-weight: 600; height: 48px; font-size: 1rem; border-radius: 10px; padding: 0 16px !important;">
+          <label
+            style="font-weight: 600; display: block; margin-bottom: 6px; color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">I
+            am speaking in:</label>
+          <select id="quick-translate-lang" class="custom-select"
+            style="text-align: center; font-weight: 600; height: 48px; font-size: 1rem; border-radius: 10px; padding: 0 16px !important;">
             <option value="de">🇩🇪 German (Deutsch)</option>
             <option value="en" selected>🇬🇧 English</option>
             <option value="it">🇮🇹 Italian (Italiano)</option>
@@ -494,47 +504,63 @@
         </div>
 
         <!-- Huge Mic Start/Stop Button with pulsating rings -->
-        <div style="position: relative; width: 78px; height: 78px; margin: 0 auto 12px auto; display: flex; align-items: center; justify-content: center;">
-          <div id="quick-translate-pulse" class="pulse-ring" style="width: 72px; height: 72px; border-radius: 50%; position: absolute; z-index: 1;"></div>
-          <button id="btn-quick-translate-mic" class="btn-mic-large" style="width: 60px; height: 60px; border-radius: 50%; border: none; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); color: white; font-size: 1.8rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 6px 18px rgba(14, 165, 233, 0.4); position: relative; z-index: 2; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); outline: none;">
+        <div
+          style="position: relative; width: 78px; height: 78px; margin: 0 auto 12px auto; display: flex; align-items: center; justify-content: center;">
+          <div id="quick-translate-pulse" class="pulse-ring"
+            style="width: 72px; height: 72px; border-radius: 50%; position: absolute; z-index: 1;"></div>
+          <button id="btn-quick-translate-mic" class="btn-mic-large"
+            style="width: 60px; height: 60px; border-radius: 50%; border: none; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); color: white; font-size: 1.8rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 6px 18px rgba(14, 165, 233, 0.4); position: relative; z-index: 2; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); outline: none;">
             🎙️
           </button>
         </div>
 
-        <div id="quick-translate-status" style="font-weight: 600; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px; letter-spacing: 0.5px;">
+        <div id="quick-translate-status"
+          style="font-weight: 600; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px; letter-spacing: 0.5px;">
           Tap microphone to start speaking
         </div>
 
         <!-- Manual Text Input -->
         <div style="max-width: 600px; margin: 0 auto 16px auto; display: flex; gap: 8px;">
-          <input type="text" id="quick-translate-text-input" placeholder="Or type a word/sentence here..." class="custom-select" style="margin: 0; flex: 1; height: 42px; padding: 0 14px; font-size: 0.9rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: #fff;">
-          <button id="btn-quick-translate-submit" class="btn btn-primary" style="margin: 0; height: 42px; border-radius: 8px; font-weight: 600; padding: 0 16px; font-size: 0.85rem; display: inline-flex; align-items: center; justify-content: center; min-height: 42px;">
+          <input type="text" id="quick-translate-text-input" placeholder="Or type a word/sentence here..."
+            class="custom-select"
+            style="margin: 0; flex: 1; height: 42px; padding: 0 14px; font-size: 0.9rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: #fff;">
+          <button id="btn-quick-translate-submit" class="btn btn-primary"
+            style="margin: 0; height: 42px; border-radius: 8px; font-weight: 600; padding: 0 16px; font-size: 0.85rem; display: inline-flex; align-items: center; justify-content: center; min-height: 42px;">
             Translate
           </button>
         </div>
 
         <!-- Spoken Text Display Container -->
         <div style="position: relative; max-width: 600px; margin: 0 auto;">
-          <div id="quick-translate-input-display" style="font-size: 1.4rem; font-weight: 700; line-height: 1.3; color: #fff; min-height: 48px; background: rgba(0,0,0,0.2); padding: 12px 48px 12px 12px; border-radius: 12px; border: 1px solid var(--border-color); word-wrap: break-word; text-shadow: 0 2px 4px rgba(0,0,0,0.3); text-align: left;">
+          <div id="quick-translate-input-display"
+            style="font-size: 1.4rem; font-weight: 700; line-height: 1.3; color: #fff; min-height: 48px; background: rgba(0,0,0,0.2); padding: 12px 48px 12px 12px; border-radius: 12px; border: 1px solid var(--border-color); word-wrap: break-word; text-shadow: 0 2px 4px rgba(0,0,0,0.3); text-align: left;">
             ...
           </div>
-          <button id="btn-quick-translate-copy" class="btn btn-secondary" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 8px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 1rem; margin: 0; min-height: 34px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03);" title="Copy to clipboard">
+          <button id="btn-quick-translate-copy" class="btn btn-secondary"
+            style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 8px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 1rem; margin: 0; min-height: 34px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03);"
+            title="Copy to clipboard">
             📋
           </button>
         </div>
 
         <!-- Store in Wordlist Area -->
-        <div id="quick-translate-save-box" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;">
-          <label style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">Save to List:</label>
-          <select id="quick-translate-save-folder" class="custom-select" style="max-width: 200px; margin: 0; height: 38px; font-size: 0.85rem; padding: 0 12px !important; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: #fff;"></select>
-          <button id="btn-quick-translate-save" class="btn btn-primary" style="margin: 0; min-height: 38px; padding: 0 16px; font-size: 0.8rem; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px var(--primary-glow);">
+        <div id="quick-translate-save-box"
+          style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;">
+          <label
+            style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin: 0;">Save
+            to List:</label>
+          <select id="quick-translate-save-folder" class="custom-select"
+            style="max-width: 200px; margin: 0; height: 38px; font-size: 0.85rem; padding: 0 12px !important; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: #fff;"></select>
+          <button id="btn-quick-translate-save" class="btn btn-primary"
+            style="margin: 0; min-height: 38px; padding: 0 16px; font-size: 0.8rem; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px var(--primary-glow);">
             📥 Store Word
           </button>
         </div>
       </div>
 
       <!-- Translations Grid -->
-      <div id="quick-translate-results" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 20px;">
+      <div id="quick-translate-results"
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 20px;">
         <!-- Language Translation Cards get rendered dynamically here -->
       </div>
     </section>
@@ -546,11 +572,14 @@
         <h2>Preferences & Audio</h2>
       </div>
 
-      <div class="card" style="display: flex; gap: 12px; flex-wrap: wrap; background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border: 1px solid var(--border-color);">
-        <button class="btn btn-secondary" onclick="showView('view-api')" style="flex: 1; min-width: 150px; margin: 0; min-height: 44px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.08);">
+      <div class="card"
+        style="display: flex; gap: 12px; flex-wrap: wrap; background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border: 1px solid var(--border-color);">
+        <button class="btn btn-secondary" onclick="showView('view-api')"
+          style="flex: 1; min-width: 150px; margin: 0; min-height: 44px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.08);">
           🔑 Configure API Keys
         </button>
-        <button class="btn btn-secondary" onclick="showView('view-grammar')" style="flex: 1; min-width: 150px; margin: 0; min-height: 44px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.08);">
+        <button class="btn btn-secondary" onclick="showView('view-grammar')"
+          style="flex: 1; min-width: 150px; margin: 0; min-height: 44px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.08);">
           📖 Open Grammar Guide
         </button>
       </div>
@@ -721,13 +750,18 @@
           <input type="file" id="import-backup-file" style="display: none;" accept=".json">
         </div>
         <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06);">
-          <label style="display: block; margin-bottom: 8px; font-weight: 500;">Persistent Backup File (Fixed Location)</label>
+          <label style="display: block; margin-bottom: 8px; font-weight: 500;">Persistent Backup File (Fixed
+            Location)</label>
           <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap;">
-            <button id="btn-select-backup-file" class="btn btn-primary" onclick="handleBackupFileButtonClick()">📂 Set Backup File</button>
-            <button id="btn-change-backup-file" class="btn btn-secondary" onclick="changeBackupFile()" style="display: none;">🔁 Change File</button>
-            <span id="backup-file-status" style="font-size: 0.9rem; color: var(--text-secondary);">No persistent backup file set</span>
+            <button id="btn-select-backup-file" class="btn btn-primary" onclick="handleBackupFileButtonClick()">📂 Set
+              Backup File</button>
+            <button id="btn-change-backup-file" class="btn btn-secondary" onclick="changeBackupFile()"
+              style="display: none;">🔁 Change File</button>
+            <span id="backup-file-status" style="font-size: 0.9rem; color: var(--text-secondary);">No persistent backup
+              file set</span>
           </div>
-          <p class="import-help">If set, clicking "Export Backup" always updates this specific file directly on disk, avoiding browser version duplicates.</p>
+          <p class="import-help">If set, clicking "Export Backup" always updates this specific file directly on disk,
+            avoiding browser version duplicates.</p>
         </div>
       </div>
 
@@ -1507,97 +1541,108 @@
       </div>
     </div>
   </div>
-    <!-- Premium Conjugation Speech Overlay Modal -->
-    <div id="conjugation-speech-overlay"
-      style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.8); z-index: 10000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(12px); transition: all 0.3s ease;">
+  <!-- Premium Conjugation Speech Overlay Modal -->
+  <div id="conjugation-speech-overlay"
+    style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.8); z-index: 10000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(12px); transition: all 0.3s ease;">
+    <div
+      style="background: rgba(30, 41, 59, 0.75); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 40px; max-width: 600px; width: 100%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); text-align: center; position: relative; animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+
+      <!-- Close/Stop button -->
+      <button onclick="window.stopSpeechQueue()"
+        style="position: absolute; top: 20px; right: 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.08); width: 36px; height: 36px; border-radius: 50%; color: #fff; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
+        onmouseover="this.style.background='rgba(239, 68, 68, 0.2)'; this.style.borderColor='rgba(239, 68, 68, 0.4)'"
+        onmouseout="this.style.background='rgba(255, 255, 255, 0.05)'; this.style.borderColor='rgba(255,255,255,0.08)'">&times;</button>
+
+      <!-- Playing/Pulse indicator -->
       <div
-        style="background: rgba(30, 41, 59, 0.75); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 40px; max-width: 600px; width: 100%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); text-align: center; position: relative; animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+        style="display: inline-flex; align-items: center; gap: 6px; background: rgba(14, 165, 233, 0.15); color: #0ea5e9; padding: 6px 16px; border-radius: 99px; font-size: 0.8rem; font-weight: bold; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px;">
+        <span
+          style="width: 8px; height: 8px; background: #0ea5e9; border-radius: 50%; display: inline-block; animation: pulseGlow 1.5s infinite;"></span>
+        Speaking Conjugation
+      </div>
 
-        <!-- Close/Stop button -->
-        <button onclick="window.stopSpeechQueue()"
-          style="position: absolute; top: 20px; right: 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.08); width: 36px; height: 36px; border-radius: 50%; color: #fff; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
-          onmouseover="this.style.background='rgba(239, 68, 68, 0.2)'; this.style.borderColor='rgba(239, 68, 68, 0.4)'"
-          onmouseout="this.style.background='rgba(255, 255, 255, 0.05)'; this.style.borderColor='rgba(255,255,255,0.08)'">&times;</button>
+      <!-- Spoken text -->
+      <div id="cso-spoken"
+        style="font-size: 3.5rem; font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 16px; word-break: break-word; text-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+      </div>
 
-        <!-- Playing/Pulse indicator -->
-        <div
-          style="display: inline-flex; align-items: center; gap: 6px; background: rgba(14, 165, 233, 0.15); color: #0ea5e9; padding: 6px 16px; border-radius: 99px; font-size: 0.8rem; font-weight: bold; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px;">
-          <span
-            style="width: 8px; height: 8px; background: #0ea5e9; border-radius: 50%; display: inline-block; animation: pulseGlow 1.5s infinite;"></span>
-          Speaking Conjugation
-        </div>
+      <!-- Divider -->
+      <div style="width: 60px; height: 2px; background: rgba(255, 255, 255, 0.1); margin: 24px auto;"></div>
 
-        <!-- Spoken text -->
-        <div id="cso-spoken"
-          style="font-size: 3.5rem; font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 16px; word-break: break-word; text-shadow: 0 4px 12px rgba(0,0,0,0.3);">
-        </div>
+      <!-- Translation -->
+      <div id="cso-translation"
+        style="font-size: 1.8rem; color: #38bdf8; font-weight: 600; opacity: 0.9; line-height: 1.3;"></div>
 
-        <!-- Divider -->
-        <div style="width: 60px; height: 2px; background: rgba(255, 255, 255, 0.1); margin: 24px auto;"></div>
-
-        <!-- Translation -->
-        <div id="cso-translation"
-          style="font-size: 1.8rem; color: #38bdf8; font-weight: 600; opacity: 0.9; line-height: 1.3;"></div>
-
-        <!-- Quick instructions/Stop Hint -->
-        <div style="margin-top: 32px; font-size: 0.8rem; color: var(--text-secondary); opacity: 0.6;">
-          Tap anywhere outside or click the &times; to stop reading
-        </div>
+      <!-- Quick instructions/Stop Hint -->
+      <div style="margin-top: 32px; font-size: 0.8rem; color: var(--text-secondary); opacity: 0.6;">
+        Tap anywhere outside or click the &times; to stop reading
       </div>
     </div>
+  </div>
 
-    <style>
-      .btn-mic-large:hover {
-        transform: scale(1.05) !important;
-        box-shadow: 0 10px 28px rgba(14, 165, 233, 0.6) !important;
-      }
-      .btn-mic-large:active {
-        transform: scale(0.95) !important;
-      }
-      .btn-mic-large.listening {
-        background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
-        box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4) !important;
-        animation: pulse-mic 1.5s infinite !important;
-      }
-      @keyframes pulse-mic {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.08); }
-        100% { transform: scale(1); }
-      }
+  <style>
+    .btn-mic-large:hover {
+      transform: scale(1.05) !important;
+      box-shadow: 0 10px 28px rgba(14, 165, 233, 0.6) !important;
+    }
 
-      @keyframes modalFadeIn {
-        from {
-          transform: scale(0.95);
-          opacity: 0;
-        }
+    .btn-mic-large:active {
+      transform: scale(0.95) !important;
+    }
 
-        to {
-          transform: scale(1);
-          opacity: 1;
-        }
+    .btn-mic-large.listening {
+      background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
+      box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4) !important;
+      animation: pulse-mic 1.5s infinite !important;
+    }
+
+    @keyframes pulse-mic {
+      0% {
+        transform: scale(1);
       }
 
-      @keyframes pulseGlow {
-        0% {
-          transform: scale(0.9);
-          opacity: 0.6;
-        }
-
-        50% {
-          transform: scale(1.1);
-          opacity: 1;
-          box-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
-        }
-
-        100% {
-          transform: scale(0.9);
-          opacity: 0.6;
-        }
+      50% {
+        transform: scale(1.08);
       }
-    </style>
 
-    <script src="speech.js?v=20260715_0815"></script>
-    <script type="module" src="app.js?v=20260715_0815"></script>
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes modalFadeIn {
+      from {
+        transform: scale(0.95);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes pulseGlow {
+      0% {
+        transform: scale(0.9);
+        opacity: 0.6;
+      }
+
+      50% {
+        transform: scale(1.1);
+        opacity: 1;
+        box-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
+      }
+
+      100% {
+        transform: scale(0.9);
+        opacity: 0.6;
+      }
+    }
+  </style>
+
+  <script src="speech.js?v=20260715_0815"></script>
+  <script type="module" src="app.js?v=20260715_0815"></script>
 </body>
 
 </html>
