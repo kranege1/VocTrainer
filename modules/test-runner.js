@@ -3,37 +3,64 @@ import { state, saveState } from './state.js';
 
 export function startTestSession(language, category, count, isMistakesOnly = false, customCategory = "none", direction = "forward") {
   let pool = [];
+  const base = state.baseLang || "en";
   
   if (isMistakesOnly) {
-    pool = [...state.mistakes];
-    // Filter out broken entries where question equals answer
-    pool = pool.filter(w => w.en && w.target && w.en.toLowerCase().trim() !== w.target.toLowerCase().trim());
+    pool = state.mistakes
+      .map(item => {
+        // Resolve fresh translations if it is a standard starter word
+        if (item.origEn && window.STARTER_VOCAB_RAW) {
+          const starter = window.STARTER_VOCAB_RAW.find(v => v.en === item.origEn);
+          if (starter) {
+            return {
+              en: starter[base] || item.en,
+              target: starter[language] || item.target,
+              origEn: item.origEn,
+              category: item.category
+            };
+          }
+        }
+        // Fallback to what was saved
+        return {
+          en: item[base] || item.en,
+          target: item[language] || item.target,
+          origEn: item.origEn || item.en,
+          category: item.category
+        };
+      })
+      .filter(w => w.en && w.target && w.en.toLowerCase().trim() !== w.target.toLowerCase().trim());
   } else if (customCategory !== "none") {
-    const base = state.baseLang || "en";
     pool = state.customVocab
       .filter(v => v.category === customCategory)
-      .filter(v => v[base] && v[language] && v[base].toLowerCase().trim() !== v[language].toLowerCase().trim());
+      .filter(v => v[base] && v[language] && v[base].toLowerCase().trim() !== v[language].toLowerCase().trim())
+      .map(item => ({
+        en: item[base],
+        target: item[language],
+        origEn: item.en || item[base],
+        category: item.category
+      }));
   } else {
-    const base = state.baseLang || "en";
     // Standard folder
     const starterVocabRaw = window.STARTER_VOCAB_RAW || [];
     const starters = starterVocabRaw
       .filter(item => item.category === category)
       .map(item => {
-        const origEn = item[base];
-        const origTarget = item[language];
-        if (state.deletedStarters.includes(origEn)) return null;
+        const stableEn = item.en;
+        const origEn = item[base] || item.en;
+        const origTarget = item[language] || item.target;
+        if (state.deletedStarters.includes(stableEn)) return null;
         
         let finalEn = origEn;
         let finalTarget = origTarget;
-        if (state.editedStarters[origEn]) {
-          finalEn = state.editedStarters[origEn].en || origEn;
-          finalTarget = state.editedStarters[origEn].target || origTarget;
+        if (state.editedStarters[stableEn]) {
+          finalEn = state.editedStarters[stableEn].en || origEn;
+          finalTarget = state.editedStarters[stableEn].target || origTarget;
         }
         
         return {
           en: finalEn,
           target: finalTarget,
+          origEn: stableEn,
           category: item.category
         };
       })
@@ -44,13 +71,14 @@ export function startTestSession(language, category, count, isMistakesOnly = fal
       .map(item => ({
         en: item[base],
         target: item[language],
+        origEn: item.en || item[base],
         category: item.category
       }));
 
     pool = [...starters, ...customs];
   }
 
-  // Filter out any entries where en equals target
+  // Filter out any entries where base language word equals target language word
   pool = pool.filter(w => w.en && w.target && w.en.toLowerCase().trim() !== w.target.toLowerCase().trim());
 
   if (pool.length === 0) {
@@ -581,7 +609,7 @@ function updateWordStats(wordEn, isCorrect) {
     const test = state.currentTest;
     const wordObj = test.words[test.index];
 
-    const exists = state.mistakes.some(m => m[base] === wordObj[base] && m[target] === wordObj[target]);
+    const exists = state.mistakes.some(m => m.en === wordObj.en && m.target === wordObj.target);
     if (!exists) {
       state.mistakes.push({
         ...wordObj,
