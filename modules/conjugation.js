@@ -406,14 +406,55 @@ export function renderConjugationDashboard() {
       }
     }
     if (!baseTrans) {
-      // Find matching index equivalent from base lists if exists
       const importantVerbsBaseList = IMPORTANT_VERBS[base];
-      if (importantVerbsBaseList && importantVerbsBaseList[idx]) {
-        baseTrans = importantVerbsBaseList[idx].target;
+      if (importantVerbsBaseList) {
+        const baseMatch = importantVerbsBaseList.find(v => v.en && (v.en.toLowerCase() === verb.en.toLowerCase() || verb.en.toLowerCase().includes(v.en.toLowerCase())));
+        if (baseMatch) {
+          baseTrans = baseMatch.target;
+        }
       }
     }
+
     if (!baseTrans) {
-      baseTrans = verb.en;
+      if (base === "en") {
+        baseTrans = verb.en;
+      } else {
+        const cacheKey = `gtrans_${lang}_${base}_${verb.target}`;
+        const cached = sessionStorage.getItem(cacheKey);
+        if (cached) {
+          baseTrans = cached;
+        } else {
+          baseTrans = verb.en; // Temporary English fallback
+          
+          const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${lang}&tl=${base}&dt=t&q=${encodeURIComponent(verb.target)}`;
+          fetch(url)
+            .then(res => res.json())
+            .then(data => {
+              if (data && data[0] && data[0][0] && data[0][0][0]) {
+                const transText = data[0][0][0].toLowerCase().trim();
+                sessionStorage.setItem(cacheKey, transText);
+                
+                const headerLabel = document.getElementById(`verb-base-trans-${idx}`);
+                if (headerLabel) {
+                  headerLabel.textContent = transText;
+                }
+                
+                const fakeBaseWordObj = { target: transText, en: verb.en, category: "verbs" };
+                const baseConjugations = getConjugationsForVerb(fakeBaseWordObj, base);
+                const basePronouns = PRONOUNS[base] || PRONOUNS.en;
+                const baseLabels = basePronouns.map((pr, i) => `${pr} ${baseConjugations[i] || ""}`);
+                
+                order.forEach((i) => {
+                  const boxEl = document.getElementById(`verb-${idx}-base-label-${i}`);
+                  if (boxEl) {
+                    boxEl.textContent = baseLabels[i] || "";
+                  }
+                });
+              }
+            })
+            .catch(err => console.error("Google translate API failed for verb header: " + verb.target, err));
+        }
+      }
     }
 
     if (query) {
@@ -424,7 +465,6 @@ export function renderConjugationDashboard() {
         return; // Filter out search mismatches
       }
     }
-
 
     // 2. Resolve equivalent base conjugations
     let baseLabels = [];
@@ -449,7 +489,7 @@ export function renderConjugationDashboard() {
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <div>
           <h3 style="margin: 0; font-size: 1.15rem; color: var(--accent-color); font-weight: 700;">${verb.target}</h3>
-          <span style="font-size: 0.85rem; color: var(--text-secondary);">${baseTrans}</span>
+          <span style="font-size: 0.85rem; color: var(--text-secondary);" id="verb-base-trans-${idx}">${baseTrans}</span>
         </div>
         <div style="display: flex; gap: 8px;" onclick="event.stopPropagation();">
           <button class="btn btn-secondary btn-sm" style="margin: 0; padding: 6px 12px; min-height: 32px; font-size: 0.75rem;" id="btn-melody-${idx}">🔊 Melody</button>
@@ -466,7 +506,7 @@ export function renderConjugationDashboard() {
               <span style="color: #fff; font-weight: 700;">
                 <span style="color: var(--text-secondary); font-weight: 500; margin-right: 6px;">${pr}</span>${conj}
               </span>
-              <span style="font-size: 0.8rem; color: var(--text-secondary); opacity: 0.8; font-weight: 500; text-align: right;">${baseText}</span>
+              <span style="font-size: 0.8rem; color: var(--text-secondary); opacity: 0.8; font-weight: 500; text-align: right;" id="verb-${idx}-base-label-${i}">${baseText}</span>
             </div>
           `;
         }).join("")}
