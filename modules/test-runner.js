@@ -143,7 +143,7 @@ export function renderQuestion() {
   }
 
   const questionWord = test.words[test.index];
-  const questionTextEl = document.getElementById("test-question-text");
+  const questionTextEl = document.getElementById("test-prompt-word");
   const direction = state.testDirection || "forward";
 
   // Hide all mode containers
