@@ -1581,6 +1581,8 @@ function playCustomAudio(base64Data) {
   }
 }
 
+window.playCustomAudio = playCustomAudio;
+
 
 
 window.importFromUrl = importFromUrl;

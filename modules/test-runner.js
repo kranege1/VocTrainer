@@ -248,6 +248,16 @@ export function renderQuestion() {
     }
   }
 
+  // Show or hide the custom audio recording button based on availability
+  const btnPlayCustom = document.getElementById("btn-play-custom-recording");
+  if (btnPlayCustom) {
+    if (questionWord.audio) {
+      btnPlayCustom.style.display = "inline-flex";
+    } else {
+      btnPlayCustom.style.display = "none";
+    }
+  }
+
   // Speak target word automatically if in reverse direction (target -> base)
   if (direction === "reverse") {
     speakCurrentTestWord();
@@ -705,7 +715,7 @@ export function quitTestSession() {
   }
 }
 
-export function speakCurrentTestWord() {
+export function speakCurrentTestWord(rate = 1.0) {
   const test = state.currentTest;
   if (!test) return;
   const wordObj = test.words[test.index];
@@ -730,11 +740,11 @@ export function speakCurrentTestWord() {
     } else {
       correctConjugation = wordObj.target;
     }
-    if (window.speakWord) window.speakWord(correctConjugation, targetLang);
+    if (window.speakWord) window.speakWord(correctConjugation, targetLang, rate);
   } else {
     const text = wordObj.target;
     const targetLang = state.selectedLang || "de";
-    if (window.speakWord) window.speakWord(text, targetLang);
+    if (window.speakWord) window.speakWord(text, targetLang, rate);
   }
 }
 

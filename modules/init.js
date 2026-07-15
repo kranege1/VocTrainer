@@ -6,6 +6,7 @@ import { executeCSVImport } from './sync.js';
 // Window proxy shims — init.js is a module and cannot access app.js scope directly.
 // These shims forward calls to the functions assigned to window by app.js.
 const playSound                 = (...args) => window.playSound?.(...args);
+const playCustomAudio           = (...args) => window.playCustomAudio?.(...args);
 const showView                  = (...args) => window.showView?.(...args);
 const showCustomAlert           = (...args) => window.showCustomAlert?.(...args);
 const showCustomConfirm         = (...args) => window.showCustomConfirm?.(...args);
@@ -822,6 +823,28 @@ export async function initApp() {
   document.getElementById("btn-cleanse-mistakes").onclick = () => {
     startTestSession(state.selectedLang, "all", 10, true);
   };
+
+  // Speak prompt actions in test view
+  const btnSpeakPrompt = document.getElementById("btn-speak-prompt");
+  if (btnSpeakPrompt) {
+    btnSpeakPrompt.onclick = () => speakCurrentTestWord(1.0);
+  }
+  const btnSpeakPromptSlow = document.getElementById("btn-speak-prompt-slow");
+  if (btnSpeakPromptSlow) {
+    btnSpeakPromptSlow.onclick = () => speakCurrentTestWord(0.5);
+  }
+  const btnPlayCustomRecording = document.getElementById("btn-play-custom-recording");
+  if (btnPlayCustomRecording) {
+    btnPlayCustomRecording.onclick = () => {
+      const test = state.currentTest;
+      if (test) {
+        const wordObj = test.words[test.index];
+        if (wordObj && wordObj.audio) {
+          playCustomAudio(wordObj.audio);
+        }
+      }
+    };
+  }
 
   // Mic Speaking Action
   document.getElementById("btn-mic").onclick = toggleListening;
