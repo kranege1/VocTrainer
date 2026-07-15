@@ -764,3 +764,70 @@ export function updateDifficultyVoteUI(level) {
     btnHard.style.color = "#e74c3c";
   }
 }
+
+export function submitSpeechAnswer(userAnswer) {
+  const test = state.currentTest;
+  if (!test) return;
+
+  if (window.stopQuestionTimer) window.stopQuestionTimer();
+
+  const correctWord = test.words[test.index];
+  const direction = state.testDirection || "forward";
+  const correctText = direction === "forward" ? correctWord.target : correctWord.en;
+
+  const isCorrect = checkAnswer(userAnswer, correctText, correctWord);
+
+  if (isCorrect) {
+    triggerCorrectAnswerUI();
+  } else {
+    triggerIncorrectAnswerUI(correctText);
+  }
+}
+
+export function toggleListening() {
+  const btnMic = document.getElementById("btn-mic");
+  if (!btnMic) return;
+
+  if (btnMic.classList.contains("listening")) {
+    if (window.stopListeningPronunciation) window.stopListeningPronunciation();
+    btnMic.classList.remove("listening");
+  } else {
+    const test = state.currentTest;
+    if (!test) return;
+    const currentWord = test.words[test.index];
+    const direction = state.testDirection || "forward";
+    const answerLang = direction === "forward" ? (state.selectedLang || "de") : (state.baseLang || "en");
+
+    if (window.initSpeechRecognition) {
+      const initialized = window.initSpeechRecognition(
+        answerLang,
+        () => {
+          btnMic.classList.add("listening");
+          const transcript = document.getElementById("speech-transcript");
+          if (transcript) transcript.textContent = "Listening...";
+        },
+        (result) => {
+          const transcript = document.getElementById("speech-transcript");
+          if (transcript) transcript.textContent = result;
+          submitSpeechAnswer(result);
+        },
+        (error) => {
+          btnMic.classList.remove("listening");
+          const transcript = document.getElementById("speech-transcript");
+          if (transcript) transcript.textContent = "[Error: Try again]";
+        },
+        () => {
+          btnMic.classList.remove("listening");
+        }
+      );
+
+      if (initialized && window.startListeningPronunciation) {
+        window.startListeningPronunciation();
+      } else {
+        alert("Speech recognition is not supported or failed to initialize on this browser.");
+      }
+    } else {
+      alert("Speech recognition module is not loaded.");
+    }
+  }
+}
