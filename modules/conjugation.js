@@ -460,11 +460,13 @@ export function renderConjugationDashboard() {
         ${order.map(i => {
           const pr = pronouns[i] || "";
           const conj = conjugations[i] || "";
-          const baseText = baseLabels[i] ? ` <span style="font-size: 0.75rem; color: var(--text-secondary); opacity: 0.8; font-weight: 400; margin-left: 4px;">(${baseLabels[i]})</span>` : "";
+          const baseText = baseLabels[i] || "";
           return `
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: rgba(255,255,255,0.015); border-radius: 8px; border: 1px solid rgba(255,255,255,0.03);">
-              <span style="color: var(--text-secondary); font-weight: 600;">${pr}</span>
-              <strong style="color: #fff;">${conj}${baseText}</strong>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: rgba(255,255,255,0.015); border-radius: 8px; border: 1px solid rgba(255,255,255,0.03); min-height: 38px;">
+              <span style="color: #fff; font-weight: 700;">
+                <span style="color: var(--text-secondary); font-weight: 500; margin-right: 6px;">${pr}</span>${conj}
+              </span>
+              <span style="font-size: 0.8rem; color: var(--text-secondary); opacity: 0.8; font-weight: 500; text-align: right;">${baseText}</span>
             </div>
           `;
         }).join("")}
