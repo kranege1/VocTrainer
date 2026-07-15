@@ -124,7 +124,38 @@ export function renderQuestion() {
     finishTestSession();
     return;
   }
+  // Synchronize the test mode toggles UI buttons to match active mode
+  const modeToggles = document.querySelectorAll(".mode-toggle-btn");
+  if (modeToggles.length > 0) {
+    modeToggles.forEach(btn => {
+      if (btn.dataset.mode === test.selectedMode) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
+      }
+    });
+  }
 
+  // Show/Hide toggles container based on conjugation mode
+  const togglesContainer = document.querySelector(".test-mode-toggles");
+  const currentDirection = state.testDirection || "forward";
+  if (togglesContainer) {
+    if (currentDirection === "conjugation") {
+      togglesContainer.style.display = "none";
+    } else {
+      togglesContainer.style.display = "flex";
+    }
+  }
+
+  // Ensure correct class is applied to the active section
+  const testSections = document.querySelectorAll(".test-mode-section");
+  testSections.forEach(sec => {
+    if (sec.id === `test-mode-${test.selectedMode}` || (currentDirection === "conjugation" && sec.id === "test-mode-conjugation")) {
+      sec.classList.add("active");
+    } else {
+      sec.classList.remove("active");
+    }
+  });
   // Update progress bar
   const progressFill = document.getElementById("test-progress-fill");
   if (progressFill) {
