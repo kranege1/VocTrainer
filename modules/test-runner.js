@@ -1,5 +1,6 @@
 // VocTrainer - Test Runner Module
 import { state, saveState } from './state.js';
+import { getConjugationsForVerb, PRONOUNS } from './conjugation.js';
 
 export function startTestSession(language, category, count, isMistakesOnly = false, customCategory = "none", direction = "forward") {
   let pool = [];
@@ -198,6 +199,11 @@ export function renderQuestion() {
 
   if (test.selectedMode === "compare") {
     buildCompareMode();
+    return;
+  }
+
+  if (test.selectedMode === "conjugation") {
+    buildConjugationMode();
     return;
   }
 
@@ -1352,3 +1358,366 @@ function showCompareFeedback(batch) {
     }
   }
 }
+
+export function buildConjugationMode() {
+  const tState = state.currentTest;
+  if (!tState) return;
+
+  const currentWord = tState.words[tState.index];
+  const aLang = currentWord.answerLang || state.selectedLang || "it";
+
+  // Hide progress / details wrapper
+  const wordCardWrapper = document.querySelector(".word-card-wrapper");
+  const catTag = document.getElementById("test-category-tag");
+  if (wordCardWrapper) wordCardWrapper.style.display = "none";
+  if (catTag) catTag.style.display = "none";
+
+  const btnSubmit = document.getElementById("btn-submit-answer");
+  if (btnSubmit) {
+    btnSubmit.style.display = "block";
+    btnSubmit.textContent = "Check Answer";
+    btnSubmit.onclick = checkConjugationAnswer;
+  }
+
+  if (window.questionTimerInterval) {
+    clearInterval(window.questionTimerInterval);
+    window.questionTimerInterval = null;
+  }
+  const timerBadge = document.getElementById("test-countdown-badge");
+  if (timerBadge) timerBadge.style.display = "none";
+
+  const correctConjugations = getConjugationsForVerb(currentWord, aLang);
+  window.conjugationCorrectList = correctConjugations;
+  window.conjugationUserMatches = [null, null, null, null, null, null];
+  window.conjugationSelectedCard = null;
+
+  const pronouns = PRONOUNS[aLang] || PRONOUNS.en;
+
+  const rowsContainer = document.getElementById("conjugation-rows-container");
+  if (rowsContainer) {
+    rowsContainer.innerHTML = "";
+    pronouns.forEach((pronoun, index) => {
+      const row = document.createElement("div");
+      row.className = "conjugation-row";
+      row.innerHTML = `
+        <span class="conjugation-pronoun">${pronoun}</span>
+        <button class="conjugation-slot" id="conjugation-slot-${index}">[ Tap to Place ]</button>
+      `;
+      
+      const slotEl = row.querySelector(".conjugation-slot");
+      slotEl.onclick = () => window.clickConjugationSlot(index);
+      slotEl.ondragover = (e) => {
+        e.preventDefault();
+      };
+      slotEl.ondrop = (e) => {
+        e.preventDefault();
+        try {
+          const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+          window.placeCardInSlot(data.text, data.cardIndex, index, data.fromSlot);
+        } catch (err) {}
+      };
+
+      rowsContainer.appendChild(row);
+    });
+  }
+
+  const poolContainer = document.getElementById("conjugation-pool");
+  if (poolContainer) {
+    poolContainer.innerHTML = "";
+    
+    poolContainer.ondragover = (e) => {
+      e.preventDefault();
+    };
+    poolContainer.ondrop = (e) => {
+      e.preventDefault();
+      try {
+        const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+        if (data.fromSlot !== undefined) {
+          window.returnCardToPool(data.fromSlot);
+        }
+      } catch (err) {}
+    };
+
+    const shuffledConjugations = [...correctConjugations]
+      .map((text, index) => ({ text, index }))
+      .sort(() => 0.5 - Math.random());
+
+    shuffledConjugations.forEach((item, idx) => {
+      const card = document.createElement("button");
+      card.className = "conjugation-card";
+      card.textContent = item.text;
+      card.dataset.index = idx;
+      
+      card.draggable = true;
+      card.ondragstart = (e) => {
+        e.dataTransfer.setData("text/plain", JSON.stringify({ text: item.text, cardIndex: idx }));
+      };
+
+      card.onclick = () => window.clickConjugationCard(card, item.text);
+      poolContainer.appendChild(card);
+    });
+  }
+}
+
+window.evaluateSlot = function(index) {
+  const slotEl = document.getElementById(`conjugation-slot-${index}`);
+  if (!slotEl) return;
+  const match = window.conjugationUserMatches[index];
+  const correctList = window.conjugationCorrectList;
+
+  if (!match) {
+    slotEl.className = "conjugation-slot";
+    slotEl.textContent = "[ Tap to Place ]";
+    slotEl.removeAttribute("draggable");
+    slotEl.style.borderColor = "";
+    return;
+  }
+
+  const isCorrect = match.text === correctList[index];
+  if (isCorrect) {
+    slotEl.className = "conjugation-slot filled correct";
+    playLocalSound("sound-correct");
+  } else {
+    slotEl.className = "conjugation-slot filled incorrect";
+    playLocalSound("sound-incorrect");
+  }
+};
+
+window.placeCardInSlot = function(text, cardIndex, slotIndex, fromSlotIndex) {
+  const targetExisting = window.conjugationUserMatches[slotIndex];
+
+  if (fromSlotIndex !== undefined && fromSlotIndex !== null) {
+    window.conjugationUserMatches[fromSlotIndex] = null;
+    const fromSlotEl = document.getElementById(`conjugation-slot-${fromSlotIndex}`);
+    if (fromSlotEl) {
+      fromSlotEl.className = "conjugation-slot";
+      fromSlotEl.textContent = "[ Tap to Place ]";
+      fromSlotEl.removeAttribute("draggable");
+    }
+  }
+
+  if (targetExisting) {
+    const targetCardEl = document.querySelector(`#conjugation-pool .conjugation-card[data-index="${targetExisting.cardIndex}"]`);
+    if (targetCardEl) {
+      targetCardEl.style.visibility = "visible";
+    }
+  }
+
+  const cardEl = document.querySelector(`#conjugation-pool .conjugation-card[data-index="${cardIndex}"]`);
+  if (cardEl) {
+    cardEl.style.visibility = "hidden";
+  }
+
+  window.conjugationUserMatches[slotIndex] = { text, cardIndex };
+  const slotEl = document.getElementById(`conjugation-slot-${slotIndex}`);
+  if (slotEl) {
+    slotEl.textContent = text;
+    slotEl.classList.add("filled");
+    slotEl.draggable = true;
+    slotEl.ondragstart = (e) => {
+      e.dataTransfer.setData("text/plain", JSON.stringify({ text, cardIndex, fromSlot: slotIndex }));
+    };
+  }
+
+  window.evaluateSlot(slotIndex);
+
+  if (fromSlotIndex !== undefined && fromSlotIndex !== null) {
+    window.evaluateSlot(fromSlotIndex);
+  }
+
+  window.checkAllSlotsAuto();
+};
+
+window.returnCardToPool = function(slotIndex) {
+  const match = window.conjugationUserMatches[slotIndex];
+  if (match) {
+    const cardEl = document.querySelector(`#conjugation-pool .conjugation-card[data-index="${match.cardIndex}"]`);
+    if (cardEl) {
+      cardEl.style.visibility = "visible";
+      cardEl.classList.remove("selected");
+    }
+
+    window.conjugationUserMatches[slotIndex] = null;
+    const slotEl = document.getElementById(`conjugation-slot-${slotIndex}`);
+    if (slotEl) {
+      slotEl.className = "conjugation-slot";
+      slotEl.textContent = "[ Tap to Place ]";
+      slotEl.removeAttribute("draggable");
+    }
+
+    playLocalSound("sound-bubble");
+  }
+};
+
+window.checkAllSlotsAuto = function() {
+  const tState = state.currentTest;
+  if (!tState) return;
+
+  const currentWord = tState.words[tState.index];
+  const aLang = currentWord.answerLang || state.selectedLang || "it";
+  const correctList = window.conjugationCorrectList;
+  const userMatches = window.conjugationUserMatches;
+
+  const allFilled = userMatches.every(m => m !== null);
+  if (!allFilled) return;
+
+  const allCorrect = userMatches.every((m, i) => m.text === correctList[i]);
+  if (allCorrect) {
+    setTimeout(() => {
+      checkConjugationAnswer();
+    }, 400);
+  }
+};
+
+window.clickConjugationCard = function(cardEl, text) {
+  playLocalSound("sound-bubble");
+  
+  if (cardEl.classList.contains("selected")) {
+    cardEl.classList.remove("selected");
+    window.conjugationSelectedCard = null;
+    return;
+  }
+
+  document.querySelectorAll(".conjugation-card").forEach(c => c.classList.remove("selected"));
+  cardEl.classList.add("selected");
+  window.conjugationSelectedCard = { el: cardEl, text: text, index: cardEl.dataset.index };
+};
+
+window.clickConjugationSlot = function(index) {
+  const existingMatch = window.conjugationUserMatches[index];
+
+  if (existingMatch) {
+    window.returnCardToPool(index);
+    return;
+  }
+
+  if (window.conjugationSelectedCard) {
+    const text = window.conjugationSelectedCard.text;
+    const cardIndex = window.conjugationSelectedCard.index;
+    window.conjugationSelectedCard = null;
+    window.placeCardInSlot(text, cardIndex, index);
+  }
+};
+
+function playLocalSound(name) {
+  if (window.playSound) window.playSound(name);
+}
+
+function checkConjugationAnswer() {
+  const tState = state.currentTest;
+  if (!tState) return;
+
+  const currentWord = tState.words[tState.index];
+  const aLang = currentWord.answerLang || state.selectedLang || "it";
+  const correctList = window.conjugationCorrectList;
+  const userMatches = window.conjugationUserMatches;
+  const pronouns = PRONOUNS[aLang] || PRONOUNS.en;
+
+  let allCorrect = true;
+
+  pronouns.forEach((pronoun, i) => {
+    const slotEl = document.getElementById(`conjugation-slot-${i}`);
+    if (slotEl) {
+      const userMatchText = userMatches[i] ? userMatches[i].text : null;
+      if (userMatchText === correctList[i]) {
+        slotEl.className = "conjugation-slot filled correct";
+      } else {
+        slotEl.className = "conjugation-slot filled incorrect";
+        slotEl.innerHTML = `${userMatchText || "Empty"} <span style="font-size:0.8em; opacity:0.8; text-decoration:line-through; margin:0 4px;">&rarr;</span> <span style="color:var(--success-color); font-weight:700;">${correctList[i]}</span>`;
+        allCorrect = false;
+      }
+    }
+  });
+
+  if (allCorrect) {
+    playLocalSound("sound-correct");
+  } else {
+    playLocalSound("sound-incorrect");
+  }
+
+  const wordKey = currentWord.origEn || currentWord.en;
+  if (!state.wordStats[wordKey]) {
+    state.wordStats[wordKey] = { attempts: 0, errors: 0, box: 1, lastReview: null };
+  }
+  const stats = state.wordStats[wordKey];
+  stats.attempts = (stats.attempts || 0) + 1;
+  stats.lastReview = Date.now();
+
+  if (allCorrect) {
+    if (!stats.box) stats.box = 1;
+    if (stats.box < 5) stats.box++;
+    
+    let qPoints = 100;
+    if (state.questionTimer > 0) {
+      const limit = state.questionTimer;
+      let timerLimitMult = 1.0;
+      if (limit === 5) timerLimitMult = 3.0;
+      else if (limit === 10) timerLimitMult = 2.0;
+      else if (limit === 15) timerLimitMult = 1.5;
+      qPoints = qPoints * timerLimitMult;
+    }
+    tState.points = (tState.points || 0) + Math.round(qPoints);
+    tState.correctCount++;
+    tState.lastAnswerCorrect = true;
+  } else {
+    stats.errors = (stats.errors || 0) + 1;
+    stats.box = 1;
+    
+    if (window.recordMistake) {
+      window.recordMistake(currentWord);
+    }
+
+    if (!tState.wrongAnswers.find(w => w.en === currentWord.en)) {
+      tState.wrongAnswers.push(currentWord);
+    }
+    tState.lastAnswerCorrect = false;
+  }
+
+  // Update stats mini
+  const correctCountEl = document.getElementById("test-correct-count");
+  const wrongCountEl = document.getElementById("test-wrong-count");
+  if (correctCountEl) correctCountEl.textContent = tState.correctCount;
+  if (wrongCountEl) wrongCountEl.textContent = tState.wrongAnswers.length;
+
+  saveState();
+
+  const overlay = document.getElementById("feedback-overlay");
+  const fTitle = document.getElementById("feedback-title");
+  const fDesc = document.getElementById("feedback-desc");
+  const fIcon = document.getElementById("feedback-icon");
+  
+  if (overlay) {
+    overlay.className = allCorrect ? "test-right-pane active correct-ans" : "test-right-pane active incorrect-ans";
+    if (fTitle) fTitle.textContent = allCorrect ? "Correct Conjugation!" : "Conjugation Mistakes!";
+    if (fIcon) fIcon.textContent = allCorrect ? "🎉" : "😢";
+    if (fDesc) fDesc.textContent = allCorrect 
+      ? `Perfect! You conjugated "${currentWord.target}" correctly across all pronouns.` 
+      : `Some conjugation matching mistakes were made. Review the corrections on the left.`;
+  }
+
+  const detailsContainer = document.getElementById("word-details-container");
+  if (detailsContainer) detailsContainer.style.display = "none";
+
+  const diffVoting = document.querySelector(".difficulty-voting-container");
+  if (diffVoting) {
+    diffVoting.style.display = "block";
+    updateDifficultyVoteUI(currentWord);
+  }
+
+  const nextBtn = document.getElementById("btn-next-question");
+  if (nextBtn) {
+    nextBtn.style.display = "block";
+    nextBtn.textContent = "Continue";
+    nextBtn.onclick = () => {
+      if (overlay) overlay.classList.remove("active");
+      tState.index++;
+      if (tState.index < tState.words.length) {
+        renderQuestion();
+      } else {
+        finishTestSession();
+      }
+    };
+  }
+}
+
+window.buildConjugationMode = buildConjugationMode;

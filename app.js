@@ -14,6 +14,7 @@ import {
 } from './modules/import.js';
 import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes, voteDifficulty, updateDifficultyVoteUI, submitAnswer, toggleListening } from './modules/test-runner.js';
 import { initApp, renderHistoryList, renderBrowseList } from './modules/init.js';
+import './modules/conjugation.js';
 
 // ==========================================
 // 9. Word Details & AI/Web Lookups
@@ -1486,6 +1487,7 @@ function playSpeechQueue(queue) {
   currentSpeechIndex = 0;
   playNextInQueue(activeQueueId);
 }
+window.playSpeechQueue = playSpeechQueue;
 
 window.stopSpeechQueue = function() {
   currentQueueId++;

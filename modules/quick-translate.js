@@ -1,5 +1,6 @@
 // VocTrainer - Quick Translate Module
 import { state, saveState, updateCategoryCounts } from './state.js';
+import { getConjugationsForVerb, PRONOUNS } from './conjugation.js';
 
 const getLangColor = (...args) => window.getLangColor?.(...args);
 const stripArticles = (...args) => window.stripArticles?.(...args);
