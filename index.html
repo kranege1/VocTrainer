@@ -113,7 +113,7 @@
         <h1>VocTrainer</h1>
         <div id="build-timestamp"
           style="font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6; font-family: monospace; margin-top: -6px; margin-bottom: 8px; pointer-events: none;">
-          Build: 2026-07-15 15:20:00
+          Build: 2026-07-15 15:26:00
         </div>
         <p>Master languages with premium gamified learning!</p>
       </div>
@@ -1306,7 +1306,7 @@
 
       <!-- Word List Card -->
       <div class="card" id="browse-words-card"
-        style="display: none; overflow: auto; max-height: 600px; margin-bottom: 20px; width: 100%; position: relative;">
+        style="display: none; margin-bottom: 20px; width: 100%;">
         <div
           style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
           <h3 id="browse-list-title"
@@ -1328,23 +1328,26 @@
           <!-- Dynamic flag buttons for selecting study language will go here -->
         </div>
 
-        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; min-width: 600px;">
-          <thead>
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.08); text-transform: uppercase;">
-              <th style="padding: 8px; width: 40px; text-align: center;"><input type="checkbox"
-                  id="chk-select-all-browse" style="cursor: pointer; width: 16px; height: 16px;"></th>
-              <th id="browse-hdr-base"
-                style="padding: 8px; color: var(--text-secondary); font-weight: 600; width: 44%;">Base Language</th>
-              <th id="browse-hdr-target"
-                style="padding: 8px; color: var(--text-secondary); font-weight: 600; width: 44%;">Study Language</th>
-              <th style="padding: 8px; color: var(--text-secondary); font-weight: 600; text-align: center; width: 12%;">
-                Actions</th>
-            </tr>
-          </thead>
-          <tbody id="browse-words-table-body">
-            <!-- Populated dynamically -->
-          </tbody>
-        </table>
+        <!-- Scrollable Table Wrapper -->
+        <div class="browse-table-wrapper" style="overflow: auto; max-height: 480px; width: 100%;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; min-width: 600px;">
+            <thead>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.08); text-transform: uppercase;">
+                <th style="padding: 8px; width: 40px; text-align: center;"><input type="checkbox"
+                    id="chk-select-all-browse" style="cursor: pointer; width: 16px; height: 16px;"></th>
+                <th id="browse-hdr-base"
+                  style="padding: 8px; color: var(--text-secondary); font-weight: 600; width: 44%;">Base Language</th>
+                <th id="browse-hdr-target"
+                  style="padding: 8px; color: var(--text-secondary); font-weight: 600; width: 44%;">Study Language</th>
+                <th style="padding: 8px; color: var(--text-secondary); font-weight: 600; text-align: center; width: 12%;">
+                  Actions</th>
+              </tr>
+            </thead>
+            <tbody id="browse-words-table-body">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
