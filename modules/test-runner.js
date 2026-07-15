@@ -485,13 +485,6 @@ function triggerIncorrectAnswerUI(correctText) {
   // Add to wrongAnswers list
   test.wrongAnswers.push(wordObj);
 
-  // Deduct hearts if not repeat round
-  if (!test.isRepeatRound) {
-    state.hearts--;
-    if (state.hearts < 0) state.hearts = 0;
-    saveState();
-  }
-
   // Show incorrect feedback in the right pane overlay
   const overlay = document.getElementById("feedback-overlay");
   const fTitle = document.getElementById("feedback-title");
@@ -520,43 +513,6 @@ function triggerIncorrectAnswerUI(correctText) {
   const wordKey = wordObj.origEn || wordObj.en;
   const vStats = state.wordStats[wordKey] || { difficulty: "medium" };
   updateDifficultyVoteUI(vStats.difficulty || "medium");
-
-  // Check if out of hearts
-  if (state.hearts <= 0 && !test.isRepeatRound) {
-    setTimeout(() => {
-      if (window.showCustomConfirm) {
-        window.showCustomConfirm("💔 You ran out of hearts! Would you like to refill hearts for 50 XP?", (refill) => {
-          if (refill) {
-            if (state.xp >= 50) {
-              state.xp -= 50;
-              state.hearts = 5;
-              saveState();
-              nextQuestion();
-            } else {
-              if (window.showCustomAlert) window.showCustomAlert("⚠️ You don't have enough XP to refill hearts!");
-              finishTestSession();
-            }
-          } else {
-            finishTestSession();
-          }
-        });
-      } else {
-        if (confirm("You ran out of hearts! Refill for 50 XP?")) {
-          if (state.xp >= 50) {
-            state.xp -= 50;
-            state.hearts = 5;
-            saveState();
-            nextQuestion();
-          } else {
-            alert("Not enough XP!");
-            finishTestSession();
-          }
-        } else {
-          finishTestSession();
-        }
-      }
-    }, 800);
-  }
 }
 
 function updateWordStats(wordEn, isCorrect) {
