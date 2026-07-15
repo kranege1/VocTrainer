@@ -359,7 +359,7 @@ export function selectOption(buttonEl, selectedText) {
         }
       });
     }
-    triggerIncorrectAnswerUI(correctText);
+    triggerIncorrectAnswerUI(correctText, selectedText);
   }
 }
 
@@ -389,7 +389,7 @@ export function submitTypingAnswer() {
     triggerCorrectAnswerUI();
   } else {
     inputField.classList.add("incorrect-input");
-    triggerIncorrectAnswerUI(correctText);
+    triggerIncorrectAnswerUI(correctText, userAnswer);
   }
 }
 
@@ -437,7 +437,7 @@ export function submitConjugationAnswer() {
     triggerCorrectAnswerUI();
   } else {
     inputField.classList.add("incorrect-input");
-    triggerIncorrectAnswerUI(correctConjugation);
+    triggerIncorrectAnswerUI(correctConjugation, userAnswer);
   }
 }
 
@@ -552,7 +552,72 @@ function triggerCorrectAnswerUI() {
   speakCurrentTestWord();
 }
 
-function triggerIncorrectAnswerUI(correctText) {
+function escapeHtml(str) {
+  return (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function diffStrings(typed, correct) {
+  const cleanTyped = (typed || "").trim();
+  const cleanCorrect = (correct || "").trim();
+  
+  if (!cleanTyped) {
+    return `<span style="color: var(--error-color, #ff0054); font-style: italic;">(nothing)</span>`;
+  }
+  
+  const m = cleanTyped.length;
+  const n = cleanCorrect.length;
+  const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+  
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (cleanTyped[i - 1].toLowerCase() === cleanCorrect[j - 1].toLowerCase()) {
+        dp[i][j] = dp[i - 1][j - 1];
+      } else {
+        dp[i][j] = Math.min(
+          dp[i - 1][j] + 1,    // deletion (wrong character typed)
+          dp[i][j - 1] + 1,    // insertion (missing character in typed)
+          dp[i - 1][j - 1] + 1 // substitution (wrong character typed)
+        );
+      }
+    }
+  }
+  
+  let i = m, j = n;
+  let html = [];
+  
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && cleanTyped[i - 1].toLowerCase() === cleanCorrect[j - 1].toLowerCase()) {
+      html.push(escapeHtml(cleanTyped[i - 1]));
+      i--;
+      j--;
+    } else {
+      let costDelete = i > 0 ? dp[i - 1][j] : Infinity;
+      let costInsert = j > 0 ? dp[i][j - 1] : Infinity;
+      let costSub = (i > 0 && j > 0) ? dp[i - 1][j - 1] : Infinity;
+      
+      let minCost = Math.min(costDelete, costInsert, costSub);
+      
+      if (minCost === costSub) {
+        html.push(`<u style="text-decoration: underline; text-decoration-color: var(--error-color, #ff0054); text-decoration-thickness: 2px; color: var(--error-color, #ff0054); font-weight: 700;">${escapeHtml(cleanTyped[i - 1])}</u>`);
+        i--;
+        j--;
+      } else if (minCost === costDelete) {
+        html.push(`<u style="text-decoration: underline; text-decoration-color: var(--error-color, #ff0054); text-decoration-thickness: 2px; color: var(--error-color, #ff0054); font-weight: 700;">${escapeHtml(cleanTyped[i - 1])}</u>`);
+        i--;
+      } else {
+        html.push(`<u style="text-decoration: underline; text-decoration-color: var(--error-color, #ff0054); text-decoration-thickness: 2px; opacity: 0.6; color: var(--error-color, #ff0054); font-style: italic;">${escapeHtml(cleanCorrect[j - 1])}</u>`);
+        j--;
+      }
+    }
+  }
+  
+  return html.reverse().join("");
+}
+
+function triggerIncorrectAnswerUI(correctText, studentAnswer = "") {
   // Play incorrect sound
   if (window.playFeedbackSound) window.playFeedbackSound("incorrect");
 
@@ -581,7 +646,8 @@ function triggerIncorrectAnswerUI(correctText) {
     fIcon.textContent = "😢";
   }
   if (fDesc) {
-    fDesc.innerHTML = `Correct translation is: <strong style="color: #fff;">${correctText}</strong>`;
+    const highlighted = diffStrings(studentAnswer, correctText);
+    fDesc.innerHTML = `You typed: <strong style="color: #fff; font-size: 1.15rem; letter-spacing: 0.5px;">${highlighted}</strong>`;
   }
 
   // Populate word details in the sidebar
@@ -833,7 +899,7 @@ export function submitSpeechAnswer(userAnswer) {
   if (isCorrect) {
     triggerCorrectAnswerUI();
   } else {
-    triggerIncorrectAnswerUI(correctText);
+    triggerIncorrectAnswerUI(correctText, userAnswer);
   }
 }
 
@@ -1042,7 +1108,7 @@ export function submitBubblesAnswer() {
   if (isCorrect) {
     triggerCorrectAnswerUI();
   } else {
-    triggerIncorrectAnswerUI(correctText);
+    triggerIncorrectAnswerUI(correctText, userAnswer);
   }
 }
 
