@@ -209,7 +209,7 @@ window.triggerDeleteWord = async function(originalBaseKey, originalTargetKey, is
 };
 
 // API Key Validation Helper
-async export function testApiKey(engine, key, statusElId) {
+export async function testApiKey(engine, key, statusElId) {
   const statusEl = document.getElementById(statusElId);
   if (!statusEl) return;
 
@@ -746,7 +746,7 @@ export function renderFolderStatistics() {
 
 
 // Unified LLM Requester Helper (Gemini, OpenAI, Grok)
-async export function callLLM(prompt, systemInstruction = "You are a helpful language translation assistant.") {
+export async function callLLM(prompt, systemInstruction = "You are a helpful language translation assistant.") {
   let key = "";
   let url = "";
   let headers = {};
@@ -864,7 +864,7 @@ export function updateDirectionButtonsUI() {
 }
 
 // Dynamically fetch available models from xAI to prevent model not found errors
-async export function getGrokModel(key) {
+export async function getGrokModel(key) {
   try {
     const res = await fetch("https://api.x.ai/v1/models", {
       headers: { "Authorization": `Bearer ${key}` }
