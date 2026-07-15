@@ -32,6 +32,7 @@ const startQuickTranslateSpeech  = (...args) => window.startQuickTranslateSpeech
 const toggleQuickTranslateSpeech = (...args) => window.toggleQuickTranslateSpeech?.(...args);
 const saveQuickTranslateWord     = (...args) => window.saveQuickTranslateWord?.(...args);
 const getWordDetails             = (...args) => window.getWordDetails?.(...args);
+const buildTreeHTML             = (...args) => window.buildTreeHTML?.(...args);
 
 // ==========================================
 // 8. Event Listeners & Initialization
@@ -806,7 +807,7 @@ export async function initApp() {
   });
 
   // Repeat wrong answers trigger
-  document.getElementById("btn-start-repeat").onclick = startRepeatingMistakes;
+  document.getElementById("btn-start-repeat").onclick = repeatMistakes;
 
   // Cleanse Mistakes trigger
   document.getElementById("btn-cleanse-mistakes").onclick = () => {

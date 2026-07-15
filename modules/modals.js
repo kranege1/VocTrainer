@@ -1,4 +1,4 @@
-import { state, saveState, getFlagHtml } from './state.js';
+import { state, saveState, getFlagHtml, getFolderFullPath } from './state.js';
 
 // Language code mappings to Speech Synthesis/Recognition locales
 const LANG_LOCALES = {

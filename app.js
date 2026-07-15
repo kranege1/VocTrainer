@@ -1672,6 +1672,7 @@ window.getFlagHtml = getFlagHtml;
 window.submitAnswer = submitAnswer;
 window.getWordDetails = getWordDetails;
 window.renderBrowseList = renderBrowseList;
+window.buildTreeHTML = buildTreeHTML;
 
 // Expose internal functions for modules/init.js and on-device features
 window.loadStarterVocab = loadStarterVocab;
