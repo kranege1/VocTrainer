@@ -993,7 +993,7 @@ import {
   pullFromGitHubGist,
   loadCloudWordSets,
   uploadActiveVocabToCloud
-} from './modules/sync.js';
+} from './sync.js';
 
 window.initBackupFile = initBackupFile;
 window.onBackupFileAccessGranted = onBackupFileAccessGranted;
