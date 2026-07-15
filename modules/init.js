@@ -35,6 +35,7 @@ const saveQuickTranslateWord     = (...args) => window.saveQuickTranslateWord?.(
 const getWordDetails             = (...args) => window.getWordDetails?.(...args);
 const buildTreeHTML             = (...args) => window.buildTreeHTML?.(...args);
 const getLangColor              = (...args) => window.getLangColor?.(...args);
+const isCommonWord              = (...args) => window.isCommonWord?.(...args);
 
 // ==========================================
 // 8. Event Listeners & Initialization

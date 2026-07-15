@@ -1695,6 +1695,7 @@ window.isVerbCheck = isVerbCheck;
 window.isVerbAnyLanguage = isVerbAnyLanguage;
 window.detectLanguageAndTranslateToEn = detectLanguageAndTranslateToEn;
 window.getLangColor = getLangColor;
+window.isCommonWord = isCommonWord;
 
 // Expose functions globally to window for modules/state.js and inline html event handlers
 window.updateHeaderUI = updateHeaderUI;
