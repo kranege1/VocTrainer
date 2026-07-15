@@ -2,7 +2,32 @@
 import { state, saveState, loadState, getFolderFullPath, updateCategoryCounts } from './state.js';
 import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes } from './test-runner.js';
 
-const playSound = (id) => { if (window.playSound) window.playSound(id); };
+// Window proxy shims — init.js is a module and cannot access app.js scope directly.
+// These shims forward calls to the functions assigned to window by app.js.
+const playSound                 = (...args) => window.playSound?.(...args);
+const showView                  = (...args) => window.showView?.(...args);
+const showCustomAlert           = (...args) => window.showCustomAlert?.(...args);
+const showCustomConfirm         = (...args) => window.showCustomConfirm?.(...args);
+const loadStarterVocab          = (...args) => window.loadStarterVocab?.(...args);
+const loadFrequencyLists        = (...args) => window.loadFrequencyLists?.(...args);
+const initICloudSync            = (...args) => window.initICloudSync?.(...args);
+const initBackupFile            = (...args) => window.initBackupFile?.(...args);
+const renderMistakesList        = (...args) => window.renderMistakesList?.(...args);
+const renderHistoryList         = (...args) => window.renderHistoryList?.(...args);
+const renderImportedList        = (...args) => window.renderImportedList?.(...args);
+const stopQuickTranslateSpeech  = (...args) => window.stopQuickTranslateSpeech?.(...args);
+const runQuickTranslate         = (...args) => window.runQuickTranslate?.(...args);
+const normalizeWordCasing       = (...args) => window.normalizeWordCasing?.(...args);
+const sanitizeWordTranslation   = (...args) => window.sanitizeWordTranslation?.(...args);
+const addCustomWord             = (...args) => window.addCustomWord?.(...args);
+const detectLanguage            = (...args) => window.detectLanguage?.(...args);
+const translateAndDetectWithAI  = (...args) => window.translateAndDetectWithAI?.(...args);
+const fillMissingTranslations   = (...args) => window.fillMissingTranslations?.(...args);
+const handleFileSelect          = (...args) => window.handleFileSelect?.(...args);
+const callLLM                   = (...args) => window.callLLM?.(...args);
+const testApiKey                = (...args) => window.testApiKey?.(...args);
+const updateDirectionButtonsUI  = (...args) => window.updateDirectionButtonsUI?.(...args);
+const speakWord                 = (...args) => window.speakWord?.(...args);
 
 // ==========================================
 // 8. Event Listeners & Initialization
