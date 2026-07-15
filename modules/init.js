@@ -13,7 +13,7 @@ const loadFrequencyLists        = (...args) => window.loadFrequencyLists?.(...ar
 const initICloudSync            = (...args) => window.initICloudSync?.(...args);
 const initBackupFile            = (...args) => window.initBackupFile?.(...args);
 const renderMistakesList        = (...args) => window.renderMistakesList?.(...args);
-const renderHistoryList         = (...args) => window.renderHistoryList?.(...args);
+// const renderHistoryList         = (...args) => window.renderHistoryList?.(...args);
 const renderImportedList        = (...args) => window.renderImportedList?.(...args);
 const stopQuickTranslateSpeech  = (...args) => window.stopQuickTranslateSpeech?.(...args);
 const runQuickTranslate         = (...args) => window.runQuickTranslate?.(...args);
@@ -1672,7 +1672,7 @@ export async function initApp() {
 
 
 // Render the completed sessions in history list
-function renderHistoryList() {
+export function renderHistoryList() {
   const container = document.getElementById("history-sessions-list");
   container.innerHTML = "";
   

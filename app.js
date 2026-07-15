@@ -13,7 +13,7 @@ import {
   renderImportedList
 } from './modules/import.js';
 import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes } from './modules/test-runner.js';
-import { initApp } from './modules/init.js';
+import { initApp, renderHistoryList } from './modules/init.js';
 
 // ==========================================
 // 9. Word Details & AI/Web Lookups
