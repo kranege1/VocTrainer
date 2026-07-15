@@ -5,7 +5,7 @@ import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, sub
 // ==========================================
 // 8. Event Listeners & Initialization
 // ==========================================
-document.addEventListener("DOMContentLoaded", async () => {
+async function initApp() {
   // Add iOS class to body if running on iPhone/iPad/iPod
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
                 (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -1640,7 +1640,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       overlay.classList.add("active");
     };
   }
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initApp);
+} else {
+  initApp();
+}
 
 // Render the completed sessions in history list
 function renderHistoryList() {
