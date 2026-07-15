@@ -1,6 +1,8 @@
 // VocTrainer - Import & Scraper Module
 import { state, saveState, updateCategoryCounts } from './state.js';
 
+const renderBrowseList = (...args) => window.renderBrowseList?.(...args);
+
 // ==========================================
 // 4. Scraper & Custom Add Functionality
 // ==========================================

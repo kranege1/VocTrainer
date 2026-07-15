@@ -1705,7 +1705,7 @@ export function renderHistoryList() {
 }
 
 // Render the vocabulary list browser
-function renderBrowseList() {
+export function renderBrowseList() {
   const fullHeader = document.getElementById("folders-header-full");
   const compactHeader = document.getElementById("folders-header-compact");
   const treeContainer = document.getElementById("browse-directory-tree");

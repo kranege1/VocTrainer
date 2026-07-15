@@ -10,6 +10,7 @@ const LANG_LOCALES = {
 };
 
 const playSound = (id) => { if (window.playSound) window.playSound(id); };
+const renderBrowseList = (...args) => window.renderBrowseList?.(...args);
 
 // ==========================================
 // 10. Custom Modal Overlays (Alert & Confirm) & Global Click Sound
