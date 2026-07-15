@@ -108,9 +108,11 @@ export function renderQuestion() {
   const currentQEl = document.getElementById("test-current-q");
   const totalQEl = document.getElementById("test-total-q");
   const correctCountEl = document.getElementById("test-correct-count");
+  const wrongCountEl = document.getElementById("test-wrong-count");
   if (currentQEl) currentQEl.textContent = test.index + 1;
   if (totalQEl) totalQEl.textContent = test.totalOriginalCount;
   if (correctCountEl) correctCountEl.textContent = test.correctCount;
+  if (wrongCountEl) wrongCountEl.textContent = test.wrongAnswers.length;
 
   // Clear previous states
   const feedbackContainer = document.getElementById("test-feedback-container");
@@ -121,6 +123,23 @@ export function renderQuestion() {
   const btnSubmit = document.getElementById("btn-submit-answer");
   if (btnSubmit) {
     btnSubmit.disabled = false;
+    btnSubmit.style.display = "block";
+  }
+
+  const nextBtn = document.getElementById("btn-next-question");
+  if (nextBtn) {
+    nextBtn.onclick = nextQuestion;
+  }
+
+  // Restore defaults for non-compare mode
+  const wordCardWrapper = document.querySelector(".word-card-wrapper");
+  const catTag = document.getElementById("test-category-tag");
+  if (wordCardWrapper) wordCardWrapper.style.display = "block";
+  if (catTag) catTag.style.display = "block";
+
+  if (test.selectedMode === "compare") {
+    buildCompareMode();
+    return;
   }
 
   const questionWord = test.words[test.index];
@@ -131,7 +150,10 @@ export function renderQuestion() {
   const containers = {
     multiple: document.getElementById("test-mode-multiple"),
     typing: document.getElementById("test-mode-typing"),
-    conjugation: document.getElementById("test-mode-conjugation")
+    conjugation: document.getElementById("test-mode-conjugation"),
+    bubbles: document.getElementById("test-mode-bubbles"),
+    compare: document.getElementById("test-mode-compare"),
+    speech: document.getElementById("test-mode-speech")
   };
   Object.values(containers).forEach(el => { if (el) el.style.display = "none"; });
 
@@ -170,6 +192,21 @@ export function renderQuestion() {
       if (btnSubmit) btnSubmit.style.display = "none"; // Options check immediately on click
 
       generateMultipleChoiceOptions(questionWord);
+    } else if (test.selectedMode === "bubbles") {
+      if (containers.bubbles) containers.bubbles.style.display = "block";
+      if (btnSubmit) btnSubmit.style.display = "block";
+
+      const correctText = direction === "forward" ? questionWord.target : questionWord.en;
+      buildBubbleOptions(correctText);
+    } else if (test.selectedMode === "speech") {
+      if (containers.speech) containers.speech.style.display = "block";
+      if (btnSubmit) btnSubmit.style.display = "block";
+
+      const transcriptEl = document.getElementById("speech-transcript");
+      if (transcriptEl) transcriptEl.textContent = "...";
+      
+      const btnMic = document.getElementById("btn-mic");
+      if (btnMic) btnMic.className = "btn-mic-icon";
     } else {
       if (containers.typing) {
         containers.typing.style.display = "block";
@@ -367,9 +404,14 @@ export function submitConjugationAnswer() {
 }
 
 export function submitAnswer() {
+  const test = state.currentTest;
   const direction = state.testDirection || "forward";
   if (direction === "conjugation") {
     submitConjugationAnswer();
+  } else if (test && test.selectedMode === "bubbles") {
+    submitBubblesAnswer();
+  } else if (test && test.selectedMode === "speech") {
+    submitSpeechTranscriptAnswer();
   } else {
     submitTypingAnswer();
   }
@@ -801,6 +843,377 @@ export function toggleListening() {
       }
     } else {
       alert("Speech recognition module is not loaded.");
+    }
+  }
+}
+
+function buildBubbleOptions(targetPhrase) {
+  const selectedZone = document.getElementById("bubble-selected-zone");
+  const optionsZone = document.getElementById("bubble-options-zone");
+  if (!selectedZone || !optionsZone) return;
+  optionsZone.innerHTML = "";
+  selectedZone.innerHTML = "";
+
+  let pieces = targetPhrase.split(/\s+/);
+  
+  if (pieces.length === 1) {
+    const word = pieces[0];
+    const len = word.length;
+    
+    if (len >= 3) {
+      // Split word into 3 parts
+      const p1 = Math.floor(len / 3);
+      const p2 = Math.floor(2 * len / 3);
+      pieces = [
+        word.substring(0, p1),
+        word.substring(p1, p2),
+        word.substring(p2)
+      ];
+    } else {
+      // Very short word (1-2 chars): split into letters and add distractor parts
+      pieces = word.split("");
+      const distractors = ["en", "er", "te", "la", "de", "un", "es", "on"];
+      while (pieces.length < 3) {
+        const rand = distractors[Math.floor(Math.random() * distractors.length)];
+        if (!pieces.includes(rand)) {
+          pieces.push(rand);
+        }
+      }
+    }
+  } else {
+    // Phrases: use one block per word. Add distractor words if less than 3 words.
+    if (pieces.length < 3) {
+      const distractors = ["the", "and", "with", "house", "time", "day", "please", "today", "tomorrow"];
+      const starterVocabRaw = window.STARTER_VOCAB_RAW || [];
+      const vocabWords = starterVocabRaw.map(v => v.en).filter(Boolean);
+      const sourcePool = vocabWords.length > 0 ? vocabWords : distractors;
+      
+      while (pieces.length < 3) {
+        const randWord = sourcePool[Math.floor(Math.random() * sourcePool.length)].toLowerCase();
+        if (!pieces.map(p => p.toLowerCase()).includes(randWord)) {
+          pieces.push(randWord);
+        }
+      }
+    }
+  }
+
+  const shuffled = [...pieces].sort(() => 0.5 - Math.random());
+
+  // Enable desktop drag-over reordering on the selected zone container
+  selectedZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    const draggingEl = selectedZone.querySelector(".dragging");
+    if (!draggingEl) return;
+    const siblings = Array.from(selectedZone.querySelectorAll(".word-bubble:not(.dragging)"));
+    const nextSibling = siblings.find(sibling => {
+      const box = sibling.getBoundingClientRect();
+      return e.clientX < box.left + box.width / 2;
+    });
+    selectedZone.insertBefore(draggingEl, nextSibling);
+  });
+
+  shuffled.forEach((piece, index) => {
+    const bubble = document.createElement("button");
+    bubble.className = "word-bubble";
+    bubble.textContent = piece;
+    bubble.dataset.idx = index;
+    
+    bubble.onclick = () => {
+      if (window.playFeedbackSound) window.playFeedbackSound("click");
+      // Keep option button in the DOM layout, make invisible
+      bubble.style.visibility = "hidden";
+      bubble.style.pointerEvents = "none";
+
+      // Create matching select block
+      const selBubble = document.createElement("button");
+      selBubble.className = "word-bubble";
+      selBubble.textContent = piece;
+      
+      // Make it reorderable
+      selBubble.draggable = true;
+      selBubble.style.cursor = "move";
+
+      // HTML5 Drag and Drop events (Desktop)
+      selBubble.addEventListener("dragstart", (e) => {
+        selBubble.classList.add("dragging");
+      });
+      selBubble.addEventListener("dragend", () => {
+        selBubble.classList.remove("dragging");
+      });
+
+      // Touch Events (Mobile - iOS/iPad)
+      let touchActiveElement = null;
+      selBubble.addEventListener("touchstart", (e) => {
+        touchActiveElement = selBubble;
+        selBubble.classList.add("dragging");
+      });
+      selBubble.addEventListener("touchmove", (e) => {
+        if (!touchActiveElement) return;
+        const touch = e.touches[0];
+        const siblings = Array.from(selectedZone.querySelectorAll(".word-bubble:not(.dragging)"));
+        const nextSibling = siblings.find(sibling => {
+          const box = sibling.getBoundingClientRect();
+          return touch.clientX < box.left + box.width / 2;
+        });
+        selectedZone.insertBefore(touchActiveElement, nextSibling);
+      });
+      selBubble.addEventListener("touchend", () => {
+        if (touchActiveElement) {
+          touchActiveElement.classList.remove("dragging");
+          touchActiveElement = null;
+        }
+      });
+
+      // Clicking returns the bubble to options
+      selBubble.onclick = () => {
+        if (window.playFeedbackSound) window.playFeedbackSound("click");
+        // Restore option button visibility
+        bubble.style.visibility = "visible";
+        bubble.style.pointerEvents = "auto";
+        selBubble.remove();
+      };
+      
+      selectedZone.appendChild(selBubble);
+    };
+    optionsZone.appendChild(bubble);
+  });
+}
+
+export function submitBubblesAnswer() {
+  const test = state.currentTest;
+  if (!test) return;
+
+  if (window.stopQuestionTimer) window.stopQuestionTimer();
+
+  const selectedZone = document.getElementById("bubble-selected-zone");
+  if (!selectedZone) return;
+  
+  const selectedBubbles = selectedZone.querySelectorAll(".word-bubble");
+  const arr = Array.from(selectedBubbles).map(b => b.textContent);
+  
+  const correctWord = test.words[test.index];
+  const targetText = correctWord.target;
+  // If target has multiple words, join with space, else join with nothing (empty string)
+  const userAnswer = targetText.split(/\s+/).length === 1 ? arr.join("") : arr.join(" ");
+
+  const direction = state.testDirection || "forward";
+  const correctText = direction === "forward" ? correctWord.target : correctWord.en;
+
+  const isCorrect = checkAnswer(userAnswer, correctText, correctWord);
+
+  if (isCorrect) {
+    triggerCorrectAnswerUI();
+  } else {
+    triggerIncorrectAnswerUI(correctText);
+  }
+}
+
+export function submitSpeechTranscriptAnswer() {
+  const test = state.currentTest;
+  if (!test) return;
+
+  const transcriptEl = document.getElementById("speech-transcript");
+  const userAnswer = transcriptEl ? transcriptEl.textContent.trim() : "";
+  submitSpeechAnswer(userAnswer);
+}
+
+export function buildCompareMode() {
+  const test = state.currentTest;
+  if (!test) return;
+  
+  // Hide prompt card and category tag
+  const wordCardWrapper = document.querySelector(".word-card-wrapper");
+  const catTag = document.getElementById("test-category-tag");
+  if (wordCardWrapper) wordCardWrapper.style.display = "none";
+  if (catTag) catTag.style.display = "none";
+  
+  // Hide check answer button since game is interactive
+  const btnSubmit = document.getElementById("btn-submit-answer");
+  if (btnSubmit) btnSubmit.style.display = "none";
+
+  const containers = {
+    multiple: document.getElementById("test-mode-multiple"),
+    typing: document.getElementById("test-mode-typing"),
+    conjugation: document.getElementById("test-mode-conjugation"),
+    bubbles: document.getElementById("test-mode-bubbles"),
+    compare: document.getElementById("test-mode-compare"),
+    speech: document.getElementById("test-mode-speech")
+  };
+  Object.values(containers).forEach(el => { if (el) el.style.display = "none"; });
+  if (containers.compare) containers.compare.style.display = "block";
+
+  // Pick up to 5 words starting from current index
+  const batch = test.words.slice(test.index, test.index + 5);
+  if (batch.length === 0) {
+    finishTestSession();
+    return;
+  }
+
+  // Update progress text
+  const progressText = document.getElementById("test-progress-text");
+  if (progressText) {
+    progressText.textContent = `Matching Batch (${test.index + 1} - ${test.index + batch.length}/${test.words.length})`;
+  }
+  const progressFill = document.getElementById("test-progress-fill");
+  if (progressFill) {
+    const pct = (test.index / test.words.length) * 100;
+    progressFill.style.width = `${pct}%`;
+  }
+
+  const leftCol = document.getElementById("compare-col-left");
+  const rightCol = document.getElementById("compare-col-right");
+  if (!leftCol || !rightCol) return;
+
+  leftCol.innerHTML = "";
+  rightCol.innerHTML = "";
+
+  window.compareLeftSelected = null;
+  window.compareRightSelected = null;
+  window.compareMatchedCount = 0;
+
+  // Clear timer interval
+  if (window.stopQuestionTimer) window.stopQuestionTimer();
+  const timerBadge = document.getElementById("test-countdown-badge");
+  if (timerBadge) timerBadge.style.display = "none";
+
+  // Shuffle left words and right translations independently
+  const leftWords = [...batch].sort(() => 0.5 - Math.random());
+  const rightWords = [...batch].sort(() => 0.5 - Math.random());
+
+  leftWords.forEach(word => {
+    const btn = document.createElement("button");
+    btn.className = "compare-card-btn";
+    btn.textContent = word.en;
+    btn.dataset.wordId = word.origEn || word.en;
+    btn.onclick = () => selectCompareWord("left", btn, word);
+    leftCol.appendChild(btn);
+  });
+
+  rightWords.forEach(word => {
+    const btn = document.createElement("button");
+    btn.className = "compare-card-btn";
+    btn.textContent = word.target;
+    btn.dataset.wordId = word.origEn || word.en;
+    btn.onclick = () => selectCompareWord("right", btn, word);
+    rightCol.appendChild(btn);
+  });
+}
+
+function selectCompareWord(side, btn, word) {
+  if (btn.classList.contains("matched")) return;
+  
+  if (window.playFeedbackSound) window.playFeedbackSound("click");
+
+  if (side === "left") {
+    const prev = document.querySelector("#compare-col-left .compare-card-btn.selected");
+    if (prev) prev.classList.remove("selected");
+    
+    btn.classList.add("selected");
+    window.compareLeftSelected = { btn, word };
+  } else {
+    const prev = document.querySelector("#compare-col-right .compare-card-btn.selected");
+    if (prev) prev.classList.remove("selected");
+    
+    btn.classList.add("selected");
+    window.compareRightSelected = { btn, word };
+  }
+
+  if (window.compareLeftSelected && window.compareRightSelected) {
+    const left = window.compareLeftSelected;
+    const right = window.compareRightSelected;
+    
+    const leftId = left.word.origEn || left.word.en;
+    const rightId = right.word.origEn || right.word.en;
+    
+    if (leftId === rightId) {
+      if (window.playFeedbackSound) window.playFeedbackSound("correct");
+      
+      left.btn.classList.remove("selected");
+      left.btn.classList.add("matched");
+      right.btn.classList.remove("selected");
+      right.btn.classList.add("matched");
+      
+      window.compareLeftSelected = null;
+      window.compareRightSelected = null;
+      window.compareMatchedCount++;
+      
+      // Update statistics: Correct
+      const wordKey = left.word.origEn || left.word.en;
+      updateWordStats(wordKey, true);
+      
+      state.currentTest.correctCount++;
+      const correctCountEl = document.getElementById("test-correct-count");
+      if (correctCountEl) correctCountEl.textContent = state.currentTest.correctCount;
+      
+      const batch = state.currentTest.words.slice(state.currentTest.index, state.currentTest.index + 5);
+      if (window.compareMatchedCount === batch.length) {
+        setTimeout(() => {
+          showCompareFeedback(batch);
+        }, 300);
+      }
+    } else {
+      if (window.playFeedbackSound) window.playFeedbackSound("incorrect");
+      
+      left.btn.style.borderColor = "var(--error-color)";
+      right.btn.style.borderColor = "var(--error-color)";
+      
+      setTimeout(() => {
+        left.btn.style.borderColor = "";
+        right.btn.style.borderColor = "";
+        left.btn.classList.remove("selected");
+        right.btn.classList.remove("selected");
+      }, 500);
+
+      const wordKey = left.word.origEn || left.word.en;
+      updateWordStats(wordKey, false);
+
+      if (!state.currentTest.wrongAnswers.find(w => w.en === left.word.en)) {
+        state.currentTest.wrongAnswers.push(left.word);
+      }
+      
+      const wrongCountEl = document.getElementById("test-wrong-count");
+      if (wrongCountEl) wrongCountEl.textContent = state.currentTest.wrongAnswers.length;
+      
+      window.compareLeftSelected = null;
+      window.compareRightSelected = null;
+    }
+  }
+}
+
+function showCompareFeedback(batch) {
+  const test = state.currentTest;
+  if (!test) return;
+
+  saveState();
+
+  const overlay = document.getElementById("feedback-overlay");
+  const fTitle = document.getElementById("feedback-title");
+  const fDesc = document.getElementById("feedback-desc");
+  const fIcon = document.getElementById("feedback-icon");
+  
+  if (overlay) {
+    overlay.className = "test-right-pane active correct-ans";
+    if (fTitle) fTitle.textContent = "Compare Set Complete!";
+    if (fIcon) fIcon.textContent = "🏆";
+    if (fDesc) fDesc.textContent = `Great matching! You successfully completed this comparison set.`;
+    
+    // Hide details container
+    const detailsContainer = document.getElementById("word-details-container");
+    if (detailsContainer) detailsContainer.style.display = "none";
+
+    const nextBtn = document.getElementById("btn-next-question");
+    if (nextBtn) {
+      nextBtn.style.display = "block";
+      nextBtn.textContent = "Continue";
+      nextBtn.onclick = () => {
+        overlay.classList.remove("active");
+        test.index += batch.length; // Advance by the size of the matched batch (5)
+        if (test.index < test.words.length) {
+          buildCompareMode();
+        } else {
+          finishTestSession();
+        }
+      };
     }
   }
 }
