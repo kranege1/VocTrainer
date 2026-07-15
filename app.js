@@ -1671,6 +1671,7 @@ window.speakWord = speakWord;
 window.getFlagHtml = getFlagHtml;
 window.submitAnswer = submitAnswer;
 window.getWordDetails = getWordDetails;
+window.setupWordDetails = setupWordDetails;
 window.renderBrowseList = renderBrowseList;
 window.buildTreeHTML = buildTreeHTML;
 window.toggleListening = toggleListening;

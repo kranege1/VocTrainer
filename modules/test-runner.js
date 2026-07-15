@@ -118,13 +118,10 @@ export function renderQuestion() {
     feedbackContainer.style.display = "none";
     feedbackContainer.className = "test-feedback-card";
   }
-  const btnSubmit = document.getElementById("btn-test-submit");
+  const btnSubmit = document.getElementById("btn-submit-answer");
   if (btnSubmit) {
-    btnSubmit.style.display = "block";
     btnSubmit.disabled = false;
   }
-  const btnNext = document.getElementById("btn-test-next");
-  if (btnNext) btnNext.style.display = "none";
 
   const questionWord = test.words[test.index];
   const questionTextEl = document.getElementById("test-question-text");
@@ -176,7 +173,7 @@ export function renderQuestion() {
     } else {
       if (containers.typing) {
         containers.typing.style.display = "block";
-        const inputField = document.getElementById("test-typing-input");
+        const inputField = document.getElementById("input-typing-answer");
         if (inputField) {
           inputField.value = "";
           inputField.disabled = false;
@@ -298,12 +295,12 @@ export function submitTypingAnswer() {
   // Stop Timer
   if (window.stopQuestionTimer) window.stopQuestionTimer();
 
-  const inputField = document.getElementById("test-typing-input");
+  const inputField = document.getElementById("input-typing-answer");
   if (!inputField) return;
   const userAnswer = inputField.value.trim();
   inputField.disabled = true;
 
-  const btnSubmit = document.getElementById("btn-test-submit");
+  const btnSubmit = document.getElementById("btn-submit-answer");
   if (btnSubmit) btnSubmit.disabled = true;
 
   const correctWord = test.words[test.index];
@@ -442,26 +439,34 @@ function triggerCorrectAnswerUI() {
   const wordObj = test.words[test.index];
   updateWordStats(wordObj.en, true);
 
-  // Show correct feedback
-  const feedbackContainer = document.getElementById("test-feedback-container");
-  const feedbackTitle = document.getElementById("test-feedback-title");
-  const feedbackDesc = document.getElementById("test-feedback-desc");
+  // Show correct feedback in the right pane overlay
+  const overlay = document.getElementById("feedback-overlay");
+  const fTitle = document.getElementById("feedback-title");
+  const fDesc = document.getElementById("feedback-desc");
+  const fIcon = document.getElementById("feedback-icon");
 
-  if (feedbackContainer && feedbackTitle && feedbackDesc) {
-    feedbackContainer.style.display = "block";
-    feedbackContainer.className = "test-feedback-card correct-anim";
-    feedbackTitle.innerHTML = "🎉 Correct Answer! <span>+10 XP</span>";
-    feedbackDesc.textContent = "Awesome job! Keep it up.";
+  if (overlay) {
+    overlay.className = "test-right-pane active correct-ans";
+  }
+  if (fTitle) {
+    fTitle.textContent = "Correct!";
+  }
+  if (fIcon) {
+    fIcon.textContent = "🎉";
+  }
+  if (fDesc) {
+    fDesc.textContent = `Awesome job! "${wordObj.en}" is indeed "${wordObj.target}".`;
   }
 
-  // Swap check with next button
-  const btnSubmit = document.getElementById("btn-test-submit");
-  const btnNext = document.getElementById("btn-test-next");
-  if (btnSubmit) btnSubmit.style.display = "none";
-  if (btnNext) {
-    btnNext.style.display = "block";
-    btnNext.focus();
+  // Populate word details in the sidebar
+  if (window.setupWordDetails) {
+    window.setupWordDetails(wordObj);
   }
+
+  // Update difficulty vote buttons UI
+  const wordKey = wordObj.origEn || wordObj.en;
+  const vStats = state.wordStats[wordKey] || { difficulty: "medium" };
+  updateDifficultyVoteUI(vStats.difficulty || "medium");
 
   // Speak word automatically on success
   speakCurrentTestWord();
@@ -487,17 +492,34 @@ function triggerIncorrectAnswerUI(correctText) {
     saveState();
   }
 
-  // Show incorrect feedback
-  const feedbackContainer = document.getElementById("test-feedback-container");
-  const feedbackTitle = document.getElementById("test-feedback-title");
-  const feedbackDesc = document.getElementById("test-feedback-desc");
+  // Show incorrect feedback in the right pane overlay
+  const overlay = document.getElementById("feedback-overlay");
+  const fTitle = document.getElementById("feedback-title");
+  const fDesc = document.getElementById("feedback-desc");
+  const fIcon = document.getElementById("feedback-icon");
 
-  if (feedbackContainer && feedbackTitle && feedbackDesc) {
-    feedbackContainer.style.display = "block";
-    feedbackContainer.className = "test-feedback-card incorrect-anim";
-    feedbackTitle.innerHTML = "😢 Incorrect Answer";
-    feedbackDesc.innerHTML = `The correct answer was: <strong style="color: var(--text-primary); font-size: 1.15rem;">${correctText}</strong>`;
+  if (overlay) {
+    overlay.className = "test-right-pane active incorrect-ans";
   }
+  if (fTitle) {
+    fTitle.textContent = "Incorrect";
+  }
+  if (fIcon) {
+    fIcon.textContent = "😢";
+  }
+  if (fDesc) {
+    fDesc.innerHTML = `Correct translation is: <strong style="color: #fff;">${correctText}</strong>`;
+  }
+
+  // Populate word details in the sidebar
+  if (window.setupWordDetails) {
+    window.setupWordDetails(wordObj);
+  }
+
+  // Update difficulty vote buttons UI
+  const wordKey = wordObj.origEn || wordObj.en;
+  const vStats = state.wordStats[wordKey] || { difficulty: "medium" };
+  updateDifficultyVoteUI(vStats.difficulty || "medium");
 
   // Check if out of hearts
   if (state.hearts <= 0 && !test.isRepeatRound) {
@@ -534,16 +556,6 @@ function triggerIncorrectAnswerUI(correctText) {
         }
       }
     }, 800);
-    return;
-  }
-
-  // Swap check with next button
-  const btnSubmit = document.getElementById("btn-test-submit");
-  const btnNext = document.getElementById("btn-test-next");
-  if (btnSubmit) btnSubmit.style.display = "none";
-  if (btnNext) {
-    btnNext.style.display = "block";
-    btnNext.focus();
   }
 }
 
@@ -585,6 +597,11 @@ function updateWordStats(wordEn, isCorrect) {
 export function nextQuestion() {
   const test = state.currentTest;
   if (!test) return;
+
+  const overlay = document.getElementById("feedback-overlay");
+  if (overlay) {
+    overlay.classList.remove("active");
+  }
 
   test.index++;
   renderQuestion();
