@@ -1859,13 +1859,13 @@ input[type="text"].browse-edit-input {
   color: inherit !important;
   font-family: var(--font-family) !important;
   font-size: 0.95rem !important;
-  padding: 6px 12px !important;
+  padding: 3px 8px !important;
   width: 100% !important;
   border-radius: 8px !important;
   transition: background 0.15s, border-color 0.15s, box-shadow 0.15s !important;
   outline: none !important;
   min-height: unset !important; /* Override global min-height */
-  height: 38px !important;      /* Explicit height */
+  height: 26px !important;      /* Explicit height (reduced from 38px) */
   box-shadow: none !important;
 }
 

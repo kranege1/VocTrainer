@@ -2064,12 +2064,12 @@ function renderBrowseWordsList(folderId) {
     };
 
     tr.innerHTML = `
-      <td style="padding: 10px 12px; text-align: center;">
+      <td style="padding: 4px 8px; text-align: center;">
         <input type="checkbox" class="chk-select-browse" data-base-key="${esc(vocab[base])}" data-target-key="${esc(vocab[state.browseTargetLang])}" data-custom="${isCustom}" style="cursor: pointer; width: 16px; height: 16px;">
       </td>
-      <td style="padding: 10px 12px;">${inputHtml(base, vocab[base], true)}</td>
-      <td style="padding: 10px 12px;">${inputHtml(state.browseTargetLang, vocab[state.browseTargetLang])}</td>
-      <td style="padding: 10px 12px; text-align: center;">
+      <td style="padding: 4px 8px;">${inputHtml(base, vocab[base], true)}</td>
+      <td style="padding: 4px 8px;">${inputHtml(state.browseTargetLang, vocab[state.browseTargetLang])}</td>
+      <td style="padding: 4px 8px; text-align: center;">
         <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
           <button type="button" class="tree-action-btn" title="Save Changes" data-original-base="${esc(vocab[base])}" data-original-target="${esc(vocab[state.browseTargetLang])}" data-custom="${isCustom}" onclick="event.preventDefault(); event.stopPropagation(); window.saveRowChanges(this)">💾</button>
           <button type="button" class="tree-action-btn" title="Delete" style="color: var(--error-color);" data-original-base="${esc(vocab[base])}" data-original-target="${esc(vocab[state.browseTargetLang])}" data-custom="${isCustom}" onclick="event.preventDefault(); event.stopPropagation(); window.triggerDeleteWord(this)">❌</button>
