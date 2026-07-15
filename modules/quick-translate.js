@@ -1,6 +1,8 @@
 // VocTrainer - Quick Translate Module
 import { state, saveState, updateCategoryCounts } from './state.js';
 
+const getLangColor = (...args) => window.getLangColor?.(...args);
+
 // ==========================================
 // 19. Quick Translate Engine & Controllers
 // ==========================================

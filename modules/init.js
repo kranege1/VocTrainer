@@ -34,6 +34,7 @@ const toggleQuickTranslateSpeech = (...args) => window.toggleQuickTranslateSpeec
 const saveQuickTranslateWord     = (...args) => window.saveQuickTranslateWord?.(...args);
 const getWordDetails             = (...args) => window.getWordDetails?.(...args);
 const buildTreeHTML             = (...args) => window.buildTreeHTML?.(...args);
+const getLangColor              = (...args) => window.getLangColor?.(...args);
 
 // ==========================================
 // 8. Event Listeners & Initialization
