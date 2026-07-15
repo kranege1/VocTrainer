@@ -1881,3 +1881,12 @@ input[type="text"].browse-edit-input:focus {
   color: #fff !important;
 }
 
+/* Sticky table header for vocabulary browser card */
+#browse-words-card table thead th {
+  position: sticky;
+  top: -1px; /* Align precisely with top border area */
+  background: #11131c; /* Solid dark background matching card color to hide scrolling content */
+  z-index: 10;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08); /* Persistent bottom border separator */
+}
+
