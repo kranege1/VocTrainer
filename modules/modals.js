@@ -1,5 +1,4 @@
-// VocTrainer - Modals & Global UI Module
-import { state, saveState } from './state.js';
+import { state, saveState, getFlagHtml } from './state.js';
 
 // Language code mappings to Speech Synthesis/Recognition locales
 const LANG_LOCALES = {

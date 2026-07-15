@@ -322,3 +322,9 @@ export function updateCategoryCounts() {
     });
   }
 }
+
+export function getFlagHtml(lang) {
+  const map = { en: "gb", de: "de", it: "it", es: "es", fr: "fr" };
+  const code = map[lang] || "gb";
+  return `<img src="https://flagcdn.com/16x12/${code}.png" width="16" height="12" alt="${lang}" data-lang="${lang}" class="flag-icon-tts" style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5); cursor: pointer;" title="Click to listen">`;
+}

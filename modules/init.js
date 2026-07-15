@@ -1,5 +1,5 @@
 // VocTrainer - Event Listeners & Initialization Module
-import { state, saveState, loadState, getFolderFullPath, updateCategoryCounts } from './state.js';
+import { state, saveState, loadState, getFolderFullPath, updateCategoryCounts, getFlagHtml } from './state.js';
 import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes } from './test-runner.js';
 
 // Window proxy shims — init.js is a module and cannot access app.js scope directly.
