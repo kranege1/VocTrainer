@@ -4,8 +4,8 @@ import { state, saveState, updateCategoryCounts } from './state.js';
 // ==========================================
 // 4. Scraper & Custom Add Functionality
 // ==========================================
-export export let urlScrapedRows = [];
-export export let fileScrapedRows = [];
+export let urlScrapedRows = [];
+export let fileScrapedRows = [];
 
 // Configure PDF.js global worker path if available
 if (window.pdfjsLib) {
