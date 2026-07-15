@@ -18,6 +18,46 @@ import { initApp, renderHistoryList, renderBrowseList } from './modules/init.js'
 // ==========================================
 // 9. Word Details & AI/Web Lookups
 // ==========================================
+function getArticleAndNoun(text, lang, currentWord) {
+  const articles = {
+    en: ["the ", "a ", "an "],
+    de: ["der ", "die ", "das ", "ein ", "eine "],
+    es: ["el ", "la ", "los ", "las ", "un ", "una ", "unos ", "unas "],
+    it: ["il ", "lo ", "la ", "i ", "gli ", "le ", "un ", "uno ", "una ", "un' "],
+    fr: ["le ", "la ", "les ", "un ", "une ", "des ", "l' "]
+  };
+  const list = articles[lang] || [];
+  const clean = text.trim();
+  
+  // 1. First, check if the text string itself starts with an article
+  for (const article of list) {
+    if (clean.toLowerCase().startsWith(article.toLowerCase())) {
+      const art = clean.substring(0, article.length).trim();
+      const noun = clean.substring(article.length).trim();
+      return { article: art, noun: noun };
+    }
+  }
+  
+  // 2. Second, fallback: check if we can resolve the article from the STARTER_VOCAB_RAW database
+  if (currentWord) {
+    const baseKey = currentWord.origEn || currentWord.en;
+    if (baseKey && typeof STARTER_VOCAB_RAW !== "undefined") {
+      const starter = STARTER_VOCAB_RAW.find(v => {
+        return (v.en && v.en.toLowerCase() === baseKey.toLowerCase()) || 
+               (v.de && v.de.toLowerCase() === baseKey.toLowerCase()) ||
+               (v.it && v.it.toLowerCase() === baseKey.toLowerCase()) ||
+               (v.es && v.es.toLowerCase() === baseKey.toLowerCase()) ||
+               (v.fr && v.fr.toLowerCase() === baseKey.toLowerCase());
+      });
+      if (starter && starter.details && starter.details.articles && starter.details.articles[lang]) {
+        return { article: starter.details.articles[lang], noun: clean };
+      }
+    }
+  }
+  
+  return { article: "", noun: clean };
+}
+
 function setupWordDetails(currentWord) {
   const container = document.getElementById("word-details-container");
   const aiBtn = document.getElementById("btn-get-ai-details");
