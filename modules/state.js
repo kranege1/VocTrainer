@@ -34,6 +34,8 @@ export let state = {
   syncProvider: "easy", // "easy" (ExtendsClass) or "github" (GitHub Gist)
   githubToken: "", // Personal Access Token for Gist Sync
   githubGistId: "", // Gist ID for Gist Sync
+  lastSelectedCategory: "none",
+  lastSelectedCustomCategory: "none",
 
   // Current active test state
   currentTest: {
@@ -78,7 +80,9 @@ export function saveState() {
     cloudSyncId: state.cloudSyncId,
     syncProvider: state.syncProvider,
     githubToken: state.githubToken,
-    githubGistId: state.githubGistId
+    githubGistId: state.githubGistId,
+    lastSelectedCategory: state.lastSelectedCategory,
+    lastSelectedCustomCategory: state.lastSelectedCustomCategory
   }));
   if (window.updateHeaderUI) window.updateHeaderUI();
   updateCategoryCounts();
@@ -149,6 +153,8 @@ export function loadState() {
     state.syncProvider = parsed.syncProvider || "easy";
     state.githubToken = parsed.githubToken || "";
     state.githubGistId = parsed.githubGistId || "";
+    state.lastSelectedCategory = parsed.lastSelectedCategory || "none";
+    state.lastSelectedCustomCategory = parsed.lastSelectedCustomCategory || "none";
 
     // Permanently remove obsolete base64 audio data from custom vocab to clear storage
     if (state.customVocab && Array.isArray(state.customVocab)) {
@@ -320,6 +326,14 @@ export function updateCategoryCounts() {
       opt.textContent = `📁 ${folder.path}`;
       selectCloudUploadCategory.appendChild(opt);
     });
+  }
+
+  // Restore last selected category values
+  if (state.lastSelectedCategory !== undefined && selectCategory) {
+    selectCategory.value = state.lastSelectedCategory;
+  }
+  if (state.lastSelectedCustomCategory !== undefined && selectCustomCategory) {
+    selectCustomCategory.value = state.lastSelectedCustomCategory;
   }
 }
 

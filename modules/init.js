@@ -415,11 +415,17 @@ export async function initApp() {
       if (selectCategory.value !== "none") {
         selectCustomCategory.value = "none";
       }
+      state.lastSelectedCategory = selectCategory.value;
+      state.lastSelectedCustomCategory = selectCustomCategory.value;
+      saveState();
     };
     selectCustomCategory.onchange = () => {
       if (selectCustomCategory.value !== "none") {
         selectCategory.value = "none";
       }
+      state.lastSelectedCategory = selectCategory.value;
+      state.lastSelectedCustomCategory = selectCustomCategory.value;
+      saveState();
     };
   }
 
