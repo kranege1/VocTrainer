@@ -369,6 +369,15 @@ export function submitConjugationAnswer() {
   }
 }
 
+export function submitAnswer() {
+  const direction = state.testDirection || "forward";
+  if (direction === "conjugation") {
+    submitConjugationAnswer();
+  } else {
+    submitTypingAnswer();
+  }
+}
+
 function cleanArticlesAndSpaces(text, lang) {
   if (!text) return "";
   let s = text.toLowerCase().trim();

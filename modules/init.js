@@ -1,6 +1,6 @@
 // VocTrainer - Event Listeners & Initialization Module
 import { state, saveState, loadState, getFolderFullPath, updateCategoryCounts, getFlagHtml } from './state.js';
-import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes } from './test-runner.js';
+import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes, submitAnswer } from './test-runner.js';
 
 // Window proxy shims — init.js is a module and cannot access app.js scope directly.
 // These shims forward calls to the functions assigned to window by app.js.
@@ -28,6 +28,10 @@ const callLLM                   = (...args) => window.callLLM?.(...args);
 const testApiKey                = (...args) => window.testApiKey?.(...args);
 const updateDirectionButtonsUI  = (...args) => window.updateDirectionButtonsUI?.(...args);
 const speakWord                 = (...args) => window.speakWord?.(...args);
+const startQuickTranslateSpeech  = (...args) => window.startQuickTranslateSpeech?.(...args);
+const toggleQuickTranslateSpeech = (...args) => window.toggleQuickTranslateSpeech?.(...args);
+const saveQuickTranslateWord     = (...args) => window.saveQuickTranslateWord?.(...args);
+const getWordDetails             = (...args) => window.getWordDetails?.(...args);
 
 // ==========================================
 // 8. Event Listeners & Initialization

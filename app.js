@@ -12,7 +12,7 @@ import {
   fillMissingTranslations,
   renderImportedList
 } from './modules/import.js';
-import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes, voteDifficulty, updateDifficultyVoteUI } from './modules/test-runner.js';
+import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes, voteDifficulty, updateDifficultyVoteUI, submitAnswer } from './modules/test-runner.js';
 import { initApp, renderHistoryList } from './modules/init.js';
 
 // ==========================================
@@ -1669,6 +1669,8 @@ window.voteDifficulty = voteDifficulty;
 window.showView = showView;
 window.speakWord = speakWord;
 window.getFlagHtml = getFlagHtml;
+window.submitAnswer = submitAnswer;
+window.getWordDetails = getWordDetails;
 
 // Expose internal functions for modules/init.js and on-device features
 window.loadStarterVocab = loadStarterVocab;
