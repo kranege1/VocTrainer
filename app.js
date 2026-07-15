@@ -12,7 +12,7 @@ import {
   fillMissingTranslations,
   renderImportedList
 } from './modules/import.js';
-import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes } from './modules/test-runner.js';
+import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes, voteDifficulty, updateDifficultyVoteUI } from './modules/test-runner.js';
 import { initApp, renderHistoryList } from './modules/init.js';
 
 // ==========================================

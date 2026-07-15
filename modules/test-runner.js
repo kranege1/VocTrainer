@@ -191,6 +191,11 @@ export function renderQuestion() {
     speakCurrentTestWord();
   }
 
+  // Update difficulty vote UI for the current word
+  const wordKey = questionWord.origEn || questionWord.en;
+  const wordStat = state.wordStats?.[wordKey] || { difficulty: "medium" };
+  updateDifficultyVoteUI(wordStat.difficulty || "medium");
+
   // Start/Reset question timer
   if (window.startQuestionTimer) window.startQuestionTimer();
 }
@@ -701,4 +706,52 @@ export function repeatMistakes() {
 
   if (window.showView) window.showView("view-test");
   renderQuestion();
+}
+
+export function voteDifficulty(level) {
+  const test = state.currentTest;
+  if (!test) return;
+  const currentWord = test.words[test.index];
+  if (!currentWord) return;
+  
+  const wordKey = currentWord.origEn || currentWord.en;
+  if (!state.wordStats) state.wordStats = {};
+  if (!state.wordStats[wordKey]) {
+    state.wordStats[wordKey] = { attempts: 0, errors: 0, box: 1, lastReview: null };
+  }
+  
+  state.wordStats[wordKey].difficulty = level;
+  saveState();
+  updateDifficultyVoteUI(level);
+}
+
+export function updateDifficultyVoteUI(level) {
+  const btnEasy = document.getElementById("btn-vote-easy");
+  const btnMedium = document.getElementById("btn-vote-medium");
+  const btnHard = document.getElementById("btn-vote-hard");
+  if (!btnEasy || !btnMedium || !btnHard) return;
+  
+  btnEasy.style.background = "";
+  btnEasy.style.borderColor = "";
+  btnEasy.style.color = "";
+  btnMedium.style.background = "";
+  btnMedium.style.borderColor = "";
+  btnMedium.style.color = "";
+  btnHard.style.background = "";
+  btnHard.style.borderColor = "";
+  btnHard.style.color = "";
+  
+  if (level === "easy") {
+    btnEasy.style.background = "rgba(46, 204, 113, 0.2)";
+    btnEasy.style.borderColor = "#2ecc71";
+    btnEasy.style.color = "#2ecc71";
+  } else if (level === "medium") {
+    btnMedium.style.background = "rgba(241, 196, 15, 0.2)";
+    btnMedium.style.borderColor = "#f1c40f";
+    btnMedium.style.color = "#f1c40f";
+  } else if (level === "hard") {
+    btnHard.style.background = "rgba(231, 76, 60, 0.2)";
+    btnHard.style.borderColor = "#e74c3c";
+    btnHard.style.color = "#e74c3c";
+  }
 }
