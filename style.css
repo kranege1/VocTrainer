@@ -1890,3 +1890,14 @@ input[type="text"].browse-edit-input:focus {
   box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08); /* Persistent bottom border separator */
 }
 
+/* Sticky table headers for all scrollable tables */
+#bulk-preview-area table thead th,
+#file-preview-area table thead th,
+#view-statistics table thead th {
+  position: sticky;
+  top: -1px;
+  background: #111420; /* Solid dark background matching container/bg color */
+  z-index: 10;
+  box-shadow: inset 0 -1px 0 var(--border-color);
+}
+
