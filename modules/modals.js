@@ -1,6 +1,15 @@
 // VocTrainer - Modals & Global UI Module
 import { state, saveState } from './state.js';
 
+// Language code mappings to Speech Synthesis/Recognition locales
+const LANG_LOCALES = {
+  en: "en-US",
+  de: "de-DE",
+  it: "it-IT",
+  es: "es-ES",
+  fr: "fr-FR"
+};
+
 const playSound = (id) => { if (window.playSound) window.playSound(id); };
 
 // ==========================================
