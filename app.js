@@ -1,3 +1,653 @@
+import { state, saveState, loadState, getFolderFullPath, updateCategoryCounts } from './modules/state.js';
+import {
+  importFromUrl,
+  renderUrlPreview,
+  handleFileSelect,
+  renderFilePreview,
+  executeFileImport,
+  detectLanguage,
+  translateAndDetectWithAI,
+  addCustomWord,
+  sanitizeWordTranslation,
+  fillMissingTranslations,
+  renderImportedList
+} from './modules/import.js';
+import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes } from './modules/test-runner.js';
+import './modules/init.js';
+
+// ==========================================
+// 9. Word Details & AI/Web Lookups
+// ==========================================
+function setupWordDetails(currentWord) {
+  const container = document.getElementById("word-details-container");
+  const aiBtn = document.getElementById("btn-get-ai-details");
+  const aiLoading = document.getElementById("ai-details-loading");
+  const aiResponse = document.getElementById("ai-details-response");
+
+  // Reset display states
+  if (container) container.style.display = "block";
+  if (aiResponse) aiResponse.style.display = "none";
+  if (aiLoading) aiLoading.style.display = "none";
+
+  const details = getWordDetails(currentWord);
+  fetchAndCacheWordDetails(currentWord);
+  const qLang = currentWord.questionLang || state.baseLang || "en";
+  const aLang = currentWord.answerLang || state.selectedLang;
+
+  // Language display helpers
+  const flags = { en: getFlagHtml("en"), de: getFlagHtml("de"), it: getFlagHtml("it"), es: getFlagHtml("es"), fr: getFlagHtml("fr") };
+  const langNames = { en: "English", de: "German", it: "Italian", es: "Spanish", fr: "French" };
+
+  // Set dynamic labels (e.g. "🇩🇪 DE" instead of "Base Word")
+  const baseLabelEl = document.getElementById("detail-base-label");
+  const targetLabelEl = document.getElementById("detail-target-label");
+  if (baseLabelEl) {
+    baseLabelEl.innerHTML = `${flags[qLang] || "🌐"} ${qLang.toUpperCase()}`;
+    baseLabelEl.style.color = getLangColor(qLang);
+  }
+  if (targetLabelEl) {
+    targetLabelEl.innerHTML = `${flags[aLang] || "🌐"} ${aLang.toUpperCase()}`;
+    targetLabelEl.style.color = getLangColor(aLang);
+  }
+
+  // Populate base and target text (include articles!)
+  const baseWordEl = document.getElementById("detail-base-word");
+  const targetWordEl = document.getElementById("detail-target-word");
+  
+  let qArt = "";
+  let qNoun = currentWord.en;
+  if (details && details.articles && details.articles[qLang]) {
+    qArt = details.articles[qLang];
+  } else {
+    const parsed = getArticleAndNoun(currentWord.en, qLang, currentWord);
+    qArt = parsed.article;
+    qNoun = parsed.noun;
+  }
+
+  let aArt = "";
+  let aNoun = currentWord.target;
+  if (details && details.articles && details.articles[aLang]) {
+    aArt = details.articles[aLang];
+  } else {
+    const parsed = getArticleAndNoun(currentWord.target, aLang, currentWord);
+    aArt = parsed.article;
+    aNoun = parsed.noun;
+  }
+
+  const baseTextWithArt = qArt ? `${qArt} ${qNoun}` : qNoun;
+  const targetTextWithArt = aArt ? `${aArt} ${aNoun}` : aNoun;
+
+  if (baseWordEl) {
+    baseWordEl.style.color = getLangColor(qLang);
+    baseWordEl.innerHTML = qArt ? `<span style="font-size:0.85em; color:var(--success-color);">${qArt}</span> ${qNoun}` : qNoun;
+  }
+  if (targetWordEl) {
+    targetWordEl.style.color = getLangColor(aLang);
+    targetWordEl.innerHTML = aArt ? `<span style="font-size:0.85em; color:var(--success-color);">${aArt}</span> ${aNoun}` : aNoun;
+  }
+
+  // Speak Base & Target handlers — clicking flag/label plays voice
+  const speakBaseArea = document.getElementById("clickable-speak-base");
+  const speakTargetArea = document.getElementById("clickable-speak-target");
+  if (speakBaseArea) {
+    speakBaseArea.onclick = () => speakWord(baseTextWithArt, qLang, 1.0);
+  }
+  if (speakTargetArea) {
+    speakTargetArea.onclick = () => speakWord(targetTextWithArt, aLang, 1.0);
+  }
+
+  const articlesEl = document.getElementById("detail-articles");
+  const sentenceEl = document.getElementById("detail-sentence");
+  const sentenceTransEl = document.getElementById("detail-sentence-translation");
+  const variationsEl = document.getElementById("detail-variations");
+  const synonymsEl = document.getElementById("detail-synonyms");
+
+  const sectionArticles = articlesEl ? articlesEl.parentElement : null;
+  const sectionSentence = sentenceEl ? sentenceEl.parentElement : null;
+  const sectionVariations = variationsEl ? variationsEl.parentElement : null;
+  const sectionSynonyms = synonymsEl ? synonymsEl.parentElement : null;
+
+  if (details) {
+
+
+    // 2. Sentences — show question language sentence + answer language translation
+    const qSentence = details.sentences && details.sentences[qLang] ? details.sentences[qLang] : "";
+    const aSentence = details.sentences && details.sentences[aLang] ? details.sentences[aLang] : "";
+    if ((qSentence || aSentence) && sectionSentence) {
+      sectionSentence.style.display = "block";
+      if (qSentence) {
+        sentenceEl.innerHTML = `${flags[qLang] || ""} "${qSentence}"`;
+      } else {
+        sentenceEl.textContent = "";
+      }
+      if (aSentence) {
+        sentenceTransEl.innerHTML = `${flags[aLang] || ""} "${aSentence}"`;
+      } else {
+        sentenceTransEl.textContent = "";
+      }
+    } else if (sectionSentence) {
+      sectionSentence.style.display = "none";
+    }
+
+    // 3. Variations (plural, conjugation, gender forms)
+    let variationsHtml = "";
+    if (details.variations) {
+      if (details.variations.plural && (details.variations.plural[qLang] || details.variations.plural[aLang])) {
+        let qPlural = details.variations.plural[qLang] || "";
+        let aPlural = details.variations.plural[aLang] || "";
+        const guessPluralArticle = (lang, singArt, word) => {
+          if (!singArt) return "";
+          const s = singArt.toLowerCase().trim();
+          if (lang === "de") return "die";
+          if (lang === "es") return s === "el" ? "los" : (s === "la" ? "las" : "");
+          if (lang === "fr") return "les";
+          if (lang === "it") {
+            if (s === "il") return "i";
+            if (s === "la") return "le";
+            if (s === "lo") return "gli";
+            if (s === "l'") return word.endsWith("i") ? "gli" : "le";
+          }
+          return "";
+        };
+
+        const prependArticle = (plur, lang, singArt) => {
+          if (!plur || !singArt) return plur;
+          const art = guessPluralArticle(lang, singArt, plur);
+          if (art && !plur.toLowerCase().startsWith(art + " ") && !plur.toLowerCase().startsWith(art + "'")) {
+            return art + (art.endsWith("'") ? "" : " ") + plur;
+          }
+          return plur;
+        };
+
+        qPlural = prependArticle(qPlural, qLang, qArt);
+        aPlural = prependArticle(aPlural, aLang, aArt);
+        variationsHtml += `Plural: `;
+        if (qPlural) variationsHtml += `${flags[qLang] || ""} <strong style="color:${getLangColor(qLang)};">${qPlural}</strong> `;
+        if (qPlural && aPlural) variationsHtml += `&rarr; `;
+        if (aPlural) variationsHtml += `${flags[aLang] || ""} <strong style="color:${getLangColor(aLang)};">${aPlural}</strong>`;
+        variationsHtml += `<br>`;
+      }
+      if (details.variations.he && (details.variations.he[qLang] || details.variations.he[aLang])) {
+        const qHe = details.variations.he[qLang] || "";
+        const aHe = details.variations.he[aLang] || "";
+        variationsHtml += `Conjugation (He/She): `;
+        if (qHe) variationsHtml += `${flags[qLang] || ""} <strong style="color:${getLangColor(qLang)};">${qHe}</strong> `;
+        if (qHe && aHe) variationsHtml += `&rarr; `;
+        if (aHe) variationsHtml += `${flags[aLang] || ""} <strong style="color:${getLangColor(aLang)};">${aHe}</strong>`;
+        variationsHtml += `<br>`;
+      }
+    }
+    if (details.genderForms && (details.genderForms.de || details.genderForms.it)) {
+      if (details.genderForms.de && (details.genderForms.de.m || details.genderForms.de.f)) {
+        variationsHtml += `${flags.de} <strong>Genders (DE)</strong>: ♂️ ${details.genderForms.de.m || "-"} / ♀️ ${details.genderForms.de.f || "-"}<br>`;
+      }
+      if (details.genderForms.it && (details.genderForms.it.m || details.genderForms.it.f)) {
+        variationsHtml += `${flags.it} <strong>Genders (IT)</strong>: ♂️ ${details.genderForms.it.m || "-"} / ♀️ ${details.genderForms.it.f || "-"}<br>`;
+      }
+    }
+    if (variationsHtml && sectionVariations) {
+      sectionVariations.style.display = "block";
+      variationsEl.innerHTML = variationsHtml;
+    } else if (sectionVariations) {
+      sectionVariations.style.display = "none";
+    }
+
+    // 4. Synonyms — show answer language synonyms with question language equivalents (Always visible!)
+    const aSyns = (details.synonyms && details.synonyms[aLang]) ? details.synonyms[aLang] : [];
+    const qSyns = (details.synonyms && details.synonyms[qLang]) ? details.synonyms[qLang] : [];
+    if (sectionSynonyms) {
+      sectionSynonyms.style.display = "flex";
+      if (aSyns && aSyns.length > 0) {
+        synonymsEl.innerHTML = aSyns.map((syn, idx) => {
+          const qTrans = qSyns[idx] ? ` (${qSyns[idx]})` : "";
+          return `<code style="background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; font-family: monospace;">${syn}${qTrans}</code>`;
+        }).join(", ");
+      } else {
+        synonymsEl.innerHTML = `<span style="color: var(--text-secondary); font-style: italic; font-size: 0.8rem;">None registered</span>`;
+      }
+    }
+  } else {
+    if (sectionArticles) sectionArticles.style.display = "none";
+    if (sectionSentence) sectionSentence.style.display = "none";
+    if (sectionVariations) sectionVariations.style.display = "none";
+    if (sectionSynonyms) {
+      sectionSynonyms.style.display = "flex";
+      synonymsEl.innerHTML = `<span style="color: var(--text-secondary); font-style: italic; font-size: 0.8rem;">None registered</span>`;
+    }
+  }
+
+  // Combined Word Insights & Grammar Rules trigger
+  const insightsBtn = document.getElementById("btn-show-word-insights");
+  if (insightsBtn) {
+    insightsBtn.onclick = async () => {
+      const modal = document.getElementById("word-insights-modal");
+      const modalTitle = document.getElementById("insights-modal-title");
+      const aiContent = document.getElementById("insights-ai-content");
+      const grammarContent = document.getElementById("insights-grammar-content");
+      const closeBtn = document.getElementById("btn-close-insights");
+      
+      if (!modal || !aiContent || !grammarContent) return;
+      
+      const studyWord = currentWord[state.selectedLang || aLang] || currentWord.target;
+      modalTitle.textContent = `Insights & Grammar: ${studyWord}`;
+      
+      // Show loading spinners in both columns
+      const spinnerHtml = `
+        <div style="text-align: center; color: var(--text-secondary); padding: 40px;">
+          <span class="spinner" style="display: inline-block; width: 24px; height: 24px; border: 2px solid var(--accent-color); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 12px;"></span>
+          <p>Loading...</p>
+        </div>
+      `;
+      aiContent.innerHTML = spinnerHtml;
+      grammarContent.innerHTML = spinnerHtml;
+      
+      modal.classList.add("active");
+      
+      if (closeBtn) {
+        closeBtn.onclick = () => {
+          modal.classList.remove("active");
+          if (window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+          }
+        };
+      }
+
+      // Bind paragraph / element click reading logic on this modal
+      modal.onclick = (e) => {
+        const target = e.target.closest("p, li, h1, h2, h3, h4, strong, blockquote, code");
+        if (target) {
+          if (target.tagName === "BUTTON" || target.closest("button") || target.closest(".modal-header")) {
+            return;
+          }
+          const text = target.textContent.trim();
+          if (text) {
+            const studyLang = state.selectedLang || "it";
+            speakMultilingualText(text, studyLang);
+          }
+        }
+      };
+
+      // 1. Fetch AI details in parallel/async
+      const baseLang = state.baseLang || "en";
+      const baseLangName = langNames[baseLang] || baseLang;
+      const baseWord = currentWord[baseLang] || currentWord.en;
+      const studyLang = state.selectedLang || aLang;
+      const studyLangName = langNames[studyLang] || studyLang;
+
+      // Trigger AI query
+      (async () => {
+        try {
+          const promptText = `Explain the usage of the vocabulary word "${studyWord}" (${studyLangName}) and its translation "${baseWord}" (${baseLangName}). Provide articles (such as der/die/das in German, il/la/lo in Italian), prepositions, example sentences, and grammatical variations where applicable. You MUST write all explanations, commentaries, descriptions, and translations in ${baseLangName}.`;
+
+          let responseText = "";
+          if (state.geminiKey || state.openaiKey || state.grokKey) {
+            responseText = await callLLM(promptText, `You are a helpful language teacher. Explain all vocabulary details in ${baseLangName}.`);
+          } else {
+            const fallbackText = await fetchWebDetailsFallback(currentWord.en, aLang);
+            responseText = `⚠️ [No API Key configured. Showing web dictionary fallback details instead of AI explanation]\n\n${fallbackText}`;
+          }
+          aiContent.innerHTML = parseMarkdownToHTML(responseText);
+        } catch (err) {
+          aiContent.innerHTML = `<div style="color: var(--error-color); padding: 20px;">Could not fetch AI details: ${err.message}</div>`;
+        }
+      })();
+
+      // 2. Fetch/Load grammar reference sheets in parallel/async
+      (async () => {
+        try {
+          if (!grammarGuideData) {
+            const response = await fetch("vocab/Grammatikmerkblaetter.md");
+            if (response.ok) {
+              grammarGuideData = await response.text();
+            }
+          }
+
+          let relevantSections = "";
+          if (grammarGuideData) {
+            const sections = grammarGuideData.split(/\n---\n/);
+            const cat = (currentWord.category || "").toLowerCase();
+            let matchedSections = [];
+            
+            if (cat.includes("noun") || (details && details.articles)) {
+              matchedSections = sections.filter(sec => sec.includes("Der Artikel") || sec.includes("l'articolo"));
+            } else if (cat.includes("verb") || (details && details.variations && details.variations.he)) {
+              matchedSections = sections.filter(sec => sec.includes("Perfekt") || sec.includes("passato prossimo") || sec.includes("Passato remoto") || sec.includes("Futur"));
+            } else if (cat.includes("adj")) {
+              matchedSections = sections.filter(sec => sec.includes("Adjektiv") || sec.includes("l'aggettivo"));
+            }
+            
+            if (matchedSections.length === 0) {
+              matchedSections = sections.slice(0, 3);
+            }
+            relevantSections = matchedSections.join("\n\n---\n\n");
+          }
+
+          const categoryName = currentWord.category || "General";
+          let explanationText = "";
+          
+          if (state.geminiKey || state.openaiKey || state.grokKey) {
+            const promptText = `
+Given the following sections of the reference grammar guide:
+"""
+${relevantSections.substring(0, 3000)}
+"""
+
+Act as an expert language teacher. Formulate a personalized grammar hint (in German) explaining 1 or 2 relevant grammar rules for the word "${studyWord}" (${studyLangName}), which is translated as "${baseWord}" (Category: "${categoryName}"). 
+
+CRITICAL WARNING ON GENDER AGREEMENT: 
+Grammatical genders often differ between languages. For instance, "la neve" is feminine in Italian, but the German translation "Schnee" is masculine ("der Schnee"). You MUST use correct German articles for German translations (e.g. "der Schnee", NOT "die Schnee"). Explicitly point out to the student if the grammatical genders differ between the target language word and its German translation (e.g., "Achtung: Im Italienischen weiblich (la neve), im Deutschen aber männlich (der Schnee)").
+
+Adjust the rule strictly to this specific case. For example:
+- If it is a noun, explain which article (like il, lo, la, l', i, gli, le) it uses and why (pointing to the starting letters/sounds).
+- If it is a verb, explain its auxiliary verb (essere vs avere) or tense conjugation rule.
+- If it is an adjective, explain how its ending changes.
+
+You MUST write the explanation in German. Keep it concise, clear, and format it nicely with bold labels. Do NOT include introduction or meta-comments.
+            `;
+            
+            explanationText = await callLLM(promptText, "You are a helpful language teacher. Write all grammar tips and explanations in German.");
+          } else {
+            explanationText = `### 📖 Lokaler Grammatik-Hinweis: **${studyWord}** (${studyLangName})\n\n`;
+            if (relevantSections) {
+              explanationText += `*Hier sind relevante Abschnitte aus den Grammatikmerkblättern, die zu der Kategorie **${categoryName}** passen:*\n\n---\n\n`;
+              explanationText += relevantSections;
+            } else {
+              explanationText += `*Keine passenden Grammatikregeln im Guide gefunden.*`;
+            }
+          }
+          
+          grammarContent.innerHTML = parseMarkdownToHTML(explanationText);
+        } catch (err) {
+          grammarContent.innerHTML = `<div style="color: var(--error-color); padding: 20px;">Could not fetch grammar rules: ${err.message}</div>`;
+        }
+      })();
+    };
+  }
+}
+
+function parseMarkdownToHTML(md) {
+  if (!md) return "";
+  
+  let html = md;
+
+  // Escape HTML tags to prevent arbitrary code execution
+  html = html
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  // Parse Tables
+  const lines = html.split("\n");
+  let inTable = false;
+  let tableHeaders = [];
+  let tableRows = [];
+  let resultLines = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    // A line is part of a table if it contains at least one pipe separator
+    const isTableRow = line.includes("|");
+
+    if (isTableRow) {
+      let cells = line.split("|").map(c => c.trim());
+      // Shift/Pop empty outer elements if the line started or ended with a pipe
+      if (line.startsWith("|")) cells.shift();
+      if (line.endsWith("|")) cells.pop();
+      
+      const isSeparator = cells.every(c => /^:-*|-*:-*|-*:$/.test(c) || c === "");
+      
+      if (isSeparator) {
+        continue;
+      }
+
+      if (!inTable) {
+        inTable = true;
+        tableHeaders = cells;
+      } else {
+        tableRows.push(cells);
+      }
+    } else {
+      if (inTable) {
+        let tableHtml = `<div style="overflow-x:auto; margin: 12px 0;"><table style="width:100%; border-collapse:collapse; font-size:0.85rem; background:rgba(255,255,255,0.01); border-radius:8px; border:1px solid rgba(255,255,255,0.08); overflow:hidden;">`;
+        if (tableHeaders.length > 0) {
+          tableHtml += `<thead style="background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.08);"><tr>`;
+          tableHeaders.forEach(h => {
+            tableHtml += `<th style="padding: 8px 10px; font-weight:600; text-align:left; color:var(--accent-color);">${h}</th>`;
+          });
+          tableHtml += `</tr></thead>`;
+        }
+        tableHtml += `<tbody>`;
+        tableRows.forEach(row => {
+          tableHtml += `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">`;
+          row.forEach(cell => {
+            tableHtml += `<td style="padding: 8px 10px; color:var(--text-primary);">${cell}</td>`;
+          });
+          tableHtml += `</tr>`;
+        });
+        tableHtml += `</tbody></table></div>`;
+        resultLines.push(tableHtml);
+        
+        inTable = false;
+        tableHeaders = [];
+        tableRows = [];
+      }
+      resultLines.push(lines[i]);
+    }
+  }
+  
+  if (inTable) {
+    let tableHtml = `<div style="overflow-x:auto; margin: 12px 0;"><table style="width:100%; border-collapse:collapse; font-size:0.85rem; background:rgba(255,255,255,0.01); border-radius:8px; border:1px solid rgba(255,255,255,0.08); overflow:hidden;">`;
+    if (tableHeaders.length > 0) {
+      tableHtml += `<thead style="background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.08);"><tr>`;
+      tableHeaders.forEach(h => {
+        tableHtml += `<th style="padding: 8px 10px; font-weight:600; text-align:left; color:var(--accent-color);">${h}</th>`;
+      });
+      tableHtml += `</tr></thead>`;
+    }
+    tableHtml += `<tbody>`;
+    tableRows.forEach(row => {
+      tableHtml += `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">`;
+      row.forEach(cell => {
+        tableHtml += `<td style="padding: 8px 10px; color:var(--text-primary);">${cell}</td>`;
+      });
+      tableHtml += `</tr>`;
+    });
+    tableHtml += `</tbody></table></div>`;
+    resultLines.push(tableHtml);
+  }
+
+  html = resultLines.join("\n");
+
+  // Parse Headers
+  html = html.replace(/^#### (.*?)$/gm, '<h4 style="color:var(--accent-color); font-weight:700; margin-top:16px; margin-bottom:8px; font-size:1rem;">$1</h4>');
+  html = html.replace(/^### (.*?)$/gm, '<h3 style="color:var(--accent-color); font-weight:700; margin-top:18px; margin-bottom:8px; font-size:1.1rem;">$1</h3>');
+  html = html.replace(/^## (.*?)$/gm, '<h2 style="color:var(--accent-color); font-weight:700; margin-top:20px; margin-bottom:10px; font-size:1.2rem;">$1</h2>');
+
+  // Parse Bold Text
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+  // Parse Bullet Lists
+  html = html.replace(/^\s*[-*]\s+(.*?)$/gm, '<li style="margin-left: 16px; margin-bottom: 4px; color: var(--text-primary); list-style-type: disc;">$1</li>');
+
+  // Parse remaining linebreaks nicely
+  html = html.split("\n").map(l => {
+    const trimmed = l.trim();
+    if (trimmed.startsWith("<") && trimmed.endsWith(">")) return l;
+    return l + "<br>";
+  }).join("\n");
+
+  return html;
+}
+
+async function callGeminiAPI(apiKey, prompt) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+  });
+  if (!response.ok) throw new Error("Gemini API request failed.");
+  const data = await response.json();
+  return data.candidates[0].content.parts[0].text;
+}
+
+async function callOpenAIAPI(apiKey, prompt) {
+  const url = "https://api.openai.com/v1/chat/completions";
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }]
+    })
+  });
+  if (!response.ok) throw new Error("OpenAI API request failed.");
+  const data = await response.json();
+  return data.choices[0].message.content;
+}
+
+async function callAnthropicAPI(apiKey, prompt) {
+  const url = "https://api.anthropic.com/v1/messages";
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01"
+    },
+    body: JSON.stringify({
+      model: "claude-3-5-sonnet-20241022",
+      max_tokens: 1024,
+      messages: [{ role: "user", content: prompt }]
+    })
+  });
+  if (!response.ok) throw new Error("Anthropic API request failed.");
+  const data = await response.json();
+  return data.content[0].text;
+}
+
+async function fetchWebDetailsFallback(word, targetLang) {
+  const sourceLang = state.baseLang || "en";
+  const langNames = {
+    en: "english",
+    de: "german",
+    it: "italian",
+    es: "spanish",
+    fr: "french"
+  };
+  const sourceName = langNames[sourceLang] || "english";
+  const targetName = langNames[targetLang] || "german";
+  const reversoUrl = `https://context.reverso.net/translation/${sourceName}-${targetName}/${encodeURIComponent(word)}`;
+
+  try {
+    const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(reversoUrl)}`);
+    if (res.ok) {
+      const json = await res.json();
+      const html = json.contents;
+      
+      // Extract Translations
+      const transRegex = /<a[^>]*class="[^"]*translation[^"]*"[^>]*>\s*([^<]+?)\s*<\/a>/gi;
+      const translations = [];
+      let match;
+      while ((match = transRegex.exec(html)) !== null && translations.length < 5) {
+        const cleanTrans = match[1].trim();
+        if (cleanTrans && !translations.includes(cleanTrans) && !cleanTrans.includes("<") && !cleanTrans.includes(">")) {
+          translations.push(cleanTrans);
+        }
+      }
+
+      // Extract Examples
+      function stripTags(str) {
+        return str.replace(/<[^>]*>?/gm, '').replace(/\s+/g, ' ').trim();
+      }
+
+      const examples = [];
+      const exampleRegex = /<div class="example"[\s\S]*?<div class="src[^"]*">([\s\S]*?)<\/div>[\s\S]*?<div class="trg[^"]*">([\s\S]*?)<\/div>/gi;
+      while ((match = exampleRegex.exec(html)) !== null && examples.length < 3) {
+        const srcText = stripTags(match[1]);
+        const trgText = stripTags(match[2]);
+        if (srcText && trgText) {
+          examples.push({ src: srcText, trg: trgText });
+        }
+      }
+
+      if (translations.length > 0 || examples.length > 0) {
+        let output = `📖 [Reverso Context Web Lookup]\nWord: "${word}"\n\nKey Translations in Context:\n➔ ${translations.join(", ")}\n\nSentence Examples:\n`;
+        examples.forEach((ex, i) => {
+          output += `${i + 1}. "${ex.src}"\n   ➔ "${ex.trg}"\n\n`;
+        });
+        return output.trim();
+      }
+    }
+  } catch (err) {
+    console.warn("Reverso Context fetch failed, falling back to standard dictionary:", err);
+  }
+
+  try {
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+    if (!res.ok) throw new Error("Word not found in dictionary");
+    const data = await res.json();
+    
+    const entry = data[0];
+    const definition = entry.meanings[0].definitions[0].definition;
+    const example = entry.meanings[0].definitions[0].example || "No example sentence available on web dictionary.";
+    const partOfSpeech = entry.meanings[0].partOfSpeech;
+
+    let defTranslation = "";
+    try {
+      const transRes = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&q=${encodeURIComponent(definition)}`);
+      const transData = await transRes.json();
+      defTranslation = ` (${transData[0][0][0]})`;
+    } catch(e) {}
+
+    return `[Web Dictionary Fallback]
+Word: ${word} (${partOfSpeech})
+Definition: ${definition}${defTranslation}
+Example Usage: "${example}"`;
+
+  } catch (err) {
+    return `[Web Lookups]
+Could not find Reverso Context or dictionary details for "${word}".
+You can read more directly on Wiktionary: https://en.wiktionary.org/wiki/${encodeURIComponent(word)}`;
+  }
+}
+
+import {
+  showCustomAlert,
+  showCustomConfirm,
+  testApiKey,
+  renderFoldersList,
+  buildTreeHTML,
+  getFolderWordCountRecursive,
+  getFolderWordsRecursive,
+  getAllWordsCombined,
+  deleteFolderRecursive,
+  isDescendantFolder,
+  renderStatisticsView,
+  renderFolderStatistics,
+  callLLM,
+  updateDirectionButtonsUI,
+  getGrokModel,
+  loadOnDeviceVoices
+} from './modules/modals.js';
+import {
+  initQuickTranslateSpeech,
+  startQuickTranslateSpeech,
+  stopQuickTranslateSpeech,
+  toggleQuickTranslateSpeech,
+  runQuickTranslate,
+  populateQuickTranslateFolders,
+  saveQuickTranslateWord,
+  normalizeWordCasing,
+  isVerbCheck,
+  isVerbAnyLanguage,
+  detectLanguageAndTranslateToEn,
+  fetchSynonymsForTarget
+} from './modules/quick-translate.js';
+
 // ==========================================
 // 1. Initial Starting Vocabulary Datasets
 // ==========================================
@@ -233,7 +883,7 @@ function getLangColor(lang) {
 }
 
 // ==========================================
-import { state, saveState, loadState, getFolderFullPath, updateCategoryCounts } from './modules/state.js';
+
 
 // Temporal variables for custom recording
 let mediaRecorder;
@@ -875,19 +1525,7 @@ function playCustomAudio(base64Data) {
   }
 }
 
-import {
-  importFromUrl,
-  renderUrlPreview,
-  handleFileSelect,
-  renderFilePreview,
-  executeFileImport,
-  detectLanguage,
-  translateAndDetectWithAI,
-  addCustomWord,
-  sanitizeWordTranslation,
-  fillMissingTranslations,
-  renderImportedList
-} from './modules/import.js';
+
 
 window.importFromUrl = importFromUrl;
 window.renderUrlPreview = renderUrlPreview;
@@ -940,7 +1578,7 @@ window.removeMistake = function(index) {
   renderMistakesList();
 };
 
-import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes } from './modules/test-runner.js';
+
 
 window.startTestSession = startTestSession;
 window.renderQuestion = renderQuestion;
@@ -993,626 +1631,7 @@ function stopAudioRecording() {
   }
 }
 
-import './modules/init.js';
 
-// ==========================================
-// 9. Word Details & AI/Web Lookups
-// ==========================================
-function setupWordDetails(currentWord) {
-  const container = document.getElementById("word-details-container");
-  const aiBtn = document.getElementById("btn-get-ai-details");
-  const aiLoading = document.getElementById("ai-details-loading");
-  const aiResponse = document.getElementById("ai-details-response");
-
-  // Reset display states
-  if (container) container.style.display = "block";
-  if (aiResponse) aiResponse.style.display = "none";
-  if (aiLoading) aiLoading.style.display = "none";
-
-  const details = getWordDetails(currentWord);
-  fetchAndCacheWordDetails(currentWord);
-  const qLang = currentWord.questionLang || state.baseLang || "en";
-  const aLang = currentWord.answerLang || state.selectedLang;
-
-  // Language display helpers
-  const flags = { en: getFlagHtml("en"), de: getFlagHtml("de"), it: getFlagHtml("it"), es: getFlagHtml("es"), fr: getFlagHtml("fr") };
-  const langNames = { en: "English", de: "German", it: "Italian", es: "Spanish", fr: "French" };
-
-  // Set dynamic labels (e.g. "🇩🇪 DE" instead of "Base Word")
-  const baseLabelEl = document.getElementById("detail-base-label");
-  const targetLabelEl = document.getElementById("detail-target-label");
-  if (baseLabelEl) {
-    baseLabelEl.innerHTML = `${flags[qLang] || "🌐"} ${qLang.toUpperCase()}`;
-    baseLabelEl.style.color = getLangColor(qLang);
-  }
-  if (targetLabelEl) {
-    targetLabelEl.innerHTML = `${flags[aLang] || "🌐"} ${aLang.toUpperCase()}`;
-    targetLabelEl.style.color = getLangColor(aLang);
-  }
-
-  // Populate base and target text (include articles!)
-  const baseWordEl = document.getElementById("detail-base-word");
-  const targetWordEl = document.getElementById("detail-target-word");
-  
-  let qArt = "";
-  let qNoun = currentWord.en;
-  if (details && details.articles && details.articles[qLang]) {
-    qArt = details.articles[qLang];
-  } else {
-    const parsed = getArticleAndNoun(currentWord.en, qLang, currentWord);
-    qArt = parsed.article;
-    qNoun = parsed.noun;
-  }
-
-  let aArt = "";
-  let aNoun = currentWord.target;
-  if (details && details.articles && details.articles[aLang]) {
-    aArt = details.articles[aLang];
-  } else {
-    const parsed = getArticleAndNoun(currentWord.target, aLang, currentWord);
-    aArt = parsed.article;
-    aNoun = parsed.noun;
-  }
-
-  const baseTextWithArt = qArt ? `${qArt} ${qNoun}` : qNoun;
-  const targetTextWithArt = aArt ? `${aArt} ${aNoun}` : aNoun;
-
-  if (baseWordEl) {
-    baseWordEl.style.color = getLangColor(qLang);
-    baseWordEl.innerHTML = qArt ? `<span style="font-size:0.85em; color:var(--success-color);">${qArt}</span> ${qNoun}` : qNoun;
-  }
-  if (targetWordEl) {
-    targetWordEl.style.color = getLangColor(aLang);
-    targetWordEl.innerHTML = aArt ? `<span style="font-size:0.85em; color:var(--success-color);">${aArt}</span> ${aNoun}` : aNoun;
-  }
-
-  // Speak Base & Target handlers — clicking flag/label plays voice
-  const speakBaseArea = document.getElementById("clickable-speak-base");
-  const speakTargetArea = document.getElementById("clickable-speak-target");
-  if (speakBaseArea) {
-    speakBaseArea.onclick = () => speakWord(baseTextWithArt, qLang, 1.0);
-  }
-  if (speakTargetArea) {
-    speakTargetArea.onclick = () => speakWord(targetTextWithArt, aLang, 1.0);
-  }
-
-  const articlesEl = document.getElementById("detail-articles");
-  const sentenceEl = document.getElementById("detail-sentence");
-  const sentenceTransEl = document.getElementById("detail-sentence-translation");
-  const variationsEl = document.getElementById("detail-variations");
-  const synonymsEl = document.getElementById("detail-synonyms");
-
-  const sectionArticles = articlesEl ? articlesEl.parentElement : null;
-  const sectionSentence = sentenceEl ? sentenceEl.parentElement : null;
-  const sectionVariations = variationsEl ? variationsEl.parentElement : null;
-  const sectionSynonyms = synonymsEl ? synonymsEl.parentElement : null;
-
-  if (details) {
-
-
-    // 2. Sentences — show question language sentence + answer language translation
-    const qSentence = details.sentences && details.sentences[qLang] ? details.sentences[qLang] : "";
-    const aSentence = details.sentences && details.sentences[aLang] ? details.sentences[aLang] : "";
-    if ((qSentence || aSentence) && sectionSentence) {
-      sectionSentence.style.display = "block";
-      if (qSentence) {
-        sentenceEl.innerHTML = `${flags[qLang] || ""} "${qSentence}"`;
-      } else {
-        sentenceEl.textContent = "";
-      }
-      if (aSentence) {
-        sentenceTransEl.innerHTML = `${flags[aLang] || ""} "${aSentence}"`;
-      } else {
-        sentenceTransEl.textContent = "";
-      }
-    } else if (sectionSentence) {
-      sectionSentence.style.display = "none";
-    }
-
-    // 3. Variations (plural, conjugation, gender forms)
-    let variationsHtml = "";
-    if (details.variations) {
-      if (details.variations.plural && (details.variations.plural[qLang] || details.variations.plural[aLang])) {
-        let qPlural = details.variations.plural[qLang] || "";
-        let aPlural = details.variations.plural[aLang] || "";
-        const guessPluralArticle = (lang, singArt, word) => {
-          if (!singArt) return "";
-          const s = singArt.toLowerCase().trim();
-          if (lang === "de") return "die";
-          if (lang === "es") return s === "el" ? "los" : (s === "la" ? "las" : "");
-          if (lang === "fr") return "les";
-          if (lang === "it") {
-            if (s === "il") return "i";
-            if (s === "la") return "le";
-            if (s === "lo") return "gli";
-            if (s === "l'") return word.endsWith("i") ? "gli" : "le";
-          }
-          return "";
-        };
-
-        const prependArticle = (plur, lang, singArt) => {
-          if (!plur || !singArt) return plur;
-          const art = guessPluralArticle(lang, singArt, plur);
-          if (art && !plur.toLowerCase().startsWith(art + " ") && !plur.toLowerCase().startsWith(art + "'")) {
-            return art + (art.endsWith("'") ? "" : " ") + plur;
-          }
-          return plur;
-        };
-
-        qPlural = prependArticle(qPlural, qLang, qArt);
-        aPlural = prependArticle(aPlural, aLang, aArt);
-        variationsHtml += `Plural: `;
-        if (qPlural) variationsHtml += `${flags[qLang] || ""} <strong style="color:${getLangColor(qLang)};">${qPlural}</strong> `;
-        if (qPlural && aPlural) variationsHtml += `&rarr; `;
-        if (aPlural) variationsHtml += `${flags[aLang] || ""} <strong style="color:${getLangColor(aLang)};">${aPlural}</strong>`;
-        variationsHtml += `<br>`;
-      }
-      if (details.variations.he && (details.variations.he[qLang] || details.variations.he[aLang])) {
-        const qHe = details.variations.he[qLang] || "";
-        const aHe = details.variations.he[aLang] || "";
-        variationsHtml += `Conjugation (He/She): `;
-        if (qHe) variationsHtml += `${flags[qLang] || ""} <strong style="color:${getLangColor(qLang)};">${qHe}</strong> `;
-        if (qHe && aHe) variationsHtml += `&rarr; `;
-        if (aHe) variationsHtml += `${flags[aLang] || ""} <strong style="color:${getLangColor(aLang)};">${aHe}</strong>`;
-        variationsHtml += `<br>`;
-      }
-    }
-    if (details.genderForms && (details.genderForms.de || details.genderForms.it)) {
-      if (details.genderForms.de && (details.genderForms.de.m || details.genderForms.de.f)) {
-        variationsHtml += `${flags.de} <strong>Genders (DE)</strong>: ♂️ ${details.genderForms.de.m || "-"} / ♀️ ${details.genderForms.de.f || "-"}<br>`;
-      }
-      if (details.genderForms.it && (details.genderForms.it.m || details.genderForms.it.f)) {
-        variationsHtml += `${flags.it} <strong>Genders (IT)</strong>: ♂️ ${details.genderForms.it.m || "-"} / ♀️ ${details.genderForms.it.f || "-"}<br>`;
-      }
-    }
-    if (variationsHtml && sectionVariations) {
-      sectionVariations.style.display = "block";
-      variationsEl.innerHTML = variationsHtml;
-    } else if (sectionVariations) {
-      sectionVariations.style.display = "none";
-    }
-
-    // 4. Synonyms — show answer language synonyms with question language equivalents (Always visible!)
-    const aSyns = (details.synonyms && details.synonyms[aLang]) ? details.synonyms[aLang] : [];
-    const qSyns = (details.synonyms && details.synonyms[qLang]) ? details.synonyms[qLang] : [];
-    if (sectionSynonyms) {
-      sectionSynonyms.style.display = "flex";
-      if (aSyns && aSyns.length > 0) {
-        synonymsEl.innerHTML = aSyns.map((syn, idx) => {
-          const qTrans = qSyns[idx] ? ` (${qSyns[idx]})` : "";
-          return `<code style="background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; font-family: monospace;">${syn}${qTrans}</code>`;
-        }).join(", ");
-      } else {
-        synonymsEl.innerHTML = `<span style="color: var(--text-secondary); font-style: italic; font-size: 0.8rem;">None registered</span>`;
-      }
-    }
-  } else {
-    if (sectionArticles) sectionArticles.style.display = "none";
-    if (sectionSentence) sectionSentence.style.display = "none";
-    if (sectionVariations) sectionVariations.style.display = "none";
-    if (sectionSynonyms) {
-      sectionSynonyms.style.display = "flex";
-      synonymsEl.innerHTML = `<span style="color: var(--text-secondary); font-style: italic; font-size: 0.8rem;">None registered</span>`;
-    }
-  }
-
-  // Combined Word Insights & Grammar Rules trigger
-  const insightsBtn = document.getElementById("btn-show-word-insights");
-  if (insightsBtn) {
-    insightsBtn.onclick = async () => {
-      const modal = document.getElementById("word-insights-modal");
-      const modalTitle = document.getElementById("insights-modal-title");
-      const aiContent = document.getElementById("insights-ai-content");
-      const grammarContent = document.getElementById("insights-grammar-content");
-      const closeBtn = document.getElementById("btn-close-insights");
-      
-      if (!modal || !aiContent || !grammarContent) return;
-      
-      const studyWord = currentWord[state.selectedLang || aLang] || currentWord.target;
-      modalTitle.textContent = `Insights & Grammar: ${studyWord}`;
-      
-      // Show loading spinners in both columns
-      const spinnerHtml = `
-        <div style="text-align: center; color: var(--text-secondary); padding: 40px;">
-          <span class="spinner" style="display: inline-block; width: 24px; height: 24px; border: 2px solid var(--accent-color); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 12px;"></span>
-          <p>Loading...</p>
-        </div>
-      `;
-      aiContent.innerHTML = spinnerHtml;
-      grammarContent.innerHTML = spinnerHtml;
-      
-      modal.classList.add("active");
-      
-      if (closeBtn) {
-        closeBtn.onclick = () => {
-          modal.classList.remove("active");
-          if (window.speechSynthesis) {
-            window.speechSynthesis.cancel();
-          }
-        };
-      }
-
-      // Bind paragraph / element click reading logic on this modal
-      modal.onclick = (e) => {
-        const target = e.target.closest("p, li, h1, h2, h3, h4, strong, blockquote, code");
-        if (target) {
-          if (target.tagName === "BUTTON" || target.closest("button") || target.closest(".modal-header")) {
-            return;
-          }
-          const text = target.textContent.trim();
-          if (text) {
-            const studyLang = state.selectedLang || "it";
-            speakMultilingualText(text, studyLang);
-          }
-        }
-      };
-
-      // 1. Fetch AI details in parallel/async
-      const baseLang = state.baseLang || "en";
-      const baseLangName = langNames[baseLang] || baseLang;
-      const baseWord = currentWord[baseLang] || currentWord.en;
-      const studyLang = state.selectedLang || aLang;
-      const studyLangName = langNames[studyLang] || studyLang;
-
-      // Trigger AI query
-      (async () => {
-        try {
-          const promptText = `Explain the usage of the vocabulary word "${studyWord}" (${studyLangName}) and its translation "${baseWord}" (${baseLangName}). Provide articles (such as der/die/das in German, il/la/lo in Italian), prepositions, example sentences, and grammatical variations where applicable. You MUST write all explanations, commentaries, descriptions, and translations in ${baseLangName}.`;
-
-          let responseText = "";
-          if (state.geminiKey || state.openaiKey || state.grokKey) {
-            responseText = await callLLM(promptText, `You are a helpful language teacher. Explain all vocabulary details in ${baseLangName}.`);
-          } else {
-            const fallbackText = await fetchWebDetailsFallback(currentWord.en, aLang);
-            responseText = `⚠️ [No API Key configured. Showing web dictionary fallback details instead of AI explanation]\n\n${fallbackText}`;
-          }
-          aiContent.innerHTML = parseMarkdownToHTML(responseText);
-        } catch (err) {
-          aiContent.innerHTML = `<div style="color: var(--error-color); padding: 20px;">Could not fetch AI details: ${err.message}</div>`;
-        }
-      })();
-
-      // 2. Fetch/Load grammar reference sheets in parallel/async
-      (async () => {
-        try {
-          if (!grammarGuideData) {
-            const response = await fetch("vocab/Grammatikmerkblaetter.md");
-            if (response.ok) {
-              grammarGuideData = await response.text();
-            }
-          }
-
-          let relevantSections = "";
-          if (grammarGuideData) {
-            const sections = grammarGuideData.split(/\n---\n/);
-            const cat = (currentWord.category || "").toLowerCase();
-            let matchedSections = [];
-            
-            if (cat.includes("noun") || (details && details.articles)) {
-              matchedSections = sections.filter(sec => sec.includes("Der Artikel") || sec.includes("l'articolo"));
-            } else if (cat.includes("verb") || (details && details.variations && details.variations.he)) {
-              matchedSections = sections.filter(sec => sec.includes("Perfekt") || sec.includes("passato prossimo") || sec.includes("Passato remoto") || sec.includes("Futur"));
-            } else if (cat.includes("adj")) {
-              matchedSections = sections.filter(sec => sec.includes("Adjektiv") || sec.includes("l'aggettivo"));
-            }
-            
-            if (matchedSections.length === 0) {
-              matchedSections = sections.slice(0, 3);
-            }
-            relevantSections = matchedSections.join("\n\n---\n\n");
-          }
-
-          const categoryName = currentWord.category || "General";
-          let explanationText = "";
-          
-          if (state.geminiKey || state.openaiKey || state.grokKey) {
-            const promptText = `
-Given the following sections of the reference grammar guide:
-"""
-${relevantSections.substring(0, 3000)}
-"""
-
-Act as an expert language teacher. Formulate a personalized grammar hint (in German) explaining 1 or 2 relevant grammar rules for the word "${studyWord}" (${studyLangName}), which is translated as "${baseWord}" (Category: "${categoryName}"). 
-
-CRITICAL WARNING ON GENDER AGREEMENT: 
-Grammatical genders often differ between languages. For instance, "la neve" is feminine in Italian, but the German translation "Schnee" is masculine ("der Schnee"). You MUST use correct German articles for German translations (e.g. "der Schnee", NOT "die Schnee"). Explicitly point out to the student if the grammatical genders differ between the target language word and its German translation (e.g., "Achtung: Im Italienischen weiblich (la neve), im Deutschen aber männlich (der Schnee)").
-
-Adjust the rule strictly to this specific case. For example:
-- If it is a noun, explain which article (like il, lo, la, l', i, gli, le) it uses and why (pointing to the starting letters/sounds).
-- If it is a verb, explain its auxiliary verb (essere vs avere) or tense conjugation rule.
-- If it is an adjective, explain how its ending changes.
-
-You MUST write the explanation in German. Keep it concise, clear, and format it nicely with bold labels. Do NOT include introduction or meta-comments.
-            `;
-            
-            explanationText = await callLLM(promptText, "You are a helpful language teacher. Write all grammar tips and explanations in German.");
-          } else {
-            explanationText = `### 📖 Lokaler Grammatik-Hinweis: **${studyWord}** (${studyLangName})\n\n`;
-            if (relevantSections) {
-              explanationText += `*Hier sind relevante Abschnitte aus den Grammatikmerkblättern, die zu der Kategorie **${categoryName}** passen:*\n\n---\n\n`;
-              explanationText += relevantSections;
-            } else {
-              explanationText += `*Keine passenden Grammatikregeln im Guide gefunden.*`;
-            }
-          }
-          
-          grammarContent.innerHTML = parseMarkdownToHTML(explanationText);
-        } catch (err) {
-          grammarContent.innerHTML = `<div style="color: var(--error-color); padding: 20px;">Could not fetch grammar rules: ${err.message}</div>`;
-        }
-      })();
-    };
-  }
-}
-
-function parseMarkdownToHTML(md) {
-  if (!md) return "";
-  
-  let html = md;
-
-  // Escape HTML tags to prevent arbitrary code execution
-  html = html
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-
-  // Parse Tables
-  const lines = html.split("\n");
-  let inTable = false;
-  let tableHeaders = [];
-  let tableRows = [];
-  let resultLines = [];
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
-    // A line is part of a table if it contains at least one pipe separator
-    const isTableRow = line.includes("|");
-
-    if (isTableRow) {
-      let cells = line.split("|").map(c => c.trim());
-      // Shift/Pop empty outer elements if the line started or ended with a pipe
-      if (line.startsWith("|")) cells.shift();
-      if (line.endsWith("|")) cells.pop();
-      
-      const isSeparator = cells.every(c => /^:-*|-*:-*|-*:$/.test(c) || c === "");
-      
-      if (isSeparator) {
-        continue;
-      }
-
-      if (!inTable) {
-        inTable = true;
-        tableHeaders = cells;
-      } else {
-        tableRows.push(cells);
-      }
-    } else {
-      if (inTable) {
-        let tableHtml = `<div style="overflow-x:auto; margin: 12px 0;"><table style="width:100%; border-collapse:collapse; font-size:0.85rem; background:rgba(255,255,255,0.01); border-radius:8px; border:1px solid rgba(255,255,255,0.08); overflow:hidden;">`;
-        if (tableHeaders.length > 0) {
-          tableHtml += `<thead style="background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.08);"><tr>`;
-          tableHeaders.forEach(h => {
-            tableHtml += `<th style="padding: 8px 10px; font-weight:600; text-align:left; color:var(--accent-color);">${h}</th>`;
-          });
-          tableHtml += `</tr></thead>`;
-        }
-        tableHtml += `<tbody>`;
-        tableRows.forEach(row => {
-          tableHtml += `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">`;
-          row.forEach(cell => {
-            tableHtml += `<td style="padding: 8px 10px; color:var(--text-primary);">${cell}</td>`;
-          });
-          tableHtml += `</tr>`;
-        });
-        tableHtml += `</tbody></table></div>`;
-        resultLines.push(tableHtml);
-        
-        inTable = false;
-        tableHeaders = [];
-        tableRows = [];
-      }
-      resultLines.push(lines[i]);
-    }
-  }
-  
-  if (inTable) {
-    let tableHtml = `<div style="overflow-x:auto; margin: 12px 0;"><table style="width:100%; border-collapse:collapse; font-size:0.85rem; background:rgba(255,255,255,0.01); border-radius:8px; border:1px solid rgba(255,255,255,0.08); overflow:hidden;">`;
-    if (tableHeaders.length > 0) {
-      tableHtml += `<thead style="background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.08);"><tr>`;
-      tableHeaders.forEach(h => {
-        tableHtml += `<th style="padding: 8px 10px; font-weight:600; text-align:left; color:var(--accent-color);">${h}</th>`;
-      });
-      tableHtml += `</tr></thead>`;
-    }
-    tableHtml += `<tbody>`;
-    tableRows.forEach(row => {
-      tableHtml += `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">`;
-      row.forEach(cell => {
-        tableHtml += `<td style="padding: 8px 10px; color:var(--text-primary);">${cell}</td>`;
-      });
-      tableHtml += `</tr>`;
-    });
-    tableHtml += `</tbody></table></div>`;
-    resultLines.push(tableHtml);
-  }
-
-  html = resultLines.join("\n");
-
-  // Parse Headers
-  html = html.replace(/^#### (.*?)$/gm, '<h4 style="color:var(--accent-color); font-weight:700; margin-top:16px; margin-bottom:8px; font-size:1rem;">$1</h4>');
-  html = html.replace(/^### (.*?)$/gm, '<h3 style="color:var(--accent-color); font-weight:700; margin-top:18px; margin-bottom:8px; font-size:1.1rem;">$1</h3>');
-  html = html.replace(/^## (.*?)$/gm, '<h2 style="color:var(--accent-color); font-weight:700; margin-top:20px; margin-bottom:10px; font-size:1.2rem;">$1</h2>');
-
-  // Parse Bold Text
-  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-  // Parse Bullet Lists
-  html = html.replace(/^\s*[-*]\s+(.*?)$/gm, '<li style="margin-left: 16px; margin-bottom: 4px; color: var(--text-primary); list-style-type: disc;">$1</li>');
-
-  // Parse remaining linebreaks nicely
-  html = html.split("\n").map(l => {
-    const trimmed = l.trim();
-    if (trimmed.startsWith("<") && trimmed.endsWith(">")) return l;
-    return l + "<br>";
-  }).join("\n");
-
-  return html;
-}
-
-async function callGeminiAPI(apiKey, prompt) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-  const response = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-  });
-  if (!response.ok) throw new Error("Gemini API request failed.");
-  const data = await response.json();
-  return data.candidates[0].content.parts[0].text;
-}
-
-async function callOpenAIAPI(apiKey, prompt) {
-  const url = "https://api.openai.com/v1/chat/completions";
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${apiKey}`
-    },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }]
-    })
-  });
-  if (!response.ok) throw new Error("OpenAI API request failed.");
-  const data = await response.json();
-  return data.choices[0].message.content;
-}
-
-async function callAnthropicAPI(apiKey, prompt) {
-  const url = "https://api.anthropic.com/v1/messages";
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01"
-    },
-    body: JSON.stringify({
-      model: "claude-3-5-sonnet-20241022",
-      max_tokens: 1024,
-      messages: [{ role: "user", content: prompt }]
-    })
-  });
-  if (!response.ok) throw new Error("Anthropic API request failed.");
-  const data = await response.json();
-  return data.content[0].text;
-}
-
-async function fetchWebDetailsFallback(word, targetLang) {
-  const sourceLang = state.baseLang || "en";
-  const langNames = {
-    en: "english",
-    de: "german",
-    it: "italian",
-    es: "spanish",
-    fr: "french"
-  };
-  const sourceName = langNames[sourceLang] || "english";
-  const targetName = langNames[targetLang] || "german";
-  const reversoUrl = `https://context.reverso.net/translation/${sourceName}-${targetName}/${encodeURIComponent(word)}`;
-
-  try {
-    const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(reversoUrl)}`);
-    if (res.ok) {
-      const json = await res.json();
-      const html = json.contents;
-      
-      // Extract Translations
-      const transRegex = /<a[^>]*class="[^"]*translation[^"]*"[^>]*>\s*([^<]+?)\s*<\/a>/gi;
-      const translations = [];
-      let match;
-      while ((match = transRegex.exec(html)) !== null && translations.length < 5) {
-        const cleanTrans = match[1].trim();
-        if (cleanTrans && !translations.includes(cleanTrans) && !cleanTrans.includes("<") && !cleanTrans.includes(">")) {
-          translations.push(cleanTrans);
-        }
-      }
-
-      // Extract Examples
-      function stripTags(str) {
-        return str.replace(/<[^>]*>?/gm, '').replace(/\s+/g, ' ').trim();
-      }
-
-      const examples = [];
-      const exampleRegex = /<div class="example"[\s\S]*?<div class="src[^"]*">([\s\S]*?)<\/div>[\s\S]*?<div class="trg[^"]*">([\s\S]*?)<\/div>/gi;
-      while ((match = exampleRegex.exec(html)) !== null && examples.length < 3) {
-        const srcText = stripTags(match[1]);
-        const trgText = stripTags(match[2]);
-        if (srcText && trgText) {
-          examples.push({ src: srcText, trg: trgText });
-        }
-      }
-
-      if (translations.length > 0 || examples.length > 0) {
-        let output = `📖 [Reverso Context Web Lookup]\nWord: "${word}"\n\nKey Translations in Context:\n➔ ${translations.join(", ")}\n\nSentence Examples:\n`;
-        examples.forEach((ex, i) => {
-          output += `${i + 1}. "${ex.src}"\n   ➔ "${ex.trg}"\n\n`;
-        });
-        return output.trim();
-      }
-    }
-  } catch (err) {
-    console.warn("Reverso Context fetch failed, falling back to standard dictionary:", err);
-  }
-
-  try {
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
-    if (!res.ok) throw new Error("Word not found in dictionary");
-    const data = await res.json();
-    
-    const entry = data[0];
-    const definition = entry.meanings[0].definitions[0].definition;
-    const example = entry.meanings[0].definitions[0].example || "No example sentence available on web dictionary.";
-    const partOfSpeech = entry.meanings[0].partOfSpeech;
-
-    let defTranslation = "";
-    try {
-      const transRes = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&q=${encodeURIComponent(definition)}`);
-      const transData = await transRes.json();
-      defTranslation = ` (${transData[0][0][0]})`;
-    } catch(e) {}
-
-    return `[Web Dictionary Fallback]
-Word: ${word} (${partOfSpeech})
-Definition: ${definition}${defTranslation}
-Example Usage: "${example}"`;
-
-  } catch (err) {
-    return `[Web Lookups]
-Could not find Reverso Context or dictionary details for "${word}".
-You can read more directly on Wiktionary: https://en.wiktionary.org/wiki/${encodeURIComponent(word)}`;
-  }
-}
-
-import {
-  showCustomAlert,
-  showCustomConfirm,
-  testApiKey,
-  renderFoldersList,
-  buildTreeHTML,
-  getFolderWordCountRecursive,
-  getFolderWordsRecursive,
-  getAllWordsCombined,
-  deleteFolderRecursive,
-  isDescendantFolder,
-  renderStatisticsView,
-  renderFolderStatistics,
-  callLLM,
-  updateDirectionButtonsUI,
-  getGrokModel,
-  loadOnDeviceVoices
-} from './modules/modals.js';
 
 window.showCustomAlert = showCustomAlert;
 window.showCustomConfirm = showCustomConfirm;
@@ -1626,20 +1645,7 @@ window.updateDirectionButtonsUI = updateDirectionButtonsUI;
 window.loadOnDeviceVoices = loadOnDeviceVoices;
 window.callLLM = callLLM;
 
-import {
-  initQuickTranslateSpeech,
-  startQuickTranslateSpeech,
-  stopQuickTranslateSpeech,
-  toggleQuickTranslateSpeech,
-  runQuickTranslate,
-  populateQuickTranslateFolders,
-  saveQuickTranslateWord,
-  normalizeWordCasing,
-  isVerbCheck,
-  isVerbAnyLanguage,
-  detectLanguageAndTranslateToEn,
-  fetchSynonymsForTarget
-} from './modules/quick-translate.js';
+
 
 window.initQuickTranslateSpeech = initQuickTranslateSpeech;
 window.startQuickTranslateSpeech = startQuickTranslateSpeech;
