@@ -2,6 +2,40 @@
 <html lang="en">
 
 <head>
+  <script>
+    window.addEventListener('error', function(e) {
+      var div = document.createElement('div');
+      div.style.position = 'fixed';
+      div.style.top = '0';
+      div.style.left = '0';
+      div.style.width = '100%';
+      div.style.background = 'red';
+      div.style.color = 'white';
+      div.style.padding = '10px';
+      div.style.zIndex = '999999';
+      div.style.fontSize = '14px';
+      div.style.fontFamily = 'monospace';
+      div.style.whiteSpace = 'pre-wrap';
+      div.innerText = 'JS Error: ' + e.message + ' at ' + e.filename + ':' + e.lineno + ':' + e.colno;
+      document.body.appendChild(div);
+    });
+    window.addEventListener('unhandledrejection', function(e) {
+      var div = document.createElement('div');
+      div.style.position = 'fixed';
+      div.style.top = '40px';
+      div.style.left = '0';
+      div.style.width = '100%';
+      div.style.background = 'red';
+      div.style.color = 'white';
+      div.style.padding = '10px';
+      div.style.zIndex = '999999';
+      div.style.fontSize = '14px';
+      div.style.fontFamily = 'monospace';
+      div.style.whiteSpace = 'pre-wrap';
+      div.innerText = 'Promise Rejection: ' + (e.reason ? e.reason.stack || e.reason.message || e.reason : e);
+      document.body.appendChild(div);
+    });
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -79,7 +113,7 @@
         <h1>VocTrainer</h1>
         <div id="build-timestamp"
           style="font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6; font-family: monospace; margin-top: -6px; margin-bottom: 8px; pointer-events: none;">
-          Build: 2026-07-15 09:35:00
+          Build: 2026-07-15 09:40:00
         </div>
         <p>Master languages with premium gamified learning!</p>
       </div>
@@ -1641,8 +1675,8 @@
     }
   </style>
 
-  <script src="speech.js?v=20260715_0935"></script>
-  <script type="module" src="app.js?v=20260715_0935"></script>
+  <script src="speech.js?v=20260715_0940"></script>
+  <script type="module" src="app.js?v=20260715_0940"></script>
 </body>
 
 </html>
