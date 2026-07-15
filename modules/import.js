@@ -490,37 +490,7 @@ export async function addCustomWord(english, translation, lang, category, imageU
     }
   };
 
-  const hasKey = state.openaiKey || state.grokKey || state.geminiKey;
-  if (hasKey) {
-    // Perform AI detection and translations in one single call!
-    const aiResult = await translateAndDetectWithAI(english);
-    if (aiResult) {
-      newWord.en = sanitizeWordTranslation(aiResult.en, "en");
-      newWord.de = sanitizeWordTranslation(aiResult.de, "de");
-      newWord.it = sanitizeWordTranslation(aiResult.it, "it");
-      newWord.es = sanitizeWordTranslation(aiResult.es, "es");
-      newWord.fr = sanitizeWordTranslation(aiResult.fr, "fr");
-      newWord.lang = aiResult.detectedLang || lang;
-      newWord.target = newWord[state.selectedLang] || "";
-      
-      const staticFolders = ["verbs", "nouns", "technology", "biology", "phrases"];
-      if (category && !staticFolders.includes(category)) {
-        const exists = state.customFolders.some(f => f.id === category || f.name === category);
-        if (!exists) {
-          state.customFolders.push({ id: category, name: category, parentId: null });
-        }
-      }
 
-      state.customVocab.push(newWord);
-      sessionImportedList.push(newWord);
-      saveState();
-      renderImportedList();
-      if (document.getElementById("view-browse").classList.contains("active")) {
-        renderBrowseList();
-      }
-      return;
-    }
-  }
 
   // Fallback to MyMemory:
   // Add a small delay to avoid rate limits when doing multiple imports in parallel
