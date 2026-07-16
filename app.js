@@ -12,7 +12,7 @@ import {
   fillMissingTranslations,
   renderImportedList
 } from './modules/import.js';
-import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes, voteDifficulty, updateDifficultyVoteUI, submitAnswer, toggleListening } from './modules/test-runner.js';
+import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes, adjustDifficulty, updateDifficultyVoteUI, submitAnswer, toggleListening } from './modules/test-runner.js';
 import { initApp, renderHistoryList, renderBrowseList } from './modules/init.js';
 import './modules/conjugation.js';
 
@@ -1731,7 +1731,7 @@ window.renderImportedList = renderImportedList;
 window.renderMistakesList = renderMistakesList;
 window.renderHistoryList = renderHistoryList;
 window.updateCloudSyncUI = updateCloudSyncUI;
-window.voteDifficulty = voteDifficulty;
+window.adjustDifficulty = adjustDifficulty;
 window.showView = showView;
 window.speakWord = speakWord;
 window.getFlagHtml = getFlagHtml;

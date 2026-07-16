@@ -125,6 +125,7 @@ export function renderQuestion() {
     finishTestSession();
     return;
   }
+  window.questionStartTime = Date.now();
   // Synchronize the test mode toggles UI buttons to match active mode
   const modeToggles = document.querySelectorAll(".mode-toggle-btn");
   if (modeToggles.length > 0) {
@@ -382,6 +383,7 @@ export function selectOption(buttonEl, selectedText) {
   }
 
   const isCorrect = checkAnswer(selectedText, correctText, correctWord);
+  calculateAndSaveDifficulty(isCorrect ? correctText : "", correctText);
 
   if (isCorrect) {
     buttonEl.classList.add("correct");
@@ -420,6 +422,7 @@ export function submitTypingAnswer() {
   const correctText = direction === "forward" ? correctWord.target : correctWord.en;
 
   const isCorrect = checkAnswer(userAnswer, correctText, correctWord);
+  calculateAndSaveDifficulty(userAnswer, correctText);
 
   if (isCorrect) {
     inputField.classList.add("correct-input");
@@ -468,6 +471,7 @@ export function submitConjugationAnswer() {
   }
 
   const isCorrect = checkAnswer(userAnswer, correctConjugation, questionWord);
+  calculateAndSaveDifficulty(userAnswer, correctConjugation);
 
   if (isCorrect) {
     inputField.classList.add("correct-input");
@@ -873,7 +877,68 @@ export function repeatMistakes() {
   renderQuestion();
 }
 
-export function voteDifficulty(level) {
+export function getLevenshteinDistance(s1, s2) {
+  const clean1 = (s1 || "").trim().toLowerCase();
+  const clean2 = (s2 || "").trim().toLowerCase();
+  if (clean1 === clean2) return 0;
+  const m = clean1.length;
+  const n = clean2.length;
+  if (m === 0) return n;
+  if (n === 0) return m;
+  const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (clean1[i - 1] === clean2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1];
+      } else {
+        dp[i][j] = Math.min(
+          dp[i - 1][j] + 1,
+          dp[i][j - 1] + 1,
+          dp[i - 1][j - 1] + 1
+        );
+      }
+    }
+  }
+  return dp[m][n];
+}
+
+export function calculateAndSaveDifficulty(userAnswer, correctText, isSpoken = false) {
+  const test = state.currentTest;
+  if (!test) return;
+  const currentWord = test.words[test.index];
+  if (!currentWord) return;
+
+  const elapsedTime = (Date.now() - (window.questionStartTime || Date.now())) / 1000;
+  const timeRatio = Math.min(elapsedTime, 30) / 30;
+  const timeScore = timeRatio * 100;
+
+  let errorScore = 0;
+  if (userAnswer && correctText) {
+    const editDist = getLevenshteinDistance(userAnswer, correctText);
+    const maxLen = Math.max(userAnswer.length, correctText.length);
+    const errorRate = maxLen > 0 ? (editDist / maxLen) : 0;
+    errorScore = errorRate * 100;
+  } else {
+    errorScore = 100;
+  }
+
+  // Combine scores: 70% error, 30% time
+  let finalScore = Math.round(0.7 * errorScore + 0.3 * timeScore);
+  finalScore = Math.max(0, Math.min(100, finalScore));
+
+  const wordKey = currentWord.origEn || currentWord.en;
+  if (!state.wordStats) state.wordStats = {};
+  if (!state.wordStats[wordKey]) {
+    state.wordStats[wordKey] = { attempts: 0, errors: 0, box: 1, lastReview: null };
+  }
+  
+  state.wordStats[wordKey].difficulty = finalScore;
+  saveState();
+}
+
+export function adjustDifficulty(delta) {
   const test = state.currentTest;
   if (!test) return;
   const currentWord = test.words[test.index];
@@ -885,40 +950,59 @@ export function voteDifficulty(level) {
     state.wordStats[wordKey] = { attempts: 0, errors: 0, box: 1, lastReview: null };
   }
   
-  state.wordStats[wordKey].difficulty = level;
+  let currentScore = state.wordStats[wordKey].difficulty;
+  if (currentScore === undefined || typeof currentScore === "string") {
+    if (currentScore === "easy") currentScore = 20;
+    else if (currentScore === "medium") currentScore = 50;
+    else if (currentScore === "hard") currentScore = 80;
+    else currentScore = 50;
+  }
+  
+  let newScore = currentScore + delta;
+  newScore = Math.max(0, Math.min(100, newScore));
+  
+  state.wordStats[wordKey].difficulty = newScore;
   saveState();
-  updateDifficultyVoteUI(level);
+  updateDifficultyVoteUI(newScore);
 }
 
-export function updateDifficultyVoteUI(level) {
-  const btnEasy = document.getElementById("btn-vote-easy");
-  const btnMedium = document.getElementById("btn-vote-medium");
-  const btnHard = document.getElementById("btn-vote-hard");
-  if (!btnEasy || !btnMedium || !btnHard) return;
-  
-  btnEasy.style.background = "";
-  btnEasy.style.borderColor = "";
-  btnEasy.style.color = "";
-  btnMedium.style.background = "";
-  btnMedium.style.borderColor = "";
-  btnMedium.style.color = "";
-  btnHard.style.background = "";
-  btnHard.style.borderColor = "";
-  btnHard.style.color = "";
-  
-  if (level === "easy") {
-    btnEasy.style.background = "rgba(46, 204, 113, 0.2)";
-    btnEasy.style.borderColor = "#2ecc71";
-    btnEasy.style.color = "#2ecc71";
-  } else if (level === "medium") {
-    btnMedium.style.background = "rgba(241, 196, 15, 0.2)";
-    btnMedium.style.borderColor = "#f1c40f";
-    btnMedium.style.color = "#f1c40f";
-  } else if (level === "hard") {
-    btnHard.style.background = "rgba(231, 76, 60, 0.2)";
-    btnHard.style.borderColor = "#e74c3c";
-    btnHard.style.color = "#e74c3c";
+window.adjustDifficulty = adjustDifficulty;
+
+export function updateDifficultyVoteUI(levelOrScore) {
+  let score = 50;
+  if (typeof levelOrScore === "number") {
+    score = levelOrScore;
+  } else if (typeof levelOrScore === "string") {
+    if (levelOrScore === "easy") score = 20;
+    else if (levelOrScore === "medium") score = 50;
+    else if (levelOrScore === "hard") score = 80;
+  } else {
+    const test = state.currentTest;
+    if (test) {
+      const currentWord = test.words[test.index];
+      if (currentWord) {
+        const wordKey = currentWord.origEn || currentWord.en;
+        const stats = state.wordStats?.[wordKey];
+        if (stats && stats.difficulty !== undefined) {
+          score = stats.difficulty;
+        }
+      }
+    }
   }
+
+  if (typeof score === "string") {
+    if (score === "easy") score = 20;
+    else if (score === "medium") score = 50;
+    else if (score === "hard") score = 80;
+    else score = 50;
+  }
+  score = Math.max(0, Math.min(100, Math.round(score)));
+
+  const labelEl = document.getElementById("difficulty-percent-label");
+  if (labelEl) labelEl.textContent = `${score}%`;
+
+  const fillEl = document.getElementById("difficulty-progress-fill");
+  if (fillEl) fillEl.style.width = `${score}%`;
 }
 
 export function submitSpeechAnswer(userAnswer) {
@@ -932,6 +1016,7 @@ export function submitSpeechAnswer(userAnswer) {
   const correctText = direction === "forward" ? correctWord.target : correctWord.en;
 
   const isCorrect = checkAnswer(userAnswer, correctText, correctWord);
+  calculateAndSaveDifficulty(userAnswer, correctText, true);
 
   if (isCorrect) {
     triggerCorrectAnswerUI();
@@ -1141,6 +1226,7 @@ export function submitBubblesAnswer() {
   const correctText = direction === "forward" ? correctWord.target : correctWord.en;
 
   const isCorrect = checkAnswer(userAnswer, correctText, correctWord);
+  calculateAndSaveDifficulty(userAnswer, correctText);
 
   if (isCorrect) {
     triggerCorrectAnswerUI();

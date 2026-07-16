@@ -113,7 +113,7 @@
         <h1>VocTrainer</h1>
         <div id="build-timestamp"
           style="font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6; font-family: monospace; margin-top: -6px; margin-bottom: 8px; pointer-events: none;">
-          Build: 2026-07-15 20:16:00
+          Build: 2026-07-16 07:45:00
         </div>
         <p>Master languages with premium gamified learning!</p>
       </div>
@@ -424,20 +424,20 @@
 
             <!-- Word Difficulty Voting -->
             <div class="difficulty-voting-container"
-              style="margin-top: 10px; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); text-align: center;">
+              style="margin-top: 10px; padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); text-align: center;">
               <div
-                style="font-size: 0.65rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">
-                Rate Difficulty (Frequency Weight)</div>
-              <div style="display: flex; gap: 6px; justify-content: center;">
-                <button id="btn-vote-easy" class="btn btn-secondary"
-                  style="margin: 0; flex: 1; min-height: 32px; padding: 2px 6px; font-size: 0.75rem; border-radius: 6px;"
-                  onclick="voteDifficulty('easy')">🟢 Easy</button>
-                <button id="btn-vote-medium" class="btn btn-secondary"
-                  style="margin: 0; flex: 1; min-height: 32px; padding: 2px 6px; font-size: 0.75rem; border-radius: 6px;"
-                  onclick="voteDifficulty('medium')">🟡 Medium</button>
-                <button id="btn-vote-hard" class="btn btn-secondary"
-                  style="margin: 0; flex: 1; min-height: 32px; padding: 2px 6px; font-size: 0.75rem; border-radius: 6px;"
-                  onclick="voteDifficulty('hard')">🔴 Hard</button>
+                style="font-size: 0.65rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">
+                Rate Difficulty (Frequency Weight): <span id="difficulty-percent-label" style="color: var(--accent-color); font-weight: 800;">50%</span></div>
+              <div style="display: flex; gap: 10px; align-items: center; justify-content: center;">
+                <button id="btn-difficulty-minus" class="btn btn-secondary"
+                  style="margin: 0; min-height: 32px; min-width: 32px; width: 32px; padding: 0; font-size: 0.9rem; border-radius: 8px; display: flex; align-items: center; justify-content: center;"
+                  onclick="adjustDifficulty(-20)">−</button>
+                <div class="progress-bar-container" style="flex: 1; height: 10px; background: rgba(255,255,255,0.06); border-radius: 5px; overflow: hidden; position: relative;">
+                  <div id="difficulty-progress-fill" style="width: 50%; height: 100%; background: linear-gradient(90deg, #2ecc71, #f1c40f, #e74c3c); transition: width 0.3s ease;"></div>
+                </div>
+                <button id="btn-difficulty-plus" class="btn btn-secondary"
+                  style="margin: 0; min-height: 32px; min-width: 32px; width: 32px; padding: 0; font-size: 0.9rem; border-radius: 8px; display: flex; align-items: center; justify-content: center;"
+                  onclick="adjustDifficulty(20)">+</button>
               </div>
             </div>
 
