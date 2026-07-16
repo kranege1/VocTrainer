@@ -730,19 +730,35 @@ export function renderFolderStatistics() {
           ratioColor = ratio >= 80 ? "#2ecc71" : ratio >= 50 ? "#ff9f43" : "#ff4b4b";
         }
         
-        const difficulty = stats.difficulty || "medium";
-        const diffLabels = {
-          easy: '<span class="badge" style="background: rgba(46, 204, 113, 0.1); color: #2ecc71; font-size: 0.7rem; border-radius: 6px; padding: 2px 6px;">🟢 Easy</span>',
-          medium: '<span class="badge" style="background: rgba(241, 196, 15, 0.1); color: #f1c40f; font-size: 0.7rem; border-radius: 6px; padding: 2px 6px;">🟡 Medium</span>',
-          hard: '<span class="badge" style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; font-size: 0.7rem; border-radius: 6px; padding: 2px 6px;">🔴 Hard</span>'
-        };
+        let difficultyScore = stats.difficulty;
+        if (difficultyScore === undefined) {
+          difficultyScore = 50;
+        } else if (difficultyScore === "easy") {
+          difficultyScore = 20;
+        } else if (difficultyScore === "medium") {
+          difficultyScore = 50;
+        } else if (difficultyScore === "hard") {
+          difficultyScore = 80;
+        }
+
+        let diffColor = "#2ecc71";
+        let diffBg = "rgba(46, 204, 113, 0.1)";
+        if (difficultyScore > 70) {
+          diffColor = "#e74c3c";
+          diffBg = "rgba(231, 76, 60, 0.1)";
+        } else if (difficultyScore > 30) {
+          diffColor = "#f1c40f";
+          diffBg = "rgba(241, 196, 15, 0.1)";
+        }
+        
+        const diffBadge = `<span class="badge" style="background: ${diffBg}; color: ${diffColor}; font-size: 0.75rem; border-radius: 6px; padding: 3px 8px; font-weight: 700;">${difficultyScore}%</span>`;
         
         const tr = document.createElement("tr");
         tr.style.borderBottom = "1px solid rgba(255,255,255,0.04)";
         tr.innerHTML = `
           <td style="padding: 10px; font-weight: 600; color: #fff;">${word.en}</td>
           <td style="padding: 10px; color: var(--text-secondary);">${word.target || word[state.selectedLang] || ""}</td>
-          <td style="padding: 10px; text-align: center;">${diffLabels[difficulty]}</td>
+          <td style="padding: 10px; text-align: center;">${diffBadge}</td>
           <td style="padding: 10px; text-align: center; color: #2ecc71; font-weight: 600;">${corrects}</td>
           <td style="padding: 10px; text-align: center; color: #ff4b4b; font-weight: 600;">${falses}</td>
           <td style="padding: 10px; text-align: center; color: ${ratioColor}; font-weight: 700;">${ratioText}</td>
