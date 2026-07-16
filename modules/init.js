@@ -2091,19 +2091,26 @@ function renderBrowseWordsList(folderId) {
           const baseLang = item.en ? "en" : item.de ? "de" : item.it ? "it" : item.es ? "es" : "fr";
           const baseText = item[baseLang];
 
-          const hasKey = state.openaiKey || state.grokKey || state.geminiKey;
-          if (hasKey) {
-            const aiResult = await translateAndDetectWithAI(baseText);
-            if (aiResult) {
-              item.en = sanitizeWordTranslation(aiResult.en, "en");
-              item.de = sanitizeWordTranslation(aiResult.de, "de");
-              item.it = sanitizeWordTranslation(aiResult.it, "it");
-              item.es = sanitizeWordTranslation(aiResult.es, "es");
-              item.fr = sanitizeWordTranslation(aiResult.fr, "fr");
+          const langs = ["en", "de", "it", "es", "fr"];
+          const promises = langs.map(async (targetLang) => {
+            if (targetLang === baseLang) {
+              item[targetLang] = sanitizeWordTranslation(baseText, targetLang, folderId);
+              return;
             }
-          } else {
-            await fillMissingTranslations(item, baseLang);
-          }
+            const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${baseLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(baseText)}`;
+            try {
+              const res = await fetch(url);
+              if (res.ok) {
+                const data = await res.json();
+                if (data && data[0] && data[0][0] && data[0][0][0]) {
+                  item[targetLang] = sanitizeWordTranslation(data[0][0][0], targetLang, folderId);
+                }
+              }
+            } catch (err) {
+              console.error(`Google fix translation failed for ${targetLang}`, err);
+            }
+          });
+          await Promise.all(promises);
 
           if (isCustom) {
             const idx = state.customVocab.findIndex(v => 
