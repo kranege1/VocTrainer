@@ -979,126 +979,163 @@ export async function initApp() {
     }
 
     const origText = btn.textContent;
-    btn.textContent = "⏳ Analyzing & Translating with AI...";
+    btn.textContent = "⏳ Translating with Google Translate...";
     btn.disabled = true;
 
     try {
       const detectedBase = await detectLanguage(word) || "en";
-      const prompt = `Classify and translate the vocabulary word/phrase "${word}" written in source language key "${detectedBase}".
-      Output your response ONLY as a clean, parseable JSON object with the exact keys described below. Do not wrap in markdown code blocks. Do not write extra commentary.
+      const targetLangs = ["en", "de", "it", "es", "fr"];
       
-      JSON schema:
-      {
-        "translations": {
-          "en": "English translation",
-          "de": "German translation",
-          "it": "Italian translation",
-          "es": "Spanish translation",
-          "fr": "French translation"
-        },
-        "category": "nouns, verbs, adjectives, or phrases",
-        "articles": {
-          "de": "der, die, or das if applicable",
-          "it": "il, la, lo, etc. if applicable",
-          "es": "el or la if applicable",
-          "fr": "le or la if applicable"
-        },
-        "genderForms": {
-          "de": { "m": "masculine form if applicable", "f": "feminine form if applicable" },
-          "it": { "m": "masculine form if applicable", "f": "feminine form if applicable" }
-        },
-        "synonyms": [
-          {
-            "word": "Synonym word 1 in English",
-            "category": "nouns, verbs, etc.",
-            "translations": {
-              "en": "English",
-              "de": "German",
-              "it": "Italian",
-              "es": "Spanish",
-              "fr": "French"
-            }
-          },
-          {
-            "word": "Synonym word 2 in English",
-            "category": "nouns, verbs, etc.",
-            "translations": {
-              "en": "English",
-              "de": "German",
-              "it": "Italian",
-              "es": "Spanish",
-              "fr": "French"
-            }
+      const translationPromises = targetLangs.map(async (lang) => {
+        if (lang === detectedBase) {
+          return { lang, text: word };
+        }
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${detectedBase}&tl=${lang}&dt=t&q=${encodeURIComponent(word)}`;
+        try {
+          const res = await fetch(url);
+          const data = await res.json();
+          if (data && data[0] && data[0][0] && data[0][0][0]) {
+            return { lang, text: data[0][0][0].trim() };
           }
-        ]
-      }`;
-
-      const resText = await callLLM(prompt);
-      let parsed;
-      try {
-        const cleanJson = resText.replace(/```json/g, "").replace(/```/g, "").trim();
-        parsed = JSON.parse(cleanJson);
-      } catch (e) {
-        throw new Error("AI returned a non-JSON response. Please try again.");
-      }
-
-      if (parsed.translations) {
-        document.getElementById("manual-lang-en").value = parsed.translations.en || "";
-        document.getElementById("manual-lang-de").value = parsed.translations.de || "";
-        document.getElementById("manual-lang-it").value = parsed.translations.it || "";
-        document.getElementById("manual-lang-es").value = parsed.translations.es || "";
-        document.getElementById("manual-lang-fr").value = parsed.translations.fr || "";
-      }
+        } catch (e) {
+          console.error(`Google translation failed for ${lang}`, e);
+        }
+        return { lang, text: "" };
+      });
       
-      document.getElementById("manual-category").value = parsed.category || "nouns";
-      document.getElementById("manual-image-url").value = parsed.translations?.en || word;
+      const results = await Promise.all(translationPromises);
+      const translations = {};
+      results.forEach(r => {
+        translations[r.lang] = r.text;
+      });
 
-      // Populate Advanced Grammar fields from AI
-      if (parsed.articles) {
-        document.getElementById("manual-art-de").value = parsed.articles.de || "";
-        document.getElementById("manual-art-it").value = parsed.articles.it || "";
-        document.getElementById("manual-art-es").value = parsed.articles.es || "";
-        document.getElementById("manual-art-fr").value = parsed.articles.fr || "";
-      }
-      if (parsed.genderForms) {
-        document.getElementById("manual-gen-de-m").value = parsed.genderForms.de?.m || "";
-        document.getElementById("manual-gen-de-f").value = parsed.genderForms.de?.f || "";
-        document.getElementById("manual-gen-it-m").value = parsed.genderForms.it?.m || "";
-        document.getElementById("manual-gen-it-f").value = parsed.genderForms.it?.f || "";
-      }
+      // Populate translations
+      document.getElementById("manual-lang-en").value = translations.en || "";
+      document.getElementById("manual-lang-de").value = translations.de || "";
+      document.getElementById("manual-lang-it").value = translations.it || "";
+      document.getElementById("manual-lang-es").value = translations.es || "";
+      document.getElementById("manual-lang-fr").value = translations.fr || "";
 
+      // Guess category
+      let category = "nouns";
+      const enText = (translations.en || "").toLowerCase();
+      if (word.split(/\s+/).length > 2) {
+        category = "phrases";
+      } else if (enText.startsWith("to ")) {
+        category = "verbs";
+      }
+      document.getElementById("manual-category").value = category;
+      document.getElementById("manual-image-url").value = translations.en || word;
+
+      // Reset advanced details
+      document.getElementById("manual-art-de").value = "";
+      document.getElementById("manual-art-it").value = "";
+      document.getElementById("manual-art-es").value = "";
+      document.getElementById("manual-art-fr").value = "";
+      document.getElementById("manual-gen-de-m").value = "";
+      document.getElementById("manual-gen-de-f").value = "";
+      document.getElementById("manual-gen-it-m").value = "";
+      document.getElementById("manual-gen-it-f").value = "";
+      
       const synContainer = document.getElementById("manual-synonyms-container");
-      synContainer.innerHTML = "";
+      synContainer.innerHTML = `<li style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; padding: 12px;">Translations loaded. No AI key configured for advanced grammar.</li>`;
 
-      if (parsed.synonyms && parsed.synonyms.length > 0) {
-        parsed.synonyms.forEach(syn => {
-          const t = syn.translations || {};
-          const li = document.createElement("li");
-          li.style.display = "flex";
-          li.style.justifyContent = "space-between";
-          li.style.alignItems = "center";
-          li.style.padding = "10px 12px";
-          li.style.background = "rgba(255,255,255,0.02)";
-          li.style.border = "1px solid var(--border-color)";
-          li.style.borderRadius = "10px";
+      // Check if AI is available to fetch advanced features
+      const hasKey = state.openaiKey || state.grokKey || state.geminiKey || state.anthropicKey;
+      if (hasKey) {
+        btn.textContent = "⏳ Enhancing with AI (Synonyms, Grammar)...";
+        
+        const prompt = `Classify and translate the vocabulary word/phrase "${word}" written in source language key "${detectedBase}".
+        Output your response ONLY as a clean, parseable JSON object with the exact keys described below. Do not wrap in markdown code blocks. Do not write extra commentary.
+        
+        JSON schema:
+        {
+          "translations": {
+            "en": "English translation",
+            "de": "German translation",
+            "it": "Italian translation",
+            "es": "Spanish translation",
+            "fr": "French translation"
+          },
+          "category": "nouns, verbs, adjectives, or phrases",
+          "articles": {
+            "de": "der, die, or das if applicable",
+            "it": "il, la, lo, etc. if applicable",
+            "es": "el or la if applicable",
+            "fr": "le or la if applicable"
+          },
+          "genderForms": {
+            "de": { "m": "masculine form if applicable", "f": "feminine form if applicable" },
+            "it": { "m": "masculine form if applicable", "f": "feminine form if applicable" }
+          },
+          "synonyms": [
+            {
+              "word": "Synonym word 1 in English",
+              "category": "nouns, verbs, etc.",
+              "translations": {
+                "en": "English",
+                "de": "German",
+                "it": "Italian",
+                "es": "Spanish",
+                "fr": "French"
+              }
+            }
+          ]
+        }`;
 
-          li.innerHTML = `
-            <div style="text-align: left; flex: 1; padding-right: 8px;">
-              <strong style="color: #fff;">${syn.word}</strong>
-              <span class="category-tag" style="margin-left: 6px; font-size: 0.65rem; padding: 1px 4px;">${syn.category}</span>
-              <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">
-                🇩🇪 ${t.de || '-'} | 🇮🇹 ${t.it || '-'} | 🇪🇸 ${t.es || '-'}
+        const resText = await callLLM(prompt);
+        let parsed;
+        try {
+          const cleanJson = resText.replace(/```json/g, "").replace(/```/g, "").trim();
+          parsed = JSON.parse(cleanJson);
+        } catch (e) {
+          throw new Error("AI returned a non-JSON response. Please try again.");
+        }
+
+        if (parsed.articles) {
+          document.getElementById("manual-art-de").value = parsed.articles.de || "";
+          document.getElementById("manual-art-it").value = parsed.articles.it || "";
+          document.getElementById("manual-art-es").value = parsed.articles.es || "";
+          document.getElementById("manual-art-fr").value = parsed.articles.fr || "";
+        }
+        if (parsed.genderForms) {
+          document.getElementById("manual-gen-de-m").value = parsed.genderForms.de?.m || "";
+          document.getElementById("manual-gen-de-f").value = parsed.genderForms.de?.f || "";
+          document.getElementById("manual-gen-it-m").value = parsed.genderForms.it?.m || "";
+          document.getElementById("manual-gen-it-f").value = parsed.genderForms.it?.f || "";
+        }
+
+        synContainer.innerHTML = "";
+        if (parsed.synonyms && parsed.synonyms.length > 0) {
+          parsed.synonyms.forEach(syn => {
+            const t = syn.translations || {};
+            const li = document.createElement("li");
+            li.style.display = "flex";
+            li.style.justifyContent = "space-between";
+            li.style.alignItems = "center";
+            li.style.padding = "10px 12px";
+            li.style.background = "rgba(255,255,255,0.02)";
+            li.style.border = "1px solid var(--border-color)";
+            li.style.borderRadius = "10px";
+
+            li.innerHTML = `
+              <div style="text-align: left; flex: 1; padding-right: 8px;">
+                <strong style="color: #fff;">${syn.word}</strong>
+                <span class="category-tag" style="margin-left: 6px; font-size: 0.65rem; padding: 1px 4px;">${syn.category}</span>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">
+                  🇩🇪 ${t.de || '-'} | 🇮🇹 ${t.it || '-'} | 🇪🇸 ${t.es || '-'}
+                </div>
               </div>
-            </div>
-            <div style="display: flex; gap: 6px; flex-shrink: 0;">
-              <button class="btn btn-secondary btn-sm" style="padding: 4px 8px; font-size: 0.75rem; width: auto; min-height: 28px;" onclick="window.loadSynonymIntoEditor('${(t.en || syn.word).replace(/'/g, "\\'")}', '${(t.de || '').replace(/'/g, "\\'")}', '${(t.it || '').replace(/'/g, "\\'")}', '${(t.es || '').replace(/'/g, "\\'")}', '${(t.fr || '').replace(/'/g, "\\'")}', '${(syn.category || 'nouns').replace(/'/g, "\\'")}')">📥 Load</button>
-              <button class="btn btn-primary btn-sm" style="padding: 4px 8px; font-size: 0.75rem; width: auto; min-height: 28px;" onclick="window.addSynonymDirectly('${(t.en || syn.word).replace(/'/g, "\\'")}', '${(t.de || '').replace(/'/g, "\\'")}', '${(t.it || '').replace(/'/g, "\\'")}', '${(t.es || '').replace(/'/g, "\\'")}', '${(t.fr || '').replace(/'/g, "\\'")}', '${(syn.category || 'nouns').replace(/'/g, "\\'")}')">➕ Add</button>
-            </div>
-          `;
-          synContainer.appendChild(li);
-        });
-      } else {
-        synContainer.innerHTML = `<li style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; padding: 12px;">No synonyms returned by AI.</li>`;
+              <div style="display: flex; gap: 6px; flex-shrink: 0;">
+                <button class="btn btn-secondary btn-sm" style="padding: 4px 8px; font-size: 0.75rem; width: auto; min-height: 28px;" onclick="window.loadSynonymIntoEditor('${(t.en || syn.word).replace(/'/g, "\\'")}', '${(t.de || '').replace(/'/g, "\\'")}', '${(t.it || '').replace(/'/g, "\\'")}', '${(t.es || '').replace(/'/g, "\\'")}', '${(t.fr || '').replace(/'/g, "\\'")}', '${(syn.category || 'nouns').replace(/'/g, "\\'")}')">📥 Load</button>
+                <button class="btn btn-primary btn-sm" style="padding: 4px 8px; font-size: 0.75rem; width: auto; min-height: 28px;" onclick="window.addSynonymDirectly('${(t.en || syn.word).replace(/'/g, "\\'")}', '${(t.de || '').replace(/'/g, "\\'")}', '${(t.it || '').replace(/'/g, "\\'")}', '${(t.es || '').replace(/'/g, "\\'")}', '${(t.fr || '').replace(/'/g, "\\'")}', '${(syn.category || 'nouns').replace(/'/g, "\\'")}')">➕ Add</button>
+              </div>
+            `;
+            synContainer.appendChild(li);
+          });
+        } else {
+          synContainer.innerHTML = `<li style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; padding: 12px;">No synonyms returned by AI.</li>`;
+        }
       }
     } catch (err) {
       alert("Error processing word: " + err.message);
