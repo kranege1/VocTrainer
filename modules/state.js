@@ -188,6 +188,8 @@ export function loadState() {
     if (allowSynonymsEl) allowSynonymsEl.checked = state.allowSynonyms;
     const baseLangEl = document.getElementById("setup-base-lang");
     if (baseLangEl) baseLangEl.value = state.baseLang;
+    const typoThresholdEl = document.getElementById("setup-typo-threshold");
+    if (typoThresholdEl) typoThresholdEl.value = state.typoThreshold !== undefined ? state.typoThreshold : 15;
 
     if (state.openaiKey && window.testApiKey) window.testApiKey("openai", state.openaiKey, "setup-openai-status");
     if (state.grokKey && window.testApiKey) window.testApiKey("grok", state.grokKey, "setup-grok-status");

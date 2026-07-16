@@ -113,7 +113,7 @@
         <h1>VocTrainer</h1>
         <div id="build-timestamp"
           style="font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6; font-family: monospace; margin-top: -6px; margin-bottom: 8px; pointer-events: none;">
-          Build: 2026-07-16 08:10:00
+          Build: 2026-07-16 08:17:00
         </div>
         <p>Master languages with premium gamified learning!</p>
       </div>
@@ -653,6 +653,17 @@
             <input type="checkbox" id="setup-allow-synonyms">
             <span class="slider round"></span>
           </label>
+        </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label style="font-weight: 600;">Typo Toleration Threshold (Accept as Correct if within %)</label>
+          <select id="setup-typo-threshold" class="custom-select" style="width: 100%;">
+            <option value="0">0% (Strict Exact Match)</option>
+            <option value="5">5% (Very Strict)</option>
+            <option value="10">10% (Tolerate Small Typos)</option>
+            <option value="15">15% (Recommended / Default)</option>
+            <option value="20">20% (Lax spelling)</option>
+            <option value="30">30% (Very Lax)</option>
+          </select>
         </div>
         <button id="btn-save-setup" class="btn btn-primary btn-block">Save Preferences</button>
       </div>

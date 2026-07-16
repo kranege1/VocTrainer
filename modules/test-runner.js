@@ -382,6 +382,7 @@ export function selectOption(buttonEl, selectedText) {
     });
   }
 
+  window.lastUserAnswer = selectedText;
   const isCorrect = checkAnswer(selectedText, correctText, correctWord);
   calculateAndSaveDifficulty(isCorrect ? correctText : "", correctText);
 
@@ -421,6 +422,7 @@ export function submitTypingAnswer() {
   const direction = state.testDirection || "forward";
   const correctText = direction === "forward" ? correctWord.target : correctWord.en;
 
+  window.lastUserAnswer = userAnswer;
   const isCorrect = checkAnswer(userAnswer, correctText, correctWord);
   calculateAndSaveDifficulty(userAnswer, correctText);
 
@@ -470,6 +472,7 @@ export function submitConjugationAnswer() {
     correctConjugation = questionWord.target;
   }
 
+  window.lastUserAnswer = userAnswer;
   const isCorrect = checkAnswer(userAnswer, correctConjugation, questionWord);
   calculateAndSaveDifficulty(userAnswer, correctConjugation);
 
@@ -544,6 +547,18 @@ function checkAnswer(userAnswer, correctAnswer, wordObj) {
     }
   }
 
+  // Typo toleration threshold check
+  const threshold = state.typoThreshold !== undefined ? state.typoThreshold : 15;
+  if (threshold > 0) {
+    const editDist = getLevenshteinDistance(cleanUser, cleanCorrect);
+    const maxLen = Math.max(cleanUser.length, cleanCorrect.length);
+    const distancePercent = maxLen > 0 ? (editDist / maxLen) * 100 : 100;
+    if (distancePercent <= threshold) {
+      console.log(`Typo match accepted: "${userAnswer}" is within ${Math.round(distancePercent)}% difference of "${correctAnswer}" (Threshold: ${threshold}%)`);
+      return true;
+    }
+  }
+
   return false;
 }
 
@@ -576,7 +591,10 @@ function triggerCorrectAnswerUI() {
     fIcon.textContent = "🎉";
   }
   if (fDesc) {
-    fDesc.textContent = `Awesome job! "${wordObj.en}" is indeed "${wordObj.target}".`;
+    const lang = state.testDirection === "forward" ? state.selectedLang : state.baseLang;
+    const testDir = state.testDirection || "forward";
+    const progressHtml = getDistanceProgressBarHtml(window.lastUserAnswer || "", testDir === "forward" ? wordObj.target : wordObj.en, lang);
+    fDesc.innerHTML = `Awesome job! "${wordObj.en}" is indeed "${wordObj.target}".${progressHtml}`;
   }
 
   // Populate word details in the sidebar
@@ -688,7 +706,9 @@ function triggerIncorrectAnswerUI(correctText, studentAnswer = "") {
   }
   if (fDesc) {
     const highlighted = diffStrings(studentAnswer, correctText);
-    fDesc.innerHTML = `You typed: <strong style="color: #fff; font-size: 1.15rem; letter-spacing: 0.5px;">${highlighted}</strong>`;
+    const lang = state.testDirection === "forward" ? state.selectedLang : state.baseLang;
+    const progressHtml = getDistanceProgressBarHtml(studentAnswer, correctText, lang);
+    fDesc.innerHTML = `You typed: <strong style="color: #fff; font-size: 1.15rem; letter-spacing: 0.5px;">${highlighted}</strong>${progressHtml}`;
   }
 
   // Populate word details in the sidebar
@@ -907,6 +927,36 @@ export function getLevenshteinDistance(s1, s2) {
   return dp[m][n];
 }
 
+export function getDistanceProgressBarHtml(userAnswer, correctAnswer, lang) {
+  if (!userAnswer || !correctAnswer) return "";
+  const cleanUser = cleanArticlesAndSpaces ? cleanArticlesAndSpaces(userAnswer, lang) : userAnswer.trim();
+  const cleanCorrect = cleanArticlesAndSpaces ? cleanArticlesAndSpaces(correctAnswer, lang) : correctAnswer.trim();
+  
+  const editDist = getLevenshteinDistance(cleanUser, cleanCorrect);
+  const maxLen = Math.max(cleanUser.length, cleanCorrect.length);
+  const distancePercent = Math.round(maxLen > 0 ? (editDist / maxLen) * 100 : 100);
+  const similarity = 100 - distancePercent;
+
+  let barColor = "#2ecc71"; // Green (0-15% distance)
+  if (distancePercent > 50) {
+    barColor = "#ff4b4b"; // Red
+  } else if (distancePercent > 15) {
+    barColor = "#ff9f43"; // Orange/Yellow
+  }
+
+  return `
+    <div style="margin-top: 12px; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); font-size: 0.8rem; text-align: left;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-weight: 600;">
+        <span style="color: var(--text-secondary);">Spelling Accuracy:</span>
+        <span style="color: ${barColor};">${similarity}%</span>
+      </div>
+      <div style="height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden;">
+        <div style="width: ${similarity}%; height: 100%; background: ${barColor}; transition: width 0.3s ease;"></div>
+      </div>
+    </div>
+  `;
+}
+
 export function calculateAndSaveDifficulty(userAnswer, correctText, isSpoken = false) {
   const test = state.currentTest;
   if (!test) return;
@@ -1018,6 +1068,7 @@ export function submitSpeechAnswer(userAnswer) {
   const direction = state.testDirection || "forward";
   const correctText = direction === "forward" ? correctWord.target : correctWord.en;
 
+  window.lastUserAnswer = userAnswer;
   const isCorrect = checkAnswer(userAnswer, correctText, correctWord);
   calculateAndSaveDifficulty(userAnswer, correctText, true);
 
@@ -1228,6 +1279,7 @@ export function submitBubblesAnswer() {
   const direction = state.testDirection || "forward";
   const correctText = direction === "forward" ? correctWord.target : correctWord.en;
 
+  window.lastUserAnswer = userAnswer;
   const isCorrect = checkAnswer(userAnswer, correctText, correctWord);
   calculateAndSaveDifficulty(userAnswer, correctText);
 

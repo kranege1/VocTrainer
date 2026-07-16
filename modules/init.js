@@ -475,6 +475,7 @@ export async function initApp() {
     state.allowSynonyms = document.getElementById("setup-allow-synonyms").checked;
     state.questionTimer = parseInt(document.getElementById("setup-question-timer").value) || 0;
     state.baseLang = document.getElementById("setup-base-lang").value;
+    state.typoThreshold = parseInt(document.getElementById("setup-typo-threshold").value);
     
     // Save chosen custom free voices
     state.customVoices = {
