@@ -540,7 +540,7 @@ export async function addCustomWord(english, translation, lang, category, imageU
   }
 }
 
-export function sanitizeWordTranslation(text, lang) {
+export function sanitizeWordTranslation(text, lang, category = "") {
   if (!text) return "";
   let clean = text.trim();
   
@@ -550,6 +550,23 @@ export function sanitizeWordTranslation(text, lang) {
   // Remove trailing periods and commas if they are unnecessary (short words/phrases)
   if (clean.length > 1 && (clean.endsWith(".") || clean.endsWith(",")) && !clean.endsWith("...") && !/[?!]/.test(clean)) {
     clean = clean.substring(0, clean.length - 1).trim();
+  }
+
+  // Enforce capitalization rules based on language and category
+  if (clean.length > 0) {
+    const isNoun = (category || "").toLowerCase().includes("noun");
+    if (lang === "de") {
+      if (isNoun) {
+        // Capitalize German nouns
+        clean = clean.charAt(0).toUpperCase() + clean.slice(1);
+      } else {
+        // Lowercase German non-nouns
+        clean = clean.charAt(0).toLowerCase() + clean.slice(1);
+      }
+    } else {
+      // Non-German: common words/adverbs/verbs should always be lowercase
+      clean = clean.charAt(0).toLowerCase() + clean.slice(1);
+    }
   }
   
   return clean;

@@ -2287,8 +2287,11 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
     return;
   }
   
-  const cleanBaseVal = sanitizeWordTranslation(baseVal, base);
-  const cleanTargetVal = sanitizeWordTranslation(targetVal, target);
+  const folderSelect = document.getElementById("select-folder");
+  const folderId = folderSelect ? folderSelect.value : "all";
+  
+  const cleanBaseVal = sanitizeWordTranslation(baseVal, base, folderId);
+  const cleanTargetVal = sanitizeWordTranslation(targetVal, target, folderId);
   console.log("Cleaned values -> base:", cleanBaseVal, "target:", cleanTargetVal);
 
   // Directly query/request directory write permissions within the click event user gesture context
