@@ -700,6 +700,9 @@ function triggerIncorrectAnswerUI(correctText, studentAnswer = "") {
   const wordKey = wordObj.origEn || wordObj.en;
   const vStats = state.wordStats[wordKey] || { difficulty: "medium" };
   updateDifficultyVoteUI(vStats.difficulty || "medium");
+
+  // Speak word automatically on failure
+  speakCurrentTestWord();
 }
 
 function updateWordStats(wordEn, isCorrect) {
