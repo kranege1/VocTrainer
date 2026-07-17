@@ -1728,6 +1728,7 @@ window.detectLanguageAndTranslateToEn = detectLanguageAndTranslateToEn;
 window.fetchSynonymsForTarget = fetchSynonymsForTarget;
 window.startAudioRecording = startAudioRecording;
 window.stopAudioRecording = stopAudioRecording;
+window.populateManualCategoryDropdown = populateManualCategoryDropdown;
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initApp);

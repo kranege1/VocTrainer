@@ -38,6 +38,7 @@ const getLangColor              = (...args) => window.getLangColor?.(...args);
 const isCommonWord              = (...args) => window.isCommonWord?.(...args);
 const startAudioRecording       = (...args) => window.startAudioRecording?.(...args);
 const stopAudioRecording         = (...args) => window.stopAudioRecording?.(...args);
+const populateManualCategoryDropdown = (...args) => window.populateManualCategoryDropdown?.(...args);
 
 // ==========================================
 // 8. Event Listeners & Initialization
