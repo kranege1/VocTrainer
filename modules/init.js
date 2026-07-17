@@ -145,7 +145,18 @@ export async function initApp() {
         const text = display.textContent.trim();
         if (text && text !== "...") {
           navigator.clipboard.writeText(text).then(() => {
-            showCustomAlert("📋 Copied to clipboard!");
+            const origText = quickCopyBtn.textContent;
+            quickCopyBtn.textContent = "✅";
+            quickCopyBtn.style.transform = "translateY(-50%) scale(1.15)";
+            quickCopyBtn.style.borderColor = "#2ecc71";
+            quickCopyBtn.style.color = "#2ecc71";
+            
+            setTimeout(() => {
+              quickCopyBtn.textContent = origText;
+              quickCopyBtn.style.transform = "translateY(-50%) scale(1)";
+              quickCopyBtn.style.borderColor = "";
+              quickCopyBtn.style.color = "";
+            }, 1200);
           }).catch(err => {
             console.error("Failed to copy text:", err);
           });
