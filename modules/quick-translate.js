@@ -4,6 +4,7 @@ import { getConjugationsForVerb, PRONOUNS } from './conjugation.js';
 
 const getLangColor = (...args) => window.getLangColor?.(...args);
 const stripArticles = (...args) => window.stripArticles?.(...args);
+const translateTextGTX = (...args) => window.translateTextGTX?.(...args);
 
 // ==========================================
 // 19. Quick Translate Engine & Controllers

@@ -1753,6 +1753,7 @@ window.stopQuickTranslateSpeech = stopQuickTranslateSpeech;
 window.runQuickTranslate = runQuickTranslate;
 window.populateQuickTranslateFolders = populateQuickTranslateFolders;
 window.saveQuickTranslateWord = saveQuickTranslateWord;
+window.translateTextGTX = translateTextGTX;
 window.normalizeWordCasing = normalizeWordCasing;
 window.isVerbCheck = isVerbCheck;
 window.detectLanguageAndTranslateToEn = detectLanguageAndTranslateToEn;
