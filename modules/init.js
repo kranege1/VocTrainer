@@ -2444,7 +2444,7 @@ export function startManualDictation(lang, inputId) {
 
   const recognition = new SpeechRecognition();
   recognition.lang = lang === "en" ? "en-US" : lang === "de" ? "de-DE" : lang === "it" ? "it-IT" : lang === "es" ? "es-ES" : "fr-FR";
-  recognition.interimResults = false;
+  recognition.interimResults = true;
   recognition.maxAlternatives = 1;
 
   console.log("startManualDictation: starting recognition for lang:", lang, "inputId:", inputId);
@@ -2462,7 +2462,12 @@ export function startManualDictation(lang, inputId) {
 
   recognition.onresult = (event) => {
     try {
-      const transcript = event.results[0][0].transcript.trim();
+      let transcript = "";
+      for (let i = 0; i < event.results.length; ++i) {
+        transcript += event.results[i][0].transcript;
+      }
+      transcript = transcript.trim();
+      
       console.log("startManualDictation: onresult received transcript:", transcript);
       const input = document.getElementById(inputId);
       if (input) {
@@ -2470,13 +2475,9 @@ export function startManualDictation(lang, inputId) {
         const folderId = folderSelect ? folderSelect.value : "imported";
         input.value = sanitizeWordTranslation(transcript, lang, folderId);
         console.log("startManualDictation: input value set to:", input.value);
-        if (inputId !== "manual-input-word") {
-          autoTranslateFromSource(lang);
-        }
       }
     } catch (err) {
       console.error("startManualDictation: Error inside onresult:", err);
-      alert("🎙️ Error processing speech result: " + err.message);
     }
   };
 
@@ -2498,6 +2499,10 @@ export function startManualDictation(lang, inputId) {
     }
     if (window.activeManualRecognizer === recognition) {
       window.activeManualRecognizer = null;
+    }
+    // Auto-translate once speech is finished
+    if (inputId !== "manual-input-word") {
+      autoTranslateFromSource(lang);
     }
   };
 
