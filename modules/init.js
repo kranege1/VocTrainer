@@ -2445,7 +2445,10 @@ export function startManualDictation(lang, inputId) {
   recognition.interimResults = false;
   recognition.maxAlternatives = 1;
 
+  console.log("startManualDictation: starting recognition for lang:", lang, "inputId:", inputId);
+
   recognition.onstart = () => {
+    console.log("startManualDictation: onstart event fired");
     micBtn.classList.add("recording-active");
     micBtn.style.background = "#e74c3c";
     micBtn.style.color = "#fff";
@@ -2453,13 +2456,20 @@ export function startManualDictation(lang, inputId) {
   };
 
   recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript.trim();
-    const input = document.getElementById(inputId);
-    if (input) {
-      const folderSelect = document.getElementById("manual-category");
-      const folderId = folderSelect ? folderSelect.value : "imported";
-      input.value = sanitizeWordTranslation(transcript, lang, folderId);
-      autoTranslateFromSource(lang);
+    try {
+      const transcript = event.results[0][0].transcript.trim();
+      console.log("startManualDictation: onresult received transcript:", transcript);
+      const input = document.getElementById(inputId);
+      if (input) {
+        const folderSelect = document.getElementById("manual-category");
+        const folderId = folderSelect ? folderSelect.value : "imported";
+        input.value = sanitizeWordTranslation(transcript, lang, folderId);
+        console.log("startManualDictation: input value set to:", input.value);
+        autoTranslateFromSource(lang);
+      }
+    } catch (err) {
+      console.error("startManualDictation: Error inside onresult:", err);
+      alert("🎙️ Error processing speech result: " + err.message);
     }
   };
 
