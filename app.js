@@ -951,7 +951,7 @@ function getLangColor(lang) {
 // Temporal variables for custom recording
 let mediaRecorder;
 let audioChunks = [];
-let currentRecordingBase64 = "";;
+window.currentRecordingBase64 = "";
 
 // ==========================================
 // 3. UI Navigation & Helpers
@@ -1637,7 +1637,7 @@ async function startAudioRecording() {
       const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
       const reader = new FileReader();
       reader.onloadend = () => {
-        currentRecordingBase64 = reader.result;
+        window.currentRecordingBase64 = reader.result;
         document.getElementById("record-status-text").textContent = "Audio Recorded successfully!";
         document.getElementById("btn-record-play").disabled = false;
       };
