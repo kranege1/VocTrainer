@@ -977,7 +977,7 @@ export async function initApp() {
   // Wire up mic, speak, and auto-translate listeners for manual inputs
   const sequenceBtn = document.getElementById("btn-manual-record-sequence");
   if (sequenceBtn) {
-    sequenceBtn.onclick = () => startSequenceDictation();
+    sequenceBtn.onclick = () => startManualDictation(state.selectedLang || "en", "manual-input-word");
   }
 
   const langs = ["en", "de", "it", "es", "fr"];
@@ -2426,7 +2426,9 @@ export function startManualDictation(lang, inputId) {
     return;
   }
 
-  const micBtn = document.getElementById(`btn-listen-${lang}`);
+  const micBtn = inputId === "manual-input-word"
+    ? document.getElementById("btn-manual-record-sequence")
+    : document.getElementById(`btn-listen-${lang}`);
   if (!micBtn) return;
 
   if (micBtn.classList.contains("recording-active")) {
@@ -2452,6 +2454,9 @@ export function startManualDictation(lang, inputId) {
     micBtn.classList.add("recording-active");
     micBtn.style.background = "#e74c3c";
     micBtn.style.color = "#fff";
+    if (inputId === "manual-input-word") {
+      micBtn.textContent = "⏹️";
+    }
     window.activeManualRecognizer = recognition;
   };
 
@@ -2465,7 +2470,9 @@ export function startManualDictation(lang, inputId) {
         const folderId = folderSelect ? folderSelect.value : "imported";
         input.value = sanitizeWordTranslation(transcript, lang, folderId);
         console.log("startManualDictation: input value set to:", input.value);
-        autoTranslateFromSource(lang);
+        if (inputId !== "manual-input-word") {
+          autoTranslateFromSource(lang);
+        }
       }
     } catch (err) {
       console.error("startManualDictation: Error inside onresult:", err);
@@ -2486,6 +2493,9 @@ export function startManualDictation(lang, inputId) {
     micBtn.classList.remove("recording-active");
     micBtn.style.background = "";
     micBtn.style.color = "";
+    if (inputId === "manual-input-word") {
+      micBtn.textContent = "🎙️";
+    }
     if (window.activeManualRecognizer === recognition) {
       window.activeManualRecognizer = null;
     }
