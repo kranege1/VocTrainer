@@ -2467,6 +2467,8 @@ export function startManualDictation(lang, inputId) {
     console.error("Speech recognition error:", event.error);
     if (event.error === "not-allowed") {
       alert("🎙️ Microphone access denied or blocked.\n\nPlease ensure you are using HTTPS (or localhost) and have granted microphone permissions in your browser address bar.");
+    } else {
+      alert("🎙️ Speech Recognition Error: " + event.error);
     }
   };
 
@@ -2479,7 +2481,12 @@ export function startManualDictation(lang, inputId) {
     }
   };
 
-  recognition.start();
+  try {
+    recognition.start();
+  } catch (e) {
+    console.error("Failed to start SpeechRecognition:", e);
+    alert("🎙️ Failed to start Speech Recognition: " + e.message);
+  }
 }
 
 export function startSequenceDictation() {
@@ -2594,6 +2601,8 @@ export function startSequenceDictation() {
     console.error("Sequence dictation error:", event.error);
     if (event.error === "not-allowed") {
       alert("🎙️ Microphone access denied or blocked.\n\nPlease ensure you are using HTTPS (or localhost) and have granted microphone permissions in your browser address bar.");
+    } else {
+      alert("🎙️ Sequence Dictation Error: " + event.error);
     }
   };
 
@@ -2607,7 +2616,12 @@ export function startSequenceDictation() {
     }
   };
 
-  recognition.start();
+  try {
+    recognition.start();
+  } catch (e) {
+    console.error("Failed to start Sequence Dictation:", e);
+    alert("🎙️ Failed to start Sequence Dictation: " + e.message);
+  }
 }
 
 window.autoTranslateFromSource = autoTranslateFromSource;
