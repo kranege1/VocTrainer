@@ -2432,15 +2432,29 @@ export function startManualDictation(lang, inputId) {
     : document.getElementById(`btn-listen-${lang}`);
   if (!micBtn) return;
 
-  if (micBtn.classList.contains("recording-active")) {
-    if (window.activeManualRecognizer) {
-      window.activeManualRecognizer.stop();
-    }
-    return;
-  }
-
   if (window.activeManualRecognizer) {
-    window.activeManualRecognizer.stop();
+    try {
+      window.activeManualRecognizer.stop();
+    } catch (e) {
+      console.error("Error stopping recognizer:", e);
+    }
+    window.activeManualRecognizer = null;
+
+    const allMicBtns = [
+      document.getElementById("btn-manual-record-sequence"),
+      ...["en", "de", "it", "es", "fr"].map(l => document.getElementById(`btn-listen-${l}`))
+    ];
+    allMicBtns.forEach(btn => {
+      if (btn) {
+        btn.classList.remove("recording-active");
+        btn.style.background = "";
+        btn.style.color = "";
+        if (btn.id === "btn-manual-record-sequence") {
+          btn.textContent = "🎙️";
+        }
+      }
+    });
+    return;
   }
 
   const recognition = new SpeechRecognition();
