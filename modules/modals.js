@@ -751,7 +751,7 @@ export function renderFolderStatistics() {
           diffBg = "rgba(241, 196, 15, 0.1)";
         }
         
-        const diffBadge = `<span class="badge" style="background: ${diffBg}; color: ${diffColor}; font-size: 0.75rem; border-radius: 6px; padding: 3px 8px; font-weight: 700;">${difficultyScore}%</span>`;
+        const diffBadge = `<span style="display: inline-block; background: ${diffBg}; color: ${diffColor}; font-size: 0.75rem; border-radius: 6px; padding: 3px 8px; font-weight: 700;">${difficultyScore}%</span>`;
         
         const tr = document.createElement("tr");
         tr.style.borderBottom = "1px solid rgba(255,255,255,0.04)";
