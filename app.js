@@ -802,27 +802,33 @@ async function translateTextGTX(text, fromLang, toLang) {
 
 function getWordDetails(wordObj) {
   if (!wordObj) return { articles: {}, sentences: {}, variations: {}, synonyms: {} };
-  const wordKey = wordObj.origEn || wordObj.en || "";
   
   // Try to find default details from STARTER_VOCAB_RAW database
   let starterDetails = { articles: {}, sentences: {}, variations: {}, synonyms: {} };
-  if (wordKey && typeof STARTER_VOCAB_RAW !== "undefined") {
+  if (typeof STARTER_VOCAB_RAW !== "undefined" && STARTER_VOCAB_RAW.length > 0) {
     const starter = STARTER_VOCAB_RAW.find(v => {
-      return (v.en && v.en.toLowerCase() === wordKey.toLowerCase()) || 
-             (v.origEn && v.origEn.toLowerCase() === wordKey.toLowerCase()) ||
-             (v.de && v.de.toLowerCase() === wordKey.toLowerCase()) ||
-             (v.it && v.it.toLowerCase() === wordKey.toLowerCase()) ||
-             (v.es && v.es.toLowerCase() === wordKey.toLowerCase()) ||
-             (v.fr && v.fr.toLowerCase() === wordKey.toLowerCase());
+      const enMatch = v.en && wordObj.en && v.en.toLowerCase() === wordObj.en.toLowerCase();
+      if (!enMatch) return false;
+      
+      // Check for translations conflict in any of the languages
+      if (v.de && wordObj.de && v.de.toLowerCase() !== wordObj.de.toLowerCase()) return false;
+      if (v.it && wordObj.it && v.it.toLowerCase() !== wordObj.it.toLowerCase()) return false;
+      if (v.es && wordObj.es && v.es.toLowerCase() !== wordObj.es.toLowerCase()) return false;
+      if (v.fr && wordObj.fr && v.fr.toLowerCase() !== wordObj.fr.toLowerCase()) return false;
+      
+      // Match category if present
+      if (v.category && wordObj.category && v.category.toLowerCase() !== wordObj.category.toLowerCase()) return false;
+      
+      return true;
     });
     if (starter && starter.details) {
-      // Create a copy to prevent mutation issues
       starterDetails = JSON.parse(JSON.stringify(starter.details));
     }
   }
 
   const localDetails = wordObj.details || starterDetails;
   
+  const wordKey = wordObj.origEn || wordObj.en || "";
   if (wordKey && state.dictionaryCache && state.dictionaryCache[wordKey]) {
     return {
       ...localDetails,
