@@ -2465,6 +2465,9 @@ export function startManualDictation(lang, inputId) {
 
   recognition.onerror = (event) => {
     console.error("Speech recognition error:", event.error);
+    if (event.error === "not-allowed") {
+      alert("🎙️ Microphone access denied or blocked.\n\nPlease ensure you are using HTTPS (or localhost) and have granted microphone permissions in your browser address bar.");
+    }
   };
 
   recognition.onend = () => {
@@ -2589,6 +2592,9 @@ export function startSequenceDictation() {
 
   recognition.onerror = (event) => {
     console.error("Sequence dictation error:", event.error);
+    if (event.error === "not-allowed") {
+      alert("🎙️ Microphone access denied or blocked.\n\nPlease ensure you are using HTTPS (or localhost) and have granted microphone permissions in your browser address bar.");
+    }
   };
 
   recognition.onend = () => {
