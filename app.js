@@ -1638,15 +1638,19 @@ async function startAudioRecording() {
       const reader = new FileReader();
       reader.onloadend = () => {
         window.currentRecordingBase64 = reader.result;
-        document.getElementById("record-status-text").textContent = "Audio Recorded successfully!";
-        document.getElementById("btn-record-play").disabled = false;
+        const statusEl = document.getElementById("record-status-text");
+        if (statusEl) statusEl.textContent = "Audio Recorded successfully!";
+        const playBtn = document.getElementById("btn-record-play");
+        if (playBtn) playBtn.disabled = false;
       };
       reader.readAsDataURL(audioBlob);
     };
 
     mediaRecorder.start();
-    document.getElementById("btn-record-word").textContent = "🛑 Stop Recording";
-    document.getElementById("record-status-text").textContent = "Recording...";
+    const recBtn = document.getElementById("btn-record-word");
+    if (recBtn) recBtn.textContent = "🛑 Stop Recording";
+    const statusEl = document.getElementById("record-status-text");
+    if (statusEl) statusEl.textContent = "Recording...";
   } catch (err) {
     console.error("Audio recording permission denied or unsupported", err);
     alert("Microphone access is required to record pronunciations.");
@@ -1656,7 +1660,8 @@ async function startAudioRecording() {
 function stopAudioRecording() {
   if (mediaRecorder && mediaRecorder.state === "recording") {
     mediaRecorder.stop();
-    document.getElementById("btn-record-word").textContent = "🎙️ Record Pronunciation";
+    const recBtn = document.getElementById("btn-record-word");
+    if (recBtn) recBtn.textContent = "🎙️ Record Pronunciation";
   }
 }
 

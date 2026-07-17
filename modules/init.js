@@ -463,20 +463,25 @@ export async function initApp() {
 
   // Audio Recording Toggle
   const recordBtn = document.getElementById("btn-record-word");
-  recordBtn.onclick = () => {
-    if (recordBtn.textContent.includes("Record")) {
-      startAudioRecording();
-    } else {
-      stopAudioRecording();
-    }
-  };
+  if (recordBtn) {
+    recordBtn.onclick = () => {
+      if (recordBtn.textContent.includes("Record")) {
+        startAudioRecording();
+      } else {
+        stopAudioRecording();
+      }
+    };
+  }
 
   // Play current temporal recording
-  document.getElementById("btn-record-play").onclick = () => {
-    if (window.currentRecordingBase64) {
-      playCustomAudio(window.currentRecordingBase64);
-    }
-  };
+  const recordPlayBtn = document.getElementById("btn-record-play");
+  if (recordPlayBtn) {
+    recordPlayBtn.onclick = () => {
+      if (window.currentRecordingBase64) {
+        playCustomAudio(window.currentRecordingBase64);
+      }
+    };
+  }
 
   // Setup Actions (App Preferences)
   document.getElementById("btn-save-setup").onclick = () => {
@@ -1355,8 +1360,10 @@ export async function initApp() {
     document.getElementById("manual-image-url").value = "";
     document.getElementById("manual-synonyms-container").innerHTML = `<li style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; padding: 12px;">Enter a word above and run AI Translate to suggest synonyms.</li>`;
     window.currentRecordingBase64 = "";
-    document.getElementById("btn-record-play").disabled = true;
-    document.getElementById("record-status-text").textContent = "No audio recorded";
+    const testPlayBtn = document.getElementById("btn-record-play");
+    if (testPlayBtn) testPlayBtn.disabled = true;
+    const recStatus = document.getElementById("record-status-text");
+    if (recStatus) recStatus.textContent = "No audio recorded";
 
     alert("Word added successfully!");
   };
