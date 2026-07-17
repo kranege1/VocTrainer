@@ -474,9 +474,16 @@ export function normalizeWordCasing(text, lang, category = "") {
 export function isVerbCheck(text, lang) {
   if (!text) return false;
   const clean = text.toLowerCase().trim();
+  const words = clean.split(/\s+/).filter(Boolean);
+  
   if (lang === "en") {
-    return clean.startsWith("to ");
+    return words.length === 2 && words[0] === "to";
   }
+  
+  if (words.length !== 1) {
+    return false;
+  }
+  
   if (lang === "de") {
     return clean.startsWith("zu ") || clean.endsWith("en");
   }
@@ -487,7 +494,7 @@ export function isVerbCheck(text, lang) {
     return clean.endsWith("ar") || clean.endsWith("er") || clean.endsWith("ir") || clean.endsWith("arse") || clean.endsWith("erse") || clean.endsWith("irse");
   }
   if (lang === "fr") {
-    return clean.endsWith("er") || clean.endsWith("ir") || clean.endsWith("re") || clean.endsWith("oir") || clean.startsWith("se ") || clean.startsWith("s'");
+    return clean.endsWith("er") || clean.endsWith("ir") || clean.endsWith("re") || clean.endsWith("oir") || clean.startsWith("se") || clean.startsWith("s'");
   }
   return false;
 }
