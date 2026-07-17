@@ -36,6 +36,8 @@ const getWordDetails             = (...args) => window.getWordDetails?.(...args)
 const buildTreeHTML             = (...args) => window.buildTreeHTML?.(...args);
 const getLangColor              = (...args) => window.getLangColor?.(...args);
 const isCommonWord              = (...args) => window.isCommonWord?.(...args);
+const startAudioRecording       = (...args) => window.startAudioRecording?.(...args);
+const stopAudioRecording         = (...args) => window.stopAudioRecording?.(...args);
 
 // ==========================================
 // 8. Event Listeners & Initialization
@@ -470,8 +472,8 @@ export async function initApp() {
 
   // Play current temporal recording
   document.getElementById("btn-record-play").onclick = () => {
-    if (currentRecordingBase64) {
-      playCustomAudio(currentRecordingBase64);
+    if (window.currentRecordingBase64) {
+      playCustomAudio(window.currentRecordingBase64);
     }
   };
 
@@ -1319,7 +1321,7 @@ export async function initApp() {
       fr: cleanFr,
       category,
       image: imageUrl || cleanEn,
-      audio: currentRecordingBase64,
+      audio: window.currentRecordingBase64 || "",
       details: {
         articles: { de: artDe, it: artIt, es: artEs, fr: artFr },
         genderForms: {
@@ -1351,7 +1353,7 @@ export async function initApp() {
     populateManualCategoryDropdown();
     document.getElementById("manual-image-url").value = "";
     document.getElementById("manual-synonyms-container").innerHTML = `<li style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; padding: 12px;">Enter a word above and run AI Translate to suggest synonyms.</li>`;
-    currentRecordingBase64 = "";
+    window.currentRecordingBase64 = "";
     document.getElementById("btn-record-play").disabled = true;
     document.getElementById("record-status-text").textContent = "No audio recorded";
 

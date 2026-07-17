@@ -1726,7 +1726,8 @@ window.normalizeWordCasing = normalizeWordCasing;
 window.isVerbCheck = isVerbCheck;
 window.detectLanguageAndTranslateToEn = detectLanguageAndTranslateToEn;
 window.fetchSynonymsForTarget = fetchSynonymsForTarget;
-window.FREQUENCY_LISTS = FREQUENCY_LISTS;
+window.startAudioRecording = startAudioRecording;
+window.stopAudioRecording = stopAudioRecording;
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initApp);
