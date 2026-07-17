@@ -210,7 +210,6 @@ export function loadState() {
   }
   if (window.updateHeaderUI) window.updateHeaderUI();
   if (window.renderImportedList) window.renderImportedList();
-  if (window.renderMistakesList) window.renderMistakesList();
   if (window.renderHistoryList) window.renderHistoryList();
   updateCategoryCounts();
   if (window.updateCloudSyncUI) window.updateCloudSyncUI();

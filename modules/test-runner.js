@@ -743,19 +743,6 @@ function updateWordStats(wordEn, isCorrect) {
     // Drop back to Box 1 on error
     stats.box = 1;
 
-    // Save to mistakes vault if not already there
-    const base = state.baseLang || "en";
-    const target = state.selectedLang || "de";
-    const test = state.currentTest;
-    const wordObj = test.words[test.index];
-
-    const exists = state.mistakes.some(m => m.en === wordObj.en && m.target === wordObj.target);
-    if (!exists) {
-      state.mistakes.push({
-        ...wordObj,
-        lastUpdated: Date.now()
-      });
-    }
   }
   saveState();
 }

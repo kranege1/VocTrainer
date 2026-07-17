@@ -1605,44 +1605,7 @@ window.sanitizeWordTranslation = sanitizeWordTranslation;
 window.fillMissingTranslations = fillMissingTranslations;
 window.renderImportedList = renderImportedList;
 
-// ==========================================
-// 5. Mistakes Vault Implementation
-// ==========================================
-function recordMistake(wordObj) {
-  if (!state.mistakes.find(m => m.en === wordObj.en && m.target === wordObj.target)) {
-    state.mistakes.push(wordObj);
-    saveState();
-    renderMistakesList();
-  }
-}
-
-function renderMistakesList() {
-  const container = document.getElementById("mistakes-list");
-  container.innerHTML = "";
-
-  if (state.mistakes.length === 0) {
-    container.innerHTML = `<li class="empty-state">No mistakes recorded! Keep up the good work.</li>`;
-    return;
-  }
-
-  state.mistakes.forEach((m, idx) => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <div>
-        <span class="list-word">${m.en}</span>
-        <span class="list-translation"> &rarr; ${m.target}</span>
-      </div>
-      <button class="btn btn-secondary btn-sm" onclick="removeMistake(${idx})">✓ Clear</button>
-    `;
-    container.appendChild(li);
-  });
-}
-
-window.removeMistake = function(index) {
-  state.mistakes.splice(index, 1);
-  saveState();
-  renderMistakesList();
-};
+// Mistakes Vault functionality removed
 
 
 
@@ -1734,7 +1697,6 @@ window.testApiKey = testApiKey;
 window.updateDirectionButtonsUI = updateDirectionButtonsUI;
 window.loadOnDeviceVoices = loadOnDeviceVoices;
 window.renderImportedList = renderImportedList;
-window.renderMistakesList = renderMistakesList;
 window.renderHistoryList = renderHistoryList;
 window.updateCloudSyncUI = updateCloudSyncUI;
 window.adjustDifficulty = adjustDifficulty;

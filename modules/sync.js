@@ -757,7 +757,7 @@ export async function pullFromCloud() {
       
       // Re-initialize views
       renderImportedList();
-      renderMistakesList();
+
       renderHistoryList();
       updateCategoryCounts();
       updateHeaderUI();
@@ -884,7 +884,7 @@ export async function linkCloudSyncDevice(code) {
       
       // Re-initialize views
       renderImportedList();
-      renderMistakesList();
+
       renderHistoryList();
       updateCategoryCounts();
       updateHeaderUI();
@@ -987,7 +987,7 @@ export async function connectGitHubGist() {
       
       // Re-initialize views
       renderImportedList();
-      renderMistakesList();
+
       renderHistoryList();
       updateCategoryCounts();
       updateHeaderUI();
@@ -1126,7 +1126,7 @@ export async function pullFromGitHubGist() {
       
       // Re-initialize views
       renderImportedList();
-      renderMistakesList();
+
       renderHistoryList();
       updateCategoryCounts();
       updateHeaderUI();

@@ -14,8 +14,7 @@ const loadStarterVocab          = (...args) => window.loadStarterVocab?.(...args
 const loadFrequencyLists        = (...args) => window.loadFrequencyLists?.(...args);
 const initICloudSync            = (...args) => window.initICloudSync?.(...args);
 const initBackupFile            = (...args) => window.initBackupFile?.(...args);
-const renderMistakesList        = (...args) => window.renderMistakesList?.(...args);
-// const renderHistoryList         = (...args) => window.renderHistoryList?.(...args);
+// const renderMistakesList        = (...args) => window.renderMistakesList?.(...args);
 const renderImportedList        = (...args) => window.renderImportedList?.(...args);
 const stopQuickTranslateSpeech  = (...args) => window.stopQuickTranslateSpeech?.(...args);
 const runQuickTranslate         = (...args) => window.runQuickTranslate?.(...args);
@@ -171,7 +170,6 @@ export async function initApp() {
     goQuickBtn.onclick = () => showView("view-quick-translate");
   }
   document.getElementById("btn-go-import").onclick = () => showView("view-import");
-  document.getElementById("btn-go-mistakes").onclick = () => showView("view-mistakes");
   document.getElementById("btn-go-setup").onclick = () => showView("view-setup");
   document.getElementById("btn-go-api").onclick = () => showView("view-api");
   document.getElementById("btn-go-statistics").onclick = () => showView("view-statistics");
@@ -180,7 +178,6 @@ export async function initApp() {
   }
   
   document.getElementById("btn-import-back").onclick = () => showView("view-dashboard");
-  document.getElementById("btn-mistakes-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-setup-back").onclick = () => showView("view-dashboard");
   document.getElementById("btn-api-back").onclick = () => showView("view-setup");
   document.getElementById("btn-statistics-back").onclick = () => showView("view-dashboard");
@@ -307,8 +304,6 @@ export async function initApp() {
       
       if (targetView === "view-browse") {
         renderBrowseList();
-      } else if (targetView === "view-mistakes") {
-        renderMistakesList();
       } else if (targetView === "view-import") {
         state.editingWordKey = null;
         state.isEditingCustom = null;
@@ -837,10 +832,7 @@ export async function initApp() {
   // Repeat wrong answers trigger
   document.getElementById("btn-start-repeat").onclick = repeatMistakes;
 
-  // Cleanse Mistakes trigger
-  document.getElementById("btn-cleanse-mistakes").onclick = () => {
-    startTestSession(state.selectedLang, "all", 10, true);
-  };
+
 
   // Speak prompt actions in test view
   const btnSpeakPrompt = document.getElementById("btn-speak-prompt");
