@@ -113,7 +113,7 @@
         <h1>VocTrainer</h1>
         <div id="build-timestamp"
           style="font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6; font-family: monospace; margin-top: -6px; margin-bottom: 8px; pointer-events: none;">
-          Build: 2026-07-16 15:20:00
+          Build: 2026-07-17 08:00:00
         </div>
         <p>Master languages with premium gamified learning!</p>
       </div>
@@ -888,7 +888,10 @@
           <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
             <div class="form-group" style="flex: 1; min-width: 200px; margin: 0;">
               <label>Enter Word/Phrase</label>
-              <input type="text" id="manual-input-word" placeholder="e.g. nuss, apple, mangiare..." style="margin: 0;">
+              <div style="display: flex; gap: 6px; align-items: center; width: 100%;">
+                <input type="text" id="manual-input-word" placeholder="e.g. nuss, apple, mangiare..." style="margin: 0; flex: 1;">
+                <button id="btn-manual-record-sequence" class="btn btn-secondary" style="margin: 0; padding: 0; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; min-height: 36px; border-radius: 8px;" title="Speak sequence of words (continuous)">🎙️</button>
+              </div>
             </div>
           </div>
 
@@ -904,31 +907,51 @@
               <label><img src="https://flagcdn.com/16x12/gb.png" width="16" height="12" alt="en"
                   style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">
                 English</label>
-              <input type="text" id="manual-lang-en" placeholder="English translation..." style="margin: 0;">
+              <div style="display: flex; gap: 4px; align-items: center;">
+                <input type="text" id="manual-lang-en" placeholder="English translation..." style="margin: 0; flex: 1;">
+                <button id="btn-listen-en" class="btn btn-secondary" style="margin: 0; padding: 0; width: 32px; height: 32px; min-height: 32px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;" title="Record English">🎙️</button>
+                <button id="btn-speak-en" class="btn btn-secondary" style="margin: 0; padding: 0; width: 32px; height: 32px; min-height: 32px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;" title="Speak English">🔊</button>
+              </div>
             </div>
             <div class="form-group" style="margin: 0;">
               <label><img src="https://flagcdn.com/16x12/de.png" width="16" height="12" alt="de"
                   style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">
                 German</label>
-              <input type="text" id="manual-lang-de" placeholder="German translation..." style="margin: 0;">
+              <div style="display: flex; gap: 4px; align-items: center;">
+                <input type="text" id="manual-lang-de" placeholder="German translation..." style="margin: 0; flex: 1;">
+                <button id="btn-listen-de" class="btn btn-secondary" style="margin: 0; padding: 0; width: 32px; height: 32px; min-height: 32px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;" title="Record German">🎙️</button>
+                <button id="btn-speak-de" class="btn btn-secondary" style="margin: 0; padding: 0; width: 32px; height: 32px; min-height: 32px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;" title="Speak German">🔊</button>
+              </div>
             </div>
             <div class="form-group" style="margin: 0;">
               <label><img src="https://flagcdn.com/16x12/it.png" width="16" height="12" alt="it"
                   style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">
                 Italian</label>
-              <input type="text" id="manual-lang-it" placeholder="Italian translation..." style="margin: 0;">
+              <div style="display: flex; gap: 4px; align-items: center;">
+                <input type="text" id="manual-lang-it" placeholder="Italian translation..." style="margin: 0; flex: 1;">
+                <button id="btn-listen-it" class="btn btn-secondary" style="margin: 0; padding: 0; width: 32px; height: 32px; min-height: 32px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;" title="Record Italian">🎙️</button>
+                <button id="btn-speak-it" class="btn btn-secondary" style="margin: 0; padding: 0; width: 32px; height: 32px; min-height: 32px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;" title="Speak Italian">🔊</button>
+              </div>
             </div>
             <div class="form-group" style="margin: 0;">
               <label><img src="https://flagcdn.com/16x12/es.png" width="16" height="12" alt="es"
                   style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">
                 Spanish</label>
-              <input type="text" id="manual-lang-es" placeholder="Spanish translation..." style="margin: 0;">
+              <div style="display: flex; gap: 4px; align-items: center;">
+                <input type="text" id="manual-lang-es" placeholder="Spanish translation..." style="margin: 0; flex: 1;">
+                <button id="btn-listen-es" class="btn btn-secondary" style="margin: 0; padding: 0; width: 32px; height: 32px; min-height: 32px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;" title="Record Spanish">🎙️</button>
+                <button id="btn-speak-es" class="btn btn-secondary" style="margin: 0; padding: 0; width: 32px; height: 32px; min-height: 32px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;" title="Speak Spanish">🔊</button>
+              </div>
             </div>
             <div class="form-group" style="grid-column: span 2; margin: 0;">
               <label><img src="https://flagcdn.com/16x12/fr.png" width="16" height="12" alt="fr"
                   style="vertical-align: middle; margin-right: 4px; box-shadow: 0 0 2px rgba(0,0,0,0.5);">
                 French</label>
-              <input type="text" id="manual-lang-fr" placeholder="French translation..." style="margin: 0;">
+              <div style="display: flex; gap: 4px; align-items: center;">
+                <input type="text" id="manual-lang-fr" placeholder="French translation..." style="margin: 0; flex: 1;">
+                <button id="btn-listen-fr" class="btn btn-secondary" style="margin: 0; padding: 0; width: 32px; height: 32px; min-height: 32px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;" title="Record French">🎙️</button>
+                <button id="btn-speak-fr" class="btn btn-secondary" style="margin: 0; padding: 0; width: 32px; height: 32px; min-height: 32px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center;" title="Speak French">🔊</button>
+              </div>
             </div>
           </div>
 

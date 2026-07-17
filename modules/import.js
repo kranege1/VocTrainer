@@ -598,6 +598,7 @@ export async function fillMissingTranslations(wordObj, sourceLang) {
 }
 
 let sessionImportedList = [];
+window.sessionImportedList = sessionImportedList;
 
 export function renderImportedList() {
   const container = document.getElementById("imported-list");

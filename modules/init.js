@@ -969,6 +969,33 @@ export async function initApp() {
     alert(`Word "${en}" added directly to your custom set!`);
   };
 
+  // Wire up mic, speak, and auto-translate listeners for manual inputs
+  const sequenceBtn = document.getElementById("btn-manual-record-sequence");
+  if (sequenceBtn) {
+    sequenceBtn.onclick = () => startSequenceDictation();
+  }
+
+  const langs = ["en", "de", "it", "es", "fr"];
+  langs.forEach(lang => {
+    const mic = document.getElementById(`btn-listen-${lang}`);
+    if (mic) {
+      mic.onclick = () => startManualDictation(lang, `manual-lang-${lang}`);
+    }
+    const speak = document.getElementById(`btn-speak-${lang}`);
+    if (speak) {
+      speak.onclick = () => {
+        const text = document.getElementById(`manual-lang-${lang}`).value.trim();
+        if (text) {
+          speakWord(text, lang);
+        }
+      };
+    }
+    const input = document.getElementById(`manual-lang-${lang}`);
+    if (input) {
+      input.onblur = () => autoTranslateFromSource(lang);
+    }
+  });
+
   // AI translate, classify & suggest synonyms
   document.getElementById("btn-manual-ai-process").onclick = async () => {
     const word = document.getElementById("manual-input-word").value.trim();
@@ -1039,104 +1066,8 @@ export async function initApp() {
       document.getElementById("manual-gen-it-f").value = "";
       
       const synContainer = document.getElementById("manual-synonyms-container");
-      synContainer.innerHTML = `<li style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; padding: 12px;">Translations loaded. No AI key configured for advanced grammar.</li>`;
-
-      // Check if AI is available to fetch advanced features
-      const hasKey = state.openaiKey || state.grokKey || state.geminiKey || state.anthropicKey;
-      if (hasKey) {
-        btn.textContent = "⏳ Enhancing with AI (Synonyms, Grammar)...";
-        
-        const prompt = `Classify and translate the vocabulary word/phrase "${word}" written in source language key "${detectedBase}".
-        Output your response ONLY as a clean, parseable JSON object with the exact keys described below. Do not wrap in markdown code blocks. Do not write extra commentary.
-        
-        JSON schema:
-        {
-          "translations": {
-            "en": "English translation",
-            "de": "German translation",
-            "it": "Italian translation",
-            "es": "Spanish translation",
-            "fr": "French translation"
-          },
-          "category": "nouns, verbs, adjectives, or phrases",
-          "articles": {
-            "de": "der, die, or das if applicable",
-            "it": "il, la, lo, etc. if applicable",
-            "es": "el or la if applicable",
-            "fr": "le or la if applicable"
-          },
-          "genderForms": {
-            "de": { "m": "masculine form if applicable", "f": "feminine form if applicable" },
-            "it": { "m": "masculine form if applicable", "f": "feminine form if applicable" }
-          },
-          "synonyms": [
-            {
-              "word": "Synonym word 1 in English",
-              "category": "nouns, verbs, etc.",
-              "translations": {
-                "en": "English",
-                "de": "German",
-                "it": "Italian",
-                "es": "Spanish",
-                "fr": "French"
-              }
-            }
-          ]
-        }`;
-
-        const resText = await callLLM(prompt);
-        let parsed;
-        try {
-          const cleanJson = resText.replace(/```json/g, "").replace(/```/g, "").trim();
-          parsed = JSON.parse(cleanJson);
-        } catch (e) {
-          throw new Error("AI returned a non-JSON response. Please try again.");
-        }
-
-        if (parsed.articles) {
-          document.getElementById("manual-art-de").value = parsed.articles.de || "";
-          document.getElementById("manual-art-it").value = parsed.articles.it || "";
-          document.getElementById("manual-art-es").value = parsed.articles.es || "";
-          document.getElementById("manual-art-fr").value = parsed.articles.fr || "";
-        }
-        if (parsed.genderForms) {
-          document.getElementById("manual-gen-de-m").value = parsed.genderForms.de?.m || "";
-          document.getElementById("manual-gen-de-f").value = parsed.genderForms.de?.f || "";
-          document.getElementById("manual-gen-it-m").value = parsed.genderForms.it?.m || "";
-          document.getElementById("manual-gen-it-f").value = parsed.genderForms.it?.f || "";
-        }
-
-        synContainer.innerHTML = "";
-        if (parsed.synonyms && parsed.synonyms.length > 0) {
-          parsed.synonyms.forEach(syn => {
-            const t = syn.translations || {};
-            const li = document.createElement("li");
-            li.style.display = "flex";
-            li.style.justifyContent = "space-between";
-            li.style.alignItems = "center";
-            li.style.padding = "10px 12px";
-            li.style.background = "rgba(255,255,255,0.02)";
-            li.style.border = "1px solid var(--border-color)";
-            li.style.borderRadius = "10px";
-
-            li.innerHTML = `
-              <div style="text-align: left; flex: 1; padding-right: 8px;">
-                <strong style="color: #fff;">${syn.word}</strong>
-                <span class="category-tag" style="margin-left: 6px; font-size: 0.65rem; padding: 1px 4px;">${syn.category}</span>
-                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">
-                  🇩🇪 ${t.de || '-'} | 🇮🇹 ${t.it || '-'} | 🇪🇸 ${t.es || '-'}
-                </div>
-              </div>
-              <div style="display: flex; gap: 6px; flex-shrink: 0;">
-                <button class="btn btn-secondary btn-sm" style="padding: 4px 8px; font-size: 0.75rem; width: auto; min-height: 28px;" onclick="window.loadSynonymIntoEditor('${(t.en || syn.word).replace(/'/g, "\\'")}', '${(t.de || '').replace(/'/g, "\\'")}', '${(t.it || '').replace(/'/g, "\\'")}', '${(t.es || '').replace(/'/g, "\\'")}', '${(t.fr || '').replace(/'/g, "\\'")}', '${(syn.category || 'nouns').replace(/'/g, "\\'")}')">📥 Load</button>
-                <button class="btn btn-primary btn-sm" style="padding: 4px 8px; font-size: 0.75rem; width: auto; min-height: 28px;" onclick="window.addSynonymDirectly('${(t.en || syn.word).replace(/'/g, "\\'")}', '${(t.de || '').replace(/'/g, "\\'")}', '${(t.it || '').replace(/'/g, "\\'")}', '${(t.es || '').replace(/'/g, "\\'")}', '${(t.fr || '').replace(/'/g, "\\'")}', '${(syn.category || 'nouns').replace(/'/g, "\\'")}')">➕ Add</button>
-              </div>
-            `;
-            synContainer.appendChild(li);
-          });
-        } else {
-          synContainer.innerHTML = `<li style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; padding: 12px;">No synonyms returned by AI.</li>`;
-        }
+      if (synContainer) {
+        synContainer.innerHTML = `<li style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; padding: 12px;">Translations loaded successfully via Google Translate.</li>`;
       }
     } catch (err) {
       alert("Error processing word: " + err.message);
@@ -2451,6 +2382,226 @@ window.saveRowChanges = async function(buttonEl, originalBaseKey, originalTarget
   
   updateCategoryCounts();
 };
+
+export async function autoTranslateFromSource(sourceLang) {
+  const sourceInput = document.getElementById(`manual-lang-${sourceLang}`);
+  if (!sourceInput) return;
+  const sourceText = sourceInput.value.trim();
+  if (!sourceText) return;
+
+  const targetLangs = ["en", "de", "it", "es", "fr"].filter(l => l !== sourceLang);
+  const folderSelect = document.getElementById("manual-category");
+  const folderId = folderSelect ? folderSelect.value : "imported";
+
+  const promises = targetLangs.map(async (lang) => {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${lang}&dt=t&q=${encodeURIComponent(sourceText)}`;
+    try {
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data[0] && data[0][0] && data[0][0][0]) {
+          const targetInput = document.getElementById(`manual-lang-${lang}`);
+          if (targetInput) {
+            targetInput.value = sanitizeWordTranslation(data[0][0][0], lang, folderId);
+          }
+        }
+      }
+    } catch (e) {
+      console.error(`Auto-translate to ${lang} failed:`, e);
+    }
+  });
+
+  await Promise.all(promises);
+}
+
+export function startManualDictation(lang, inputId) {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    alert("Speech Recognition not supported in this browser.");
+    return;
+  }
+
+  const micBtn = document.getElementById(`btn-listen-${lang}`);
+  if (!micBtn) return;
+
+  if (micBtn.classList.contains("recording-active")) {
+    if (window.activeManualRecognizer) {
+      window.activeManualRecognizer.stop();
+    }
+    return;
+  }
+
+  if (window.activeManualRecognizer) {
+    window.activeManualRecognizer.stop();
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = lang === "en" ? "en-US" : lang === "de" ? "de-DE" : lang === "it" ? "it-IT" : lang === "es" ? "es-ES" : "fr-FR";
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.onstart = () => {
+    micBtn.classList.add("recording-active");
+    micBtn.style.background = "#e74c3c";
+    micBtn.style.color = "#fff";
+    window.activeManualRecognizer = recognition;
+  };
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript.trim();
+    const input = document.getElementById(inputId);
+    if (input) {
+      const folderSelect = document.getElementById("manual-category");
+      const folderId = folderSelect ? folderSelect.value : "imported";
+      input.value = sanitizeWordTranslation(transcript, lang, folderId);
+      autoTranslateFromSource(lang);
+    }
+  };
+
+  recognition.onerror = (event) => {
+    console.error("Speech recognition error:", event.error);
+  };
+
+  recognition.onend = () => {
+    micBtn.classList.remove("recording-active");
+    micBtn.style.background = "";
+    micBtn.style.color = "";
+    if (window.activeManualRecognizer === recognition) {
+      window.activeManualRecognizer = null;
+    }
+  };
+
+  recognition.start();
+}
+
+export function startSequenceDictation() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    alert("Speech Recognition not supported in this browser.");
+    return;
+  }
+
+  const micBtn = document.getElementById("btn-manual-record-sequence");
+  if (!micBtn) return;
+
+  if (micBtn.classList.contains("recording-active")) {
+    if (window.activeManualRecognizer) {
+      window.activeManualRecognizer.stop();
+    }
+    return;
+  }
+
+  if (window.activeManualRecognizer) {
+    window.activeManualRecognizer.stop();
+  }
+
+  const recognition = new SpeechRecognition();
+  const learnLang = state.selectedLang || "de";
+  recognition.lang = learnLang === "en" ? "en-US" : learnLang === "de" ? "de-DE" : learnLang === "it" ? "it-IT" : learnLang === "es" ? "es-ES" : "fr-FR";
+  recognition.continuous = true;
+  recognition.interimResults = false;
+
+  recognition.onstart = () => {
+    micBtn.classList.add("recording-active");
+    micBtn.style.background = "#e74c3c";
+    micBtn.style.color = "#fff";
+    micBtn.textContent = "⏹️";
+    window.activeManualRecognizer = recognition;
+  };
+
+  recognition.onresult = async (event) => {
+    const results = event.results;
+    const lastResultIndex = event.resultIndex;
+    const transcript = results[lastResultIndex][0].transcript.trim();
+    if (!transcript) return;
+
+    const rawWords = transcript.split(/[\s,]+|und|and|\by\b|\be\b|et/i)
+      .map(w => w.trim())
+      .filter(w => w.length > 1);
+
+    if (rawWords.length === 0) return;
+
+    const folderSelect = document.getElementById("manual-category");
+    const folderId = folderSelect ? folderSelect.value : "imported";
+
+    for (const w of rawWords) {
+      const cleanWord = sanitizeWordTranslation(w, learnLang, folderId);
+      if (!cleanWord) continue;
+
+      const targetLangs = ["en", "de", "it", "es", "fr"];
+      const translations = {};
+      
+      const promises = targetLangs.map(async (lang) => {
+        if (lang === learnLang) {
+          translations[lang] = cleanWord;
+          return;
+        }
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${learnLang}&tl=${lang}&dt=t&q=${encodeURIComponent(cleanWord)}`;
+        try {
+          const res = await fetch(url);
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data[0] && data[0][0] && data[0][0][0]) {
+              translations[lang] = sanitizeWordTranslation(data[0][0][0], lang, folderId);
+            }
+          }
+        } catch (e) {
+          console.error(`Google sequence translation failed for ${lang}`, e);
+        }
+      });
+      
+      await Promise.all(promises);
+
+      const newWord = {
+        en: translations.en || "",
+        de: translations.de || "",
+        it: translations.it || "",
+        es: translations.es || "",
+        fr: translations.fr || "",
+        category: folderId || "imported",
+        image: translations.en || cleanWord,
+        details: {
+          articles: {},
+          sentences: {},
+          variations: {},
+          synonyms: { en: [], de: [], it: [], es: [], fr: [] }
+        }
+      };
+
+      newWord.lang = state.selectedLang;
+      newWord.target = newWord[state.selectedLang];
+
+      state.customVocab.push(newWord);
+      if (window.sessionImportedList) {
+        window.sessionImportedList.push(newWord);
+      }
+    }
+
+    saveState();
+    renderImportedList();
+    if (window.playFeedbackSound) window.playFeedbackSound("correct");
+  };
+
+  recognition.onerror = (event) => {
+    console.error("Sequence dictation error:", event.error);
+  };
+
+  recognition.onend = () => {
+    micBtn.classList.remove("recording-active");
+    micBtn.style.background = "";
+    micBtn.style.color = "";
+    micBtn.textContent = "🎙️";
+    if (window.activeManualRecognizer === recognition) {
+      window.activeManualRecognizer = null;
+    }
+  };
+
+  recognition.start();
+}
+
+window.autoTranslateFromSource = autoTranslateFromSource;
+window.startManualDictation = startManualDictation;
+window.startSequenceDictation = startSequenceDictation;
 
 
 
