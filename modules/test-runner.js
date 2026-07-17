@@ -966,7 +966,14 @@ export function calculateAndSaveDifficulty(userAnswer, correctText, isSpoken = f
 
   // Combine scores: 70% error, 30% time
   let finalScore = Math.round(0.7 * errorScore + 0.3 * timeScore);
-  finalScore = Math.max(0, Math.min(100, finalScore));
+  
+  if (elapsedTime > 10) {
+    const extraSeconds = Math.max(0, elapsedTime - 10);
+    const penalty = extraSeconds * 3;
+    finalScore += penalty;
+  }
+
+  finalScore = Math.max(0, Math.min(100, Math.round(finalScore)));
 
   const wordKey = currentWord.origEn || currentWord.en;
   if (!state.wordStats) state.wordStats = {};
