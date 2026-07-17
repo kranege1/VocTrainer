@@ -270,9 +270,12 @@ export async function runQuickTranslate(text) {
         return `
           <div class="card" style="margin: 0; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; border-left: 5px solid ${langColor}; background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border-radius: 12px; border-top: 1px solid rgba(255,255,255,0.04); border-right: 1px solid rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.04); box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
             <div>
-              <div style="display: flex; align-items: center; margin-bottom: 14px;">
-                <img src="${flagUrl}" width="16" height="12" style="${flagStyle}">
-                <strong style="color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">${target.name}</strong>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; width: 100%;">
+                <div style="display: flex; align-items: center;">
+                  <img src="${flagUrl}" width="16" height="12" style="${flagStyle}">
+                  <strong style="color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">${target.name}</strong>
+                </div>
+                <button onclick="event.stopPropagation(); window.copyTextToClipboard('${translation.replace(/'/g, "\\'")}', this)" style="border: none; background: transparent; cursor: pointer; color: var(--text-secondary); font-size: 0.95rem; padding: 4px; display: inline-flex; align-items: center; justify-content: center; transition: color 0.2s, transform 0.2s; margin-top: -4px;" title="Copy translation">📋</button>
               </div>
               <div style="font-size: 1.8rem; font-weight: 800; color: ${langColor}; word-wrap: break-word; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.2); cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 8px;" onclick="speakWord('${translation.replace(/'/g, "\\'")}', '${target.code}')" title="Click to hear pronunciation">
                 <span>${translation}</span>
@@ -569,4 +572,19 @@ export async function fetchSynonymsForTarget(word, targetLang, sourceLang = "de"
   return [];
 }
 
-
+window.copyTextToClipboard = function(text, buttonEl) {
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const origText = buttonEl.textContent;
+    buttonEl.textContent = "✅";
+    buttonEl.style.color = "#2ecc71";
+    buttonEl.style.transform = "scale(1.2)";
+    setTimeout(() => {
+      buttonEl.textContent = origText;
+      buttonEl.style.color = "";
+      buttonEl.style.transform = "scale(1)";
+    }, 1200);
+  }).catch(err => {
+    console.error("Failed to copy card text:", err);
+  });
+};
