@@ -258,16 +258,21 @@ export async function runQuickTranslate(text) {
     // Translate to all other languages in parallel
     const folderId = document.getElementById("quick-translate-save-folder")?.value || "";
     
-    // Check if input word or its English translation is a verb, or if target folder is verbs
+    // Determine if the input is a verb:
+    //  - Folder name explicitly contains "verb"
+    //  - OR isVerbCheck confirms it (using the noun-exception-aware version)
+    // IMPORTANT: We do NOT rely on the English dictionary part-of-speech any more
+    //   because many nouns (garden, water, book) are also valid verbs in dictionaries.
     const isFolderVerb = folderId.toLowerCase().includes("verb");
-    const isInputVerb = isVerbCheck(text, sourceLang) || (englishBaseWord && isVerbCheck(englishBaseWord, "en")) || isFolderVerb;
+    const isInputVerb = isVerbCheck(text, sourceLang) || isFolderVerb;
     let translationSource = text;
     let translationSourceLang = sourceLang;
     
-    const isValidEnglishVerb = englishBaseWord && (
-      sourceLang === "en" || 
-      englishBaseWord.toLowerCase().trim() !== text.toLowerCase().trim()
-    );
+    // Only pivot translation through English and prepend "to " when:
+    //  - Input is genuinely a verb
+    //  - AND we have a valid non-trivial English base word
+    const isValidEnglishVerb = englishBaseWord &&
+      englishBaseWord.toLowerCase().trim() !== text.toLowerCase().trim();
     
     if (isInputVerb && isValidEnglishVerb) {
       if (!englishBaseWord.toLowerCase().startsWith("to ")) {
@@ -315,12 +320,15 @@ export async function runQuickTranslate(text) {
           }
         }
 
-        // 3. Conjugations check
+        // 3. Conjugations — only for confirmed verbs
         let conjugationsHtml = "";
         try {
-          // Only show conjugation if the translated word is actually a verb in the target language
-          const isTargetVerb = isVerbCheck(translation, target.code) || 
-                               (target.code === "en" && (translation.startsWith("to ") || isVerbAnyLanguage(translationSource)));
+          // A card is a verb only if:
+          //  - English: translation literally starts with "to "
+          //  - Other languages: isVerbCheck says true (uses the noun-exception list)
+          const isTargetVerb = target.code === "en"
+            ? translation.trim().toLowerCase().startsWith("to ")
+            : isVerbCheck(translation, target.code);
           if (isTargetVerb) {
             const fakeWordObj = { target: translation, en: englishBaseWord || text, category: "verbs" };
             const conjugations = getConjugationsForVerb(fakeWordObj, target.code);
@@ -600,20 +608,37 @@ export async function saveQuickTranslateWord() {
   }
 }
 
+
+// Common German nouns that end in -en/-eln/-rn (must NOT be classified as verbs).
+// Used by both normalizeWordCasing() and isVerbCheck().
+const DE_NOUN_EXCEPTIONS = new Set([
+  "blumen", "kuchen", "morgen", "garten", "boden", "regen", "schatten", "wagen",
+  "zeichen", "zeiten", "welten", "grenzen", "knochen", "breiten",
+  "klassen", "fragen", "arten", "stufen", "fäden", "laden",
+  "stunden", "wochen", "jahren", "tagen", "monaten", "namen", "nummern",
+  "farben", "häuser", "familien", "wörtern", "büchern", "kindern",
+  "brüdern", "schwestern", "eltern", "freunden", "städten", "ländern",
+  "fenster", "felder", "händen", "füßen", "ohren", "augen", "haaren",
+  "dingen", "stellen", "stellen", "gruppen", "ebenen", "hallen", "hallen",
+  "rosen", "tannen", "birken", "eichen", "linden", "hecken", "dörfern"
+]);
+
 export function normalizeWordCasing(text, lang, category = "") {
   if (!text) return "";
   let clean = text.trim();
   
   const isGerman = (lang === "de");
   
-  const lowercaseDeWords = ["und", "oder", "aber", "in", "auf", "unter", "über", "vor", "hinter", "neben", "an", "bei", "mit", "nach", "von", "zu", "aus", "für", "gegen", "ohne", "um", "durch", "ich", "du", "er", "sie", "es", "wir", "ihr", "sie", "mein", "dein", "sein", "ihr", "unser", "euer", "der", "die", "das", "ein", "eine", "einer", "eines", "einem", "einen", "nicht", "sehr", "gut", "schnell", "schön", "neu", "alt", "groß", "klein"];
+  const lowercaseDeWords = ["und", "oder", "aber", "in", "auf", "unter", "über", "vor", "hinter", "neben", "an", "bei", "mit", "nach", "von", "zu", "aus", "für", "gegen", "ohne", "um", "durch", "ich", "du", "er", "sie", "es", "wir", "ihr", "mein", "dein", "sein", "unser", "euer", "der", "die", "das", "ein", "eine", "einer", "eines", "einem", "einen", "nicht", "sehr", "gut", "schnell", "schön", "neu", "alt", "groß", "klein"];
   
   if (isGerman) {
     const lowerClean = clean.toLowerCase();
-    const isVerb = lowerClean.endsWith("en") || lowerClean.endsWith("eln") || lowerClean.endsWith("rn");
-    const isActuallyVerb = isVerb && !lowerClean.includes(" ") && !["blumen", "kuchen", "morgen", "garten", "boden", "regen", "schatten", "wagen"].includes(lowerClean);
+    // Use the shared DE_NOUN_EXCEPTIONS list for consistency
+    const isVerb = (lowerClean.endsWith("en") || lowerClean.endsWith("eln") || lowerClean.endsWith("rn"))
+      && !lowerClean.includes(" ")
+      && !DE_NOUN_EXCEPTIONS.has(lowerClean);
 
-    if (!isActuallyVerb && !lowercaseDeWords.includes(lowerClean)) {
+    if (!isVerb && !lowercaseDeWords.includes(lowerClean)) {
       return clean.charAt(0).toUpperCase() + clean.slice(1);
     } else {
       return clean.charAt(0).toLowerCase() + clean.slice(1);
@@ -626,12 +651,15 @@ export function normalizeWordCasing(text, lang, category = "") {
   return clean;
 }
 
+// (DE_NOUN_EXCEPTIONS moved above normalizeWordCasing)
+
 export function isVerbCheck(text, lang) {
   if (!text) return false;
   const clean = text.toLowerCase().trim();
   const words = clean.split(/\s+/).filter(Boolean);
   
   if (lang === "en") {
+    // Only "to <word>" (exactly 2 words starting with "to") counts as a verb
     return words.length === 2 && words[0] === "to";
   }
   
@@ -640,7 +668,13 @@ export function isVerbCheck(text, lang) {
   }
   
   if (lang === "de") {
-    return clean.startsWith("zu ") || clean.endsWith("en");
+    // Explicit "zu ..." prefix marks infinitive
+    if (clean.startsWith("zu ")) return true;
+    // Ends in -en BUT is not a known noun exception
+    if ((clean.endsWith("en") || clean.endsWith("eln") || clean.endsWith("rn")) && !DE_NOUN_EXCEPTIONS.has(clean)) {
+      return true;
+    }
+    return false;
   }
   if (lang === "it") {
     return clean.endsWith("are") || clean.endsWith("ere") || clean.endsWith("ire") || clean.endsWith("arsi") || clean.endsWith("ersi") || clean.endsWith("irsi");
@@ -649,7 +683,7 @@ export function isVerbCheck(text, lang) {
     return clean.endsWith("ar") || clean.endsWith("er") || clean.endsWith("ir") || clean.endsWith("arse") || clean.endsWith("erse") || clean.endsWith("irse");
   }
   if (lang === "fr") {
-    return clean.endsWith("er") || clean.endsWith("ir") || clean.endsWith("re") || clean.endsWith("oir") || clean.startsWith("se") || clean.startsWith("s'");
+    return clean.endsWith("er") || clean.endsWith("ir") || clean.endsWith("re") || clean.endsWith("oir") || clean.startsWith("se ") || clean.startsWith("s'");
   }
   return false;
 }
