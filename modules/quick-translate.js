@@ -427,6 +427,13 @@ export function populateQuickTranslateFolders() {
   if (currentSelection && Array.from(selectEl.options).some(o => o.value === currentSelection)) {
     selectEl.value = currentSelection;
   }
+
+  // Set onchange handler to save choice and update duplicate status
+  selectEl.onchange = () => {
+    state.quickTranslateLastFolder = selectEl.value;
+    saveState();
+    updateDuplicateStatus();
+  };
 }
 
 export function updateDuplicateStatus() {
