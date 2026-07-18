@@ -12,6 +12,81 @@ const translateTextGTX = (...args) => window.translateTextGTX?.(...args);
 export let quickTranslateRecognition;
 export let isQuickTranslateListening = false;
 
+let audioContext = null;
+let audioStream = null;
+let levelAnalyserAnimationId = null;
+
+async function startMicLevelAnalyser() {
+  try {
+    const container = document.getElementById("quick-translate-mic-level-container");
+    const fill = document.getElementById("quick-translate-mic-level-fill");
+    const label = document.getElementById("quick-translate-mic-level-value");
+    if (!container || !fill || !label) return;
+
+    audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    audioContext = new AudioCtx();
+    const source = audioContext.createMediaStreamSource(audioStream);
+    const analyser = audioContext.createAnalyser();
+    analyser.fftSize = 256;
+    source.connect(analyser);
+
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    container.style.display = "block";
+
+    function updateLevel() {
+      if (!isQuickTranslateListening) return;
+
+      analyser.getByteFrequencyData(dataArray);
+      let sum = 0;
+      for (let i = 0; i < bufferLength; i++) {
+        sum += dataArray[i];
+      }
+      const average = sum / bufferLength;
+      
+      const percent = Math.min(100, Math.round((average / 120) * 100));
+      
+      fill.style.width = percent + "%";
+      label.textContent = percent + "%";
+
+      levelAnalyserAnimationId = requestAnimationFrame(updateLevel);
+    }
+
+    updateLevel();
+  } catch (err) {
+    console.warn("Failed to initialize mic level analyser:", err);
+  }
+}
+
+function stopMicLevelAnalyser() {
+  if (levelAnalyserAnimationId) {
+    cancelAnimationFrame(levelAnalyserAnimationId);
+    levelAnalyserAnimationId = null;
+  }
+  if (audioContext) {
+    try {
+      audioContext.close();
+    } catch (e) {}
+    audioContext = null;
+  }
+  if (audioStream) {
+    try {
+      audioStream.getTracks().forEach(track => track.stop());
+    } catch (e) {}
+    audioStream = null;
+  }
+  
+  const container = document.getElementById("quick-translate-mic-level-container");
+  const fill = document.getElementById("quick-translate-mic-level-fill");
+  const label = document.getElementById("quick-translate-mic-level-value");
+  if (container) container.style.display = "none";
+  if (fill) fill.style.width = "0%";
+  if (label) label.textContent = "0%";
+}
+
 export function initQuickTranslateSpeech() {
   if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
     return;
@@ -29,6 +104,7 @@ export function initQuickTranslateSpeech() {
     if (micBtn) micBtn.classList.add("listening");
     if (status) status.textContent = "Listening... Speak now!";
     if (pulse) pulse.classList.add("listening");
+    startMicLevelAnalyser();
   };
 
   quickTranslateRecognition.onresult = async (event) => {
@@ -81,6 +157,7 @@ export function startQuickTranslateSpeech() {
 
 export function stopQuickTranslateSpeech() {
   isQuickTranslateListening = false;
+  stopMicLevelAnalyser();
   const micBtn = document.getElementById("btn-quick-translate-mic");
   const status = document.getElementById("quick-translate-status");
   const pulse = document.getElementById("quick-translate-pulse");

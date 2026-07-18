@@ -110,7 +110,7 @@
         <h1>VocTrainer</h1>
         <div id="build-timestamp"
           style="font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6; font-family: monospace; margin-top: -6px; margin-bottom: 8px; pointer-events: none;">
-          Build: 2026-07-18 07:35:00
+          Build: 2026-07-18 07:38:00
         </div>
         <p>Master languages with premium gamified learning!</p>
       </div>
@@ -549,6 +549,17 @@
         <div id="quick-translate-status"
           style="font-weight: 600; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px; letter-spacing: 0.5px;">
           Tap microphone to start speaking
+        </div>
+
+        <!-- Microphone Signal Level Progress Bar -->
+        <div id="quick-translate-mic-level-container" style="display: none; max-width: 200px; margin: 0 auto 12px auto; text-align: left;">
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.65rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 4px;">
+            <span>🎙️ Input Signal Level</span>
+            <span id="quick-translate-mic-level-value">0%</span>
+          </div>
+          <div style="height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; position: relative;">
+            <div id="quick-translate-mic-level-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #2ecc71, #f1c40f, #e74c3c); transition: width 0.1s ease; border-radius: 3px;"></div>
+          </div>
         </div>
 
         <!-- Manual Text Input -->
