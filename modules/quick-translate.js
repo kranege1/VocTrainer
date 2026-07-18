@@ -500,7 +500,6 @@ export async function saveQuickTranslateWord() {
     return;
   }
 
-  // Show temporary loading indicator on save button
   const saveBtn = document.getElementById("btn-quick-translate-save");
   const originalHtml = saveBtn ? saveBtn.innerHTML : "";
   if (saveBtn) {
@@ -508,6 +507,7 @@ export async function saveQuickTranslateWord() {
     saveBtn.innerHTML = `🔄 Saving...`;
   }
   
+  let success = false;
   try {
     // Auto detect source language
     const { detectedLang, translation: enTranslation } = await detectLanguageAndTranslateToEn(spokenText);
@@ -570,7 +570,6 @@ export async function saveQuickTranslateWord() {
       return;
     }
     
-    let success = false;
     state.customVocab.push(newWord);
     state.quickTranslateLastFolder = folderId;
     saveState();
