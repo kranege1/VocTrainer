@@ -396,38 +396,38 @@ export function populateQuickTranslateFolders() {
   const selectEl = document.getElementById("quick-translate-save-folder");
   if (!selectEl) return;
   
-  // Save current selection if any
-  const currentSelection = selectEl.value || state.quickTranslateLastFolder;
+  // Prioritize currently active Browse folder, then last quick translate selection
+  const currentSelection = selectEl.value || state.selectedBrowseFolderId || state.quickTranslateLastFolder;
   
   selectEl.innerHTML = "";
   
-  // Custom folders
+  // 1. Custom folders (listed first)
   if (state.customFolders && state.customFolders.length > 0) {
     state.customFolders.forEach(folder => {
       const opt = document.createElement("option");
       opt.value = folder.id;
-      opt.textContent = folder.name;
-      selectEl.appendChild(opt);
-    });
-  } else {
-    // Fallback static folders
-    const staticFolders = [
-      { id: "nouns", name: "Nouns" },
-      { id: "verbs", name: "Verbs" },
-      { id: "technology", name: "Technology" },
-      { id: "biology", name: "Biology" },
-      { id: "phrases", name: "Phrases" }
-    ];
-    staticFolders.forEach(folder => {
-      const opt = document.createElement("option");
-      opt.value = folder.id;
-      opt.textContent = folder.name;
+      opt.textContent = folder.name + " (Custom)";
       selectEl.appendChild(opt);
     });
   }
   
+  // 2. Standard categories
+  const staticFolders = [
+    { id: "nouns", name: "Nouns (Standard)" },
+    { id: "verbs", name: "Verbs (Standard)" },
+    { id: "technology", name: "Technology (Standard)" },
+    { id: "biology", name: "Biology (Standard)" },
+    { id: "phrases", name: "Phrases (Standard)" }
+  ];
+  staticFolders.forEach(folder => {
+    const opt = document.createElement("option");
+    opt.value = folder.id;
+    opt.textContent = folder.name;
+    selectEl.appendChild(opt);
+  });
+  
   // Restore selection if it exists in the newly built list
-  if (currentSelection) {
+  if (currentSelection && Array.from(selectEl.options).some(o => o.value === currentSelection)) {
     selectEl.value = currentSelection;
   }
 }
