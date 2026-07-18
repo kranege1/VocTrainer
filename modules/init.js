@@ -2507,6 +2507,8 @@ export function startManualDictation(lang, inputId) {
     console.error("Speech recognition error:", event.error);
     if (event.error === "not-allowed") {
       alert("🎙️ Microphone access denied or blocked.\n\nPlease ensure you are using HTTPS (or localhost) and have granted microphone permissions in your browser address bar.");
+    } else if (event.error === "network") {
+      alert("🎙️ Speech Recognition Network Error.\n\nOn Edge/Chrome, the browser sends voice data to speech servers (Google/Microsoft). Please check your internet connection or try using Google Chrome if Microsoft Edge's speech service is temporarily unavailable.");
     } else {
       alert("🎙️ Speech Recognition Error: " + event.error);
     }

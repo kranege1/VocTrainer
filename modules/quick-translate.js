@@ -131,7 +131,14 @@ export function initQuickTranslateSpeech() {
   quickTranslateRecognition.onerror = (e) => {
     console.error("Quick translate speech error:", e);
     const status = document.getElementById("quick-translate-status");
-    if (status) status.textContent = "Error: Try speaking again.";
+    if (status) {
+      if (e.error === 'network') {
+        status.textContent = "Network Error: Check connection.";
+        alert("🎙️ Speech Recognition Network Error.\n\nOn Edge/Chrome, the browser sends voice data to speech servers (Google/Microsoft). Please check your internet connection or try using Google Chrome if Microsoft Edge's speech service is temporarily unavailable.");
+      } else {
+        status.textContent = "Error: Try speaking again.";
+      }
+    }
     stopQuickTranslateSpeech();
   };
 
