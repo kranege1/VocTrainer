@@ -976,6 +976,13 @@ function showView(viewId) {
   });
 
   if (viewId === "view-setup") {
+    if ('speechSynthesis' in window) {
+      try {
+        const u = new SpeechSynthesisUtterance("");
+        u.volume = 0;
+        window.speechSynthesis.speak(u);
+      } catch (e) {}
+    }
     loadOnDeviceVoices();
     renderHistoryList();
     syncICloudFolder();

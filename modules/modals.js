@@ -986,6 +986,13 @@ if ('speechSynthesis' in window) {
   // Pre-trigger to initialize voice retrieval in Chrome/Edge
   window.speechSynthesis.getVoices();
   
+  // Force voice list generation on iOS Safari/embedded WebViews
+  try {
+    const u = new SpeechSynthesisUtterance("");
+    u.volume = 0;
+    window.speechSynthesis.speak(u);
+  } catch (e) {}
+  
   window.speechSynthesis.onvoiceschanged = () => {
     loadOnDeviceVoices();
   };
