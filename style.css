@@ -910,10 +910,9 @@ body {
   align-items: stretch;
 }
 
-@media (min-width: 768px) {
-  .test-split-layout:has(.test-right-pane.active) .test-left-pane {
-    display: none;
-  }
+/* Hide left pane when feedback is active to prevent content overflow/cutoffs on all screens */
+.test-split-layout:has(.test-right-pane.active) .test-left-pane {
+  display: none;
 }
 
 .test-left-pane {
@@ -929,7 +928,7 @@ body {
   background: #111420;
   border: 2px solid var(--border-color);
   border-radius: 24px;
-  padding: 24px;
+  padding: 24px 24px 40px 24px;
   overflow-y: auto;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   animation: slideInRight 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
