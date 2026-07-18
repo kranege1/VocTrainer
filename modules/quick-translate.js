@@ -507,6 +507,7 @@ export async function saveQuickTranslateWord() {
       return;
     }
     
+    let success = false;
     state.customVocab.push(newWord);
     state.quickTranslateLastFolder = folderId;
     saveState();
@@ -516,16 +517,35 @@ export async function saveQuickTranslateWord() {
       await saveWordlistToICloud(folderId);
     }
     
-    showCustomAlert(`🎉 Word successfully saved to list!`);
+    success = true;
     
-    // Hide save box after saving
+    if (saveBtn) {
+      saveBtn.style.background = "#2ecc71";
+      saveBtn.style.borderColor = "#2ecc71";
+      saveBtn.style.color = "#fff";
+      saveBtn.innerHTML = `✅ Saved!`;
+      saveBtn.style.transform = "scale(1.05)";
+      saveBtn.style.transition = "all 0.2s ease";
+    }
+    
     const saveBox = document.getElementById("quick-translate-save-box");
-    if (saveBox) saveBox.style.display = "none";
+    setTimeout(() => {
+      if (saveBox) saveBox.style.display = "none";
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = originalHtml;
+        saveBtn.style.background = "";
+        saveBtn.style.borderColor = "";
+        saveBtn.style.color = "";
+        saveBtn.style.transform = "";
+        saveBtn.style.transition = "";
+      }
+    }, 1200);
   } catch (err) {
     console.error("Failed to save word:", err);
     showCustomAlert("Failed to save word to list.");
   } finally {
-    if (saveBtn) {
+    if (!success && saveBtn) {
       saveBtn.disabled = false;
       saveBtn.innerHTML = originalHtml;
     }
@@ -536,17 +556,21 @@ export function normalizeWordCasing(text, lang, category = "") {
   if (!text) return "";
   let clean = text.trim();
   
-  // Rule: Only German nouns should have a capital first letter!
-  // All other languages (en, it, es, fr) should generally be lowercase.
-  // Also, German verbs/adjectives should be lowercase!
   const isGerman = (lang === "de");
-  const isNoun = (category.toLowerCase() === "nouns" || category.toLowerCase() === "technology" || category.toLowerCase() === "biology");
   
-  if (isGerman && isNoun) {
-    // Capitalize first letter
-    return clean.charAt(0).toUpperCase() + clean.slice(1);
+  const lowercaseDeWords = ["und", "oder", "aber", "in", "auf", "unter", "über", "vor", "hinter", "neben", "an", "bei", "mit", "nach", "von", "zu", "aus", "für", "gegen", "ohne", "um", "durch", "ich", "du", "er", "sie", "es", "wir", "ihr", "sie", "mein", "dein", "sein", "ihr", "unser", "euer", "der", "die", "das", "ein", "eine", "einer", "eines", "einem", "einen", "nicht", "sehr", "gut", "schnell", "schön", "neu", "alt", "groß", "klein"];
+  
+  if (isGerman) {
+    const lowerClean = clean.toLowerCase();
+    const isVerb = lowerClean.endsWith("en") || lowerClean.endsWith("eln") || lowerClean.endsWith("rn");
+    const isActuallyVerb = isVerb && !lowerClean.includes(" ") && !["blumen", "kuchen", "morgen", "garten", "boden", "regen", "schatten", "wagen"].includes(lowerClean);
+
+    if (!isActuallyVerb && !lowercaseDeWords.includes(lowerClean)) {
+      return clean.charAt(0).toUpperCase() + clean.slice(1);
+    } else {
+      return clean.charAt(0).toLowerCase() + clean.slice(1);
+    }
   } else {
-    // Lowercase first letter if it is uppercase
     if (clean.length > 0) {
       return clean.charAt(0).toLowerCase() + clean.slice(1);
     }
