@@ -384,6 +384,7 @@ export async function runQuickTranslate(text) {
     populateQuickTranslateFolders();
     const saveBox = document.getElementById("quick-translate-save-box");
     if (saveBox) saveBox.style.display = "flex";
+    updateDuplicateStatus();
   } catch (err) {
     console.error("runQuickTranslate crash:", err);
     alert("Error: " + err.message + "\nStack: " + err.stack);
@@ -417,6 +418,55 @@ export function populateQuickTranslateFolders() {
   // Restore selection if it exists in the newly built list
   if (currentSelection && Array.from(selectEl.options).some(o => o.value === currentSelection)) {
     selectEl.value = currentSelection;
+  }
+}
+
+export function updateDuplicateStatus() {
+  const statusEl = document.getElementById("quick-translate-duplicate-status");
+  const saveBtn = document.getElementById("btn-quick-translate-save");
+  if (!statusEl) return;
+  
+  const spokenText = document.getElementById("quick-translate-input-display")?.textContent?.trim() || "";
+  const folderEl = document.getElementById("quick-translate-save-folder");
+  const folderId = folderEl ? folderEl.value : "";
+  
+  if (!spokenText || spokenText === "..." || !folderId) {
+    statusEl.style.display = "none";
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.style.opacity = "1";
+    }
+    return;
+  }
+  
+  const isDuplicate = state.customVocab.some(word => {
+    if (word.category !== folderId) return false;
+    const langs = ["en", "de", "it", "es", "fr"];
+    return langs.some(l => (word[l] || "").toLowerCase().trim() === spokenText.toLowerCase());
+  });
+  
+  statusEl.style.display = "inline-flex";
+  
+  if (isDuplicate) {
+    statusEl.innerHTML = `⚠️ Already in list`;
+    statusEl.style.color = "#f1c40f";
+    statusEl.style.background = "rgba(241, 196, 15, 0.1)";
+    statusEl.style.border = "1px solid rgba(241, 196, 15, 0.2)";
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.style.opacity = "0.5";
+      saveBtn.title = "Word already in this list";
+    }
+  } else {
+    statusEl.innerHTML = `✨ New Word`;
+    statusEl.style.color = "#2ecc71";
+    statusEl.style.background = "rgba(46, 204, 113, 0.1)";
+    statusEl.style.border = "1px solid rgba(46, 204, 113, 0.2)";
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.style.opacity = "1";
+      saveBtn.removeAttribute("title");
+    }
   }
 }
 

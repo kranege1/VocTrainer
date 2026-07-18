@@ -104,6 +104,9 @@ export async function initApp() {
     quickSaveFolderSelect.onchange = () => {
       state.quickTranslateLastFolder = quickSaveFolderSelect.value;
       saveState();
+      if (window.updateDuplicateStatus) {
+        window.updateDuplicateStatus();
+      }
     };
   }
 

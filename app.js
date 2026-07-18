@@ -706,7 +706,8 @@ import {
   isVerbCheck,
   isVerbAnyLanguage,
   detectLanguageAndTranslateToEn,
-  fetchSynonymsForTarget
+  fetchSynonymsForTarget,
+  updateDuplicateStatus
 } from './modules/quick-translate.js';
 
 // ==========================================
@@ -1695,6 +1696,7 @@ window.toggleQuickTranslateSpeech = toggleQuickTranslateSpeech;
 window.runQuickTranslate = runQuickTranslate;
 window.populateQuickTranslateFolders = populateQuickTranslateFolders;
 window.saveQuickTranslateWord = saveQuickTranslateWord;
+window.updateDuplicateStatus = updateDuplicateStatus;
 window.normalizeWordCasing = normalizeWordCasing;
 window.isVerbCheck = isVerbCheck;
 window.isVerbAnyLanguage = isVerbAnyLanguage;
