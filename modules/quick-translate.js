@@ -401,30 +401,20 @@ export function populateQuickTranslateFolders() {
   
   selectEl.innerHTML = "";
   
-  // 1. Custom folders (listed first)
+  // Custom folders only
   if (state.customFolders && state.customFolders.length > 0) {
     state.customFolders.forEach(folder => {
       const opt = document.createElement("option");
       opt.value = folder.id;
-      opt.textContent = folder.name + " (Custom)";
+      opt.textContent = folder.name;
       selectEl.appendChild(opt);
     });
-  }
-  
-  // 2. Standard categories
-  const staticFolders = [
-    { id: "nouns", name: "Nouns (Standard)" },
-    { id: "verbs", name: "Verbs (Standard)" },
-    { id: "technology", name: "Technology (Standard)" },
-    { id: "biology", name: "Biology (Standard)" },
-    { id: "phrases", name: "Phrases (Standard)" }
-  ];
-  staticFolders.forEach(folder => {
+  } else {
     const opt = document.createElement("option");
-    opt.value = folder.id;
-    opt.textContent = folder.name;
+    opt.value = "";
+    opt.textContent = "(No custom lists found)";
     selectEl.appendChild(opt);
-  });
+  }
   
   // Restore selection if it exists in the newly built list
   if (currentSelection && Array.from(selectEl.options).some(o => o.value === currentSelection)) {
@@ -434,10 +424,16 @@ export function populateQuickTranslateFolders() {
 
 export async function saveQuickTranslateWord() {
   const spokenText = document.getElementById("quick-translate-input-display").textContent.trim();
-  const folderId = document.getElementById("quick-translate-save-folder").value;
+  const folderSelect = document.getElementById("quick-translate-save-folder");
+  const folderId = folderSelect ? folderSelect.value : "";
   
   if (!spokenText || spokenText === "...") {
     showCustomAlert("Please speak a word or phrase first!");
+    return;
+  }
+
+  if (!folderId) {
+    showCustomAlert("Please select or create a custom list first under the Browse tab!");
     return;
   }
 
