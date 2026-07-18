@@ -233,11 +233,9 @@ export async function runQuickTranslate(text) {
     const isSingleWord = !text.trim().includes(" ");
     let englishBaseWord = enTranslation;
     let englishSynonyms = [];
-    let isVerbFromDict = false;
-    
     if (isSingleWord) {
       
-      // Look up in dictionary API for English synonyms and verify verb status
+      // Look up in dictionary API for English synonyms
       if (englishBaseWord) {
         try {
           const dictRes = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(englishBaseWord)}`);
@@ -247,7 +245,6 @@ export async function runQuickTranslate(text) {
             if (entry && entry.meanings) {
               entry.meanings.forEach(m => {
                 if (m.synonyms) englishSynonyms.push(...m.synonyms);
-                if (m.partOfSpeech === "verb") isVerbFromDict = true;
               });
             }
           }
@@ -258,8 +255,12 @@ export async function runQuickTranslate(text) {
       englishSynonyms = [...new Set(englishSynonyms)].slice(0, 5);
     }
     
-    // Check if input word or its English translation is a verb
-    const isInputVerb = isVerbCheck(text, sourceLang) || (englishBaseWord && isVerbCheck(englishBaseWord, "en")) || (isSingleWord && isVerbFromDict);
+    // Translate to all other languages in parallel
+    const folderId = document.getElementById("quick-translate-save-folder")?.value || "";
+    
+    // Check if input word or its English translation is a verb, or if target folder is verbs
+    const isFolderVerb = folderId.toLowerCase().includes("verb");
+    const isInputVerb = isVerbCheck(text, sourceLang) || (englishBaseWord && isVerbCheck(englishBaseWord, "en")) || isFolderVerb;
     let translationSource = text;
     let translationSourceLang = sourceLang;
     
@@ -275,9 +276,6 @@ export async function runQuickTranslate(text) {
       translationSource = englishBaseWord;
       translationSourceLang = "en";
     }
-
-    // Translate to all other languages in parallel
-    const folderId = document.getElementById("quick-translate-save-folder")?.value || "nouns";
     const resultsHtml = await Promise.all(targets.map(async (target) => {
       try {
         // 1. Core translation
