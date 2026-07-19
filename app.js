@@ -1040,6 +1040,8 @@ function populateManualCategoryDropdown() {
   // Restore value or prefill from browse active folder
   if (originalValue && Array.from(selectEl.options).some(o => o.value === originalValue)) {
     selectEl.value = originalValue;
+  } else if (state.manualLastFolder && Array.from(selectEl.options).some(o => o.value === state.manualLastFolder)) {
+    selectEl.value = state.manualLastFolder;
   } else if (state.selectedBrowseFolderId && Array.from(selectEl.options).some(o => o.value === state.selectedBrowseFolderId)) {
     selectEl.value = state.selectedBrowseFolderId;
   }

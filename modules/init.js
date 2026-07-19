@@ -110,6 +110,36 @@ export async function initApp() {
     };
   }
 
+  const manualCatSelect = document.getElementById("manual-category");
+  if (manualCatSelect) {
+    manualCatSelect.onchange = () => {
+      state.manualLastFolder = manualCatSelect.value;
+      saveState();
+      if (window.updateManualDuplicateStatus) {
+        window.updateManualDuplicateStatus();
+      }
+    };
+  }
+
+  const inputsToTrack = [
+    "manual-input-word",
+    "manual-lang-en",
+    "manual-lang-de",
+    "manual-lang-it",
+    "manual-lang-es",
+    "manual-lang-fr"
+  ];
+  inputsToTrack.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("input", () => {
+        if (window.updateManualDuplicateStatus) {
+          window.updateManualDuplicateStatus();
+        }
+      });
+    }
+  });
+
   const handleManualTranslate = () => {
     const inputEl = document.getElementById("quick-translate-text-input");
     if (!inputEl) return;
@@ -1058,16 +1088,12 @@ export async function initApp() {
       document.getElementById("manual-lang-es").value = translations.es || "";
       document.getElementById("manual-lang-fr").value = translations.fr || "";
 
-      // Guess category
-      let category = "nouns";
-      const enText = (translations.en || "").toLowerCase();
-      if (word.split(/\s+/).length > 2) {
-        category = "phrases";
-      } else if (enText.startsWith("to ")) {
-        category = "verbs";
-      }
-      document.getElementById("manual-category").value = category;
       document.getElementById("manual-image-url").value = translations.en || word;
+      
+      // Refresh duplicate status badge after AI translation finishes
+      if (window.updateManualDuplicateStatus) {
+        window.updateManualDuplicateStatus();
+      }
 
       // Reset advanced details
       document.getElementById("manual-art-de").value = "";
@@ -1309,7 +1335,7 @@ export async function initApp() {
           document.getElementById("manual-lang-fr").value = "";
           document.getElementById("manual-image-url").value = "";
           resetGrammarFields();
-          
+          if (window.updateManualDuplicateStatus) window.updateManualDuplicateStatus();
           alert("Word overwritten successfully!");
         }
       })();
@@ -1360,6 +1386,7 @@ export async function initApp() {
     document.getElementById("manual-lang-es").value = "";
     document.getElementById("manual-lang-fr").value = "";
     populateManualCategoryDropdown();
+    if (window.updateManualDuplicateStatus) window.updateManualDuplicateStatus();
     document.getElementById("manual-image-url").value = "";
     document.getElementById("manual-synonyms-container").innerHTML = `<li style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; padding: 12px;">Enter a word above and run AI Translate to suggest synonyms.</li>`;
     window.currentRecordingBase64 = "";
@@ -1853,6 +1880,9 @@ function renderDirectoryTree() {
       const manualCatInput = document.getElementById("manual-category");
       if (manualCatInput && state.selectedBrowseFolderId) {
         manualCatInput.value = state.selectedBrowseFolderId;
+      }
+      if (window.updateManualDuplicateStatus) {
+        window.updateManualDuplicateStatus();
       }
     };
   }
@@ -2679,6 +2709,74 @@ export function startSequenceDictation() {
 window.autoTranslateFromSource = autoTranslateFromSource;
 window.startManualDictation = startManualDictation;
 window.startSequenceDictation = startSequenceDictation;
+
+function updateManualDuplicateStatus() {
+  const statusEl = document.getElementById("manual-duplicate-status");
+  const saveBtn = document.getElementById("btn-manual-submit");
+  if (!statusEl) return;
+  
+  // Check either the main input word or any of the translation fields
+  const wordInput = document.getElementById("manual-input-word")?.value?.trim() || "";
+  const enInput = document.getElementById("manual-lang-en")?.value?.trim() || "";
+  const deInput = document.getElementById("manual-lang-de")?.value?.trim() || "";
+  const itInput = document.getElementById("manual-lang-it")?.value?.trim() || "";
+  const esInput = document.getElementById("manual-lang-es")?.value?.trim() || "";
+  const frInput = document.getElementById("manual-lang-fr")?.value?.trim() || "";
+  
+  const folderEl = document.getElementById("manual-category");
+  const folderId = folderEl ? folderEl.value : "";
+  
+  // Collect all unique non-empty search terms the user has entered
+  const searchTerms = [wordInput, enInput, deInput, itInput, esInput, frInput]
+    .map(t => t.toLowerCase().trim())
+    .filter(Boolean);
+    
+  if (searchTerms.length === 0 || !folderId) {
+    statusEl.style.display = "none";
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.style.opacity = "1";
+      saveBtn.removeAttribute("title");
+    }
+    return;
+  }
+  
+  // Check if any of searchTerms matches any field in customVocab for the selected category
+  const isDuplicate = state.customVocab.some(word => {
+    if (word.category !== folderId) return false;
+    const langs = ["en", "de", "it", "es", "fr"];
+    return langs.some(l => {
+      const val = (word[l] || "").toLowerCase().trim();
+      return val && searchTerms.includes(val);
+    });
+  });
+  
+  statusEl.style.display = "inline-flex";
+  
+  if (isDuplicate) {
+    statusEl.innerHTML = `⚠️ Already in list`;
+    statusEl.style.color = "#f1c40f";
+    statusEl.style.background = "rgba(241, 196, 15, 0.1)";
+    statusEl.style.border = "1px solid rgba(241, 196, 15, 0.2)";
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.style.opacity = "0.5";
+      saveBtn.title = "Word already in this list";
+    }
+  } else {
+    statusEl.innerHTML = `✨ New Word`;
+    statusEl.style.color = "#2ecc71";
+    statusEl.style.background = "rgba(46, 204, 113, 0.1)";
+    statusEl.style.border = "1px solid rgba(46, 204, 113, 0.2)";
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.style.opacity = "1";
+      saveBtn.removeAttribute("title");
+    }
+  }
+}
+
+window.updateManualDuplicateStatus = updateManualDuplicateStatus;
 
 
 
