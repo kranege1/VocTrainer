@@ -1081,12 +1081,13 @@ export async function initApp() {
         translations[r.lang] = r.text;
       });
 
-      // Populate translations
-      document.getElementById("manual-lang-en").value = translations.en || "";
-      document.getElementById("manual-lang-de").value = translations.de || "";
-      document.getElementById("manual-lang-it").value = translations.it || "";
-      document.getElementById("manual-lang-es").value = translations.es || "";
-      document.getElementById("manual-lang-fr").value = translations.fr || "";
+      // Populate translations with correct casing normalization
+      const folderId = document.getElementById("manual-category")?.value || "";
+      document.getElementById("manual-lang-en").value = normalizeWordCasing(translations.en || "", "en", folderId);
+      document.getElementById("manual-lang-de").value = normalizeWordCasing(translations.de || "", "de", folderId);
+      document.getElementById("manual-lang-it").value = normalizeWordCasing(translations.it || "", "it", folderId);
+      document.getElementById("manual-lang-es").value = normalizeWordCasing(translations.es || "", "es", folderId);
+      document.getElementById("manual-lang-fr").value = normalizeWordCasing(translations.fr || "", "fr", folderId);
 
       document.getElementById("manual-image-url").value = translations.en || word;
       

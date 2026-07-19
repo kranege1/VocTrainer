@@ -635,7 +635,7 @@ export function normalizeWordCasing(text, lang, category = "") {
   
   const isGerman = (lang === "de");
   
-  const lowercaseDeWords = ["und", "oder", "aber", "in", "auf", "unter", "über", "vor", "hinter", "neben", "an", "bei", "mit", "nach", "von", "zu", "aus", "für", "gegen", "ohne", "um", "durch", "ich", "du", "er", "sie", "es", "wir", "ihr", "mein", "dein", "sein", "unser", "euer", "der", "die", "das", "ein", "eine", "einer", "eines", "einem", "einen", "nicht", "sehr", "gut", "schnell", "schön", "neu", "alt", "groß", "klein"];
+  const lowercaseDeWords = ["und", "oder", "aber", "in", "auf", "unter", "über", "vor", "hinter", "neben", "an", "bei", "mit", "nach", "von", "zu", "aus", "für", "gegen", "ohne", "um", "durch", "ich", "du", "er", "sie", "es", "wir", "ihr", "mein", "dein", "sein", "unser", "euer", "der", "die", "das", "ein", "eine", "einer", "eines", "einem", "einen", "nicht", "sehr", "gut", "schnell", "schön", "neu", "alt", "groß", "klein", "morgen", "heute", "gestern", "jetzt", "sofort", "bald", "später", "immer", "nie", "oft", "selten", "manchmal", "gern", "hier", "dort", "überall", "nirgends", "etwas", "nichts", "alles", "viele", "alle", "man", "jemand", "niemand", "mehr", "weniger", "genug", "vielleicht", "wahrscheinlich", "besonders", "nur", "sogar", "auch", "noch", "schon", "erst", "fast", "da"];
   
   if (isGerman) {
     const lowerClean = clean.toLowerCase();
