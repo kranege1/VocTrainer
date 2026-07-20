@@ -906,7 +906,8 @@ body {
 .test-split-layout {
   display: flex;
   gap: 24px;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   align-items: stretch;
 }
 
