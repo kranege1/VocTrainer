@@ -110,7 +110,7 @@
         <h1>VocTrainer</h1>
         <div id="build-timestamp"
           style="font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6; font-family: monospace; margin-top: -6px; margin-bottom: 8px; pointer-events: none;">
-          Build: 2026-07-20 10:51:00
+          Build: 2026-07-20 13:45:00
         </div>
         <p>Master languages with premium gamified learning!</p>
       </div>
@@ -350,7 +350,8 @@
         <!-- RIGHT PANE (Details & Feedback) -->
         <div id="feedback-overlay" class="test-right-pane">
           <!-- Scrollable Feedback Details -->
-          <div class="feedback-scroll-area" style="flex: 1; overflow-y: auto; padding-right: 4px; margin-bottom: 12px; text-align: center;">
+          <div class="feedback-scroll-area"
+            style="flex: 1; overflow-y: auto; padding-right: 4px; margin-bottom: 12px; text-align: center;">
             <div class="feedback-content">
               <div class="feedback-icon" id="feedback-icon">🎉</div>
               <h3 id="feedback-title">Correct!</h3>
@@ -439,14 +440,15 @@
           </div>
 
           <!-- Bottom Static Area (Example Sentence & Action Button) -->
-          <div class="feedback-bottom-area" style="border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: auto; display: flex; flex-direction: column; gap: 10px;">
+          <div class="feedback-bottom-area"
+            style="border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: auto; display: flex; flex-direction: column; gap: 10px;">
             <!-- Example Sentence -->
             <div id="section-sentence" class="detail-section" style="text-align: left; font-size: 0.85rem;">
               <strong>Example Sentence:</strong>
               <p id="detail-sentence" style="font-style: italic; margin-bottom: 2px;"></p>
               <p id="detail-sentence-translation" style="color: var(--text-secondary); margin: 0;"></p>
             </div>
-            
+
             <!-- Continue Button -->
             <button id="btn-next-question" class="btn btn-primary btn-block"
               style="min-height: 38px; font-size: 0.9rem; border-radius: 10px; margin: 0;">Continue</button>

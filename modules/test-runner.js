@@ -1053,6 +1053,10 @@ export function updateDifficultyVoteUI(levelOrScore) {
 }
 
 export function submitSpeechAnswer(userAnswer) {
+  if (window.stopListeningPronunciation) window.stopListeningPronunciation();
+  const btnMic = document.getElementById("btn-mic");
+  if (btnMic) btnMic.classList.remove("listening");
+
   const test = state.currentTest;
   if (!test) return;
 
@@ -1106,8 +1110,8 @@ function isAnswerCovered(spoken, correct, wordObj) {
     }
   }
   
-  // 3. Synonym substring check if allowSynonyms is on
-  if (state.allowSynonyms && wordObj) {
+  // 3. Synonym substring check (always allowed for voice alternative meanings)
+  if (wordObj) {
     const targetWordEn = wordObj.en;
     const cacheEntry = state.dictionaryCache && state.dictionaryCache[targetWordEn];
     const targetLang = state.selectedLang || "de";
@@ -1115,6 +1119,8 @@ function isAnswerCovered(spoken, correct, wordObj) {
       const synList = cacheEntry.synonyms[targetLang];
       if (Array.isArray(synList)) {
         for (let syn of synList) {
+          if (checkAnswer(spoken, syn, wordObj)) return true;
+
           const cleanSyn = cleanArticlesAndSpaces(syn, lang);
           const sSyn = cleanSyn.replace(puncRegex, "").replace(/\s+/g, " ").trim();
           if (sSpoken.includes(sSyn)) {
@@ -1146,6 +1152,13 @@ export function toggleListening() {
   if (btnMic.classList.contains("listening")) {
     if (window.stopListeningPronunciation) window.stopListeningPronunciation();
     btnMic.classList.remove("listening");
+
+    // Submit whatever was spoken so far on manual toggle-stop
+    const transcriptEl = document.getElementById("speech-transcript");
+    const spokenText = transcriptEl ? transcriptEl.textContent.trim() : "";
+    if (spokenText && spokenText !== "Listening..." && spokenText !== "[Error: Try again]") {
+      submitSpeechAnswer(spokenText);
+    }
   } else {
     const test = state.currentTest;
     if (!test) return;
@@ -1173,16 +1186,11 @@ export function toggleListening() {
             const correctText = direction === "forward" ? correctWord.target : correctWord.en;
             if (isAnswerCovered(result, correctText, correctWord)) {
               hasSubmitted = true;
-              if (window.stopListeningPronunciation) window.stopListeningPronunciation();
               submitSpeechAnswer(result);
               return;
             }
           }
-          
-          if (isFinal && !hasSubmitted) {
-            hasSubmitted = true;
-            submitSpeechAnswer(result);
-          }
+          // Do not auto-submit on isFinal when incorrect/incomplete to allow continuous speaking/attempts
         },
         (error) => {
           btnMic.classList.remove("listening");
