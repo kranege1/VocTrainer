@@ -1251,11 +1251,13 @@ export async function initApp() {
       document.getElementById("manual-image-url").value = "";
       resetGrammarFields();
       
-      alert("Word updated successfully!");
-      showView("view-browse");
-      if (state.selectedBrowseFolderId) {
-        renderBrowseWordsList(state.selectedBrowseFolderId);
-      }
+      showSaveSuccessAnimation("btn-manual-submit", "✓ Word Updated!");
+      setTimeout(() => {
+        showView("view-browse");
+        if (state.selectedBrowseFolderId) {
+          renderBrowseWordsList(state.selectedBrowseFolderId);
+        }
+      }, 1000);
       return;
     }
 
@@ -1337,7 +1339,7 @@ export async function initApp() {
           document.getElementById("manual-image-url").value = "";
           resetGrammarFields();
           if (window.updateManualDuplicateStatus) window.updateManualDuplicateStatus();
-          alert("Word overwritten successfully!");
+          showSaveSuccessAnimation("btn-manual-submit", "✓ Word Overwritten!");
         }
       })();
       return;
@@ -1396,7 +1398,7 @@ export async function initApp() {
     const recStatus = document.getElementById("record-status-text");
     if (recStatus) recStatus.textContent = "No audio recorded";
 
-    alert("Word added successfully!");
+    showSaveSuccessAnimation("btn-manual-submit", "✓ Word Added!");
   };
 
   // URL import logic removed
@@ -1783,6 +1785,19 @@ export function renderBrowseList() {
     const folder = allFolders.find(f => f.id === state.selectedBrowseFolderId);
     if (activeFolderName) activeFolderName.textContent = folder ? folder.name : state.selectedBrowseFolderId;
 
+    const isStandard = ["verbs", "nouns", "technology", "biology", "phrases"].includes(state.selectedBrowseFolderId);
+    const renameBtn = document.getElementById("btn-rename-active-folder");
+    if (renameBtn) {
+      if (!isStandard && folder) {
+        renameBtn.style.display = "inline-flex";
+        renameBtn.onclick = (e) => {
+          if (window.onTreeRenameFolder) window.onTreeRenameFolder(e, folder.id);
+        };
+      } else {
+        renameBtn.style.display = "none";
+      }
+    }
+
     if (wordsCard) wordsCard.style.display = "block";
     renderBrowseWordsList(state.selectedBrowseFolderId);
   } else {
@@ -2120,6 +2135,209 @@ function renderBrowseWordsList(folderId) {
       btnFixTrans.textContent = origText;
       alert(`Successfully updated translations for ${selected.length} items!`);
     };
+  }
+  
+  // Copy Selected Action
+  const btnCopyWords = document.getElementById("btn-copy-selected-words");
+  if (btnCopyWords) {
+    btnCopyWords.onclick = () => {
+      const selected = document.querySelectorAll(".chk-select-browse:checked");
+      if (selected.length === 0) {
+        alert("Please select at least one word to copy.");
+        return;
+      }
+      promptFolderSelection("Copy Selected Words", "Copy", (targetFolderId) => {
+        if (targetFolderId === folderId) {
+          alert("Cannot copy words to the same folder.");
+          return;
+        }
+        copySelectedWords(targetFolderId);
+      });
+    };
+  }
+
+  // Move Selected Action
+  const btnMoveWords = document.getElementById("btn-move-selected-words");
+  if (btnMoveWords) {
+    btnMoveWords.onclick = () => {
+      const selected = document.querySelectorAll(".chk-select-browse:checked");
+      if (selected.length === 0) {
+        alert("Please select at least one word to move.");
+        return;
+      }
+      promptFolderSelection("Move Selected Words", "Move", (targetFolderId) => {
+        if (targetFolderId === folderId) {
+          alert("Cannot move words to the same folder.");
+          return;
+        }
+        moveSelectedWords(targetFolderId);
+      });
+    };
+  }
+
+  function promptFolderSelection(actionTitle, confirmBtnText, onSelect) {
+    const overlay = document.getElementById("custom-modal-overlay");
+    const icon = document.getElementById("modal-icon");
+    const title = document.getElementById("modal-title");
+    const msgEl = document.getElementById("modal-message");
+    const actions = document.getElementById("modal-actions");
+    if (!overlay) return;
+
+    icon.textContent = "📂";
+    title.textContent = actionTitle;
+    
+    const allFolders = [
+      { id: "verbs", name: "Verbs" },
+      { id: "nouns", name: "Nouns" },
+      { id: "technology", name: "Technology" },
+      { id: "biology", name: "Biology" },
+      { id: "phrases", name: "Phrases" },
+      ...(state.customFolders || [])
+    ];
+    
+    let optionsHtml = allFolders.map(f => `<option value="${f.id}">${f.name}</option>`).join("");
+    
+    msgEl.innerHTML = `
+      <div class="form-group" style="text-align: left; margin-top: 10px; width: 100%;">
+        <label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-secondary);">Select Target Word List</label>
+        <select id="target-folder-select" class="custom-select" style="width: 100%; min-height: 40px; padding: 8px 12px; background: rgba(0,0,0,0.3); color: #fff; border: 1px solid var(--border-color); border-radius: 10px;">
+          ${optionsHtml}
+        </select>
+      </div>
+    `;
+
+    actions.innerHTML = "";
+    
+    const cancelBtn = document.createElement("button");
+    cancelBtn.className = "btn btn-secondary";
+    cancelBtn.textContent = "Cancel";
+    cancelBtn.onclick = () => overlay.classList.remove("active");
+
+    const confirmBtn = document.createElement("button");
+    confirmBtn.className = "btn btn-primary";
+    confirmBtn.textContent = confirmBtnText;
+    confirmBtn.onclick = () => {
+      const targetFolderId = document.getElementById("target-folder-select").value;
+      if (targetFolderId) {
+        onSelect(targetFolderId);
+      }
+      overlay.classList.remove("active");
+    };
+
+    actions.appendChild(cancelBtn);
+    actions.appendChild(confirmBtn);
+    overlay.classList.add("active");
+  }
+
+  function copySelectedWords(targetFolderId) {
+    const selected = document.querySelectorAll(".chk-select-browse:checked");
+    const base = state.baseLang || "en";
+    let count = 0;
+
+    selected.forEach(chk => {
+      const baseKey = chk.dataset.baseKey;
+      const isCustom = chk.dataset.custom === "true";
+
+      let wordToCopy = null;
+      if (isCustom) {
+        const original = state.customVocab.find(v => 
+          v.category === folderId &&
+          (v[base] || "").toLowerCase() === baseKey.toLowerCase()
+        );
+        if (original) {
+          wordToCopy = JSON.parse(JSON.stringify(original));
+        }
+      } else {
+        const starter = STARTER_VOCAB_RAW.find(v => 
+          v.category === folderId &&
+          (v[base] || "").toLowerCase() === baseKey.toLowerCase()
+        );
+        if (starter) {
+          const override = state.editedStarters[baseKey] || {};
+          wordToCopy = {
+            en: override.en || starter.en || baseKey,
+            de: override.de || starter.de || "",
+            it: override.it || starter.it || "",
+            es: override.es || starter.es || "",
+            fr: override.fr || starter.fr || "",
+            category: targetFolderId,
+            image: starter.image,
+            details: JSON.parse(JSON.stringify(override.details || starter.details || {}))
+          };
+        }
+      }
+
+      if (wordToCopy) {
+        wordToCopy.category = targetFolderId;
+        wordToCopy.lastUpdated = Date.now();
+        
+        const exists = state.customVocab.some(v => 
+          v.category === targetFolderId && 
+          (v[base] || "").toLowerCase() === (wordToCopy[base] || "").toLowerCase()
+        );
+        
+        if (!exists) {
+          state.customVocab.push(wordToCopy);
+          count++;
+        }
+      }
+    });
+
+    saveState();
+    renderBrowseWordsList(folderId);
+    alert(`Successfully copied ${count} words to the target folder!`);
+  }
+
+  function moveSelectedWords(targetFolderId) {
+    const selected = document.querySelectorAll(".chk-select-browse:checked");
+    const base = state.baseLang || "en";
+    let count = 0;
+
+    selected.forEach(chk => {
+      const baseKey = chk.dataset.baseKey;
+      const isCustom = chk.dataset.custom === "true";
+
+      if (isCustom) {
+        const original = state.customVocab.find(v => 
+          v.category === folderId &&
+          (v[base] || "").toLowerCase() === baseKey.toLowerCase()
+        );
+        if (original) {
+          original.category = targetFolderId;
+          original.lastUpdated = Date.now();
+          count++;
+        }
+      } else {
+        if (!state.deletedStarters.includes(baseKey)) {
+          state.deletedStarters.push(baseKey);
+        }
+        
+        const starter = STARTER_VOCAB_RAW.find(v => 
+          v.category === folderId &&
+          (v[base] || "").toLowerCase() === baseKey.toLowerCase()
+        );
+        if (starter) {
+          const override = state.editedStarters[baseKey] || {};
+          const wordToCopy = {
+            en: override.en || starter.en || baseKey,
+            de: override.de || starter.de || "",
+            it: override.it || starter.it || "",
+            es: override.es || starter.es || "",
+            fr: override.fr || starter.fr || "",
+            category: targetFolderId,
+            image: starter.image,
+            details: JSON.parse(JSON.stringify(override.details || starter.details || {}))
+          };
+          wordToCopy.lastUpdated = Date.now();
+          state.customVocab.push(wordToCopy);
+          count++;
+        }
+      }
+    });
+
+    saveState();
+    renderBrowseWordsList(folderId);
+    alert(`Successfully moved ${count} words to the target folder!`);
   }
   
   const esc = (s) => (s || "").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
@@ -2778,6 +2996,40 @@ function updateManualDuplicateStatus() {
 }
 
 window.updateManualDuplicateStatus = updateManualDuplicateStatus;
+
+function showSaveSuccessAnimation(buttonId, successText) {
+  const btn = document.getElementById(buttonId);
+  if (!btn) return;
+  
+  const originalText = btn.textContent;
+  const originalBackground = btn.style.background;
+  const originalBoxShadow = btn.style.boxShadow;
+  const originalTransform = btn.style.transform;
+  const originalTransition = btn.style.transition;
+  const originalBorder = btn.style.border;
+
+  btn.style.transition = "all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+  btn.style.background = "linear-gradient(135deg, #2ec4b6, #2ecc71)";
+  btn.style.border = "none";
+  btn.style.boxShadow = "0 0 20px rgba(46, 204, 113, 0.6)";
+  btn.style.transform = "scale(1.05)";
+  btn.textContent = successText;
+
+  setTimeout(() => {
+    btn.style.transform = "scale(1)";
+  }, 300);
+
+  setTimeout(() => {
+    btn.style.background = originalBackground;
+    btn.style.boxShadow = originalBoxShadow;
+    btn.style.transform = originalTransform;
+    btn.style.border = originalBorder;
+    btn.textContent = originalText;
+    setTimeout(() => {
+      btn.style.transition = originalTransition;
+    }, 300);
+  }, 1500);
+}
 
 
 
