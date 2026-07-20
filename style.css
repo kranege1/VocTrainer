@@ -930,7 +930,7 @@ body {
   border: 2px solid var(--border-color);
   border-radius: 24px;
   padding: 24px 24px 40px 24px;
-  overflow-y: auto;
+  overflow: hidden;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   animation: slideInRight 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
 }
