@@ -1073,6 +1073,72 @@ export function submitSpeechAnswer(userAnswer) {
   }
 }
 
+function isAnswerCovered(spoken, correct, wordObj) {
+  if (!spoken || !correct) return false;
+  
+  const lang = state.testDirection === "forward" ? state.selectedLang : state.baseLang;
+  const cleanSpoken = cleanArticlesAndSpaces(spoken, lang);
+  const cleanCorrect = cleanArticlesAndSpaces(correct, lang);
+  
+  if (!cleanSpoken || !cleanCorrect) return false;
+  
+  // 1. Direct or synonym match
+  if (checkAnswer(spoken, correct, wordObj)) return true;
+  
+  // 2. Substring check after removing punctuation and lowercasing
+  const puncRegex = /[.,\/#!$%\^&\*;:{}=\-_`~()?¿¡]/g;
+  const sSpoken = cleanSpoken.replace(puncRegex, "").replace(/\s+/g, " ").trim();
+  const sCorrect = cleanCorrect.replace(puncRegex, "").replace(/\s+/g, " ").trim();
+  
+  if (sSpoken.includes(sCorrect)) {
+    const spokenWords = sSpoken.split(/\s+/);
+    const correctWords = sCorrect.split(/\s+/);
+    
+    for (let i = 0; i <= spokenWords.length - correctWords.length; i++) {
+      let match = true;
+      for (let j = 0; j < correctWords.length; j++) {
+        if (spokenWords[i + j] !== correctWords[j]) {
+          match = false;
+          break;
+        }
+      }
+      if (match) return true;
+    }
+  }
+  
+  // 3. Synonym substring check if allowSynonyms is on
+  if (state.allowSynonyms && wordObj) {
+    const targetWordEn = wordObj.en;
+    const cacheEntry = state.dictionaryCache && state.dictionaryCache[targetWordEn];
+    const targetLang = state.selectedLang || "de";
+    if (cacheEntry && cacheEntry.synonyms && cacheEntry.synonyms[targetLang]) {
+      const synList = cacheEntry.synonyms[targetLang];
+      if (Array.isArray(synList)) {
+        for (let syn of synList) {
+          const cleanSyn = cleanArticlesAndSpaces(syn, lang);
+          const sSyn = cleanSyn.replace(puncRegex, "").replace(/\s+/g, " ").trim();
+          if (sSpoken.includes(sSyn)) {
+            const spokenWords = sSpoken.split(/\s+/);
+            const synWords = sSyn.split(/\s+/);
+            for (let i = 0; i <= spokenWords.length - synWords.length; i++) {
+              let match = true;
+              for (let j = 0; j < synWords.length; j++) {
+                if (spokenWords[i + j] !== synWords[j]) {
+                  match = false;
+                  break;
+                }
+              }
+              if (match) return true;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  return false;
+}
+
 export function toggleListening() {
   const btnMic = document.getElementById("btn-mic");
   if (!btnMic) return;
@@ -1086,6 +1152,8 @@ export function toggleListening() {
     const currentWord = test.words[test.index];
     const direction = state.testDirection || "forward";
     const answerLang = direction === "forward" ? (state.selectedLang || "de") : (state.baseLang || "en");
+    
+    let hasSubmitted = false;
 
     if (window.initSpeechRecognition) {
       const initialized = window.initSpeechRecognition(
@@ -1095,10 +1163,26 @@ export function toggleListening() {
           const transcript = document.getElementById("speech-transcript");
           if (transcript) transcript.textContent = "Listening...";
         },
-        (result) => {
+        (result, isFinal) => {
           const transcript = document.getElementById("speech-transcript");
           if (transcript) transcript.textContent = result;
-          submitSpeechAnswer(result);
+          
+          const testObj = state.currentTest;
+          if (testObj && !hasSubmitted) {
+            const correctWord = testObj.words[testObj.index];
+            const correctText = direction === "forward" ? correctWord.target : correctWord.en;
+            if (isAnswerCovered(result, correctText, correctWord)) {
+              hasSubmitted = true;
+              if (window.stopListeningPronunciation) window.stopListeningPronunciation();
+              submitSpeechAnswer(result);
+              return;
+            }
+          }
+          
+          if (isFinal && !hasSubmitted) {
+            hasSubmitted = true;
+            submitSpeechAnswer(result);
+          }
         },
         (error) => {
           btnMic.classList.remove("listening");

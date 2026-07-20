@@ -102,7 +102,7 @@ window.initSpeechRecognition = function(langCode, onStart, onResult, onError, on
   
   speechEngineInstance = new SpeechRecognition();
   speechEngineInstance.continuous = false;
-  speechEngineInstance.interimResults = false;
+  speechEngineInstance.interimResults = true;
   
   // Map standard languages
   let localLang = "en-US";
@@ -119,8 +119,15 @@ window.initSpeechRecognition = function(langCode, onStart, onResult, onError, on
   };
   
   speechEngineInstance.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    if (onResult) onResult(transcript);
+    let transcript = "";
+    let isFinal = false;
+    for (let i = 0; i < event.results.length; ++i) {
+      transcript += event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        isFinal = true;
+      }
+    }
+    if (onResult) onResult(transcript, isFinal);
   };
   
   speechEngineInstance.onerror = (event) => {
