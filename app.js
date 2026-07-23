@@ -1697,6 +1697,7 @@ window.stopQuickTranslateSpeech = stopQuickTranslateSpeech;
 window.toggleQuickTranslateSpeech = toggleQuickTranslateSpeech;
 window.runQuickTranslate = runQuickTranslate;
 window.populateQuickTranslateFolders = populateQuickTranslateFolders;
+window.getBestVoice = getBestVoice;
 window.saveQuickTranslateWord = saveQuickTranslateWord;
 window.updateDuplicateStatus = updateDuplicateStatus;
 window.normalizeWordCasing = normalizeWordCasing;

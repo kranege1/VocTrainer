@@ -974,7 +974,7 @@ window.testSelectedVoice = function(lang) {
     const found = voices.find(v => v.name === selectedVoiceName);
     if (found) utterance.voice = found;
   } else {
-    const best = getBestVoice(lang);
+    const best = window.getBestVoice ? window.getBestVoice(lang) : null;
     if (best) utterance.voice = best;
   }
 
