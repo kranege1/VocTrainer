@@ -1384,11 +1384,20 @@ function getBestVoice(langCode) {
 
   // Prioritize premium Siri, Enhanced, Premium, and Google high-fidelity voices
   const enhanced = matchingVoices.find(v => 
+    (v.quality && v.quality === "enhanced") ||
     v.name.includes("Siri") || 
     v.name.includes("Enhanced") || 
     v.name.includes("Premium") || 
     v.name.includes("Google") || 
-    v.name.includes("Samantha")
+    v.name.includes("Samantha") ||
+    v.name.includes("Anna") ||
+    v.name.includes("Alice") ||
+    v.name.includes("Thomas") ||
+    v.name.includes("Helena") ||
+    v.name.includes("Monica") ||
+    v.name.includes("Jorge") ||
+    v.name.includes("Amelie") ||
+    v.name.includes("Mariska")
   );
   return enhanced || matchingVoices[0];
 }
