@@ -604,8 +604,13 @@ function triggerCorrectAnswerUI() {
   if (fDesc) {
     const lang = state.testDirection === "forward" ? state.selectedLang : state.baseLang;
     const testDir = state.testDirection || "forward";
-    const progressHtml = getDistanceProgressBarHtml(window.lastUserAnswer || "", testDir === "forward" ? wordObj.target : wordObj.en, lang);
-    fDesc.innerHTML = `Awesome job! "${wordObj.en}" is indeed "${wordObj.target}".${progressHtml}`;
+    if (testDir === "sentence_blocks") {
+      const pair = state.currentTest.currentSentencePair || {};
+      fDesc.innerHTML = `Great job! Correct sentence:<br><strong style="color: var(--accent-color); font-size: 1.1rem;">${pair.targetSentence || wordObj.target}</strong>`;
+    } else {
+      const progressHtml = getDistanceProgressBarHtml(window.lastUserAnswer || "", testDir === "forward" ? wordObj.target : wordObj.en, lang);
+      fDesc.innerHTML = `Awesome job! "${wordObj.en}" is indeed "${wordObj.target}".${progressHtml}`;
+    }
   }
 
   // Populate word details in the sidebar
@@ -716,10 +721,16 @@ function triggerIncorrectAnswerUI(correctText, studentAnswer = "") {
     fIcon.textContent = "😢";
   }
   if (fDesc) {
-    const highlighted = diffStrings(studentAnswer, correctText);
-    const lang = state.testDirection === "forward" ? state.selectedLang : state.baseLang;
-    const progressHtml = getDistanceProgressBarHtml(studentAnswer, correctText, lang);
-    fDesc.innerHTML = `You typed: <strong style="color: #fff; font-size: 1.15rem; letter-spacing: 0.5px;">${highlighted}</strong>${progressHtml}`;
+    const testDir = state.testDirection || "forward";
+    if (testDir === "sentence_blocks") {
+      const pair = state.currentTest.currentSentencePair || {};
+      fDesc.innerHTML = `You assembled:<br><strong style="color: #fff; font-size: 1rem;">${escapeHtml(studentAnswer || "(nothing)")}</strong><br><br>Correct sentence:<br><strong style="color: var(--accent-color); font-size: 1.05rem;">${escapeHtml(pair.targetSentence || correctText)}</strong>`;
+    } else {
+      const highlighted = diffStrings(studentAnswer, correctText);
+      const lang = state.testDirection === "forward" ? state.selectedLang : state.baseLang;
+      const progressHtml = getDistanceProgressBarHtml(studentAnswer, correctText, lang);
+      fDesc.innerHTML = `You typed: <strong style="color: #fff; font-size: 1.15rem; letter-spacing: 0.5px;">${highlighted}</strong>${progressHtml}`;
+    }
   }
 
   // Populate word details in the sidebar
@@ -1406,68 +1417,59 @@ async function generateSentencePairForWord(wordObj) {
   const targetWord = wordObj.target;
   const baseWord = wordObj.en;
 
-  // 1. If LLM generation is enabled by user and key is available, use LLM
+  // 1. Check if wordObj details already contains a high quality example sentence
+  if (wordObj.details && wordObj.details.sentences && wordObj.details.sentences[targetLang] && wordObj.details.sentences[baseLang]) {
+    return {
+      targetSentence: wordObj.details.sentences[targetLang],
+      baseSentence: wordObj.details.sentences[baseLang]
+    };
+  }
+
+  // 2. If LLM generation is enabled by user and key is available, use LLM
   if (state.useLLMForSentences && (state.geminiKey || state.openaiKey || state.grokKey)) {
     try {
-      const prompt = `Create a simple 4-7 word sentence in language "${targetLang}" using the word "${targetWord}". Also provide the translation in language "${baseLang}". Return ONLY JSON in format: {"targetSentence": "...", "baseSentence": "..."}`;
-      const raw = await callLLM(prompt, "You are a language teacher creating simple exercise sentences. Output valid raw JSON only.");
+      const prompt = `Create one natural, simple 4-7 word example sentence in ${targetLang} containing the vocabulary word "${targetWord}". Provide its translation in ${baseLang}. Return ONLY valid JSON in format: {"targetSentence": "...", "baseSentence": "..."}`;
+      const raw = await callLLM(prompt, "You are a helpful language tutor. Output valid raw JSON only.");
       const cleanJson = raw.replace(/```json/g, "").replace(/```/g, "").trim();
       const parsed = JSON.parse(cleanJson);
       if (parsed.targetSentence && parsed.baseSentence) {
         return parsed;
       }
     } catch (e) {
-      console.warn("LLM sentence generation failed, falling back to GTX templates:", e);
+      console.warn("LLM sentence generation failed, using translation engine:", e);
     }
   }
 
-  // 2. Default/Fallback: Fast local templates + Google Translate (GTX)
-  const templates = {
-    de: [
-      `Ich mag {w}.`,
-      `Wo ist {w}?`,
-      `Das ist ein gutes {w}.`,
-      `Wir brauchen {w}.`
-    ],
-    it: [
-      `Mi piace {w}.`,
-      `Dov'è {w}?`,
-      `Questo è un buon {w}.`,
-      `Abbiamo bisogno di {w}.`
-    ],
-    es: [
-      `Me gusta {w}.`,
-      `¿Dónde está {w}?`,
-      `Este es un buen {w}.`,
-      `Necesitamos {w}.`
-    ],
-    fr: [
-      `J'aime {w}.`,
-      `Où est {w}?`,
-      `C'est un bon {w}.`,
-      `Nous avons besoin de {w}.`
-    ],
-    en: [
-      `I like {w}.`,
-      `Where is {w}?`,
-      `This is a good {w}.`,
-      `We need {w}.`
-    ]
-  };
+  // 3. Fallback: Generate simple natural sentences tailored to word type or use Google Translate
+  let baseSentence = `I learn the word ${baseWord}.`;
+  let targetSentence = `Ich lerne das Wort ${targetWord}.`;
 
-  const langTemplates = templates[targetLang] || templates.en;
-  const selectedTemplate = langTemplates[Math.floor(Math.random() * langTemplates.length)];
-  const targetSentence = selectedTemplate.replace("{w}", targetWord);
+  if (targetLang === "de") {
+    targetSentence = `Ich verwende das Wort ${targetWord} jeden Tag.`;
+    baseSentence = `I use the word ${baseWord} every day.`;
+  } else if (targetLang === "it") {
+    targetSentence = `Uso la parola ${targetWord} ogni giorno.`;
+    baseSentence = `I use the word ${baseWord} every day.`;
+  } else if (targetLang === "es") {
+    targetSentence = `Uso la palabra ${targetWord} todos los días.`;
+    baseSentence = `I use the word ${baseWord} every day.`;
+  } else if (targetLang === "fr") {
+    targetSentence = `J'utilise le mot ${targetWord} tous les jours.`;
+    baseSentence = `I use the word ${baseWord} every day.`;
+  } else if (targetLang === "en") {
+    targetSentence = `I use the word ${targetWord} every day.`;
+    baseSentence = `Ich verwende das Wort ${baseWord} jeden Tag.`;
+  }
 
-  let baseSentence = "";
   if (window.translateTextGTX) {
     try {
-      baseSentence = await window.translateTextGTX(targetSentence, targetLang, baseLang);
-    } catch (e) {
-      baseSentence = targetSentence;
-    }
-  } else {
-    baseSentence = `(${targetWord}: ${baseWord})`;
+      const translatedTarget = await window.translateTextGTX(`I practice the word ${baseWord} in a sentence.`, baseLang, targetLang);
+      const translatedBase = await window.translateTextGTX(translatedTarget, targetLang, baseLang);
+      if (translatedTarget && translatedTarget.includes(targetWord)) {
+        targetSentence = translatedTarget;
+        baseSentence = translatedBase;
+      }
+    } catch (e) {}
   }
 
   return { targetSentence, baseSentence };
