@@ -56,7 +56,8 @@ export const IMPORTANT_VERBS = {
     { target: "sprechen", en: "to speak" },
     { target: "schreiben", en: "to write" },
     { target: "lesen", en: "to read" },
-    { target: "arbeiten", en: "to work" }
+    { target: "arbeiten", en: "to work" },
+    { target: "wohnen", en: "to live / to reside" }
   ],
   it: [
     { target: "essere", en: "to be" },
@@ -88,7 +89,8 @@ export const IMPORTANT_VERBS = {
     { target: "mangiare", en: "to eat" },
     { target: "bere", en: "to drink" },
     { target: "uscire", en: "to go out" },
-    { target: "dare", en: "to give" }
+    { target: "dare", en: "to give" },
+    { target: "abitare", en: "to live / to reside" }
   ],
   es: [
     { target: "ser", en: "to be (permanent)" },
@@ -120,7 +122,8 @@ export const IMPORTANT_VERBS = {
     { target: "escribir", en: "to write" },
     { target: "leer", en: "to read" },
     { target: "comer", en: "to eat" },
-    { target: "vivir", en: "to live" }
+    { target: "vivir", en: "to live" },
+    { target: "residir", en: "to reside" }
   ],
   fr: [
     { target: "être", en: "to be" },
@@ -152,7 +155,8 @@ export const IMPORTANT_VERBS = {
     { target: "partir", en: "to leave" },
     { target: "sortir", en: "to go out" },
     { target: "manger", en: "to eat" },
-    { target: "boire", en: "to drink" }
+    { target: "boire", en: "to drink" },
+    { target: "habiter", en: "to live / to reside" }
   ],
   en: [
     { target: "be", en: "be" },
@@ -184,7 +188,9 @@ export const IMPORTANT_VERBS = {
     { target: "mean", en: "mean" },
     { target: "keep", en: "keep" },
     { target: "let", en: "let" },
-    { target: "begin", en: "begin" }
+    { target: "begin", en: "begin" },
+    { target: "reside", en: "reside" },
+    { target: "live", en: "live" }
   ]
 };
 
