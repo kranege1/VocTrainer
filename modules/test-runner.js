@@ -606,7 +606,14 @@ function triggerCorrectAnswerUI() {
     const testDir = state.testDirection || "forward";
     if (testDir === "sentence_blocks") {
       const pair = state.currentTest.currentSentencePair || {};
-      fDesc.innerHTML = `Great job! Correct sentence:<br><strong style="color: var(--accent-color); font-size: 1.1rem;">${pair.targetSentence || wordObj.target}</strong>`;
+      const targetLang = state.selectedLang || "de";
+      const sentenceText = pair.targetSentence || wordObj.target;
+      fDesc.innerHTML = `Great job! Correct sentence:<br><strong id="feedback-sentence-speak" style="color: var(--accent-color); font-size: 1.1rem; cursor: pointer;" title="Click to hear sentence">${sentenceText} 🔊</strong>`;
+      // Auto-speak the correct sentence
+      if (window.speakWord) window.speakWord(sentenceText, targetLang);
+      // Allow click to replay
+      const speakEl = document.getElementById("feedback-sentence-speak");
+      if (speakEl) speakEl.onclick = () => { if (window.speakWord) window.speakWord(sentenceText, targetLang); };
     } else {
       const progressHtml = getDistanceProgressBarHtml(window.lastUserAnswer || "", testDir === "forward" ? wordObj.target : wordObj.en, lang);
       fDesc.innerHTML = `Awesome job! "${wordObj.en}" is indeed "${wordObj.target}".${progressHtml}`;
@@ -724,7 +731,14 @@ function triggerIncorrectAnswerUI(correctText, studentAnswer = "") {
     const testDir = state.testDirection || "forward";
     if (testDir === "sentence_blocks") {
       const pair = state.currentTest.currentSentencePair || {};
-      fDesc.innerHTML = `You assembled:<br><strong style="color: #fff; font-size: 1rem;">${escapeHtml(studentAnswer || "(nothing)")}</strong><br><br>Correct sentence:<br><strong style="color: var(--accent-color); font-size: 1.05rem;">${escapeHtml(pair.targetSentence || correctText)}</strong>`;
+      const targetLang = state.selectedLang || "de";
+      const sentenceText = pair.targetSentence || correctText;
+      fDesc.innerHTML = `You assembled:<br><strong style="color: #fff; font-size: 1rem;">${escapeHtml(studentAnswer || "(nothing)")}</strong><br><br>Correct sentence:<br><strong id="feedback-sentence-speak" style="color: var(--accent-color); font-size: 1.05rem; cursor: pointer;" title="Click to hear sentence">${escapeHtml(sentenceText)} 🔊</strong>`;
+      // Auto-speak the correct sentence
+      if (window.speakWord) window.speakWord(sentenceText, targetLang);
+      // Allow click to replay
+      const speakEl = document.getElementById("feedback-sentence-speak");
+      if (speakEl) speakEl.onclick = () => { if (window.speakWord) window.speakWord(sentenceText, targetLang); };
     } else {
       const highlighted = diffStrings(studentAnswer, correctText);
       const lang = state.testDirection === "forward" ? state.selectedLang : state.baseLang;
@@ -1416,6 +1430,8 @@ async function generateSentencePairForWord(wordObj) {
   const targetLang = state.selectedLang || "de";
   const targetWord = wordObj.target;
   const baseWord = wordObj.en;
+  // origEn holds the actual English meaning (e.g. "backpack"), while wordObj.en may be German/other base lang
+  const englishWord = wordObj.origEn || wordObj.en;
 
   // 1. Use pre-stored dictionary example sentences if available
   if (wordObj.details && wordObj.details.sentences && wordObj.details.sentences[targetLang] && wordObj.details.sentences[baseLang]) {
@@ -1441,50 +1457,50 @@ async function generateSentencePairForWord(wordObj) {
   }
 
   // 3. Fallback: Category-aware sentence generation via Google Translate
-  // Build a natural ENGLISH sentence using the base word, then translate whole sentence to target language
+  // Build a natural ENGLISH sentence using the ACTUAL English word, then translate whole sentence to target language
   const cat = (wordObj.category || "").toLowerCase();
-  const cleanBase = baseWord.replace(/^to\s+/i, "").trim(); // strip "to" prefix for verbs
+  const cleanEn = englishWord.replace(/^to\s+/i, "").replace(/^the\s+/i, "").replace(/^a\s+/i, "").trim(); // strip articles & "to" prefix
 
   // Category-aware English templates — each produces a grammatically correct English sentence
   const verbTemplates = [
-    `I like to ${cleanBase} every day.`,
-    `She wants to ${cleanBase} tomorrow.`,
-    `We need to ${cleanBase} now.`,
-    `They always ${cleanBase} together.`,
-    `He can ${cleanBase} very well.`,
-    `Do you want to ${cleanBase}?`,
-    `It is important to ${cleanBase}.`
+    `I like to ${cleanEn} every day.`,
+    `She wants to ${cleanEn} tomorrow.`,
+    `We need to ${cleanEn} now.`,
+    `They always ${cleanEn} together.`,
+    `He can ${cleanEn} very well.`,
+    `Do you want to ${cleanEn}?`,
+    `It is important to ${cleanEn}.`
   ];
   const nounTemplates = [
-    `The ${cleanBase} is very beautiful.`,
-    `I need a ${cleanBase} please.`,
-    `Where is the ${cleanBase}?`,
-    `She bought a new ${cleanBase}.`,
-    `The ${cleanBase} is on the table.`,
-    `Do you have a ${cleanBase}?`,
-    `I really like this ${cleanBase}.`
+    `The ${cleanEn} is very beautiful.`,
+    `I need a ${cleanEn} please.`,
+    `Where is the ${cleanEn}?`,
+    `She bought a new ${cleanEn}.`,
+    `The ${cleanEn} is on the table.`,
+    `Do you have a ${cleanEn}?`,
+    `I really like this ${cleanEn}.`
   ];
   const adjectiveTemplates = [
-    `The house is very ${cleanBase}.`,
-    `She looks quite ${cleanBase} today.`,
-    `This food is really ${cleanBase}.`,
-    `The weather is ${cleanBase} outside.`,
-    `He is always so ${cleanBase}.`,
-    `That was very ${cleanBase}.`,
-    `It seems ${cleanBase} to me.`
+    `The house is very ${cleanEn}.`,
+    `She looks quite ${cleanEn} today.`,
+    `This food is really ${cleanEn}.`,
+    `The weather is ${cleanEn} outside.`,
+    `He is always so ${cleanEn}.`,
+    `That was very ${cleanEn}.`,
+    `It seems ${cleanEn} to me.`
   ];
   const genericTemplates = [
-    `I think about ${baseWord} often.`,
-    `Can you tell me about ${baseWord}?`,
-    `${baseWord} is very important.`,
-    `We always talk about ${baseWord}.`,
-    `Do you know ${baseWord}?`,
-    `I really like ${baseWord}.`
+    `I think about ${cleanEn} often.`,
+    `Can you tell me about ${cleanEn}?`,
+    `${englishWord} is very important.`,
+    `We always talk about ${cleanEn}.`,
+    `Do you know ${cleanEn}?`,
+    `I really like ${cleanEn}.`
   ];
 
   // Select templates based on word category
   let selectedTemplates;
-  if (cat === "verbs" || baseWord.toLowerCase().startsWith("to ")) {
+  if (cat === "verbs" || englishWord.toLowerCase().startsWith("to ")) {
     selectedTemplates = verbTemplates;
   } else if (cat === "nouns" || cat === "technology" || cat === "biology" || cat === "food" || cat === "animals") {
     selectedTemplates = nounTemplates;
@@ -1545,13 +1561,18 @@ export async function buildSentenceBlocksMode(wordObj) {
   // Split target sentence into 1-word blocks (keeping punctuation separated or attached)
   const tokens = targetSentence.trim().split(/\s+/);
   
-  // Mix in 2 extra distractor words from current test word list
+  // Mix in 2 extra distractor words from current test word list (target language only, single words)
   const distractors = [];
   const testWords = state.currentTest.words || [];
+  const tokensLower = tokens.map(t => t.toLowerCase().replace(/[.,!?]/g, ""));
   testWords.forEach(w => {
-    if (w.target && w.target !== wordObj.target && !tokens.includes(w.target) && distractors.length < 2) {
-      distractors.push(w.target);
-    }
+    if (distractors.length >= 2) return;
+    // Use single-word target entries only, skip multi-word phrases
+    const tgt = (w.target || "").trim();
+    if (!tgt || tgt.includes(" ") || tgt === wordObj.target) return;
+    // Don't add if it already appears in the sentence tokens
+    if (tokensLower.includes(tgt.toLowerCase().replace(/[.,!?]/g, ""))) return;
+    distractors.push(tgt);
   });
 
   const allBlocks = [...tokens, ...distractors];
