@@ -1440,55 +1440,80 @@ async function generateSentencePairForWord(wordObj) {
     }
   }
 
-  // 3. Fallback: High quality natural sentence templates by language
-  const templates = {
-    it: [
-      { target: `Noi siamo {w}.`, base: `We are {b}.` },
-      { target: `Questo è {w}.`, base: `This is {b}.` },
-      { target: `Vedo {w}.`, base: `I see {b}.` },
-      { target: `Dov'è {w}?`, base: `Where is {b}?` },
-      { target: `Abbiamo {w}.`, base: `We have {b}.` }
-    ],
-    de: [
-      { target: `Wir sind {w}.`, base: `We are {b}.` },
-      { target: `Das ist {w}.`, base: `This is {b}.` },
-      { target: `Ich sehe {w}.`, base: `I see {b}.` },
-      { target: `Wo ist {w}?`, base: `Where is {b}?` },
-      { target: `Wir haben {w}.`, base: `We have {b}.` }
-    ],
-    es: [
-      { target: `Nosotros somos {w}.`, base: `We are {b}.` },
-      { target: `Este es {w}.`, base: `This is {b}.` },
-      { target: `Veo {w}.`, base: `I see {b}.` },
-      { target: `¿Dónde está {w}?`, base: `Where is {b}?` },
-      { target: `Tenemos {w}.`, base: `We have {b}.` }
-    ],
-    fr: [
-      { target: `Nous sommes {w}.`, base: `We are {b}.` },
-      { target: `C'est {w}.`, base: `This is {b}.` },
-      { target: `Je vois {w}.`, base: `I see {b}.` },
-      { target: `Où est {w}?`, base: `Where is {b}?` },
-      { target: `Nous avons {w}.`, base: `We have {b}.` }
-    ],
-    en: [
-      { target: `We are {w}.`, base: `Wir sind {b}.` },
-      { target: `This is {w}.`, base: `Das ist {b}.` },
-      { target: `I see {w}.`, base: `Ich sehe {b}.` },
-      { target: `Where is {w}?`, base: `Wo ist {b}?` },
-      { target: `We have {w}.`, base: `Wir haben {b}.` }
-    ]
-  };
+  // 3. Fallback: Category-aware sentence generation via Google Translate
+  // Build a natural ENGLISH sentence using the base word, then translate whole sentence to target language
+  const cat = (wordObj.category || "").toLowerCase();
+  const cleanBase = baseWord.replace(/^to\s+/i, "").trim(); // strip "to" prefix for verbs
 
-  const list = templates[targetLang] || templates.it;
-  const item = list[Math.floor(Math.random() * list.length)];
-  const targetSentence = item.target.replace("{w}", targetWord);
-  let baseSentence = item.base.replace("{b}", baseWord);
+  // Category-aware English templates — each produces a grammatically correct English sentence
+  const verbTemplates = [
+    `I like to ${cleanBase} every day.`,
+    `She wants to ${cleanBase} tomorrow.`,
+    `We need to ${cleanBase} now.`,
+    `They always ${cleanBase} together.`,
+    `He can ${cleanBase} very well.`,
+    `Do you want to ${cleanBase}?`,
+    `It is important to ${cleanBase}.`
+  ];
+  const nounTemplates = [
+    `The ${cleanBase} is very beautiful.`,
+    `I need a ${cleanBase} please.`,
+    `Where is the ${cleanBase}?`,
+    `She bought a new ${cleanBase}.`,
+    `The ${cleanBase} is on the table.`,
+    `Do you have a ${cleanBase}?`,
+    `I really like this ${cleanBase}.`
+  ];
+  const adjectiveTemplates = [
+    `The house is very ${cleanBase}.`,
+    `She looks quite ${cleanBase} today.`,
+    `This food is really ${cleanBase}.`,
+    `The weather is ${cleanBase} outside.`,
+    `He is always so ${cleanBase}.`,
+    `That was very ${cleanBase}.`,
+    `It seems ${cleanBase} to me.`
+  ];
+  const genericTemplates = [
+    `I think about ${baseWord} often.`,
+    `Can you tell me about ${baseWord}?`,
+    `${baseWord} is very important.`,
+    `We always talk about ${baseWord}.`,
+    `Do you know ${baseWord}?`,
+    `I really like ${baseWord}.`
+  ];
+
+  // Select templates based on word category
+  let selectedTemplates;
+  if (cat === "verbs" || baseWord.toLowerCase().startsWith("to ")) {
+    selectedTemplates = verbTemplates;
+  } else if (cat === "nouns" || cat === "technology" || cat === "biology" || cat === "food" || cat === "animals") {
+    selectedTemplates = nounTemplates;
+  } else if (cat === "adjectives") {
+    selectedTemplates = adjectiveTemplates;
+  } else {
+    selectedTemplates = genericTemplates;
+  }
+
+  const englishSentence = selectedTemplates[Math.floor(Math.random() * selectedTemplates.length)];
+
+  // Translate the English sentence to target language via GTX
+  let targetSentence = englishSentence;
+  let baseSentence = englishSentence;
 
   if (window.translateTextGTX) {
     try {
-      const gtxTrans = await window.translateTextGTX(targetSentence, targetLang, baseLang);
-      if (gtxTrans) baseSentence = gtxTrans;
-    } catch (e) {}
+      const gtxTarget = await window.translateTextGTX(englishSentence, "en", targetLang);
+      if (gtxTarget && gtxTarget !== englishSentence) {
+        targetSentence = gtxTarget;
+      }
+      // If baseLang is not English, also translate the prompt sentence
+      if (baseLang !== "en") {
+        const gtxBase = await window.translateTextGTX(englishSentence, "en", baseLang);
+        if (gtxBase) baseSentence = gtxBase;
+      }
+    } catch (e) {
+      console.warn("GTX sentence translation failed:", e);
+    }
   }
 
   return { targetSentence, baseSentence };
