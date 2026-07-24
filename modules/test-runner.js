@@ -1417,7 +1417,7 @@ async function generateSentencePairForWord(wordObj) {
   const targetWord = wordObj.target;
   const baseWord = wordObj.en;
 
-  // 1. Check if wordObj details already contains a high quality example sentence
+  // 1. Use pre-stored dictionary example sentences if available
   if (wordObj.details && wordObj.details.sentences && wordObj.details.sentences[targetLang] && wordObj.details.sentences[baseLang]) {
     return {
       targetSentence: wordObj.details.sentences[targetLang],
@@ -1425,10 +1425,10 @@ async function generateSentencePairForWord(wordObj) {
     };
   }
 
-  // 2. If LLM generation is enabled by user and key is available, use LLM
+  // 2. If AI LLM generation is enabled, request a natural 4-7 word sentence
   if (state.useLLMForSentences && (state.geminiKey || state.openaiKey || state.grokKey)) {
     try {
-      const prompt = `Create one natural, simple 4-7 word example sentence in ${targetLang} containing the vocabulary word "${targetWord}". Provide its translation in ${baseLang}. Return ONLY valid JSON in format: {"targetSentence": "...", "baseSentence": "..."}`;
+      const prompt = `Create one short natural 4-7 word sentence in ${targetLang} using the word or phrase "${targetWord}". Also provide its translation in ${baseLang}. Return ONLY valid JSON in format: {"targetSentence": "...", "baseSentence": "..."}`;
       const raw = await callLLM(prompt, "You are a helpful language tutor. Output valid raw JSON only.");
       const cleanJson = raw.replace(/```json/g, "").replace(/```/g, "").trim();
       const parsed = JSON.parse(cleanJson);
@@ -1436,39 +1436,58 @@ async function generateSentencePairForWord(wordObj) {
         return parsed;
       }
     } catch (e) {
-      console.warn("LLM sentence generation failed, using translation engine:", e);
+      console.warn("LLM sentence generation failed, using template engine:", e);
     }
   }
 
-  // 3. Fallback: Generate simple natural sentences tailored to word type or use Google Translate
-  let baseSentence = `I learn the word ${baseWord}.`;
-  let targetSentence = `Ich lerne das Wort ${targetWord}.`;
+  // 3. Fallback: High quality natural sentence templates by language
+  const templates = {
+    it: [
+      { target: `Noi siamo {w}.`, base: `We are {b}.` },
+      { target: `Questo è {w}.`, base: `This is {b}.` },
+      { target: `Vedo {w}.`, base: `I see {b}.` },
+      { target: `Dov'è {w}?`, base: `Where is {b}?` },
+      { target: `Abbiamo {w}.`, base: `We have {b}.` }
+    ],
+    de: [
+      { target: `Wir sind {w}.`, base: `We are {b}.` },
+      { target: `Das ist {w}.`, base: `This is {b}.` },
+      { target: `Ich sehe {w}.`, base: `I see {b}.` },
+      { target: `Wo ist {w}?`, base: `Where is {b}?` },
+      { target: `Wir haben {w}.`, base: `We have {b}.` }
+    ],
+    es: [
+      { target: `Nosotros somos {w}.`, base: `We are {b}.` },
+      { target: `Este es {w}.`, base: `This is {b}.` },
+      { target: `Veo {w}.`, base: `I see {b}.` },
+      { target: `¿Dónde está {w}?`, base: `Where is {b}?` },
+      { target: `Tenemos {w}.`, base: `We have {b}.` }
+    ],
+    fr: [
+      { target: `Nous sommes {w}.`, base: `We are {b}.` },
+      { target: `C'est {w}.`, base: `This is {b}.` },
+      { target: `Je vois {w}.`, base: `I see {b}.` },
+      { target: `Où est {w}?`, base: `Where is {b}?` },
+      { target: `Nous avons {w}.`, base: `We have {b}.` }
+    ],
+    en: [
+      { target: `We are {w}.`, base: `Wir sind {b}.` },
+      { target: `This is {w}.`, base: `Das ist {b}.` },
+      { target: `I see {w}.`, base: `Ich sehe {b}.` },
+      { target: `Where is {w}?`, base: `Wo ist {b}?` },
+      { target: `We have {w}.`, base: `Wir haben {b}.` }
+    ]
+  };
 
-  if (targetLang === "de") {
-    targetSentence = `Ich verwende das Wort ${targetWord} jeden Tag.`;
-    baseSentence = `I use the word ${baseWord} every day.`;
-  } else if (targetLang === "it") {
-    targetSentence = `Uso la parola ${targetWord} ogni giorno.`;
-    baseSentence = `I use the word ${baseWord} every day.`;
-  } else if (targetLang === "es") {
-    targetSentence = `Uso la palabra ${targetWord} todos los días.`;
-    baseSentence = `I use the word ${baseWord} every day.`;
-  } else if (targetLang === "fr") {
-    targetSentence = `J'utilise le mot ${targetWord} tous les jours.`;
-    baseSentence = `I use the word ${baseWord} every day.`;
-  } else if (targetLang === "en") {
-    targetSentence = `I use the word ${targetWord} every day.`;
-    baseSentence = `Ich verwende das Wort ${baseWord} jeden Tag.`;
-  }
+  const list = templates[targetLang] || templates.it;
+  const item = list[Math.floor(Math.random() * list.length)];
+  const targetSentence = item.target.replace("{w}", targetWord);
+  let baseSentence = item.base.replace("{b}", baseWord);
 
   if (window.translateTextGTX) {
     try {
-      const translatedTarget = await window.translateTextGTX(`I practice the word ${baseWord} in a sentence.`, baseLang, targetLang);
-      const translatedBase = await window.translateTextGTX(translatedTarget, targetLang, baseLang);
-      if (translatedTarget && translatedTarget.includes(targetWord)) {
-        targetSentence = translatedTarget;
-        baseSentence = translatedBase;
-      }
+      const gtxTrans = await window.translateTextGTX(targetSentence, targetLang, baseLang);
+      if (gtxTrans) baseSentence = gtxTrans;
     } catch (e) {}
   }
 
