@@ -373,14 +373,31 @@ export async function initApp() {
   });
 
   // Test direction selector binding
+  const sentenceOptGroup = document.getElementById("sentence-generator-option-group");
+  const chkUseLLM = document.getElementById("chk-use-llm-sentences");
+  if (chkUseLLM) {
+    chkUseLLM.checked = !!state.useLLMForSentences;
+    chkUseLLM.onchange = () => {
+      state.useLLMForSentences = chkUseLLM.checked;
+      saveState();
+    };
+  }
+
   document.querySelectorAll("#test-direction-selector .seg-btn").forEach(btn => {
     btn.onclick = () => {
       document.querySelectorAll("#test-direction-selector .seg-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       state.testDirection = btn.dataset.direction;
+      if (sentenceOptGroup) {
+        sentenceOptGroup.style.display = state.testDirection === "sentence_blocks" ? "block" : "none";
+      }
       saveState();
     };
   });
+  
+  if (sentenceOptGroup) {
+    sentenceOptGroup.style.display = state.testDirection === "sentence_blocks" ? "block" : "none";
+  }
 
   // Segmented control selectors (Word count)
   document.querySelectorAll(".segmented-control:not(#test-direction-selector) .seg-btn").forEach(btn => {

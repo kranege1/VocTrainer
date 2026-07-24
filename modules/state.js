@@ -36,6 +36,7 @@ export let state = {
   githubGistId: "", // Gist ID for Gist Sync
   lastSelectedCategory: "none",
   lastSelectedCustomCategory: "none",
+  useLLMForSentences: false,
 
   // Current active test state
   currentTest: {

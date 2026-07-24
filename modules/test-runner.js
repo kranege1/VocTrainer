@@ -1,6 +1,7 @@
 // VocTrainer - Test Runner Module
 import { state, saveState } from './state.js';
 import { getConjugationsForVerb, PRONOUNS } from './conjugation.js';
+import { callLLM } from './modals.js';
 
 export function startTestSession(language, category, count, isMistakesOnly = false, customCategory = "none", direction = "forward") {
   let pool = [];
@@ -219,9 +220,17 @@ export function renderQuestion() {
     conjugation: document.getElementById("test-mode-conjugation"),
     bubbles: document.getElementById("test-mode-bubbles"),
     compare: document.getElementById("test-mode-compare"),
-    speech: document.getElementById("test-mode-speech")
+    speech: document.getElementById("test-mode-speech"),
+    sentenceBlocks: document.getElementById("test-mode-sentence-blocks")
   };
   Object.values(containers).forEach(el => { if (el) el.style.display = "none"; });
+
+  if (direction === "sentence_blocks") {
+    if (containers.sentenceBlocks) containers.sentenceBlocks.style.display = "block";
+    if (btnSubmit) btnSubmit.style.display = "block";
+    buildSentenceBlocksMode(questionWord);
+    return;
+  }
 
   if (direction === "conjugation") {
     // Conjugation practice mode
@@ -488,7 +497,9 @@ export function submitConjugationAnswer() {
 export function submitAnswer() {
   const test = state.currentTest;
   const direction = state.testDirection || "forward";
-  if (direction === "conjugation") {
+  if (direction === "sentence_blocks") {
+    submitSentenceBlocksAnswer();
+  } else if (direction === "conjugation") {
     submitConjugationAnswer();
   } else if (test && test.selectedMode === "bubbles") {
     submitBubblesAnswer();
@@ -1383,6 +1394,222 @@ export function submitSpeechTranscriptAnswer() {
   const transcriptEl = document.getElementById("speech-transcript");
   const userAnswer = transcriptEl ? transcriptEl.textContent.trim() : "";
   submitSpeechAnswer(userAnswer);
+}
+
+// -------------------------------------------------------------
+// Sentence Blocks Generator & Interactive Handler
+// -------------------------------------------------------------
+
+async function generateSentencePairForWord(wordObj) {
+  const baseLang = state.baseLang || "en";
+  const targetLang = state.selectedLang || "de";
+  const targetWord = wordObj.target;
+  const baseWord = wordObj.en;
+
+  // 1. If LLM generation is enabled by user and key is available, use LLM
+  if (state.useLLMForSentences && (state.geminiKey || state.openaiKey || state.grokKey)) {
+    try {
+      const prompt = `Create a simple 4-7 word sentence in language "${targetLang}" using the word "${targetWord}". Also provide the translation in language "${baseLang}". Return ONLY JSON in format: {"targetSentence": "...", "baseSentence": "..."}`;
+      const raw = await callLLM(prompt, "You are a language teacher creating simple exercise sentences. Output valid raw JSON only.");
+      const cleanJson = raw.replace(/```json/g, "").replace(/```/g, "").trim();
+      const parsed = JSON.parse(cleanJson);
+      if (parsed.targetSentence && parsed.baseSentence) {
+        return parsed;
+      }
+    } catch (e) {
+      console.warn("LLM sentence generation failed, falling back to GTX templates:", e);
+    }
+  }
+
+  // 2. Default/Fallback: Fast local templates + Google Translate (GTX)
+  const templates = {
+    de: [
+      `Ich mag {w}.`,
+      `Wo ist {w}?`,
+      `Das ist ein gutes {w}.`,
+      `Wir brauchen {w}.`
+    ],
+    it: [
+      `Mi piace {w}.`,
+      `Dov'è {w}?`,
+      `Questo è un buon {w}.`,
+      `Abbiamo bisogno di {w}.`
+    ],
+    es: [
+      `Me gusta {w}.`,
+      `¿Dónde está {w}?`,
+      `Este es un buen {w}.`,
+      `Necesitamos {w}.`
+    ],
+    fr: [
+      `J'aime {w}.`,
+      `Où est {w}?`,
+      `C'est un bon {w}.`,
+      `Nous avons besoin de {w}.`
+    ],
+    en: [
+      `I like {w}.`,
+      `Where is {w}?`,
+      `This is a good {w}.`,
+      `We need {w}.`
+    ]
+  };
+
+  const langTemplates = templates[targetLang] || templates.en;
+  const selectedTemplate = langTemplates[Math.floor(Math.random() * langTemplates.length)];
+  const targetSentence = selectedTemplate.replace("{w}", targetWord);
+
+  let baseSentence = "";
+  if (window.translateTextGTX) {
+    try {
+      baseSentence = await window.translateTextGTX(targetSentence, targetLang, baseLang);
+    } catch (e) {
+      baseSentence = targetSentence;
+    }
+  } else {
+    baseSentence = `(${targetWord}: ${baseWord})`;
+  }
+
+  return { targetSentence, baseSentence };
+}
+
+export async function buildSentenceBlocksMode(wordObj) {
+  const promptTextEl = document.getElementById("test-prompt-word");
+  const selectedZone = document.getElementById("sentence-blocks-selected-zone");
+  const optionsZone = document.getElementById("sentence-blocks-options-zone");
+
+  if (!selectedZone || !optionsZone) return;
+
+  selectedZone.innerHTML = "";
+  optionsZone.innerHTML = `<div style="font-size: 0.85rem; color: var(--text-secondary);">⏳ Generating sentence...</div>`;
+
+  if (promptTextEl) {
+    promptTextEl.innerHTML = `<span style="font-size: 0.8em; color: var(--text-secondary); text-transform: uppercase;">Assemble Sentence for:</span><br>${wordObj.target} (${wordObj.en})`;
+  }
+
+  const { targetSentence, baseSentence } = await generateSentencePairForWord(wordObj);
+  state.currentTest.currentSentencePair = { targetSentence, baseSentence };
+
+  if (promptTextEl) {
+    promptTextEl.innerHTML = `<span style="font-size: 0.75em; color: var(--text-secondary); display: block; margin-bottom: 4px;">Translate to ${getTargetLangName()}:</span><span style="font-size: 1.1em; font-weight: bold; color: var(--accent-color);">${baseSentence}</span>`;
+  }
+
+  optionsZone.innerHTML = "";
+
+  // Split target sentence into 1-word blocks (keeping punctuation separated or attached)
+  const tokens = targetSentence.trim().split(/\s+/);
+  
+  // Mix in 2 extra distractor words from current test word list
+  const distractors = [];
+  const testWords = state.currentTest.words || [];
+  testWords.forEach(w => {
+    if (w.target && w.target !== wordObj.target && !tokens.includes(w.target) && distractors.length < 2) {
+      distractors.push(w.target);
+    }
+  });
+
+  const allBlocks = [...tokens, ...distractors];
+  const shuffledBlocks = allBlocks.sort(() => 0.5 - Math.random());
+
+  // Enable dragover reordering in selected zone
+  selectedZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    const draggingEl = selectedZone.querySelector(".dragging");
+    if (!draggingEl) return;
+    const siblings = Array.from(selectedZone.querySelectorAll(".word-bubble:not(.dragging)"));
+    const nextSibling = siblings.find(sibling => {
+      const box = sibling.getBoundingClientRect();
+      return e.clientX < box.left + box.width / 2;
+    });
+    selectedZone.insertBefore(draggingEl, nextSibling);
+  });
+
+  shuffledBlocks.forEach((token, index) => {
+    const bubble = document.createElement("button");
+    bubble.className = "word-bubble";
+    bubble.textContent = token;
+    bubble.dataset.idx = index;
+
+    bubble.onclick = () => {
+      if (window.playFeedbackSound) window.playFeedbackSound("click");
+      bubble.style.visibility = "hidden";
+      bubble.style.pointerEvents = "none";
+
+      const selBubble = document.createElement("button");
+      selBubble.className = "word-bubble";
+      selBubble.textContent = token;
+      selBubble.draggable = true;
+      selBubble.style.cursor = "move";
+
+      selBubble.addEventListener("dragstart", () => selBubble.classList.add("dragging"));
+      selBubble.addEventListener("dragend", () => selBubble.classList.remove("dragging"));
+
+      let touchActiveElement = null;
+      selBubble.addEventListener("touchstart", (e) => {
+        touchActiveElement = selBubble;
+        selBubble.classList.add("dragging");
+      });
+      selBubble.addEventListener("touchmove", (e) => {
+        if (!touchActiveElement) return;
+        const touch = e.touches[0];
+        const siblings = Array.from(selectedZone.querySelectorAll(".word-bubble:not(.dragging)"));
+        const nextSibling = siblings.find(sibling => {
+          const box = sibling.getBoundingClientRect();
+          return touch.clientX < box.left + box.width / 2;
+        });
+        selectedZone.insertBefore(touchActiveElement, nextSibling);
+      });
+      selBubble.addEventListener("touchend", () => {
+        if (touchActiveElement) {
+          touchActiveElement.classList.remove("dragging");
+          touchActiveElement = null;
+        }
+      });
+
+      selBubble.onclick = () => {
+        if (window.playFeedbackSound) window.playFeedbackSound("click");
+        bubble.style.visibility = "visible";
+        bubble.style.pointerEvents = "auto";
+        selBubble.remove();
+      };
+
+      selectedZone.appendChild(selBubble);
+    };
+
+    optionsZone.appendChild(bubble);
+  });
+}
+
+export function submitSentenceBlocksAnswer() {
+  const test = state.currentTest;
+  if (!test) return;
+
+  if (window.stopQuestionTimer) window.stopQuestionTimer();
+
+  const selectedZone = document.getElementById("sentence-blocks-selected-zone");
+  if (!selectedZone) return;
+
+  const selectedBubbles = selectedZone.querySelectorAll(".word-bubble");
+  const userAnswer = Array.from(selectedBubbles).map(b => b.textContent.trim()).join(" ");
+
+  const pair = test.currentSentencePair || {};
+  const correctText = pair.targetSentence || "";
+  const questionWord = test.words[test.index];
+
+  window.lastUserAnswer = userAnswer;
+
+  // Clean strings for accurate sentence order matching (ignore casing and minor trailing punctuation differences)
+  const normUser = userAnswer.toLowerCase().replace(/[.,!?]/g, "").trim();
+  const normCorrect = correctText.toLowerCase().replace(/[.,!?]/g, "").trim();
+
+  const isCorrect = normUser === normCorrect;
+  calculateAndSaveDifficulty(userAnswer, correctText);
+
+  if (isCorrect) {
+    triggerCorrectAnswerUI();
+  } else {
+    triggerIncorrectAnswerUI(correctText, userAnswer);
+  }
 }
 
 export function buildCompareMode() {
