@@ -630,8 +630,10 @@ function triggerCorrectAnswerUI() {
   const vStats = state.wordStats[wordKey] || { difficulty: "medium" };
   updateDifficultyVoteUI(vStats.difficulty || "medium");
 
-  // Speak word automatically on success
-  speakCurrentTestWord();
+  // Speak word automatically on success (skip for sentence_blocks — full sentence already spoken above)
+  if ((state.testDirection || "forward") !== "sentence_blocks") {
+    speakCurrentTestWord();
+  }
 }
 
 function escapeHtml(str) {
@@ -757,8 +759,10 @@ function triggerIncorrectAnswerUI(correctText, studentAnswer = "") {
   const vStats = state.wordStats[wordKey] || { difficulty: "medium" };
   updateDifficultyVoteUI(vStats.difficulty || "medium");
 
-  // Speak word automatically on failure
-  speakCurrentTestWord();
+  // Speak word automatically on failure (skip for sentence_blocks — full sentence already spoken above)
+  if ((state.testDirection || "forward") !== "sentence_blocks") {
+    speakCurrentTestWord();
+  }
 }
 
 function updateWordStats(wordEn, isCorrect) {
