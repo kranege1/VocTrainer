@@ -892,3 +892,105 @@ export async function handlePhotoTranslation(file) {
 
 window.handlePhotoTranslation = handlePhotoTranslation;
 
+// ==========================================
+// Interactive Image Cropper Modal Handler
+// ==========================================
+let currentCropperInstance = null;
+let currentCropFile = null;
+
+export function openImageCropModal(file) {
+  if (!file) return;
+  currentCropFile = file;
+
+  const modal = document.getElementById("modal-crop-image");
+  const imgTarget = document.getElementById("crop-image-target");
+  if (!modal || !imgTarget) {
+    handlePhotoTranslation(file);
+    return;
+  }
+
+  // Destroy previous cropper instance if active
+  if (currentCropperInstance) {
+    currentCropperInstance.destroy();
+    currentCropperInstance = null;
+  }
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    imgTarget.src = e.target.result;
+    modal.style.display = "flex";
+
+    // Initialize Cropper.js instance
+    if (typeof Cropper !== "undefined") {
+      currentCropperInstance = new Cropper(imgTarget, {
+        viewMode: 1,
+        autoCropArea: 0.85,
+        responsive: true,
+        background: true,
+        zoomable: true,
+        rotatable: true
+      });
+    }
+
+    // Set up button handlers
+    const btnSubmit = document.getElementById("btn-crop-submit");
+    const btnFull = document.getElementById("btn-crop-full");
+    const btnClose = document.getElementById("btn-crop-close");
+    const btnRotateLeft = document.getElementById("btn-crop-rotate-left");
+    const btnRotateRight = document.getElementById("btn-crop-rotate-right");
+    const btnReset = document.getElementById("btn-crop-reset");
+
+    if (btnRotateLeft) btnRotateLeft.onclick = () => currentCropperInstance?.rotate(-90);
+    if (btnRotateRight) btnRotateRight.onclick = () => currentCropperInstance?.rotate(90);
+    if (btnReset) btnReset.onclick = () => currentCropperInstance?.reset();
+
+    const closeModal = () => {
+      modal.style.display = "none";
+      if (currentCropperInstance) {
+        currentCropperInstance.destroy();
+        currentCropperInstance = null;
+      }
+    };
+
+    if (btnClose) btnClose.onclick = closeModal;
+
+    if (btnFull) {
+      btnFull.onclick = () => {
+        closeModal();
+        handlePhotoTranslation(currentCropFile);
+      };
+    }
+
+    if (btnSubmit) {
+      btnSubmit.onclick = () => {
+        if (currentCropperInstance) {
+          const canvas = currentCropperInstance.getCroppedCanvas({
+            maxWidth: 2048,
+            maxHeight: 2048,
+            fillColor: "#ffffff"
+          });
+          if (canvas) {
+            canvas.toBlob((blob) => {
+              closeModal();
+              if (blob) {
+                const croppedFile = new File([blob], file.name || "cropped_photo.jpeg", { type: "image/jpeg" });
+                handlePhotoTranslation(croppedFile);
+              } else {
+                handlePhotoTranslation(currentCropFile);
+              }
+            }, "image/jpeg", 0.92);
+            return;
+          }
+        }
+        closeModal();
+        handlePhotoTranslation(currentCropFile);
+      };
+    }
+  };
+
+  reader.readAsDataURL(file);
+}
+
+window.openImageCropModal = openImageCropModal;
+
+

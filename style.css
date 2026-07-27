@@ -1931,4 +1931,17 @@ body.ai-active-border::after {
   }
 }
 
+/* Cropper.js Modal Theme Overrides */
+.cropper-bg {
+  background-image: linear-gradient(45deg, #181b28 25%, transparent 25%), linear-gradient(-45deg, #181b28 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #181b28 75%), linear-gradient(-45deg, transparent 75%, #181b28 75%) !important;
+}
+.cropper-view-box {
+  outline: 2px solid var(--accent-color) !important;
+  outline-color: var(--accent-color) !important;
+}
+.cropper-line, .cropper-point {
+  background-color: var(--accent-color) !important;
+}
+
+
 

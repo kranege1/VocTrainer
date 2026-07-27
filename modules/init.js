@@ -78,7 +78,9 @@ export async function initApp() {
     quickPhotoBtn.onclick = () => quickPhotoInput.click();
     quickPhotoInput.onchange = (e) => {
       if (e.target.files && e.target.files[0]) {
-        if (window.handlePhotoTranslation) {
+        if (window.openImageCropModal) {
+          window.openImageCropModal(e.target.files[0]);
+        } else if (window.handlePhotoTranslation) {
           window.handlePhotoTranslation(e.target.files[0]);
         }
       }
