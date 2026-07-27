@@ -70,12 +70,24 @@ export async function initApp() {
   // Quick Translate Button Click Handlers
   const quickMicBtn = document.getElementById("btn-quick-translate-mic");
   if (quickMicBtn) {
-    quickMicBtn.onclick = toggleQuickTranslateSpeech;
+    quickMicBtn.onclick = (e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      toggleQuickTranslateSpeech();
+    };
   }
   const quickPhotoBtn = document.getElementById("btn-quick-translate-photo");
   const quickPhotoInput = document.getElementById("quick-translate-photo-input");
   if (quickPhotoBtn && quickPhotoInput) {
-    quickPhotoBtn.onclick = () => quickPhotoInput.click();
+    quickPhotoBtn.onclick = (e) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      quickPhotoInput.click();
+    };
     quickPhotoInput.onchange = (e) => {
       if (e.target.files && e.target.files[0]) {
         if (window.openImageCropModal) {

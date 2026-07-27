@@ -23,8 +23,17 @@ async function startMicLevelAnalyser() {
     const label = document.getElementById("quick-translate-mic-level-value");
     if (!container || !fill || !label) return;
 
-    audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+
+    // On iOS/iPadOS WebKit, requesting getUserMedia while SpeechRecognition starts can trigger WebKit view reset.
+    // Wrap safely so it never throws an uncaught exception or interrupts active view.
+    audioStream = await navigator.mediaDevices.getUserMedia({ audio: true }).catch(err => {
+      console.warn("Mic level stream skipped on this device:", err);
+      return null;
+    });
+
+    if (!audioStream) return;
+
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     audioContext = new AudioCtx();
     const source = audioContext.createMediaStreamSource(audioStream);
