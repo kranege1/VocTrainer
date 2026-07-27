@@ -875,20 +875,10 @@ export async function handlePhotoTranslation(file) {
   if (!file) return;
   const statusEl = document.getElementById("quick-translate-status");
   const inputEl = document.getElementById("quick-translate-text-input");
-  const modeSelect = document.getElementById("quick-translate-ocr-mode");
-  const ocrMode = modeSelect ? modeSelect.value : "auto";
 
   const targetLang = document.getElementById("quick-translate-lang")?.value || "de";
   const hasAIKey = !!(state.geminiKey || state.openaiKey || state.grokKey);
-
-  let useAI = false;
-  if (ocrMode === "ai") {
-    useAI = true;
-  } else if (ocrMode === "local") {
-    useAI = false;
-  } else { // "auto"
-    useAI = hasAIKey;
-  }
+  const useAI = hasAIKey;
 
   if (statusEl) {
     statusEl.textContent = useAI ? "🤖 Analyzing image with AI Vision..." : "💻 Processing image with local OCR (Tesseract.js)...";
