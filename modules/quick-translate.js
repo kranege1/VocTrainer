@@ -780,3 +780,115 @@ window.copyTextToClipboard = function(text, buttonEl) {
     console.error("Failed to copy card text:", err);
   });
 };
+
+// ==========================================
+// Photo & Image OCR / Vision Translator
+// ==========================================
+const callLLMVision = (...args) => window.callLLMVision?.(...args);
+
+export async function handlePhotoTranslation(file) {
+  if (!file) return;
+  const statusEl = document.getElementById("quick-translate-status");
+  const inputEl = document.getElementById("quick-translate-text-input");
+  const modeSelect = document.getElementById("quick-translate-ocr-mode");
+  const ocrMode = modeSelect ? modeSelect.value : "auto";
+
+  const targetLang = document.getElementById("quick-translate-lang")?.value || "de";
+  const hasAIKey = !!(state.geminiKey || state.openaiKey || state.grokKey);
+
+  let useAI = false;
+  if (ocrMode === "ai") {
+    useAI = true;
+  } else if (ocrMode === "local") {
+    useAI = false;
+  } else { // "auto"
+    useAI = hasAIKey;
+  }
+
+  if (statusEl) {
+    statusEl.textContent = useAI ? "🤖 Analyzing image with AI Vision..." : "💻 Processing image with local OCR (Tesseract.js)...";
+    statusEl.style.color = "var(--accent-color)";
+  }
+
+  try {
+    let extractedText = "";
+
+    if (useAI) {
+      if (!hasAIKey) {
+        throw new Error("No AI API Key configured. Please select 'Offline OCR' mode or set an API key in Setup & API.");
+      }
+      // Read file as Base64
+      const base64Data = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const res = reader.result;
+          const base64 = res.split(",")[1];
+          resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const mimeType = file.type || "image/jpeg";
+      const prompt = `Extract all visible text from this image accurately. Automatically detect the source language of the text. Do not add conversational filler. Output ONLY the extracted text on the first line, followed by your translation into target language (${targetLang}) on the next line.`;
+
+      const aiResult = await callLLMVision(prompt, base64Data, mimeType);
+      const lines = aiResult.trim().split("\n").map(l => l.trim()).filter(Boolean);
+      extractedText = lines[0] || aiResult;
+    } else {
+      // Local Tesseract.js OCR
+      if (typeof Tesseract === "undefined") {
+        throw new Error("Tesseract.js engine failed to load. Please check your internet connection.");
+      }
+
+      const result = await Tesseract.recognize(
+        file,
+        "eng+deu+fra+spa+ita",
+        {
+          logger: m => {
+            if (m.status === "recognizing text" && statusEl) {
+              const pct = Math.round((m.progress || 0) * 100);
+              statusEl.textContent = `💻 Extracting text locally: ${pct}%`;
+            }
+          }
+        }
+      );
+
+      extractedText = (result?.data?.text || "").trim();
+    }
+
+    if (!extractedText) {
+      if (statusEl) {
+        statusEl.textContent = "⚠️ No readable text found in the image. Please try a clearer picture.";
+        statusEl.style.color = "#f39c12";
+      }
+      return;
+    }
+
+    // Clean whitespace/newlines from OCR output for seamless single word or sentence translation
+    const cleanExtracted = extractedText.replace(/\r?\n/g, " ").replace(/\s+/g, " ").trim();
+
+    // Set input text and trigger translation
+    if (inputEl) {
+      inputEl.value = cleanExtracted;
+    }
+
+    if (statusEl) {
+      statusEl.textContent = `✅ Text extracted! Translating to target language...`;
+      statusEl.style.color = "#2ecc71";
+    }
+
+    // Run Quick Translate engine
+    runQuickTranslate(cleanExtracted);
+
+  } catch (err) {
+    console.error("Photo translation error:", err);
+    if (statusEl) {
+      statusEl.textContent = `❌ Photo translate failed: ${err.message}`;
+      statusEl.style.color = "#e74c3c";
+    }
+  }
+}
+
+window.handlePhotoTranslation = handlePhotoTranslation;
+

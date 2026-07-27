@@ -146,7 +146,7 @@ export function loadState() {
     state.expandedFolders = parsed.expandedFolders || {};
     state.selectedBrowseFolderId = parsed.selectedBrowseFolderId || null;
     state.wordStats = parsed.wordStats || {};
-    state.testDirection = parsed.testDirection || "forward";
+    state.testDirection = (parsed.testDirection === "sentence_blocks") ? "forward" : (parsed.testDirection || "forward");
     state.customVoices = parsed.customVoices || {};
     state.activeICloudLists = parsed.activeICloudLists || {};
     state.dictionaryCache = parsed.dictionaryCache || {};

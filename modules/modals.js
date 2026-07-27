@@ -770,71 +770,177 @@ export function renderFolderStatistics() {
 }
 
 
+let activeAICallsCount = 0;
+
+export function setAITokenActive(isActive) {
+  if (isActive) {
+    activeAICallsCount++;
+  } else {
+    activeAICallsCount = Math.max(0, activeAICallsCount - 1);
+  }
+  if (activeAICallsCount > 0) {
+    document.body.classList.add("ai-active-border");
+  } else {
+    document.body.classList.remove("ai-active-border");
+  }
+}
+
 // Unified LLM Requester Helper (Gemini, OpenAI, Grok)
 export async function callLLM(prompt, systemInstruction = "You are a helpful language translation assistant.") {
-  let key = "";
-  let url = "";
-  let headers = {};
-  let body = {};
-  
-  if (state.geminiKey) {
-    key = state.geminiKey;
-    url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
-    headers = { "Content-Type": "application/json" };
-    body = {
-      contents: [{ parts: [{ text: `${systemInstruction}\n\nUser request:\n${prompt}` }] }]
-    };
-  } else if (state.openaiKey) {
-    key = state.openaiKey;
-    url = "https://api.openai.com/v1/chat/completions";
-    headers = {
-      "Authorization": `Bearer ${key}`,
-      "Content-Type": "application/json"
-    };
-    body = {
-      model: "gpt-4o-mini",
-      messages: [
-        { role: "system", content: systemInstruction },
-        { role: "user", content: prompt }
-      ]
-    };
-  } else if (state.grokKey) {
-    key = state.grokKey;
-    url = "https://api.x.ai/v1/chat/completions";
-    headers = {
-      "Authorization": `Bearer ${key}`,
-      "Content-Type": "application/json"
-    };
-    body = {
-      model: await getGrokModel(key),
-      messages: [
-        { role: "system", content: systemInstruction },
-        { role: "user", content: prompt }
-      ]
-    };
-  } else if (state.anthropicKey) {
-    // Fallback or warning if they only have Anthropic (blocked by CORS client-side)
-    throw new Error("Anthropic API calls cannot be performed directly from browser client-side due to CORS limitations. Please configure Gemini or OpenAI key.");
-  } else {
-    throw new Error("No API Key configured. Please go to Setup & API to configure one.");
+  setAITokenActive(true);
+  try {
+    let key = "";
+    let url = "";
+    let headers = {};
+    let body = {};
+    
+    if (state.geminiKey) {
+      key = state.geminiKey;
+      url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
+      headers = { "Content-Type": "application/json" };
+      body = {
+        contents: [{ parts: [{ text: `${systemInstruction}\n\nUser request:\n${prompt}` }] }]
+      };
+    } else if (state.openaiKey) {
+      key = state.openaiKey;
+      url = "https://api.openai.com/v1/chat/completions";
+      headers = {
+        "Authorization": `Bearer ${key}`,
+        "Content-Type": "application/json"
+      };
+      body = {
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: systemInstruction },
+          { role: "user", content: prompt }
+        ]
+      };
+    } else if (state.grokKey) {
+      key = state.grokKey;
+      url = "https://api.x.ai/v1/chat/completions";
+      headers = {
+        "Authorization": `Bearer ${key}`,
+        "Content-Type": "application/json"
+      };
+      body = {
+        model: await getGrokModel(key),
+        messages: [
+          { role: "system", content: systemInstruction },
+          { role: "user", content: prompt }
+        ]
+      };
+    } else if (state.anthropicKey) {
+      // Fallback or warning if they only have Anthropic (blocked by CORS client-side)
+      throw new Error("Anthropic API calls cannot be performed directly from browser client-side due to CORS limitations. Please configure Gemini or OpenAI key.");
+    } else {
+      throw new Error("No API Key configured. Please go to Setup & API to configure one.");
+    }
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.error?.message || errorData.error || `HTTP error ${res.status}`);
+    }
+
+    const data = await res.json();
+    if (state.geminiKey) {
+      return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    } else {
+      return data.choices?.[0]?.message?.content || "";
+    }
+  } finally {
+    setAITokenActive(false);
   }
+}
 
-  const res = await fetch(url, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(body)
-  });
+export async function callLLMVision(prompt, base64Data, mimeType = "image/jpeg", systemInstruction = "You are an expert OCR and language translation assistant.") {
+  setAITokenActive(true);
+  try {
+    let key = "";
+    let url = "";
+    let headers = {};
+    let body = {};
 
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.error?.message || errorData.error || `HTTP error ${res.status}`);
-  }
+    if (state.geminiKey) {
+      key = state.geminiKey;
+      url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
+      headers = { "Content-Type": "application/json" };
+      body = {
+        contents: [{
+          parts: [
+            { inline_data: { mime_type: mimeType, data: base64Data } },
+            { text: `${systemInstruction}\n\n${prompt}` }
+          ]
+        }]
+      };
+    } else if (state.openaiKey) {
+      key = state.openaiKey;
+      url = "https://api.openai.com/v1/chat/completions";
+      headers = {
+        "Authorization": `Bearer ${key}`,
+        "Content-Type": "application/json"
+      };
+      body = {
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: systemInstruction },
+          {
+            role: "user",
+            content: [
+              { type: "text", text: prompt },
+              { type: "image_url", image_url: { url: `data:${mimeType};base64,${base64Data}` } }
+            ]
+          }
+        ]
+      };
+    } else if (state.grokKey) {
+      key = state.grokKey;
+      url = "https://api.x.ai/v1/chat/completions";
+      headers = {
+        "Authorization": `Bearer ${key}`,
+        "Content-Type": "application/json"
+      };
+      body = {
+        model: "grok-2-vision-1212",
+        messages: [
+          { role: "system", content: systemInstruction },
+          {
+            role: "user",
+            content: [
+              { type: "text", text: prompt },
+              { type: "image_url", image_url: { url: `data:${mimeType};base64,${base64Data}` } }
+            ]
+          }
+        ]
+      };
+    } else {
+      throw new Error("No API Key configured for AI Vision. Please configure Gemini or OpenAI key in setup.");
+    }
 
-  const data = await res.json();
-  if (state.geminiKey) {
-    return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-  } else {
-    return data.choices?.[0]?.message?.content || "";
+    const res = await fetch(url, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.error?.message || errorData.error || `HTTP error ${res.status}`);
+    }
+
+    const data = await res.json();
+    if (state.geminiKey) {
+      return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    } else {
+      return data.choices?.[0]?.message?.content || "";
+    }
+  } finally {
+    setAITokenActive(false);
   }
 }
 

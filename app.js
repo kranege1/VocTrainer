@@ -690,6 +690,8 @@ import {
   renderStatisticsView,
   renderFolderStatistics,
   callLLM,
+  callLLMVision,
+  setAITokenActive,
   updateDirectionButtonsUI,
   getGrokModel,
   loadOnDeviceVoices
@@ -1697,6 +1699,8 @@ window.renderStatisticsView = renderStatisticsView;
 window.updateDirectionButtonsUI = updateDirectionButtonsUI;
 window.loadOnDeviceVoices = loadOnDeviceVoices;
 window.callLLM = callLLM;
+window.callLLMVision = callLLMVision;
+window.setAITokenActive = setAITokenActive;
 
 
 
