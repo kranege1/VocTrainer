@@ -519,6 +519,29 @@ function cleanArticlesAndSpaces(text, lang) {
   return s.trim();
 }
 
+function extractCoreWords(text, lang) {
+  if (!text) return "";
+  let s = text.toLowerCase().trim();
+  
+  // 1. Remove leading articles
+  s = cleanArticlesAndSpaces(s, lang);
+  
+  // 2. Pronouns and linking helper words list per language
+  const fillerPatterns = {
+    it: /\b(io|tu|lui|lei|noi|voi|loro|ho|hai|ha|abbiamo|avete|hanno|di|a|da|in|su|per|con|d'|dell'|della|dello)\b/gi,
+    de: /\b(ich|du|er|sie|es|wir|ihr|habe|hast|hat|haben|habt|zu|von|mit|an|auf|für)\b/gi,
+    es: /\b(yo|tú|él|ella|nosotros|vosotros|ellos|tengo|tienes|tiene|tenemos|tienen|de|a|por|con|para)\b/gi,
+    fr: /\b(je|j'|tu|il|elle|nous|vous|ils|elles|ai|as|a|avons|avez|ont|de|d'|à|pour|avec)\b/gi,
+    en: /\b(i|you|he|she|it|we|they|have|has|had|to|of|for|with)\b/gi
+  };
+
+  const pattern = fillerPatterns[lang] || fillerPatterns.en;
+  let core = s.replace(pattern, " ").replace(/\s+/g, " ").trim();
+  
+  // If stripping fillers left an empty string, fallback to original cleaned string
+  return core.length > 0 ? core : s;
+}
+
 function checkAnswer(userAnswer, correctAnswer, wordObj) {
   if (!userAnswer || !correctAnswer) return false;
   
@@ -528,6 +551,14 @@ function checkAnswer(userAnswer, correctAnswer, wordObj) {
   const cleanCorrect = cleanArticlesAndSpaces(correctAnswer, lang);
 
   if (cleanUser === cleanCorrect) return true;
+
+  // Check core phrase matching (allowing optional pronouns, helper verbs, articles & prepositions)
+  const coreUser = extractCoreWords(userAnswer, lang);
+  const coreCorrect = extractCoreWords(correctAnswer, lang);
+  if (coreUser === coreCorrect && coreUser.length > 0) {
+    console.log(`Core phrase match accepted: "${userAnswer}" -> core "${coreUser}" matches "${correctAnswer}" -> core "${coreCorrect}"`);
+    return true;
+  }
 
   // Check synonym matching if allowed
   if (state.allowSynonyms) {
@@ -539,7 +570,9 @@ function checkAnswer(userAnswer, correctAnswer, wordObj) {
       const synList = cacheEntry.synonyms[targetLang];
       if (Array.isArray(synList)) {
         for (let syn of synList) {
-          if (cleanArticlesAndSpaces(syn, lang) === cleanUser) {
+          const cleanSyn = cleanArticlesAndSpaces(syn, lang);
+          const coreSyn = extractCoreWords(syn, lang);
+          if (cleanSyn === cleanUser || (coreSyn === coreUser && coreSyn.length > 0)) {
             console.log(`Synonym match found: "${userAnswer}" matches synonym "${syn}" for "${correctAnswer}"`);
             return true;
           }
@@ -548,7 +581,7 @@ function checkAnswer(userAnswer, correctAnswer, wordObj) {
     }
   }
 
-  // Typo toleration threshold check
+  // Typo toleration threshold check (against both clean strings and core strings)
   const threshold = state.typoThreshold !== undefined ? state.typoThreshold : 15;
   if (threshold > 0) {
     const editDist = getLevenshteinDistance(cleanUser, cleanCorrect);
@@ -556,6 +589,15 @@ function checkAnswer(userAnswer, correctAnswer, wordObj) {
     const distancePercent = maxLen > 0 ? (editDist / maxLen) * 100 : 100;
     if (distancePercent <= threshold) {
       console.log(`Typo match accepted: "${userAnswer}" is within ${Math.round(distancePercent)}% difference of "${correctAnswer}" (Threshold: ${threshold}%)`);
+      return true;
+    }
+
+    // Core Levenshtein distance
+    const coreDist = getLevenshteinDistance(coreUser, coreCorrect);
+    const maxCoreLen = Math.max(coreUser.length, coreCorrect.length);
+    const corePercent = maxCoreLen > 0 ? (coreDist / maxCoreLen) * 100 : 100;
+    if (corePercent <= threshold) {
+      console.log(`Core typo match accepted: "${userAnswer}" is within ${Math.round(corePercent)}% core difference of "${correctAnswer}"`);
       return true;
     }
   }
