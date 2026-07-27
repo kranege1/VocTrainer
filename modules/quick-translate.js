@@ -849,6 +849,47 @@ export async function detectLanguageAndTranslateToEn(text) {
   return { detectedLang: "en", translation: text };
 }
 
+function getArticleFromGender(gender, cleanWord, targetLang) {
+  const isVowelStart = /^[aeiouàèéìòùáéíóúâêîôûäöü]/i.test(cleanWord);
+  const normalizedGender = (gender || "").toLowerCase().trim();
+
+  if (targetLang === "de") {
+    if (normalizedGender === "masculine" || normalizedGender === "m") return "der";
+    if (normalizedGender === "feminine" || normalizedGender === "f") return "die";
+    if (normalizedGender === "neuter" || normalizedGender === "n") return "das";
+    
+    // German linguistic noun-ending rules fallback
+    const w = cleanWord.toLowerCase();
+    if (w.endsWith("ung") || w.endsWith("heit") || w.endsWith("keit") || w.endsWith("schaft") || w.endsWith("tät") || w.endsWith("ik") || w.endsWith("ei") || w.endsWith("ion")) {
+      return "die";
+    }
+    if (w.endsWith("chen") || w.endsWith("lein") || w.endsWith("ment") || w.endsWith("um")) {
+      return "das";
+    }
+    if (w.endsWith("er") || w.endsWith("ling") || w.endsWith("or") || w.endsWith("ismus")) {
+      return "der";
+    }
+    if (w.endsWith("e")) {
+      return "die";
+    }
+  } else if (targetLang === "it") {
+    if (isVowelStart) return "l'";
+    if (normalizedGender === "feminine" || normalizedGender === "f") return "la";
+    if (normalizedGender === "masculine" || normalizedGender === "m") return "il";
+  } else if (targetLang === "fr") {
+    if (isVowelStart || /^h[aeiouàèéìòù]/i.test(cleanWord)) return "l'";
+    if (normalizedGender === "feminine" || normalizedGender === "f") return "la";
+    if (normalizedGender === "masculine" || normalizedGender === "m") return "le";
+  } else if (targetLang === "es") {
+    if (normalizedGender === "feminine" || normalizedGender === "f") return "la";
+    if (normalizedGender === "masculine" || normalizedGender === "m") return "el";
+  } else if (targetLang === "en") {
+    return "the";
+  }
+
+  return "";
+}
+
 export async function getArticleForTranslation(translation, targetLang, sourceText = "") {
   if (!translation) return { article: "", cleanTranslation: "" };
   
@@ -860,16 +901,17 @@ export async function getArticleForTranslation(translation, targetLang, sourceTe
     return { article: articleStr, cleanTranslation: cleanWord };
   }
 
-  // Check if it's a verb (verbs don't take articles)
+  // Verbs don't take articles
   if (isVerbCheck(cleanWord, targetLang) || isVerbCheck(sourceText, targetLang)) {
     return { article: "", cleanTranslation: cleanWord };
   }
 
-  // 1. STARTER_VOCAB_RAW Lookup
-  if (typeof STARTER_VOCAB_RAW !== "undefined") {
+  // 1. STARTER_VOCAB_RAW Lookup (using window.STARTER_VOCAB_RAW)
+  const starterVocabRaw = window.STARTER_VOCAB_RAW || (typeof STARTER_VOCAB_RAW !== "undefined" ? STARTER_VOCAB_RAW : []);
+  if (starterVocabRaw.length > 0) {
     const searchStr = cleanWord.toLowerCase();
     const sourceStr = (sourceText || "").toLowerCase().trim();
-    const starter = STARTER_VOCAB_RAW.find(v => {
+    const starter = starterVocabRaw.find(v => {
       return (v.en && v.en.toLowerCase() === searchStr) ||
              (v.de && v.de.toLowerCase() === searchStr) ||
              (v.it && v.it.toLowerCase() === searchStr) ||
@@ -899,30 +941,35 @@ export async function getArticleForTranslation(translation, targetLang, sourceTe
     }
   }
 
-  // 3. Google Translate (GTX) article query for single noun words
+  // 3. Google Translate (GTX) part-of-speech dictionary lookup for exact grammatical gender
   const isSingleWord = !cleanWord.includes(" ");
   if (isSingleWord) {
     try {
-      const queryStr = targetLang === "en" ? `das ${cleanWord}` : `the ${cleanWord}`;
-      const gtxResult = await translateTextGTX(queryStr, "en", targetLang);
-      if (gtxResult) {
-        const parts = gtxResult.trim().split(" ");
-        if (parts.length >= 2) {
-          const potentialArt = parts[0].toLowerCase();
-          const validArticles = {
-            de: ["der", "die", "das"],
-            it: ["il", "la", "lo", "l'", "un", "una"],
-            es: ["el", "la", "un", "una"],
-            fr: ["le", "la", "l'", "un", "une"],
-            en: ["the", "a", "an"]
-          };
-          if (validArticles[targetLang] && validArticles[targetLang].includes(potentialArt)) {
-            return { article: parts[0], cleanTranslation: cleanWord };
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=bd&q=${encodeURIComponent(cleanWord)}`;
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data[1]) {
+          for (const entry of data[1]) {
+            const pos = (entry[0] || "").toLowerCase();
+            if (pos === "noun" || pos === "substantiv" || pos === "sustantivo" || pos === "sostantivo" || pos === "nom") {
+              const genderStr = (entry[3] || "").toLowerCase();
+              const derivedArticle = getArticleFromGender(genderStr, cleanWord, targetLang);
+              if (derivedArticle) {
+                return { article: derivedArticle, cleanTranslation: cleanWord };
+              }
+            }
           }
         }
       }
     } catch (e) {
-      console.warn("GTX article lookup error:", e);
+      console.warn("GTX gender fetch failed:", e);
+    }
+
+    // 4. Linguistic ending rules fallback
+    const fallbackArticle = getArticleFromGender("", cleanWord, targetLang);
+    if (fallbackArticle) {
+      return { article: fallbackArticle, cleanTranslation: cleanWord };
     }
   }
 
