@@ -725,25 +725,7 @@ export async function fetchSynonymsForTarget(word, targetLang, sourceLang = "de"
   // Clean translation if it contains articles
   const cleanWord = stripArticles(word, targetLang).trim();
   
-  // Try using AI if key is configured
-  const hasKey = state.openaiKey || state.grokKey || state.geminiKey || state.anthropicKey;
-  if (hasKey) {
-    try {
-      const prompt = `Give me exactly 5 synonyms (single words or very short phrases) for the word "${cleanWord}" in language "${targetLang}". 
-      Return ONLY a JSON array of strings, for example: ["syn1", "syn2", "syn3", "syn4", "syn5"]. 
-      Do not include formatting or explanations.`;
-      const resText = await callLLM(prompt, "You are a helpful dictionary assistant.");
-      const cleanJson = resText.replace(/```json/g, "").replace(/```/g, "").trim();
-      const parsed = JSON.parse(cleanJson);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed.map(s => s.trim()).slice(0, 5);
-      }
-    } catch (e) {
-      console.warn("AI Synonyms fetch failed:", e);
-    }
-  }
-
-  // Fallback to Google Translate alternative translations
+  // 1. Primary: Use Google Translate (GTX) alternative translations (100% free, 0 AI tokens)
   try {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=at&q=${encodeURIComponent(cleanWord)}`;
     const res = await fetch(url);
@@ -759,6 +741,24 @@ export async function fetchSynonymsForTarget(word, targetLang, sourceLang = "de"
     }
   } catch (e) {
     console.warn("Google Translate synonyms fetch failed:", e);
+  }
+
+  // 2. Optional Fallback: Try AI only if Google Translate has no alternative words
+  const hasKey = state.openaiKey || state.grokKey || state.geminiKey || state.anthropicKey;
+  if (hasKey) {
+    try {
+      const prompt = `Give me exactly 5 synonyms (single words or very short phrases) for the word "${cleanWord}" in language "${targetLang}". 
+      Return ONLY a JSON array of strings, for example: ["syn1", "syn2", "syn3", "syn4", "syn5"]. 
+      Do not include formatting or explanations.`;
+      const resText = await callLLM(prompt, "You are a helpful dictionary assistant.");
+      const cleanJson = resText.replace(/```json/g, "").replace(/```/g, "").trim();
+      const parsed = JSON.parse(cleanJson);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.map(s => s.trim()).slice(0, 5);
+      }
+    } catch (e) {
+      console.warn("AI Synonyms fetch failed:", e);
+    }
   }
 
   return [];
