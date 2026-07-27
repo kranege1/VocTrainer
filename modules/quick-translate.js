@@ -226,8 +226,15 @@ export async function runQuickTranslate(text) {
       { code: "fr", name: "French", flag: "fr" }
     ];
     
-    // Include all languages (including source)
-    const targets = langs;
+    // Filter target languages based on quickTranslateMode preference
+    let targets = langs;
+    const mode = state.quickTranslateMode || "base_learning";
+    if (mode === "base_learning") {
+      const base = state.baseLang || "de";
+      const learning = state.selectedLang || "it";
+      const activeCodes = [...new Set([base, learning])];
+      targets = langs.filter(l => activeCodes.includes(l.code));
+    }
     
     // Is it a single word?
     const isSingleWord = !text.trim().includes(" ");

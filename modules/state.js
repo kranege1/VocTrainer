@@ -37,6 +37,7 @@ export let state = {
   lastSelectedCategory: "none",
   lastSelectedCustomCategory: "none",
   useLLMForSentences: false,
+  quickTranslateMode: "base_learning",
 
   // Current active test state
   currentTest: {
@@ -83,7 +84,8 @@ export function saveState() {
     githubToken: state.githubToken,
     githubGistId: state.githubGistId,
     lastSelectedCategory: state.lastSelectedCategory,
-    lastSelectedCustomCategory: state.lastSelectedCustomCategory
+    lastSelectedCustomCategory: state.lastSelectedCustomCategory,
+    quickTranslateMode: state.quickTranslateMode
   }));
   if (window.updateHeaderUI) window.updateHeaderUI();
   updateCategoryCounts();
@@ -128,7 +130,8 @@ export function loadState() {
     state.allowSynonyms = parsed.allowSynonyms !== undefined ? parsed.allowSynonyms : true;
     state.questionTimer = parsed.questionTimer || 0;
     state.baseLang = parsed.baseLang || "en";
-    state.selectedLang = parsed.selectedLang || "de";
+    state.selectedLang = parsed.selectedLang || "en";
+    state.quickTranslateMode = parsed.quickTranslateMode || "base_learning";
     state.history = parsed.history || [];
     state.deletedStarters = parsed.deletedStarters || [];
     state.deletedCustomVocab = parsed.deletedCustomVocab || [];
@@ -189,6 +192,8 @@ export function loadState() {
     if (allowSynonymsEl) allowSynonymsEl.checked = state.allowSynonyms;
     const baseLangEl = document.getElementById("setup-base-lang");
     if (baseLangEl) baseLangEl.value = state.baseLang;
+    const qtModeEl = document.getElementById("setup-quick-translate-mode");
+    if (qtModeEl) qtModeEl.value = state.quickTranslateMode || "base_learning";
     const typoThresholdEl = document.getElementById("setup-typo-threshold");
     if (typoThresholdEl) typoThresholdEl.value = state.typoThreshold !== undefined ? state.typoThreshold : 15;
 

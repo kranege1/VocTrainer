@@ -815,6 +815,39 @@ async function translateTextGTX(text, fromLang, toLang) {
   return text;
 }
 
+export function updateQuickTranslateLangDropdown() {
+  const selectEl = document.getElementById("quick-translate-lang");
+  if (!selectEl) return;
+
+  const mode = state.quickTranslateMode || "base_learning";
+  const allLangs = [
+    { code: "de", name: "🇩🇪 German" },
+    { code: "en", name: "🇬🇧 English" },
+    { code: "it", name: "🇮🇹 Italiano" },
+    { code: "es", name: "🇪🇸 Spanish" },
+    { code: "fr", name: "🇫🇷 French" }
+  ];
+
+  let availableLangs = allLangs;
+  if (mode === "base_learning") {
+    const base = state.baseLang || "de";
+    const learning = state.selectedLang || "it";
+    const activeCodes = [...new Set([base, learning])];
+    availableLangs = allLangs.filter(l => activeCodes.includes(l.code));
+  }
+
+  const currentVal = selectEl.value;
+  selectEl.innerHTML = availableLangs.map(l => `<option value="${l.code}">${l.name}</option>`).join("");
+  
+  if (availableLangs.some(l => l.code === currentVal)) {
+    selectEl.value = currentVal;
+  } else if (state.quickTranslateLastLang && availableLangs.some(l => l.code === state.quickTranslateLastLang)) {
+    selectEl.value = state.quickTranslateLastLang;
+  } else if (availableLangs.length > 0) {
+    selectEl.value = availableLangs[0].code;
+  }
+}
+
 function getWordDetails(wordObj) {
   if (!wordObj) return { articles: {}, sentences: {}, variations: {}, synonyms: {} };
   
@@ -1009,16 +1042,12 @@ function showView(viewId) {
     loadGrammarGuide();
   } else if (viewId === "view-quick-translate") {
     setTimeout(() => {
-      const selectEl = document.getElementById("quick-translate-lang");
-      if (selectEl) {
-        selectEl.value = state.quickTranslateLastLang || state.selectedLang || "en";
-      }
+      updateQuickTranslateLangDropdown();
       const display = document.getElementById("quick-translate-input-display");
       if (display) display.textContent = "...";
       const grid = document.getElementById("quick-translate-results");
       if (grid) grid.innerHTML = "";
-      startQuickTranslateSpeech();
-    }, 300);
+    }, 150);
   } else if (viewId === "view-conjugation-dashboard") {
     renderConjugationDashboard();
   } else if (viewId === "view-import") {
@@ -1715,6 +1744,7 @@ window.callLLMVision = callLLMVision;
 window.setAITokenActive = setAITokenActive;
 window.triggerAPITelemetry = triggerAPITelemetry;
 window.getGrokVisionModel = getGrokVisionModel;
+window.updateQuickTranslateLangDropdown = updateQuickTranslateLangDropdown;
 
 
 

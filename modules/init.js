@@ -103,8 +103,6 @@ export async function initApp() {
       if (display) display.textContent = "...";
       const grid = document.getElementById("quick-translate-results");
       if (grid) grid.innerHTML = "";
-      // Restart speech engine with new language after brief delay
-      setTimeout(startQuickTranslateSpeech, 300);
     };
   }
   
@@ -536,6 +534,8 @@ export async function initApp() {
     state.allowSynonyms = document.getElementById("setup-allow-synonyms").checked;
     state.questionTimer = parseInt(document.getElementById("setup-question-timer").value) || 0;
     state.baseLang = document.getElementById("setup-base-lang").value;
+    const qtModeEl = document.getElementById("setup-quick-translate-mode");
+    if (qtModeEl) state.quickTranslateMode = qtModeEl.value;
     state.typoThreshold = parseInt(document.getElementById("setup-typo-threshold").value);
     
     // Save chosen custom free voices
@@ -549,6 +549,7 @@ export async function initApp() {
 
     saveState();
     updateDirectionButtonsUI();
+    if (window.updateQuickTranslateLangDropdown) window.updateQuickTranslateLangDropdown();
     alert("Application preferences saved!");
     showView("view-dashboard");
   };
