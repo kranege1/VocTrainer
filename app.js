@@ -1383,43 +1383,52 @@ function playSynthesizedSound(type) {
       osc.start(ctx.currentTime);
       osc.stop(ctx.currentTime + 0.2);
     } else if (type === "correct") {
-      // Bright major third double ding (Duolingo style)
+      // Authentic Duolingo-style cheerful ascending major triad chime (C5 -> G5 -> C6)
       const now = ctx.currentTime;
-      [
-        { freq: 523.25, time: now }, // C5
-        { freq: 659.25, time: now + 0.08 } // E5
-      ].forEach(note => {
+      const notes = [
+        { freq: 523.25, time: now, duration: 0.20, vol: 0.15 },       // C5
+        { freq: 783.99, time: now + 0.07, duration: 0.20, vol: 0.18 }, // G5
+        { freq: 1046.50, time: now + 0.14, duration: 0.35, vol: 0.22 } // C6
+      ];
+      notes.forEach(n => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(n.freq, n.time);
+        
+        gain.gain.setValueAtTime(0, n.time);
+        gain.gain.linearRampToValueAtTime(n.vol, n.time + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.001, n.time + n.duration);
+        
         osc.connect(gain);
         gain.connect(ctx.destination);
         
-        osc.type = "sine";
-        osc.frequency.value = note.freq;
-        
-        gain.gain.setValueAtTime(0.15, note.time);
-        gain.gain.exponentialRampToValueAtTime(0.01, note.time + 0.25);
-        
-        osc.start(note.time);
-        osc.stop(note.time + 0.25);
+        osc.start(n.time);
+        osc.stop(n.time + n.duration);
       });
     } else if (type === "incorrect") {
-      // Sad downward buzz
+      // Authentic Duolingo-style warm 2-note descending low thud (Eb3 -> Bb2)
       const now = ctx.currentTime;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      
-      osc.type = "sawtooth";
-      osc.frequency.setValueAtTime(220, now);
-      osc.frequency.linearRampToValueAtTime(147, now + 0.3);
-      
-      gain.gain.setValueAtTime(0.08, now);
-      gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
-      
-      osc.start(now);
-      osc.stop(now + 0.3);
+      const notes = [
+        { freq: 155.56, time: now, duration: 0.14, vol: 0.18 },       // Eb3
+        { freq: 116.54, time: now + 0.09, duration: 0.26, vol: 0.22 }  // Bb2
+      ];
+      notes.forEach(n => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(n.freq, n.time);
+        
+        gain.gain.setValueAtTime(0, n.time);
+        gain.gain.linearRampToValueAtTime(n.vol, n.time + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, n.time + n.duration);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.start(n.time);
+        osc.stop(n.time + n.duration);
+      });
     } else if (type === "levelup") {
       // Ascending major arpeggio
       const now = ctx.currentTime;
