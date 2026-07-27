@@ -2091,11 +2091,36 @@ body.api-active-purple::after {
   box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
 }
 
+/* 3. Green Frame for Audio Speech Recording */
+body.api-active-green::after {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 999999;
+  border: 5px solid #10b981;
+  box-shadow: inset 0 0 25px #10b981, inset 0 0 50px rgba(16, 185, 129, 0.7), 0 0 30px #10b981;
+  animation: api-pulse-green 1.4s infinite ease-in-out;
+}
+
+@keyframes api-pulse-green {
+  0% { border-color: #059669; box-shadow: inset 0 0 15px #059669, 0 0 15px rgba(5, 150, 105, 0.4); }
+  50% { border-color: #34d399; box-shadow: inset 0 0 35px #34d399, inset 0 0 70px rgba(52, 211, 153, 0.9), 0 0 45px rgba(52, 211, 153, 0.85); }
+  100% { border-color: #059669; box-shadow: inset 0 0 15px #059669, 0 0 15px rgba(5, 150, 105, 0.4); }
+}
+
 #api-usage-info-bar.theme-purple {
   background: rgba(23, 10, 35, 0.92);
   border: 1.5px solid #c084fc;
   color: #c084fc;
   box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
+}
+
+#api-usage-info-bar.theme-green {
+  background: rgba(4, 28, 20, 0.92);
+  border: 1.5px solid #34d399;
+  color: #34d399;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45);
 }
 
 /* Quick Translate Flag Buttons */

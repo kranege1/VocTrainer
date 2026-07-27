@@ -88,6 +88,62 @@ function stopMicLevelAnalyser() {
 }
 
 let accumulatedSpeechText = "";
+let speechStartTime = 0;
+let speechTelemetryInterval = null;
+
+function updateSpeechTelemetryBar(liveText = "") {
+  if (!isQuickTranslateListening) return;
+  const elapsedSec = Math.floor((Date.now() - speechStartTime) / 1000);
+  const mins = String(Math.floor(elapsedSec / 60)).padStart(2, '0');
+  const secs = String(elapsedSec % 60).padStart(2, '0');
+
+  const cleanWords = liveText.trim();
+  let wordInfo = "0 words";
+  let snippet = "";
+  if (cleanWords) {
+    const words = cleanWords.split(/\s+/).filter(Boolean);
+    wordInfo = `${words.length} ${words.length === 1 ? 'word' : 'words'}`;
+    snippet = cleanWords.length > 22 ? `"${cleanWords.substring(0, 19)}..."` : `"${cleanWords}"`;
+  }
+
+  const infoStr = snippet ? `Duration ${mins}:${secs} (${wordInfo}) | ${snippet}` : `Duration ${mins}:${secs} (${wordInfo})`;
+
+  if (window.triggerAPITelemetry) {
+    window.triggerAPITelemetry({
+      color: "green",
+      icon: "🎙️",
+      title: "Speech Recording",
+      infoText: infoStr,
+      durationMs: 4000
+    });
+  }
+}
+
+function startSpeechTelemetry() {
+  speechStartTime = Date.now();
+  document.body.classList.add("api-active-green");
+  updateSpeechTelemetryBar("");
+
+  if (speechTelemetryInterval) clearInterval(speechTelemetryInterval);
+  speechTelemetryInterval = setInterval(() => {
+    if (isQuickTranslateListening) {
+      const inputEl = document.getElementById("quick-translate-text-input");
+      updateSpeechTelemetryBar(inputEl ? inputEl.value : "");
+    }
+  }, 1000);
+}
+
+function stopSpeechTelemetry() {
+  if (speechTelemetryInterval) {
+    clearInterval(speechTelemetryInterval);
+    speechTelemetryInterval = null;
+  }
+  document.body.classList.remove("api-active-green");
+  const bar = document.getElementById("api-usage-info-bar");
+  if (bar) {
+    bar.classList.add("api-info-bar-hidden");
+  }
+}
 
 export function initQuickTranslateSpeech() {
   if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
@@ -110,6 +166,7 @@ export function initQuickTranslateSpeech() {
     if (status) status.textContent = "Listening continuously... Speak now!";
     if (pulse) pulse.classList.add("listening");
     startMicLevelAnalyser();
+    startSpeechTelemetry();
   };
 
   quickTranslateRecognition.onresult = async (event) => {
@@ -140,6 +197,8 @@ export function initQuickTranslateSpeech() {
     if (displayEl) {
       displayEl.textContent = currentLiveText || "...";
     }
+
+    updateSpeechTelemetryBar(currentLiveText);
   };
 
   quickTranslateRecognition.onerror = (e) => {
@@ -191,6 +250,7 @@ export function startQuickTranslateSpeech() {
 export function stopQuickTranslateSpeech() {
   isQuickTranslateListening = false;
   stopMicLevelAnalyser();
+  stopSpeechTelemetry();
   const micBtn = document.getElementById("btn-quick-translate-mic");
   const status = document.getElementById("quick-translate-status");
   const pulse = document.getElementById("quick-translate-pulse");
