@@ -592,8 +592,10 @@ function triggerCorrectAnswerUI() {
     fIcon.textContent = "🎉";
   }
   if (fDesc) {
-    const lang = state.testDirection === "forward" ? state.selectedLang : state.baseLang;
-    const progressHtml = getDistanceProgressBarHtml(window.lastUserAnswer || "", testDir === "forward" ? wordObj.target : wordObj.en, lang);
+    const testDir = state.testDirection || "forward";
+    const lang = testDir === "forward" ? state.selectedLang : state.baseLang;
+    const expectedWord = testDir === "forward" ? (wordObj[state.selectedLang] || wordObj.target) : (wordObj[state.baseLang] || wordObj.en);
+    const progressHtml = getDistanceProgressBarHtml(window.lastUserAnswer || "", expectedWord, lang);
     fDesc.innerHTML = `Awesome job! "${wordObj.en}" is indeed "${wordObj.target}".${progressHtml}`;
   }
 
