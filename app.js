@@ -817,15 +817,16 @@ async function translateTextGTX(text, fromLang, toLang) {
 
 export function updateQuickTranslateLangDropdown() {
   const selectEl = document.getElementById("quick-translate-lang");
-  if (!selectEl) return;
+  const buttonsContainer = document.getElementById("quick-translate-flag-buttons");
+  if (!selectEl && !buttonsContainer) return;
 
   const mode = state.quickTranslateMode || "base_learning";
   const allLangs = [
-    { code: "de", name: "🇩🇪 German" },
-    { code: "en", name: "🇬🇧 English" },
-    { code: "it", name: "🇮🇹 Italiano" },
-    { code: "es", name: "🇪🇸 Spanish" },
-    { code: "fr", name: "🇫🇷 French" }
+    { code: "de", name: "German", label: "DE", flagUrl: "https://flagcdn.com/20x15/de.png" },
+    { code: "en", name: "English", label: "EN", flagUrl: "https://flagcdn.com/20x15/gb.png" },
+    { code: "it", name: "Italiano", label: "IT", flagUrl: "https://flagcdn.com/20x15/it.png" },
+    { code: "es", name: "Spanish", label: "ES", flagUrl: "https://flagcdn.com/20x15/es.png" },
+    { code: "fr", name: "French", label: "FR", flagUrl: "https://flagcdn.com/20x15/fr.png" }
   ];
 
   let availableLangs = allLangs;
@@ -836,15 +837,48 @@ export function updateQuickTranslateLangDropdown() {
     availableLangs = allLangs.filter(l => activeCodes.includes(l.code));
   }
 
-  const currentVal = selectEl.value;
-  selectEl.innerHTML = availableLangs.map(l => `<option value="${l.code}">${l.name}</option>`).join("");
-  
-  if (availableLangs.some(l => l.code === currentVal)) {
-    selectEl.value = currentVal;
-  } else if (state.quickTranslateLastLang && availableLangs.some(l => l.code === state.quickTranslateLastLang)) {
-    selectEl.value = state.quickTranslateLastLang;
-  } else if (availableLangs.length > 0) {
-    selectEl.value = availableLangs[0].code;
+  // Default to base language (state.baseLang) unless user manually picked a valid language in this session
+  const defaultLang = state.quickTranslateLastLang && availableLangs.some(l => l.code === state.quickTranslateLastLang)
+    ? state.quickTranslateLastLang
+    : (state.baseLang && availableLangs.some(l => l.code === state.baseLang) ? state.baseLang : (availableLangs[0]?.code || "de"));
+
+  if (selectEl) {
+    selectEl.innerHTML = availableLangs.map(l => `<option value="${l.code}">${l.name}</option>`).join("");
+    selectEl.value = defaultLang;
+  }
+
+  if (buttonsContainer) {
+    buttonsContainer.innerHTML = availableLangs.map(l => {
+      const isActive = l.code === defaultLang;
+      return `
+        <button type="button" class="quick-lang-flag-btn ${isActive ? "active" : ""}" data-lang="${l.code}" title="${l.name}">
+          <img src="${l.flagUrl}" width="20" height="15" alt="${l.code}">
+          <span>${l.label}</span>
+        </button>
+      `;
+    }).join("");
+
+    // Bind flag button click events
+    buttonsContainer.querySelectorAll(".quick-lang-flag-btn").forEach(btn => {
+      btn.onclick = () => {
+        const langCode = btn.dataset.lang;
+        if (!langCode) return;
+
+        buttonsContainer.querySelectorAll(".quick-lang-flag-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        if (selectEl) selectEl.value = langCode;
+        state.quickTranslateLastLang = langCode;
+        saveState();
+
+        if (window.stopQuickTranslateSpeech) window.stopQuickTranslateSpeech();
+
+        const display = document.getElementById("quick-translate-input-display");
+        if (display) display.textContent = "...";
+        const grid = document.getElementById("quick-translate-results");
+        if (grid) grid.innerHTML = "";
+      };
+    });
   }
 }
 

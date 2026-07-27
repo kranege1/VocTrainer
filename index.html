@@ -121,7 +121,7 @@
         <h1>VocTrainer</h1>
         <div id="build-timestamp"
           style="font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6; font-family: monospace; margin-top: -6px; margin-bottom: 8px; pointer-events: none;">
-          Build: 2026-07-27 14:52:30
+          Build: 2026-07-27 14:55:30
         </div>
         <p>Master languages with premium gamified learning!</p>
       </div>
@@ -542,19 +542,15 @@
         style="text-align: center; padding: 16px 20px; background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid var(--border-color); border-radius: 16px; margin-bottom: 12px;">
         <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 1.15rem;">Speak a word or sentence</h3>
 
-        <!-- Language Selector -->
-        <div class="form-group" style="max-width: 320px; margin: 0 auto 12px auto; text-align: left;">
+        <!-- Language Selector (Flag Buttons) -->
+        <div class="form-group" style="max-width: 420px; margin: 0 auto 12px auto; text-align: center;">
           <label
-            style="font-weight: 600; display: block; margin-bottom: 6px; color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">I
+            style="font-weight: 600; display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">I
             am speaking in:</label>
-          <select id="quick-translate-lang" class="custom-select"
-            style="text-align: center; font-weight: 600; height: 48px; font-size: 1rem; border-radius: 10px; padding: 0 16px !important;">
-            <option value="de">🇩🇪 German (Deutsch)</option>
-            <option value="en" selected>🇬🇧 English</option>
-            <option value="it">🇮🇹 Italian (Italiano)</option>
-            <option value="es">🇪🇸 Spanish (Español)</option>
-            <option value="fr">🇫🇷 French (Français)</option>
-          </select>
+          <div id="quick-translate-flag-buttons" style="display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap;">
+            <!-- Flag buttons rendered dynamically by updateQuickTranslateLangDropdown() -->
+          </div>
+          <select id="quick-translate-lang" style="display: none;"></select>
         </div>
 
         <!-- Huge Mic & Camera Buttons -->
@@ -1841,8 +1837,8 @@
     }
   </style>
 
-  <script src="speech.js?v=20260727_145230"></script>
-  <script type="module" src="app.js?v=20260727_145230"></script>
+  <script src="speech.js?v=20260727_145530"></script>
+  <script type="module" src="app.js?v=20260727_145530"></script>
 </body>
 
 </html>
