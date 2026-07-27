@@ -318,18 +318,23 @@ export async function runQuickTranslate(text) {
         }
         translation = normalizeWordCasing(translation, target.code, folderId);
         
-        // 2. Synonyms translation/fetching
+        // 2. Synonyms translation/fetching - Only for single words or very short phrases (<= 2 words)
         let synonymsHtml = "";
         let synonyms = [];
-        try {
-          synonyms = await fetchSynonymsForTarget(translation, target.code, sourceLang);
-        } catch (e) {
-          console.warn("Failed to get synonyms for", target.code, e);
-        }
-        
-        // Fallback to English dictionary synonyms if target is English and we didn't get any
-        if (synonyms.length === 0 && target.code === "en" && englishSynonyms.length > 0) {
-          synonyms = englishSynonyms;
+        const inputWordCount = text.trim().split(/\s+/).filter(Boolean).length;
+        const isShortPhrase = inputWordCount <= 2;
+
+        if (isShortPhrase) {
+          try {
+            synonyms = await fetchSynonymsForTarget(translation, target.code, sourceLang);
+          } catch (e) {
+            console.warn("Failed to get synonyms for", target.code, e);
+          }
+          
+          // Fallback to English dictionary synonyms if target is English and we didn't get any
+          if (synonyms.length === 0 && target.code === "en" && englishSynonyms.length > 0) {
+            synonyms = englishSynonyms;
+          }
         }
 
         if (synonyms.length > 0) {
