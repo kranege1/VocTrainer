@@ -731,8 +731,12 @@ export function renderFolderStatistics() {
         }
         
         let difficultyScore = stats.difficulty;
-        if (difficultyScore === undefined) {
-          difficultyScore = 50;
+        if (difficultyScore === undefined || difficultyScore === null) {
+          if (stats.attempts && stats.attempts > 0) {
+            difficultyScore = Math.round((falses / stats.attempts) * 100);
+          } else {
+            difficultyScore = 50;
+          }
         } else if (difficultyScore === "easy") {
           difficultyScore = 20;
         } else if (difficultyScore === "medium") {
