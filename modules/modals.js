@@ -1014,6 +1014,26 @@ export async function getGrokModel(key) {
   return "grok-beta"; // Fallback to grok-beta if listing models fails
 }
 
+export async function getGrokVisionModel(key) {
+  try {
+    const res = await fetch("https://api.x.ai/v1/models", {
+      headers: { "Authorization": `Bearer ${key}` }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.data && data.data.length > 0) {
+        const visionFound = data.data.find(m => m.id.toLowerCase().includes("grok") && m.id.toLowerCase().includes("vision"));
+        if (visionFound) return visionFound.id;
+        const anyGrok = data.data.find(m => m.id.toLowerCase().includes("grok"));
+        if (anyGrok) return anyGrok.id;
+      }
+    }
+  } catch (e) {
+    console.error("Failed to dynamically resolve grok vision models:", e);
+  }
+  return "grok-2-vision-latest"; // Fallback to grok-2-vision-latest
+}
+
 // Load and populate on-device free voices
 export function loadOnDeviceVoices() {
   if (!('speechSynthesis' in window)) return;
