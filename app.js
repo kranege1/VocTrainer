@@ -694,6 +694,7 @@ import {
   setAITokenActive,
   updateDirectionButtonsUI,
   getGrokModel,
+  getGrokVisionModel,
   loadOnDeviceVoices
 } from './modules/modals.js';
 import {
@@ -1701,6 +1702,7 @@ window.loadOnDeviceVoices = loadOnDeviceVoices;
 window.callLLM = callLLM;
 window.callLLMVision = callLLMVision;
 window.setAITokenActive = setAITokenActive;
+window.getGrokVisionModel = getGrokVisionModel;
 
 
 

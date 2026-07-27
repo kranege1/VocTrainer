@@ -906,7 +906,7 @@ export async function callLLMVision(prompt, base64Data, mimeType = "image/jpeg",
         "Content-Type": "application/json"
       };
       body = {
-        model: "grok-2-vision-1212",
+        model: await getGrokVisionModel(key),
         messages: [
           { role: "system", content: systemInstruction },
           {
@@ -919,7 +919,7 @@ export async function callLLMVision(prompt, base64Data, mimeType = "image/jpeg",
         ]
       };
     } else {
-      throw new Error("No API Key configured for AI Vision. Please configure Gemini or OpenAI key in setup.");
+      throw new Error("No API Key configured for AI Vision. Please configure Gemini, OpenAI, or Grok key in setup.");
     }
 
     const res = await fetch(url, {
