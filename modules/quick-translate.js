@@ -920,15 +920,20 @@ export function openImageCropModal(file) {
     imgTarget.src = e.target.result;
     modal.style.display = "flex";
 
-    // Initialize Cropper.js instance
+    // Initialize Cropper.js instance (Optimized for iOS / Touch gestures)
     if (typeof Cropper !== "undefined") {
       currentCropperInstance = new Cropper(imgTarget, {
-        viewMode: 1,
-        autoCropArea: 0.85,
+        viewMode: 0,
+        dragMode: "crop",
+        initialAspectRatio: NaN,
+        aspectRatio: NaN,
+        autoCropArea: 0.75,
         responsive: true,
         background: true,
         zoomable: true,
-        rotatable: true
+        rotatable: true,
+        touchDragZoom: true,
+        toggleDragModeOnDblclick: false
       });
     }
 

@@ -1931,16 +1931,81 @@ body.ai-active-border::after {
   }
 }
 
-/* Cropper.js Modal Theme Overrides */
+/* Fullscreen Image Cropper Overlay (Native iOS Screenshot Editor Feel) */
+#modal-crop-image {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: -webkit-fill-available !important;
+  background: #000000 !important;
+  z-index: 9999999 !important;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: env(safe-area-inset-top, 8px) env(safe-area-inset-right, 8px) env(safe-area-inset-bottom, 8px) env(safe-area-inset-left, 8px);
+}
+
+#modal-crop-image .custom-modal-card {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Cropper Container fills available screen space */
+.cropper-modal-body {
+  flex: 1;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #090c14;
+  border-radius: 12px;
+  margin: 6px 0;
+}
+
+/* Native iOS Screenshot-style handles & thick neon borders */
 .cropper-bg {
   background-image: linear-gradient(45deg, #181b28 25%, transparent 25%), linear-gradient(-45deg, #181b28 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #181b28 75%), linear-gradient(-45deg, transparent 75%, #181b28 75%) !important;
 }
+
 .cropper-view-box {
-  outline: 2px solid var(--accent-color) !important;
-  outline-color: var(--accent-color) !important;
+  outline: 3px solid #00f0ff !important;
+  outline-color: #00f0ff !important;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75) !important;
 }
-.cropper-line, .cropper-point {
-  background-color: var(--accent-color) !important;
+
+/* Big touch handles for easy finger resizing on iPhone (Native iOS feel) */
+.cropper-point {
+  width: 34px !important;
+  height: 34px !important;
+  background-color: #00f0ff !important;
+  opacity: 0.95 !important;
+  border-radius: 50% !important;
+  border: 3px solid #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7) !important;
+}
+
+.cropper-point.point-nw { top: -17px !important; left: -17px !important; }
+.cropper-point.point-ne { top: -17px !important; right: -17px !important; }
+.cropper-point.point-sw { bottom: -17px !important; left: -17px !important; }
+.cropper-point.point-se { bottom: -17px !important; right: -17px !important; }
+.cropper-point.point-n, .cropper-point.point-s, .cropper-point.point-e, .cropper-point.point-w {
+  display: none !important; /* Keep 4 corner touch handles clean like native iOS screenshot */
 }
 
 
