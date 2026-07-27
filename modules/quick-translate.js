@@ -93,7 +93,7 @@ export function initQuickTranslateSpeech() {
   }
   const SpeechGen = window.SpeechRecognition || window.webkitSpeechRecognition;
   quickTranslateRecognition = new SpeechGen();
-  quickTranslateRecognition.continuous = false;
+  quickTranslateRecognition.continuous = true;
   quickTranslateRecognition.interimResults = true;
 
   quickTranslateRecognition.onstart = () => {
@@ -102,29 +102,37 @@ export function initQuickTranslateSpeech() {
     const status = document.getElementById("quick-translate-status");
     const pulse = document.getElementById("quick-translate-pulse");
     if (micBtn) micBtn.classList.add("listening");
-    if (status) status.textContent = "Listening... Speak now!";
+    if (status) status.textContent = "Listening continuously... Tap mic to stop";
     if (pulse) pulse.classList.add("listening");
     startMicLevelAnalyser();
   };
 
   quickTranslateRecognition.onresult = async (event) => {
-    let transcriptText = "";
-    for (let i = 0; i < event.results.length; ++i) {
-      transcriptText += event.results[i][0].transcript;
-    }
-    transcriptText = transcriptText.trim();
-    
-    const display = document.getElementById("quick-translate-input-display");
-    if (display) {
-      const folderId = document.getElementById("quick-translate-save-folder")?.value || "nouns";
-      const speakLang = document.getElementById("quick-translate-lang")?.value || "en";
-      display.textContent = normalizeWordCasing(transcriptText, speakLang, folderId) || "...";
+    let interimText = "";
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        const finalText = event.results[i][0].transcript.trim();
+        if (finalText) {
+          const display = document.getElementById("quick-translate-input-display");
+          if (display) {
+            const folderId = document.getElementById("quick-translate-save-folder")?.value || "nouns";
+            const speakLang = document.getElementById("quick-translate-lang")?.value || "en";
+            display.textContent = normalizeWordCasing(finalText, speakLang, folderId) || "...";
+          }
+          runQuickTranslate(finalText);
+        }
+      } else {
+        interimText += event.results[i][0].transcript;
+      }
     }
 
-    // If it is final, trigger the translation query!
-    const isFinal = event.results[event.results.length - 1].isFinal;
-    if (isFinal && transcriptText) {
-      runQuickTranslate(transcriptText);
+    if (interimText.trim()) {
+      const display = document.getElementById("quick-translate-input-display");
+      if (display) {
+        const folderId = document.getElementById("quick-translate-save-folder")?.value || "nouns";
+        const speakLang = document.getElementById("quick-translate-lang")?.value || "en";
+        display.textContent = normalizeWordCasing(interimText.trim(), speakLang, folderId) || "...";
+      }
     }
   };
 
@@ -135,15 +143,26 @@ export function initQuickTranslateSpeech() {
       if (e.error === 'network') {
         status.textContent = "Network Error: Check connection.";
         alert("🎙️ Speech Recognition Network Error.\n\nOn Edge/Chrome, the browser sends voice data to speech servers (Google/Microsoft). Please check your internet connection or try using Google Chrome if Microsoft Edge's speech service is temporarily unavailable.");
-      } else {
+        stopQuickTranslateSpeech();
+      } else if (e.error !== 'no-speech') {
         status.textContent = "Error: Try speaking again.";
       }
     }
-    stopQuickTranslateSpeech();
   };
 
   quickTranslateRecognition.onend = () => {
-    stopQuickTranslateSpeech();
+    // Keep continuous recording active until user explicitly clicks mic button to stop
+    if (isQuickTranslateListening) {
+      try {
+        const speakLang = document.getElementById("quick-translate-lang")?.value || "en";
+        quickTranslateRecognition.lang = speakLang;
+        quickTranslateRecognition.start();
+      } catch (e) {
+        // Ignored if recognition is already running
+      }
+    } else {
+      stopQuickTranslateSpeech();
+    }
   };
 }
 
@@ -153,6 +172,7 @@ export function startQuickTranslateSpeech() {
   }
   if (!quickTranslateRecognition) return;
   
+  isQuickTranslateListening = true;
   try {
     const speakLang = document.getElementById("quick-translate-lang").value;
     quickTranslateRecognition.lang = speakLang;
@@ -169,11 +189,7 @@ export function stopQuickTranslateSpeech() {
   const status = document.getElementById("quick-translate-status");
   const pulse = document.getElementById("quick-translate-pulse");
   if (micBtn) micBtn.classList.remove("listening");
-  if (status && status.textContent === "Listening... Speak now!") {
-    status.textContent = "Processing...";
-  } else if (status && status.textContent.startsWith("Error")) {
-    // leave error
-  } else if (status) {
+  if (status) {
     status.textContent = "Tap microphone to start speaking";
   }
   if (pulse) pulse.classList.remove("listening");
