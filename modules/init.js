@@ -193,7 +193,7 @@ export async function initApp() {
       if (text && text !== "...") {
         navigator.clipboard.writeText(text).then(() => {
           const origText = quickCopyBtn.textContent;
-          quickCopyBtn.textContent = "✅";
+          quickCopyBtn.textContent = "✅ Copied";
           setTimeout(() => {
             quickCopyBtn.textContent = origText;
           }, 1200);
@@ -201,6 +201,20 @@ export async function initApp() {
           console.error("Failed to copy text:", err);
         });
       }
+    };
+  }
+
+  const quickClearBtn = document.getElementById("btn-quick-translate-clear");
+  if (quickClearBtn) {
+    quickClearBtn.onclick = () => {
+      const inputEl = document.getElementById("quick-translate-text-input");
+      const displayEl = document.getElementById("quick-translate-input-display");
+      const resultsEl = document.getElementById("quick-translate-results");
+      const saveBoxEl = document.getElementById("quick-translate-save-box");
+      if (inputEl) inputEl.value = "";
+      if (displayEl) displayEl.textContent = "...";
+      if (resultsEl) resultsEl.innerHTML = "";
+      if (saveBoxEl) saveBoxEl.style.display = "none";
     };
   }
 
