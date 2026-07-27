@@ -398,12 +398,27 @@ export async function runQuickTranslate(text) {
           translation = await translateTextGTX(translationSource, translationSourceLang, target.code);
         }
         translation = normalizeWordCasing(translation, target.code, folderId);
+
+        const inputWordCount = text.trim().split(/\s+/).filter(Boolean).length;
+        const isShortPhrase = inputWordCount <= 2;
+
+        // Article resolution for nouns/short phrases
+        let article = "";
+        if (isShortPhrase) {
+          try {
+            const artRes = await getArticleForTranslation(translation, target.code, text);
+            article = artRes.article;
+            if (artRes.cleanTranslation) {
+              translation = normalizeWordCasing(artRes.cleanTranslation, target.code, folderId);
+            }
+          } catch (e) {
+            console.warn("Article resolution failed:", e);
+          }
+        }
         
         // 2. Synonyms translation/fetching - Only for single words or very short phrases (<= 2 words)
         let synonymsHtml = "";
         let synonyms = [];
-        const inputWordCount = text.trim().split(/\s+/).filter(Boolean).length;
-        const isShortPhrase = inputWordCount <= 2;
 
         if (isShortPhrase) {
           try {
@@ -479,8 +494,11 @@ export async function runQuickTranslate(text) {
                 </div>
                 <button onclick="event.stopPropagation(); window.copyTextToClipboard('${translation.replace(/'/g, "\\'")}', this)" style="border: none; background: transparent; cursor: pointer; color: var(--text-secondary); font-size: 0.95rem; padding: 4px; display: inline-flex; align-items: center; justify-content: center; transition: color 0.2s, transform 0.2s; margin-top: -4px;" title="Copy translation">📋</button>
               </div>
-              <div style="font-size: 1.8rem; font-weight: 800; color: ${langColor}; word-wrap: break-word; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.2); cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 8px;" onclick="speakWord('${translation.replace(/'/g, "\\'")}', '${target.code}')" title="Click to hear pronunciation">
-                <span>${translation}</span>
+              <div style="font-size: 1.8rem; font-weight: 800; color: ${langColor}; word-wrap: break-word; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.2); cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 8px;" onclick="speakWord('${((article ? article + ' ' : '') + translation).replace(/'/g, "\\'")}', '${target.code}')" title="Click to hear pronunciation">
+                <span>
+                  ${article ? `<span style="font-size: 1.2rem; font-weight: 700; color: var(--text-secondary); opacity: 0.85; margin-right: 6px; text-transform: lowercase;">${article}</span>` : ""}
+                  ${translation}
+                </span>
                 <span style="font-size: 1.1rem; opacity: 0.5; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5;">🔊</span>
               </div>
             </div>
@@ -829,6 +847,86 @@ export async function detectLanguageAndTranslateToEn(text) {
     console.warn("Language detection failed:", e);
   }
   return { detectedLang: "en", translation: text };
+}
+
+export async function getArticleForTranslation(translation, targetLang, sourceText = "") {
+  if (!translation) return { article: "", cleanTranslation: "" };
+  
+  const cleanWord = stripArticles(translation, targetLang).trim();
+  
+  // If the translation itself already starts with an article (e.g. "der Hund"), extract the article
+  if (translation.trim().length > cleanWord.length) {
+    const articleStr = translation.trim().substring(0, translation.trim().length - cleanWord.length).trim();
+    return { article: articleStr, cleanTranslation: cleanWord };
+  }
+
+  // Check if it's a verb (verbs don't take articles)
+  if (isVerbCheck(cleanWord, targetLang) || isVerbCheck(sourceText, targetLang)) {
+    return { article: "", cleanTranslation: cleanWord };
+  }
+
+  // 1. STARTER_VOCAB_RAW Lookup
+  if (typeof STARTER_VOCAB_RAW !== "undefined") {
+    const searchStr = cleanWord.toLowerCase();
+    const sourceStr = (sourceText || "").toLowerCase().trim();
+    const starter = STARTER_VOCAB_RAW.find(v => {
+      return (v.en && v.en.toLowerCase() === searchStr) ||
+             (v.de && v.de.toLowerCase() === searchStr) ||
+             (v.it && v.it.toLowerCase() === searchStr) ||
+             (v.es && v.es.toLowerCase() === searchStr) ||
+             (v.fr && v.fr.toLowerCase() === searchStr) ||
+             (v.en && v.en.toLowerCase() === sourceStr) ||
+             (v.de && v.de.toLowerCase() === sourceStr) ||
+             (v.it && v.it.toLowerCase() === sourceStr);
+    });
+    if (starter && starter.details && starter.details.articles && starter.details.articles[targetLang]) {
+      return { article: starter.details.articles[targetLang], cleanTranslation: cleanWord };
+    }
+  }
+
+  // 2. Custom state.vocab lookup
+  if (state && state.vocab) {
+    for (const cat of Object.keys(state.vocab)) {
+      const list = state.vocab[cat] || [];
+      const match = list.find(v => {
+        return (v.target && v.target.toLowerCase() === cleanWord.toLowerCase()) ||
+               (v.en && v.en.toLowerCase() === cleanWord.toLowerCase()) ||
+               (v.de && v.de.toLowerCase() === cleanWord.toLowerCase());
+      });
+      if (match && match.details && match.details.articles && match.details.articles[targetLang]) {
+        return { article: match.details.articles[targetLang], cleanTranslation: cleanWord };
+      }
+    }
+  }
+
+  // 3. Google Translate (GTX) article query for single noun words
+  const isSingleWord = !cleanWord.includes(" ");
+  if (isSingleWord) {
+    try {
+      const queryStr = targetLang === "en" ? `das ${cleanWord}` : `the ${cleanWord}`;
+      const gtxResult = await translateTextGTX(queryStr, "en", targetLang);
+      if (gtxResult) {
+        const parts = gtxResult.trim().split(" ");
+        if (parts.length >= 2) {
+          const potentialArt = parts[0].toLowerCase();
+          const validArticles = {
+            de: ["der", "die", "das"],
+            it: ["il", "la", "lo", "l'", "un", "una"],
+            es: ["el", "la", "un", "una"],
+            fr: ["le", "la", "l'", "un", "une"],
+            en: ["the", "a", "an"]
+          };
+          if (validArticles[targetLang] && validArticles[targetLang].includes(potentialArt)) {
+            return { article: parts[0], cleanTranslation: cleanWord };
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("GTX article lookup error:", e);
+    }
+  }
+
+  return { article: "", cleanTranslation: cleanWord };
 }
 
 export async function fetchSynonymsForTarget(word, targetLang, sourceLang = "de") {
