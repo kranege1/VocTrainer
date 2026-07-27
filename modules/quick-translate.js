@@ -818,9 +818,20 @@ export async function handlePhotoTranslation(file) {
       const lines = aiResult.trim().split("\n").map(l => l.trim()).filter(Boolean);
       extractedText = lines[0] || aiResult;
     } else {
-      // Local Tesseract.js OCR
+      // Local Tesseract.js OCR (Offline Engine)
       if (typeof Tesseract === "undefined") {
         throw new Error("Tesseract.js engine failed to load. Please check your internet connection.");
+      }
+
+      const sizeKB = Math.round(file.size / 1024);
+      if (window.triggerAPITelemetry) {
+        window.triggerAPITelemetry({
+          color: "purple",
+          icon: "💻",
+          title: "Tesseract.js OCR",
+          infoText: `Offline Local Engine (${sizeKB} KB Image)`,
+          durationMs: 4000
+        });
       }
 
       const result = await Tesseract.recognize(

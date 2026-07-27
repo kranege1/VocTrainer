@@ -692,6 +692,7 @@ import {
   callLLM,
   callLLMVision,
   setAITokenActive,
+  triggerAPITelemetry,
   updateDirectionButtonsUI,
   getGrokModel,
   getGrokVisionModel,
@@ -790,9 +791,19 @@ function isCommonWord(wordText, lang) {
   return FREQUENCY_LISTS[lang].has(cleanStripped);
 }
 
-// Central Dictionary caching & GTX translation utilities
 async function translateTextGTX(text, fromLang, toLang) {
   try {
+    const bytes = new Blob([text]).size;
+    const words = text.trim().split(/\s+/).filter(Boolean).length;
+    if (typeof triggerAPITelemetry === "function") {
+      triggerAPITelemetry({
+        color: "yellow",
+        icon: "🌐",
+        title: "Google Translate",
+        infoText: `${bytes} Bytes (${words} ${words === 1 ? "word" : "words"})`,
+        durationMs: 2500
+      });
+    }
     const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${fromLang}&tl=${toLang}&dt=t&q=${encodeURIComponent(text)}`);
     if (res.ok) {
       const data = await res.json();
@@ -1702,6 +1713,7 @@ window.loadOnDeviceVoices = loadOnDeviceVoices;
 window.callLLM = callLLM;
 window.callLLMVision = callLLMVision;
 window.setAITokenActive = setAITokenActive;
+window.triggerAPITelemetry = triggerAPITelemetry;
 window.getGrokVisionModel = getGrokVisionModel;
 
 

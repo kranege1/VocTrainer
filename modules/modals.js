@@ -771,6 +771,39 @@ export function renderFolderStatistics() {
 
 
 let activeAICallsCount = 0;
+let apiTelemetryTimer = null;
+
+export function triggerAPITelemetry({ color = "blue", icon = "🤖", title = "API", infoText = "", durationMs = 3500 }) {
+  const bar = document.getElementById("api-usage-info-bar");
+  const iconEl = document.getElementById("api-usage-info-icon");
+  const textEl = document.getElementById("api-usage-info-text");
+
+  if (color === "yellow") {
+    document.body.classList.add("api-active-yellow");
+    setTimeout(() => document.body.classList.remove("api-active-yellow"), durationMs);
+  } else if (color === "purple") {
+    document.body.classList.add("api-active-purple");
+    setTimeout(() => document.body.classList.remove("api-active-purple"), durationMs);
+  } else {
+    document.body.classList.add("ai-active-border");
+    setTimeout(() => document.body.classList.remove("ai-active-border"), durationMs);
+  }
+
+  if (!bar || !textEl) return;
+
+  if (apiTelemetryTimer) clearTimeout(apiTelemetryTimer);
+
+  bar.className = `theme-${color}`;
+  if (iconEl) iconEl.textContent = icon;
+  textEl.textContent = `${title}: ${infoText}`;
+
+  void bar.offsetWidth;
+  bar.classList.remove("api-info-bar-hidden");
+
+  apiTelemetryTimer = setTimeout(() => {
+    bar.classList.add("api-info-bar-hidden");
+  }, durationMs);
+}
 
 export function setAITokenActive(isActive) {
   if (isActive) {
@@ -788,6 +821,7 @@ export function setAITokenActive(isActive) {
 // Unified LLM Requester Helper (Gemini, OpenAI, Grok)
 export async function callLLM(prompt, systemInstruction = "You are a helpful language translation assistant.") {
   setAITokenActive(true);
+  let engineName = "AI";
   try {
     let key = "";
     let url = "";
@@ -795,6 +829,7 @@ export async function callLLM(prompt, systemInstruction = "You are a helpful lan
     let body = {};
     
     if (state.geminiKey) {
+      engineName = "GEMINI";
       key = state.geminiKey;
       url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
       headers = { "Content-Type": "application/json" };
@@ -802,6 +837,7 @@ export async function callLLM(prompt, systemInstruction = "You are a helpful lan
         contents: [{ parts: [{ text: `${systemInstruction}\n\nUser request:\n${prompt}` }] }]
       };
     } else if (state.openaiKey) {
+      engineName = "OPENAI";
       key = state.openaiKey;
       url = "https://api.openai.com/v1/chat/completions";
       headers = {
@@ -816,6 +852,7 @@ export async function callLLM(prompt, systemInstruction = "You are a helpful lan
         ]
       };
     } else if (state.grokKey) {
+      engineName = "GROK";
       key = state.grokKey;
       url = "https://api.x.ai/v1/chat/completions";
       headers = {
@@ -830,7 +867,6 @@ export async function callLLM(prompt, systemInstruction = "You are a helpful lan
         ]
       };
     } else if (state.anthropicKey) {
-      // Fallback or warning if they only have Anthropic (blocked by CORS client-side)
       throw new Error("Anthropic API calls cannot be performed directly from browser client-side due to CORS limitations. Please configure Gemini or OpenAI key.");
     } else {
       throw new Error("No API Key configured. Please go to Setup & API to configure one.");
@@ -848,11 +884,30 @@ export async function callLLM(prompt, systemInstruction = "You are a helpful lan
     }
 
     const data = await res.json();
+    let textResult = "";
+    let inTokens = 0;
+    let outTokens = 0;
+
     if (state.geminiKey) {
-      return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      textResult = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      inTokens = data.usageMetadata?.promptTokenCount || Math.round(prompt.length / 3.8);
+      outTokens = data.usageMetadata?.candidatesTokenCount || Math.round(textResult.length / 3.8);
     } else {
-      return data.choices?.[0]?.message?.content || "";
+      textResult = data.choices?.[0]?.message?.content || "";
+      inTokens = data.usage?.prompt_tokens || Math.round(prompt.length / 3.8);
+      outTokens = data.usage?.completion_tokens || Math.round(textResult.length / 3.8);
     }
+
+    // Trigger visual telemetry banner
+    triggerAPITelemetry({
+      color: "blue",
+      icon: "🤖",
+      title: engineName,
+      infoText: `${inTokens} Tk In, ${outTokens} Tk Out`,
+      durationMs: 4000
+    });
+
+    return textResult;
   } finally {
     setAITokenActive(false);
   }
@@ -860,6 +915,7 @@ export async function callLLM(prompt, systemInstruction = "You are a helpful lan
 
 export async function callLLMVision(prompt, base64Data, mimeType = "image/jpeg", systemInstruction = "You are an expert OCR and language translation assistant.") {
   setAITokenActive(true);
+  let engineName = "AI VISION";
   try {
     let key = "";
     let url = "";
@@ -867,6 +923,7 @@ export async function callLLMVision(prompt, base64Data, mimeType = "image/jpeg",
     let body = {};
 
     if (state.geminiKey) {
+      engineName = "GEMINI VISION";
       key = state.geminiKey;
       url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
       headers = { "Content-Type": "application/json" };
@@ -879,6 +936,7 @@ export async function callLLMVision(prompt, base64Data, mimeType = "image/jpeg",
         }]
       };
     } else if (state.openaiKey) {
+      engineName = "OPENAI VISION";
       key = state.openaiKey;
       url = "https://api.openai.com/v1/chat/completions";
       headers = {
@@ -899,6 +957,7 @@ export async function callLLMVision(prompt, base64Data, mimeType = "image/jpeg",
         ]
       };
     } else if (state.grokKey) {
+      engineName = "GROK VISION";
       key = state.grokKey;
       url = "https://api.x.ai/v1/chat/completions";
       headers = {
@@ -934,11 +993,29 @@ export async function callLLMVision(prompt, base64Data, mimeType = "image/jpeg",
     }
 
     const data = await res.json();
+    let textResult = "";
+    let inTokens = 0;
+    let outTokens = 0;
+
     if (state.geminiKey) {
-      return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      textResult = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      inTokens = data.usageMetadata?.promptTokenCount || 258; // 258 fixed Gemini vision image tokens
+      outTokens = data.usageMetadata?.candidatesTokenCount || Math.round(textResult.length / 3.8);
     } else {
-      return data.choices?.[0]?.message?.content || "";
+      textResult = data.choices?.[0]?.message?.content || "";
+      inTokens = data.usage?.prompt_tokens || 283;
+      outTokens = data.usage?.completion_tokens || Math.round(textResult.length / 3.8);
     }
+
+    triggerAPITelemetry({
+      color: "blue",
+      icon: "🤖",
+      title: engineName,
+      infoText: `${inTokens} Tk In, ${outTokens} Tk Out`,
+      durationMs: 4000
+    });
+
+    return textResult;
   } finally {
     setAITokenActive(false);
   }
