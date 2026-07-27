@@ -3,6 +3,67 @@ import { state, saveState } from './state.js';
 import { getConjugationsForVerb, PRONOUNS } from './conjugation.js';
 import { callLLM } from './modals.js';
 
+export function prioritizeWordPool(pool) {
+  if (!pool || pool.length === 0) return [];
+
+  const tier1 = []; // 1. Pick not-yet-asked words first (attempts === 0)
+  const tier2 = []; // 2. Then ask the ones that were answered incorrectly (errors > 0)
+  const tier3 = []; // 3. Mastered / Correct words (depending on Rate Difficulty)
+
+  pool.forEach(w => {
+    const wordKey = w.origEn || w.en;
+    const stats = state.wordStats?.[wordKey] || { attempts: 0, errors: 0 };
+    const attempts = stats.attempts || 0;
+    const errors = stats.errors || 0;
+
+    let difficultyScore = stats.difficulty;
+    if (difficultyScore === undefined || difficultyScore === null) {
+      difficultyScore = attempts > 0 ? Math.round((errors / attempts) * 100) : 50;
+    } else if (difficultyScore === "easy") {
+      difficultyScore = 20;
+    } else if (difficultyScore === "medium") {
+      difficultyScore = 50;
+    } else if (difficultyScore === "hard") {
+      difficultyScore = 80;
+    }
+
+    const item = {
+      ...w,
+      _attempts: attempts,
+      _errors: errors,
+      _diffScore: difficultyScore
+    };
+
+    if (attempts === 0) {
+      tier1.push(item);
+    } else if (errors > 0) {
+      tier2.push(item);
+    } else {
+      tier3.push(item);
+    }
+  });
+
+  // 1. Tier 1 (Not yet asked): Randomize among new words
+  tier1.sort(() => 0.5 - Math.random());
+
+  // 2. Tier 2 (Incorrectly answered): Sort by highest errors & higher difficulty
+  tier2.sort((a, b) => {
+    const errDiff = b._errors - a._errors;
+    if (errDiff !== 0) return errDiff;
+    return (b._diffScore - a._diffScore) || (0.5 - Math.random());
+  });
+
+  // 3. Tier 3 (Mastered/Correct): Sort by Rate Difficulty descending (hardest first)
+  tier3.sort((a, b) => {
+    const diffDiff = b._diffScore - a._diffScore;
+    if (diffDiff !== 0) return diffDiff;
+    return 0.5 - Math.random();
+  });
+
+  // Combine tiers in exact priority sequence requested
+  return [...tier1, ...tier2, ...tier3];
+}
+
 export function startTestSession(language, category, count, isMistakesOnly = false, customCategory = "none", direction = "forward") {
   let pool = [];
   const base = state.baseLang || "en";
@@ -92,8 +153,8 @@ export function startTestSession(language, category, count, isMistakesOnly = fal
     return;
   }
 
-  // Shuffle pool
-  pool.sort(() => 0.5 - Math.random());
+  // Prioritize word sequence: 1. Not-yet-asked first, 2. Incorrectly answered second, 3. Difficulty weighted third
+  pool = prioritizeWordPool(pool);
 
   // Limit count
   const sessionCount = Math.min(count, pool.length);
