@@ -168,7 +168,6 @@ export async function initApp() {
     }
     
     runQuickTranslate(val);
-    inputEl.value = "";
   };
 
   const quickSubmitBtn = document.getElementById("btn-quick-translate-submit");
@@ -178,7 +177,8 @@ export async function initApp() {
   const quickTextInput = document.getElementById("quick-translate-text-input");
   if (quickTextInput) {
     quickTextInput.onkeydown = (e) => {
-      if (e.key === "Enter") {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
         handleManualTranslate();
       }
     };
@@ -187,27 +187,19 @@ export async function initApp() {
   const quickCopyBtn = document.getElementById("btn-quick-translate-copy");
   if (quickCopyBtn) {
     quickCopyBtn.onclick = () => {
-      const display = document.getElementById("quick-translate-input-display");
-      if (display) {
-        const text = display.textContent.trim();
-        if (text && text !== "...") {
-          navigator.clipboard.writeText(text).then(() => {
-            const origText = quickCopyBtn.textContent;
-            quickCopyBtn.textContent = "✅";
-            quickCopyBtn.style.transform = "translateY(-50%) scale(1.15)";
-            quickCopyBtn.style.borderColor = "#2ecc71";
-            quickCopyBtn.style.color = "#2ecc71";
-            
-            setTimeout(() => {
-              quickCopyBtn.textContent = origText;
-              quickCopyBtn.style.transform = "translateY(-50%) scale(1)";
-              quickCopyBtn.style.borderColor = "";
-              quickCopyBtn.style.color = "";
-            }, 1200);
-          }).catch(err => {
-            console.error("Failed to copy text:", err);
-          });
-        }
+      const inputEl = document.getElementById("quick-translate-text-input");
+      const displayEl = document.getElementById("quick-translate-input-display");
+      const text = (inputEl ? inputEl.value.trim() : "") || (displayEl ? displayEl.textContent.trim() : "");
+      if (text && text !== "...") {
+        navigator.clipboard.writeText(text).then(() => {
+          const origText = quickCopyBtn.textContent;
+          quickCopyBtn.textContent = "✅";
+          setTimeout(() => {
+            quickCopyBtn.textContent = origText;
+          }, 1200);
+        }).catch(err => {
+          console.error("Failed to copy text:", err);
+        });
       }
     };
   }

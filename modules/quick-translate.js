@@ -109,30 +109,33 @@ export function initQuickTranslateSpeech() {
 
   quickTranslateRecognition.onresult = async (event) => {
     let interimText = "";
+    let finalTexts = [];
     for (let i = event.resultIndex; i < event.results.length; ++i) {
       if (event.results[i].isFinal) {
-        const finalText = event.results[i][0].transcript.trim();
-        if (finalText) {
-          const display = document.getElementById("quick-translate-input-display");
-          if (display) {
-            const folderId = document.getElementById("quick-translate-save-folder")?.value || "nouns";
-            const speakLang = document.getElementById("quick-translate-lang")?.value || "en";
-            display.textContent = normalizeWordCasing(finalText, speakLang, folderId) || "...";
-          }
-          runQuickTranslate(finalText);
-        }
+        finalTexts.push(event.results[i][0].transcript.trim());
       } else {
         interimText += event.results[i][0].transcript;
       }
     }
 
-    if (interimText.trim()) {
-      const display = document.getElementById("quick-translate-input-display");
-      if (display) {
-        const folderId = document.getElementById("quick-translate-save-folder")?.value || "nouns";
-        const speakLang = document.getElementById("quick-translate-lang")?.value || "en";
-        display.textContent = normalizeWordCasing(interimText.trim(), speakLang, folderId) || "...";
+    const inputEl = document.getElementById("quick-translate-text-input");
+    const displayEl = document.getElementById("quick-translate-input-display");
+    const folderId = document.getElementById("quick-translate-save-folder")?.value || "nouns";
+    const speakLang = document.getElementById("quick-translate-lang")?.value || "en";
+
+    if (finalTexts.length > 0) {
+      const cleanFinal = normalizeWordCasing(finalTexts.join(" "), speakLang, folderId);
+      if (inputEl) {
+        const existing = inputEl.value.trim();
+        inputEl.value = existing ? (existing + " " + cleanFinal) : cleanFinal;
       }
+      if (displayEl) displayEl.textContent = inputEl ? inputEl.value : cleanFinal;
+      // Do not auto-translate; wait until user clicks Translate button
+    } else if (interimText.trim()) {
+      if (inputEl && !inputEl.value.trim()) {
+        inputEl.value = normalizeWordCasing(interimText.trim(), speakLang, folderId);
+      }
+      if (displayEl) displayEl.textContent = interimText.trim();
     }
   };
 
@@ -884,18 +887,19 @@ export async function handlePhotoTranslation(file) {
     // Clean whitespace/newlines from OCR output for seamless single word or sentence translation
     const cleanExtracted = extractedText.replace(/\r?\n/g, " ").replace(/\s+/g, " ").trim();
 
-    // Set input text and trigger translation
+    // Set input text in single unified input box
     if (inputEl) {
       inputEl.value = cleanExtracted;
     }
-
-    if (statusEl) {
-      statusEl.textContent = `✅ Text extracted! Translating to target language...`;
-      statusEl.style.color = "#2ecc71";
+    const displayEl = document.getElementById("quick-translate-input-display");
+    if (displayEl) {
+      displayEl.textContent = cleanExtracted;
     }
 
-    // Run Quick Translate engine
-    runQuickTranslate(cleanExtracted);
+    if (statusEl) {
+      statusEl.textContent = `✅ Text extracted! Tap Translate to translate.`;
+      statusEl.style.color = "#2ecc71";
+    }
 
   } catch (err) {
     console.error("Photo translation error:", err);
