@@ -915,11 +915,10 @@ export async function handlePhotoTranslation(file) {
       });
 
       const mimeType = file.type || "image/jpeg";
-      const prompt = `Extract all visible text from this image accurately. Automatically detect the source language of the text. Do not add conversational filler. Output ONLY the extracted text on the first line, followed by your translation into target language (${targetLang}) on the next line.`;
+      const prompt = `Extract all visible text from this image accurately without omitting any lines or words. Do not add conversational filler, markdown formatting, or explanations. Output ONLY the complete extracted text.`;
 
       const aiResult = await callLLMVision(prompt, base64Data, mimeType);
-      const lines = aiResult.trim().split("\n").map(l => l.trim()).filter(Boolean);
-      extractedText = lines[0] || aiResult;
+      extractedText = (aiResult || "").trim();
     } else {
       // Local Tesseract.js OCR (Offline Engine)
       if (typeof Tesseract === "undefined") {
