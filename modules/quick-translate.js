@@ -87,6 +87,8 @@ function stopMicLevelAnalyser() {
   if (label) label.textContent = "0%";
 }
 
+let accumulatedSpeechText = "";
+
 export function initQuickTranslateSpeech() {
   if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
     return;
@@ -98,44 +100,45 @@ export function initQuickTranslateSpeech() {
 
   quickTranslateRecognition.onstart = () => {
     isQuickTranslateListening = true;
+    const inputEl = document.getElementById("quick-translate-text-input");
+    accumulatedSpeechText = inputEl ? inputEl.value.trim() : "";
+
     const micBtn = document.getElementById("btn-quick-translate-mic");
     const status = document.getElementById("quick-translate-status");
     const pulse = document.getElementById("quick-translate-pulse");
     if (micBtn) micBtn.classList.add("listening");
-    if (status) status.textContent = "Listening continuously... Tap mic to stop";
+    if (status) status.textContent = "Listening continuously... Speak now!";
     if (pulse) pulse.classList.add("listening");
     startMicLevelAnalyser();
   };
 
   quickTranslateRecognition.onresult = async (event) => {
     let interimText = "";
-    let finalTexts = [];
+    let finalChunk = "";
+
     for (let i = event.resultIndex; i < event.results.length; ++i) {
-      if (event.results[i].isFinal) {
-        finalTexts.push(event.results[i][0].transcript.trim());
+      const res = event.results[i];
+      if (res.isFinal) {
+        finalChunk += " " + res[0].transcript.trim();
       } else {
-        interimText += event.results[i][0].transcript;
+        interimText += res[0].transcript;
       }
     }
 
+    if (finalChunk.trim()) {
+      accumulatedSpeechText = (accumulatedSpeechText + " " + finalChunk.trim()).trim();
+    }
+
+    const currentLiveText = (accumulatedSpeechText + " " + interimText).trim();
+
     const inputEl = document.getElementById("quick-translate-text-input");
     const displayEl = document.getElementById("quick-translate-input-display");
-    const folderId = document.getElementById("quick-translate-save-folder")?.value || "nouns";
-    const speakLang = document.getElementById("quick-translate-lang")?.value || "en";
 
-    if (finalTexts.length > 0) {
-      const cleanFinal = normalizeWordCasing(finalTexts.join(" "), speakLang, folderId);
-      if (inputEl) {
-        const existing = inputEl.value.trim();
-        inputEl.value = existing ? (existing + " " + cleanFinal) : cleanFinal;
-      }
-      if (displayEl) displayEl.textContent = inputEl ? inputEl.value : cleanFinal;
-      // Do not auto-translate; wait until user clicks Translate button
-    } else if (interimText.trim()) {
-      if (inputEl && !inputEl.value.trim()) {
-        inputEl.value = normalizeWordCasing(interimText.trim(), speakLang, folderId);
-      }
-      if (displayEl) displayEl.textContent = interimText.trim();
+    if (inputEl) {
+      inputEl.value = currentLiveText;
+    }
+    if (displayEl) {
+      displayEl.textContent = currentLiveText || "...";
     }
   };
 
