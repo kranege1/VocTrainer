@@ -850,7 +850,8 @@ export async function detectLanguageAndTranslateToEn(text) {
 }
 
 function getArticleFromGender(gender, cleanWord, targetLang) {
-  const isVowelStart = /^[aeiouàèéìòùáéíóúâêîôûäöü]/i.test(cleanWord);
+  const w = cleanWord.toLowerCase().trim();
+  const isVowelStart = /^[aeiouàèéìòùáéíóúâêîôûäöü]/i.test(w);
   const normalizedGender = (gender || "").toLowerCase().trim();
 
   if (targetLang === "de") {
@@ -859,30 +860,40 @@ function getArticleFromGender(gender, cleanWord, targetLang) {
     if (normalizedGender === "neuter" || normalizedGender === "n") return "das";
     
     // German linguistic noun-ending rules fallback
-    const w = cleanWord.toLowerCase();
-    if (w.endsWith("ung") || w.endsWith("heit") || w.endsWith("keit") || w.endsWith("schaft") || w.endsWith("tät") || w.endsWith("ik") || w.endsWith("ei") || w.endsWith("ion")) {
+    if (w.endsWith("ung") || w.endsWith("heit") || w.endsWith("keit") || w.endsWith("schaft") || w.endsWith("tät") || w.endsWith("ik") || w.endsWith("ei") || w.endsWith("ion") || w.endsWith("e")) {
       return "die";
     }
-    if (w.endsWith("chen") || w.endsWith("lein") || w.endsWith("ment") || w.endsWith("um")) {
+    if (w.endsWith("chen") || w.endsWith("lein") || w.endsWith("ment") || w.endsWith("um") || w.endsWith("tum")) {
       return "das";
     }
     if (w.endsWith("er") || w.endsWith("ling") || w.endsWith("or") || w.endsWith("ismus")) {
       return "der";
     }
-    if (w.endsWith("e")) {
-      return "die";
-    }
+    return "der";
   } else if (targetLang === "it") {
     if (isVowelStart) return "l'";
     if (normalizedGender === "feminine" || normalizedGender === "f") return "la";
     if (normalizedGender === "masculine" || normalizedGender === "m") return "il";
+    
+    // Italian linguistic noun-ending rules fallback
+    if (w.endsWith("a")) return "la";
+    if (w.endsWith("o") || w.endsWith("e") || w.endsWith("i")) return "il";
+    return "il";
   } else if (targetLang === "fr") {
-    if (isVowelStart || /^h[aeiouàèéìòù]/i.test(cleanWord)) return "l'";
+    if (isVowelStart || /^h[aeiouàèéìòù]/i.test(w)) return "l'";
     if (normalizedGender === "feminine" || normalizedGender === "f") return "la";
     if (normalizedGender === "masculine" || normalizedGender === "m") return "le";
+    
+    // French linguistic noun-ending rules fallback
+    if (w.endsWith("e") || w.endsWith("tion") || w.endsWith("ette")) return "la";
+    return "le";
   } else if (targetLang === "es") {
     if (normalizedGender === "feminine" || normalizedGender === "f") return "la";
     if (normalizedGender === "masculine" || normalizedGender === "m") return "el";
+    
+    // Spanish linguistic noun-ending rules fallback
+    if (w.endsWith("a") || w.endsWith("ción") || w.endsWith("dad")) return "la";
+    return "el";
   } else if (targetLang === "en") {
     return "the";
   }
