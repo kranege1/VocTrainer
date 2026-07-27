@@ -157,7 +157,16 @@ export function initQuickTranslateSpeech() {
   quickTranslateRecognition.onstart = () => {
     isQuickTranslateListening = true;
     const inputEl = document.getElementById("quick-translate-text-input");
-    accumulatedSpeechText = inputEl ? inputEl.value.trim() : "";
+    const displayEl = document.getElementById("quick-translate-input-display");
+    const resultsGrid = document.getElementById("quick-translate-results");
+    const saveBox = document.getElementById("quick-translate-save-box");
+
+    // Clear textbox & previous results to start fresh for new voice recording
+    accumulatedSpeechText = "";
+    if (inputEl) inputEl.value = "";
+    if (displayEl) displayEl.textContent = "...";
+    if (resultsGrid) resultsGrid.innerHTML = "";
+    if (saveBox) saveBox.style.display = "none";
 
     const micBtn = document.getElementById("btn-quick-translate-mic");
     const status = document.getElementById("quick-translate-status");
