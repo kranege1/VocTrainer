@@ -1207,7 +1207,11 @@ export function loadOnDeviceVoices(isUserManualTrigger = false) {
       opt.value = voice.name;
       const isPremium = voice.quality === "premium" || voice.name.includes("Premium") || voice.name.includes("Neural");
       const isEnhanced = voice.quality === "enhanced" || voice.name.includes("Enhanced") || voice.name.includes("Siri");
-      const badge = isPremium ? "⭐ [PREMIUM] " : isEnhanced ? "✨ [ENHANCED] " : "";
+      const isApple = /iPad|iPhone|iPod|Macintosh/i.test(navigator.userAgent) || voice.name.includes("Apple");
+      const appleVoiceNames = ["Alice", "Federica", "Luca", "Paola", "Samantha", "Anna", "Siri", "Viktor", "Monica", "Jorge", "Thomas", "Amelie", "Diego", "Cosimo", "Elsa"];
+      const isAppleVoice = isApple && appleVoiceNames.some(n => voice.name.includes(n));
+      
+      const badge = isPremium ? "⭐ [PREMIUM] " : (isEnhanced || isAppleVoice) ? "✨ [ENHANCED] " : "";
       opt.textContent = `${badge}${voice.name} (${voice.lang || lang})`;
       select.appendChild(opt);
     });

@@ -1459,6 +1459,9 @@ function getVoiceQualityDetails(voice) {
   if (!voice) return { displayName: "System Default", quality: "Standard" };
 
   const name = voice.name;
+  const isApple = /iPad|iPhone|iPod|Macintosh/i.test(navigator.userAgent) || voice.name.includes("Apple");
+  const appleVoiceNames = ["Alice", "Federica", "Luca", "Paola", "Samantha", "Anna", "Siri", "Viktor", "Monica", "Jorge", "Thomas", "Amelie", "Diego", "Cosimo", "Elsa"];
+
   let quality = "Standard";
 
   if (voice.quality === "premium" || name.includes("Premium") || name.includes("Neural")) {
@@ -1467,6 +1470,8 @@ function getVoiceQualityDetails(voice) {
     quality = "Enhanced ✨";
   } else if (name.includes("Google") || name.includes("Natural")) {
     quality = "HD Natural 🎧";
+  } else if (isApple && appleVoiceNames.some(n => name.includes(n))) {
+    quality = "iOS Enhanced ✨";
   }
 
   let displayName = name
