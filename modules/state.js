@@ -60,11 +60,11 @@ export let state = {
 
 // Save state to LocalStorage
 export function saveState() {
-  // Trim ttsAudioCache to at most 150 entries to prevent LocalStorage quota overflow
+  // Trim ttsAudioCache to at most 500 entries to prevent LocalStorage quota overflow
   if (state.ttsAudioCache) {
     const keys = Object.keys(state.ttsAudioCache);
-    if (keys.length > 150) {
-      const keysToRemove = keys.slice(0, keys.length - 150);
+    if (keys.length > 500) {
+      const keysToRemove = keys.slice(0, keys.length - 500);
       keysToRemove.forEach(k => delete state.ttsAudioCache[k]);
     }
   }
