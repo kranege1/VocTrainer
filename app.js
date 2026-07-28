@@ -1575,6 +1575,61 @@ async function speakGrokTTS(text, langCode, rate = 1.0, callback) {
     // Map language codes to BCP-47 for xAI TTS
     const langMap = { de: "de", it: "it", en: "en", es: "es", fr: "fr" };
     const ttsLang = langMap[langCode] || langCode || "it";
+    const cacheKey = `${ttsLang}_${cleanText.toLowerCase()}`;
+
+    // Helper to play audio from a Data URL (cached base64 or blob)
+    const playAudioDataUrl = (dataUrl, isCached = false) => {
+      if (window.triggerAPITelemetry) {
+        window.triggerAPITelemetry({
+          color: isCached ? "blue" : "purple",
+          icon: "🔊",
+          title: isCached ? "Cached Audio (Instant Local)" : "xAI Grok TTS (Studio Quality)",
+          infoText: `Neural Voice (${ttsLang.toUpperCase()}) • "${cleanText.length > 25 ? cleanText.slice(0, 25) + '...' : cleanText}"`,
+          durationMs: 2500
+        });
+      }
+
+      document.body.classList.add("api-active-purple");
+
+      const audio = new Audio(dataUrl);
+      _activeGrokAudio = audio; // prevent GC
+
+      let finished = false;
+      const finish = () => {
+        if (finished) return;
+        finished = true;
+        if (_activeGrokAudio === audio) _activeGrokAudio = null;
+        document.body.classList.remove("api-active-purple");
+        if (!isCached) URL.revokeObjectURL(dataUrl);
+        if (callback) callback();
+      };
+
+      audio.onended = finish;
+      audio.onerror = () => {
+        console.error("xAI TTS audio playback error");
+        finish();
+      };
+
+      audio.preload = "auto";
+      audio.load();
+
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((playErr) => {
+          console.warn("xAI TTS play() rejected:", playErr.message);
+          if (_activeGrokAudio === audio) _activeGrokAudio = null;
+          document.body.classList.remove("api-active-purple");
+          if (!isCached) URL.revokeObjectURL(dataUrl);
+          speakBrowserTTS(text, langCode, rate, callback);
+        });
+      }
+    };
+
+    // 1. Check local Audio Cache first!
+    if (state.ttsAudioCache && state.ttsAudioCache[cacheKey]) {
+      playAudioDataUrl(state.ttsAudioCache[cacheKey], true);
+      return;
+    }
 
     if (window.triggerAPITelemetry) {
       window.triggerAPITelemetry({
@@ -1636,40 +1691,21 @@ async function speakGrokTTS(text, langCode, rate = 1.0, callback) {
     if (!response || !response.ok) throw lastError || new Error("xAI TTS failed after retries");
 
     const blob = await response.blob();
+
+    // 2. Convert Blob to Data URL and save in persistent state.ttsAudioCache
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64DataUrl = reader.result;
+      if (base64DataUrl && base64DataUrl.length < 500000) { // Safety limit per audio (~375KB)
+        if (!state.ttsAudioCache) state.ttsAudioCache = {};
+        state.ttsAudioCache[cacheKey] = base64DataUrl;
+        saveState();
+      }
+    };
+    reader.readAsDataURL(blob);
+
     const audioUrl = URL.createObjectURL(blob);
-    const audio = new Audio(audioUrl);
-    _activeGrokAudio = audio; // prevent GC
-
-    let finished = false;
-    const finish = () => {
-      if (finished) return;
-      finished = true;
-      if (_activeGrokAudio === audio) _activeGrokAudio = null;
-      document.body.classList.remove("api-active-purple");
-      URL.revokeObjectURL(audioUrl);
-      if (callback) callback();
-    };
-
-    audio.onended = finish;
-    audio.onerror = () => {
-      console.error("xAI TTS audio playback error");
-      finish();
-    };
-
-    // Pre-load audio data before playing to reduce iOS issues
-    audio.preload = "auto";
-    audio.load();
-
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise.catch((playErr) => {
-        console.warn("xAI TTS play() rejected:", playErr.message);
-        if (_activeGrokAudio === audio) _activeGrokAudio = null;
-        document.body.classList.remove("api-active-purple");
-        URL.revokeObjectURL(audioUrl);
-        speakBrowserTTS(text, langCode, rate, callback);
-      });
-    }
+    playAudioDataUrl(audioUrl, false);
   } catch (e) {
     console.error("xAI Grok TTS failed:", e);
     _activeGrokAudio = null;

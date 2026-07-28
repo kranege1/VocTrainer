@@ -43,6 +43,9 @@ export let state = {
   totalInputTokens: 0,
   totalOutputTokens: 0,
 
+  // Audio Cache: maps `${langCode}_${textHash}` to base64 audio data
+  ttsAudioCache: {},
+
   // Current active test state
   currentTest: {
     words: [],
@@ -57,6 +60,15 @@ export let state = {
 
 // Save state to LocalStorage
 export function saveState() {
+  // Trim ttsAudioCache to at most 150 entries to prevent LocalStorage quota overflow
+  if (state.ttsAudioCache) {
+    const keys = Object.keys(state.ttsAudioCache);
+    if (keys.length > 150) {
+      const keysToRemove = keys.slice(0, keys.length - 150);
+      keysToRemove.forEach(k => delete state.ttsAudioCache[k]);
+    }
+  }
+
   localStorage.setItem("voctrainer_state", JSON.stringify({
     xp: state.xp,
     streak: state.streak,
@@ -91,7 +103,8 @@ export function saveState() {
     lastSelectedCustomCategory: state.lastSelectedCustomCategory,
     quickTranslateMode: state.quickTranslateMode,
     totalInputTokens: state.totalInputTokens || 0,
-    totalOutputTokens: state.totalOutputTokens || 0
+    totalOutputTokens: state.totalOutputTokens || 0,
+    ttsAudioCache: state.ttsAudioCache || {}
   }));
   if (window.updateHeaderUI) window.updateHeaderUI();
   updateCategoryCounts();
@@ -165,6 +178,7 @@ export function loadState() {
     state.editedStarters = parsed.editedStarters || {};
     state.totalInputTokens = parsed.totalInputTokens || 0;
     state.totalOutputTokens = parsed.totalOutputTokens || 0;
+    state.ttsAudioCache = parsed.ttsAudioCache || {};
     state.customFolders = (parsed.customFolders || []).map(f => {
       if (typeof f === "string") {
         return { id: f, name: f, parentId: null };
