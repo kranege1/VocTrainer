@@ -1122,8 +1122,17 @@ export async function getGrokVisionModel(key) {
 }
 
 // Load and populate on-device free voices
-export function loadOnDeviceVoices() {
+export function loadOnDeviceVoices(isUserManualTrigger = false) {
   if (!('speechSynthesis' in window)) return;
+  
+  if (isUserManualTrigger) {
+    try {
+      const u = new SpeechSynthesisUtterance("");
+      u.volume = 0;
+      window.speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+
   const voices = window.speechSynthesis.getVoices();
   const langs = ["en", "de", "it", "es", "fr"];
 
@@ -1137,27 +1146,59 @@ export function loadOnDeviceVoices() {
     // Default option
     const defOpt = document.createElement("option");
     defOpt.value = "default";
-    defOpt.textContent = "Automatic / Best Match";
+    defOpt.textContent = "⚡ Automatic (Best Premium / Enhanced Voice)";
     select.appendChild(defOpt);
 
     const targetLocale = (LANG_LOCALES[lang] || "en-US").toLowerCase().replace('_', '-');
+    const langPrefix = targetLocale.split('-')[0];
     
     const matching = voices.filter(v => {
-      const vLang = v.lang.toLowerCase().replace('_', '-');
-      return vLang === targetLocale || vLang.startsWith(targetLocale.split('-')[0]);
+      const vLang = (v.lang || "").toLowerCase().replace('_', '-');
+      if (vLang === targetLocale || (vLang && vLang.startsWith(langPrefix))) return true;
+      // Fallback name search for iOS Accessibility voices
+      const vName = (v.name || "").toLowerCase();
+      if (lang === "de" && (vName.includes("german") || vName.includes("deutsch"))) return true;
+      if (lang === "it" && (vName.includes("italian") || vName.includes("italiano"))) return true;
+      if (lang === "es" && (vName.includes("spanish") || vName.includes("español"))) return true;
+      if (lang === "fr" && (vName.includes("french") || vName.includes("français"))) return true;
+      if (lang === "en" && (vName.includes("english") || vName.includes("us") || vName.includes("uk"))) return true;
+      return false;
+    });
+
+    // Sort matching voices: Premium & Enhanced first, then alphabetical
+    matching.sort((a, b) => {
+      const getRank = (v) => {
+        const name = v.name || "";
+        if (v.quality === "premium" || name.includes("Premium") || name.includes("Neural")) return 1;
+        if (v.quality === "enhanced" || name.includes("Enhanced") || name.includes("Siri")) return 2;
+        if (name.includes("Google") || name.includes("Natural")) return 3;
+        return 4;
+      };
+      return getRank(a) - getRank(b) || a.name.localeCompare(b.name);
     });
 
     matching.forEach(voice => {
       const opt = document.createElement("option");
       opt.value = voice.name;
-      opt.textContent = `${voice.name} (${voice.lang})`;
+      const isPremium = voice.quality === "premium" || voice.name.includes("Premium") || voice.name.includes("Neural");
+      const isEnhanced = voice.quality === "enhanced" || voice.name.includes("Enhanced") || voice.name.includes("Siri");
+      const badge = isPremium ? "⭐ [PREMIUM] " : isEnhanced ? "✨ [ENHANCED] " : "";
+      opt.textContent = `${badge}${voice.name} (${voice.lang || lang})`;
       select.appendChild(opt);
     });
 
     // Re-select active choice
     select.value = previousValue;
+    if (select.selectedIndex === -1) select.value = "default";
   });
+
+  if (isUserManualTrigger) {
+    const msg = "🎉 System voices refreshed! Downloaded iOS Premium/Enhanced voices (from iPhone Settings -> Accessibility -> Spoken Content -> Voices) are now available.";
+    if (window.showCustomAlert) window.showCustomAlert(msg);
+    else alert(msg);
+  }
 }
+window.loadOnDeviceVoices = loadOnDeviceVoices;
 
 // Test speech synthesizer voice selection
 window.testSelectedVoice = function(lang) {

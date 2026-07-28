@@ -121,7 +121,7 @@
         <h1>VocTrainer</h1>
         <div id="build-timestamp"
           style="font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6; font-family: monospace; margin-top: -6px; margin-bottom: 8px; pointer-events: none;">
-          Build: 2026-07-28 12:53:30
+          Build: 2026-07-28 13:34:30
         </div>
         <p>Master languages with premium gamified learning!</p>
       </div>
@@ -787,9 +787,12 @@
 
       <!-- FREE ON-DEVICE VOICE SELECTOR -->
       <div class="card">
-        <h3>Free On-Device Voices</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <h3 style="margin: 0;">Free On-Device Voices</h3>
+          <button onclick="window.loadOnDeviceVoices(true)" class="btn btn-secondary" style="width: auto; margin: 0; padding: 4px 12px; font-size: 0.8rem; border-radius: 8px;">↻ Refresh Voices</button>
+        </div>
         <p class="import-help" style="margin-bottom: 16px;">Select which of your system's built-in voices to use for
-          each language. This runs entirely locally and for 100% free.</p>
+          each language (sorted with ⭐ Premium &amp; ✨ Enhanced voices first). This runs 100% locally &amp; free.</p>
 
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <div class="form-group" style="margin: 0;">
@@ -1829,8 +1832,8 @@
     }
   </style>
 
-  <script src="speech.js?v=20260728_125330"></script>
-  <script type="module" src="app.js?v=20260728_125330"></script>
+  <script src="speech.js?v=20260728_133430"></script>
+  <script type="module" src="app.js?v=20260728_133430"></script>
 </body>
 
 </html>
