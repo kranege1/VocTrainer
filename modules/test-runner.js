@@ -958,29 +958,17 @@ export function speakCurrentTestWord(rate = 1.0) {
   if (!wordObj) return;
 
   const direction = state.testDirection || "forward";
+  const baseLang = state.baseLang || "en";
+  const selectedLang = state.selectedLang || "de";
 
-  // In Forward mode (Base -> Target), we read the target word.
-  // In Reverse mode (Target -> Base), we read the target word (which was the question).
-  // In Conjugate mode, we read the target conjugation.
-  if (direction === "conjugation") {
-    const targetLang = state.selectedLang || "de";
-    const base = state.baseLang || "en";
-    let correctConjugation = "";
-    
-    const starterVocabRaw = window.STARTER_VOCAB_RAW || [];
-    const starterMatch = starterVocabRaw.find(w => w[base] === wordObj.en);
-    if (starterMatch && starterMatch.details && starterMatch.details.variations && starterMatch.details.variations.he && starterMatch.details.variations.he[targetLang]) {
-      correctConjugation = starterMatch.details.variations.he[targetLang];
-    } else if (wordObj.details && wordObj.details.variations && wordObj.details.variations.he && wordObj.details.variations.he[targetLang]) {
-      correctConjugation = wordObj.details.variations.he[targetLang];
-    } else {
-      correctConjugation = wordObj.target;
-    }
-    if (window.speakWord) window.speakWord(correctConjugation, targetLang, rate);
-  } else {
+  if (direction === "reverse") {
+    // Reverse mode: Question displayed on screen is target language (e.g. Italian "viaggiare")
     const text = wordObj.target;
-    const targetLang = state.selectedLang || "de";
-    if (window.speakWord) window.speakWord(text, targetLang, rate);
+    if (window.speakWord) window.speakWord(text, selectedLang, rate);
+  } else {
+    // Forward & Conjugation mode: Question displayed on screen is base language (e.g. German "reisen")
+    const text = wordObj.en;
+    if (window.speakWord) window.speakWord(text, baseLang, rate);
   }
 }
 
