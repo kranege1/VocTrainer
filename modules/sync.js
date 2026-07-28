@@ -305,12 +305,52 @@ export async function syncICloudFolder() {
       } catch (e) {}
     }
 
+    // Consolidate versioned duplicate files (e.g. Duo_List3 2.json, Duo_List3 3.json, Duo_List3 4.json, Duo_List3 5.json)
+    const consolidatedMap = new Map();
+    for (const item of fileListDetails) {
+      const cleanBaseName = item.name.replace(/\s*\(\d+\)$|\s+\d+$/g, "").trim();
+      const key = (item.folder && item.folder.id) ? item.folder.id : cleanBaseName.toLowerCase();
+
+      if (!consolidatedMap.has(key)) {
+        consolidatedMap.set(key, { ...item, cleanBaseName, name: cleanBaseName, redundantFiles: [] });
+      } else {
+        const existing = consolidatedMap.get(key);
+        if (item.count >= existing.count) {
+          existing.redundantFiles.push(existing.filename);
+          consolidatedMap.set(key, {
+            ...item,
+            cleanBaseName,
+            name: cleanBaseName,
+            redundantFiles: existing.redundantFiles
+          });
+        } else {
+          existing.redundantFiles.push(item.filename);
+        }
+      }
+    }
+
+    const uniqueFileListDetails = Array.from(consolidatedMap.values());
+
+    // Automatically clean up redundant versioned duplicate files in the background
+    for (const item of uniqueFileListDetails) {
+      if (item.redundantFiles && item.redundantFiles.length > 0) {
+        for (const redFilename of item.redundantFiles) {
+          try {
+            await state.icloudHandle.removeEntry(redFilename);
+            console.log(`Cleaned up redundant version file: ${redFilename}`);
+          } catch (e) {
+            console.warn(`Could not remove redundant version file ${redFilename}:`, e);
+          }
+        }
+      }
+    }
+
     // Filter out old synced vocabulary and folders
     state.customVocab = state.customVocab.filter(v => !syncedFolderIds.includes(v.category));
     state.customFolders = state.customFolders.filter(f => !syncedFolderIds.includes(f.id));
 
     // Merge active sets
-    fileListDetails.forEach(set => {
+    uniqueFileListDetails.forEach(set => {
       if (set.isActive) {
         if (set.folder) {
           const folderExists = state.customFolders.some(f => f.id === set.folder.id);
@@ -336,13 +376,13 @@ export async function syncICloudFolder() {
 
     // Render table
     if (tbody) {
-      if (fileListDetails.length === 0) {
+      if (uniqueFileListDetails.length === 0) {
         tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:15px; color:var(--text-secondary);">No wordlists found in folder.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = "";
-      fileListDetails.forEach(set => {
+      uniqueFileListDetails.forEach(set => {
         const tr = document.createElement("tr");
         tr.style.borderBottom = "1px solid rgba(255,255,255,0.04)";
         tr.innerHTML = `
@@ -398,7 +438,8 @@ export function saveWordlistToICloud(folderId) {
       const folder = state.customFolders.find(f => f.id === folderId);
       if (!folder) return;
 
-      const filename = `${folder.name.replace(/[^a-zA-Z0-9_\-\s]/g, "")}.json`;
+      const cleanName = folder.name.replace(/\s*\(\d+\)$|\s+\d+$/g, "").replace(/[^a-zA-Z0-9_\-\s]/g, "").trim();
+      const filename = `${cleanName}.json`;
       const folderWords = state.customVocab.filter(v => v.category === folderId);
 
       const fileHandle = await state.icloudHandle.getFileHandle(filename, { create: true });
@@ -406,7 +447,10 @@ export function saveWordlistToICloud(folderId) {
 
       const data = {
         vocab: folderWords,
-        folder: folder
+        folder: {
+          ...folder,
+          name: cleanName
+        }
       };
 
       await writable.write(JSON.stringify(data, null, 2));
@@ -415,7 +459,7 @@ export function saveWordlistToICloud(folderId) {
       state.activeICloudLists[filename] = true;
       saveState();
       
-      if (document.getElementById("view-setup").classList.contains("active")) {
+      if (document.getElementById("view-setup")?.classList.contains("active")) {
         await syncICloudFolder();
       }
     } catch (err) {
