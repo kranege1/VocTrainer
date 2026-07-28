@@ -1140,7 +1140,7 @@ export function loadOnDeviceVoices(isUserManualTrigger = false) {
     const select = document.getElementById(`voice-select-${lang}`);
     if (!select) return;
 
-    const previousValue = select.value || state.customVoices?.[lang] || "default";
+    const previousValue = isUserManualTrigger ? "default" : (select.value || state.customVoices?.[lang] || "default");
     select.innerHTML = "";
 
     // Default option
@@ -1155,13 +1155,38 @@ export function loadOnDeviceVoices(isUserManualTrigger = false) {
     const matching = voices.filter(v => {
       const vLang = (v.lang || "").toLowerCase().replace('_', '-');
       if (vLang === targetLocale || (vLang && vLang.startsWith(langPrefix))) return true;
-      // Fallback name search for iOS Accessibility voices
+      // Fallback name search for iOS / macOS Accessibility voices
       const vName = (v.name || "").toLowerCase();
-      if (lang === "de" && (vName.includes("german") || vName.includes("deutsch"))) return true;
-      if (lang === "it" && (vName.includes("italian") || vName.includes("italiano"))) return true;
-      if (lang === "es" && (vName.includes("spanish") || vName.includes("español"))) return true;
-      if (lang === "fr" && (vName.includes("french") || vName.includes("français"))) return true;
-      if (lang === "en" && (vName.includes("english") || vName.includes("us") || vName.includes("uk"))) return true;
+      if (lang === "it" && (
+        vName.includes("italian") || vName.includes("italiano") ||
+        vName.includes("alice") || vName.includes("federica") || vName.includes("luca") ||
+        vName.includes("paola") || vName.includes("cosimo") || vName.includes("diego") || vName.includes("elsa")
+      )) return true;
+
+      if (lang === "de" && (
+        vName.includes("german") || vName.includes("deutsch") ||
+        vName.includes("anna") || vName.includes("viktor") || vName.includes("markus") ||
+        vName.includes("yannick") || vName.includes("petra")
+      )) return true;
+
+      if (lang === "es" && (
+        vName.includes("spanish") || vName.includes("español") ||
+        vName.includes("monica") || vName.includes("jorge") || vName.includes("pablo") ||
+        vName.includes("marta") || vName.includes("marisol")
+      )) return true;
+
+      if (lang === "fr" && (
+        vName.includes("french") || vName.includes("français") ||
+        vName.includes("amelie") || vName.includes("thomas") || vName.includes("audrey") ||
+        vName.includes("aurelie")
+      )) return true;
+
+      if (lang === "en" && (
+        vName.includes("english") || vName.includes("us") || vName.includes("uk") ||
+        vName.includes("samantha") || vName.includes("alex") || vName.includes("daniel") ||
+        vName.includes("karen") || vName.includes("moira")
+      )) return true;
+
       return false;
     });
 
@@ -1187,13 +1212,26 @@ export function loadOnDeviceVoices(isUserManualTrigger = false) {
       select.appendChild(opt);
     });
 
-    // Re-select active choice
-    select.value = previousValue;
+    // On manual refresh, auto-select top Premium/Enhanced voice if available
+    if (isUserManualTrigger && matching.length > 0) {
+      const topVoice = matching[0];
+      if (topVoice && (topVoice.quality === "premium" || topVoice.name.includes("Premium") || topVoice.quality === "enhanced" || topVoice.name.includes("Enhanced"))) {
+        select.value = topVoice.name;
+        if (!state.customVoices) state.customVoices = {};
+        state.customVoices[lang] = topVoice.name;
+      } else {
+        select.value = previousValue;
+      }
+    } else {
+      select.value = previousValue;
+    }
+
     if (select.selectedIndex === -1) select.value = "default";
   });
 
   if (isUserManualTrigger) {
-    const msg = "🎉 System voices refreshed! Downloaded iOS Premium/Enhanced voices (from iPhone Settings -> Accessibility -> Spoken Content -> Voices) are now available.";
+    saveState();
+    const msg = "🎉 System voices refreshed! High-quality Premium/Enhanced voices (from iPhone Settings -> Accessibility -> Spoken Content -> Voices) have been detected and selected.";
     if (window.showCustomAlert) window.showCustomAlert(msg);
     else alert(msg);
   }
