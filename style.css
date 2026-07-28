@@ -2116,6 +2116,24 @@ body.api-active-green::after {
   box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
 }
 
+/* 5. Purple Glowing Frame for TTS Speech Synthesis */
+body.api-active-purple::after {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 999999;
+  border: 5px solid #c084fc;
+  box-shadow: inset 0 0 25px #c084fc, inset 0 0 50px rgba(192, 132, 252, 0.7), 0 0 30px #c084fc;
+  animation: api-pulse-purple 1.4s infinite ease-in-out;
+}
+
+@keyframes api-pulse-purple {
+  0% { border-color: #a855f7; box-shadow: inset 0 0 15px #a855f7, 0 0 15px rgba(168, 85, 247, 0.4); }
+  50% { border-color: #c084fc; box-shadow: inset 0 0 35px #c084fc, inset 0 0 70px rgba(192, 132, 252, 0.9), 0 0 45px rgba(192, 132, 252, 0.85); }
+  100% { border-color: #a855f7; box-shadow: inset 0 0 15px #a855f7, 0 0 15px rgba(168, 85, 247, 0.4); }
+}
+
 #api-usage-info-bar.theme-green {
   background: rgba(4, 28, 20, 0.92);
   border: 1.5px solid #34d399;

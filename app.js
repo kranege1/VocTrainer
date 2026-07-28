@@ -1455,37 +1455,83 @@ function playSynthesizedSound(type) {
   }
 }
 
+function getVoiceQualityDetails(voice) {
+  if (!voice) return { displayName: "System Default", quality: "Standard" };
+
+  const name = voice.name;
+  let quality = "Standard";
+
+  if (voice.quality === "premium" || name.includes("Premium") || name.includes("Neural")) {
+    quality = "Premium ⭐️";
+  } else if (voice.quality === "enhanced" || name.includes("Enhanced") || name.includes("Siri")) {
+    quality = "Enhanced ✨";
+  } else if (name.includes("Google") || name.includes("Natural")) {
+    quality = "HD Natural 🎧";
+  }
+
+  let displayName = name
+    .replace(/\(Enhanced\)|\(Premium\)|\(Natural\)/gi, "")
+    .replace(/^Google\s+/i, "")
+    .replace(/Online \(natural\)/i, "")
+    .replace(/Microsoft\s+/i, "")
+    .trim();
+
+  return {
+    rawName: name,
+    displayName: displayName || name,
+    quality: quality
+  };
+}
+
 // Speech Synthesis (TTS) with Enhanced voice picker for iOS/Browsers
 function getBestVoice(langCode) {
   if (!('speechSynthesis' in window)) return null;
   const voices = window.speechSynthesis.getVoices();
   const targetLocale = (LANG_LOCALES[langCode] || "en-US").toLowerCase().replace('_', '-');
+  const langPrefix = targetLocale.split('-')[0];
   
   const matchingVoices = voices.filter(v => {
     const vLang = v.lang.toLowerCase().replace('_', '-');
-    return vLang === targetLocale || vLang.startsWith(targetLocale.split('-')[0]);
+    return vLang === targetLocale || vLang.startsWith(langPrefix);
   });
 
   if (matchingVoices.length === 0) return null;
 
-  // Prioritize premium Siri, Enhanced, Premium, and Google high-fidelity voices
-  const enhanced = matchingVoices.find(v => 
-    (v.quality && v.quality === "enhanced") ||
-    v.name.includes("Siri") || 
-    v.name.includes("Enhanced") || 
-    v.name.includes("Premium") || 
-    v.name.includes("Google") || 
-    v.name.includes("Samantha") ||
-    v.name.includes("Anna") ||
-    v.name.includes("Alice") ||
-    v.name.includes("Thomas") ||
-    v.name.includes("Helena") ||
-    v.name.includes("Monica") ||
-    v.name.includes("Jorge") ||
-    v.name.includes("Amelie") ||
-    v.name.includes("Mariska")
+  // Tier 1: Premium / Neural high-fidelity voices (iOS Premium / Edge Neural)
+  let best = matchingVoices.find(v => 
+    (v.quality && v.quality === "premium") ||
+    v.name.includes("Premium") ||
+    v.name.includes("Neural")
   );
-  return enhanced || matchingVoices[0];
+
+  // Tier 2: Enhanced / Siri voices (iOS Enhanced / Siri)
+  if (!best) {
+    best = matchingVoices.find(v => 
+      (v.quality && v.quality === "enhanced") ||
+      v.name.includes("Enhanced") ||
+      v.name.includes("Siri")
+    );
+  }
+
+  // Tier 3: High-fidelity Google or native iOS/macOS voice names
+  if (!best) {
+    best = matchingVoices.find(v => 
+      v.name.includes("Google") || 
+      v.name.includes("Samantha") ||
+      v.name.includes("Anna") ||
+      v.name.includes("Alice") ||
+      v.name.includes("Luca") ||
+      v.name.includes("Federica") ||
+      v.name.includes("Thomas") ||
+      v.name.includes("Helena") ||
+      v.name.includes("Monica") ||
+      v.name.includes("Jorge") ||
+      v.name.includes("Amelie") ||
+      v.name.includes("Mariska")
+    );
+  }
+
+  return best || matchingVoices[0];
 }
 
 function speakWord(text, langCode, rate = 1.0) {
@@ -1511,6 +1557,28 @@ function speakWord(text, langCode, rate = 1.0) {
     if (finalVoice) {
       utterance.voice = finalVoice;
     }
+
+    const voiceInfo = getVoiceQualityDetails(finalVoice);
+    if (window.triggerAPITelemetry) {
+      window.triggerAPITelemetry({
+        color: "purple",
+        icon: "🔊",
+        title: `TTS Voice (${voiceInfo.quality})`,
+        infoText: `${voiceInfo.displayName} • "${text.length > 25 ? text.slice(0, 25) + '...' : text}"`,
+        durationMs: 2500
+      });
+    }
+
+    utterance.onstart = () => {
+      document.body.classList.add("api-active-purple");
+    };
+    utterance.onend = () => {
+      document.body.classList.remove("api-active-purple");
+    };
+    utterance.onerror = () => {
+      document.body.classList.remove("api-active-purple");
+    };
+
     window.speechSynthesis.speak(utterance);
   }
 }
@@ -1542,11 +1610,27 @@ function speakWordWithCallback(text, langCode, rate = 1.0, callback) {
     if (finalVoice) {
       utterance.voice = finalVoice;
     }
-    
+
+    const voiceInfo = getVoiceQualityDetails(finalVoice);
+    if (window.triggerAPITelemetry) {
+      window.triggerAPITelemetry({
+        color: "purple",
+        icon: "🔊",
+        title: `TTS Voice (${voiceInfo.quality})`,
+        infoText: `${voiceInfo.displayName} • "${text.length > 25 ? text.slice(0, 25) + '...' : text}"`,
+        durationMs: 2500
+      });
+    }
+
+    utterance.onstart = () => {
+      document.body.classList.add("api-active-purple");
+    };
     utterance.onend = () => {
+      document.body.classList.remove("api-active-purple");
       if (callback) callback();
     };
     utterance.onerror = () => {
+      document.body.classList.remove("api-active-purple");
       if (callback) callback();
     };
     window.speechSynthesis.speak(utterance);
