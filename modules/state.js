@@ -39,6 +39,10 @@ export let state = {
   useLLMForSentences: false,
   quickTranslateMode: "base_learning",
 
+  // Device Cumulative AI Token Counter
+  totalInputTokens: 0,
+  totalOutputTokens: 0,
+
   // Current active test state
   currentTest: {
     words: [],
@@ -85,10 +89,33 @@ export function saveState() {
     githubGistId: state.githubGistId,
     lastSelectedCategory: state.lastSelectedCategory,
     lastSelectedCustomCategory: state.lastSelectedCustomCategory,
-    quickTranslateMode: state.quickTranslateMode
+    quickTranslateMode: state.quickTranslateMode,
+    totalInputTokens: state.totalInputTokens || 0,
+    totalOutputTokens: state.totalOutputTokens || 0
   }));
   if (window.updateHeaderUI) window.updateHeaderUI();
   updateCategoryCounts();
+}
+
+// Helper to record token usage and persist it
+export function recordTokenUsage(inTokens = 0, outTokens = 0) {
+  state.totalInputTokens = (state.totalInputTokens || 0) + (parseInt(inTokens) || 0);
+  state.totalOutputTokens = (state.totalOutputTokens || 0) + (parseInt(outTokens) || 0);
+  saveState();
+  updateTokenUsageUI();
+}
+
+export function updateTokenUsageUI() {
+  const inEl = document.getElementById("pref-total-in-tokens");
+  const outEl = document.getElementById("pref-total-out-tokens");
+  const sumEl = document.getElementById("pref-total-sum-tokens");
+  const inTokens = state.totalInputTokens || 0;
+  const outTokens = state.totalOutputTokens || 0;
+  const totalTokens = inTokens + outTokens;
+
+  if (inEl) inEl.textContent = inTokens.toLocaleString();
+  if (outEl) outEl.textContent = outTokens.toLocaleString();
+  if (sumEl) sumEl.textContent = totalTokens.toLocaleString();
 }
 
 // Helper to synchronize custom folders with categories used in customVocab
@@ -136,6 +163,8 @@ export function loadState() {
     state.deletedStarters = parsed.deletedStarters || [];
     state.deletedCustomVocab = parsed.deletedCustomVocab || [];
     state.editedStarters = parsed.editedStarters || {};
+    state.totalInputTokens = parsed.totalInputTokens || 0;
+    state.totalOutputTokens = parsed.totalOutputTokens || 0;
     state.customFolders = (parsed.customFolders || []).map(f => {
       if (typeof f === "string") {
         return { id: f, name: f, parentId: null };
@@ -213,6 +242,7 @@ export function loadState() {
     });
     if (window.updateDirectionButtonsUI) window.updateDirectionButtonsUI();
     if (window.loadOnDeviceVoices) window.loadOnDeviceVoices();
+    updateTokenUsageUI();
   }
   if (window.updateHeaderUI) window.updateHeaderUI();
   if (window.renderImportedList) window.renderImportedList();

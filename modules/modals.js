@@ -1,4 +1,4 @@
-import { state, saveState, getFlagHtml, getFolderFullPath } from './state.js';
+import { state, saveState, getFlagHtml, getFolderFullPath, recordTokenUsage } from './state.js';
 
 // Language code mappings to Speech Synthesis/Recognition locales
 const LANG_LOCALES = {
@@ -908,6 +908,8 @@ export async function callLLM(prompt, systemInstruction = "You are a helpful lan
       outTokens = data.usage?.completion_tokens || Math.round(textResult.length / 3.8);
     }
 
+    recordTokenUsage(inTokens, outTokens);
+
     // Trigger visual telemetry banner
     triggerAPITelemetry({
       color: "blue",
@@ -940,10 +942,11 @@ export async function callLLMVision(prompt, base64Data, mimeType = "image/jpeg",
       body = {
         contents: [{
           parts: [
-            { inline_data: { mime_type: mimeType, data: base64Data } },
-            { text: `${systemInstruction}\n\n${prompt}` }
+            { text: prompt },
+            { inline_data: { mime_type: mimeType, data: base64Data } }
           ]
-        }]
+        }],
+        systemInstruction: { parts: [{ text: systemInstruction }] }
       };
     } else if (state.openaiKey) {
       engineName = "OPENAI VISION";
@@ -969,13 +972,14 @@ export async function callLLMVision(prompt, base64Data, mimeType = "image/jpeg",
     } else if (state.grokKey) {
       engineName = "GROK VISION";
       key = state.grokKey;
+      const model = await getGrokVisionModel(key);
       url = "https://api.x.ai/v1/chat/completions";
       headers = {
         "Authorization": `Bearer ${key}`,
         "Content-Type": "application/json"
       };
       body = {
-        model: await getGrokVisionModel(key),
+        model: model,
         messages: [
           { role: "system", content: systemInstruction },
           {
@@ -1016,6 +1020,8 @@ export async function callLLMVision(prompt, base64Data, mimeType = "image/jpeg",
       inTokens = data.usage?.prompt_tokens || 283;
       outTokens = data.usage?.completion_tokens || Math.round(textResult.length / 3.8);
     }
+
+    recordTokenUsage(inTokens, outTokens);
 
     triggerAPITelemetry({
       color: "blue",

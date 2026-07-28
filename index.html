@@ -121,7 +121,7 @@
         <h1>VocTrainer</h1>
         <div id="build-timestamp"
           style="font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6; font-family: monospace; margin-top: -6px; margin-bottom: 8px; pointer-events: none;">
-          Build: 2026-07-28 14:19:00
+          Build: 2026-07-28 14:26:00
         </div>
         <p>Master languages with premium gamified learning!</p>
       </div>
@@ -737,6 +737,29 @@
             <option value="30">30% (Very Lax)</option>
           </select>
         </div>
+
+        <!-- Cumulative AI Token Usage Card -->
+        <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 14px; margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <div style="font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">
+              <span>🤖</span> Cumulative AI Token Usage (This Device)
+            </div>
+            <span style="font-size: 0.75rem; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); padding: 2px 8px; border-radius: 10px; font-weight: bold;">
+              Total: <span id="pref-total-sum-tokens">0</span> Tk
+            </span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.85rem;">
+            <div style="background: rgba(0,0,0,0.2); padding: 8px 10px; border-radius: 8px;">
+              <span style="color: var(--text-secondary); display: block; font-size: 0.75rem;">Input (Prompt)</span>
+              <strong id="pref-total-in-tokens" style="color: #60a5fa; font-size: 1rem;">0</strong> <span style="font-size: 0.75rem; opacity: 0.7;">Tk</span>
+            </div>
+            <div style="background: rgba(0,0,0,0.2); padding: 8px 10px; border-radius: 8px;">
+              <span style="color: var(--text-secondary); display: block; font-size: 0.75rem;">Output (Response)</span>
+              <strong id="pref-total-out-tokens" style="color: #34d399; font-size: 1rem;">0</strong> <span style="font-size: 0.75rem; opacity: 0.7;">Tk</span>
+            </div>
+          </div>
+        </div>
+
         <button id="btn-save-setup" class="btn btn-primary btn-block">Save Preferences</button>
       </div>
 
@@ -1832,8 +1855,8 @@
     }
   </style>
 
-  <script src="speech.js?v=20260728_141900"></script>
-  <script type="module" src="app.js?v=20260728_141900"></script>
+  <script src="speech.js?v=20260728_142600"></script>
+  <script type="module" src="app.js?v=20260728_142600"></script>
 </body>
 
 </html>
