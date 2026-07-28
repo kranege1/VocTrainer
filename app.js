@@ -1822,9 +1822,28 @@ function playSpeechQueue(queue) {
   currentQueueId++;
   const activeQueueId = currentQueueId;
   if (window.speechSynthesis) {
-    window.speechSynthesis.cancel();
+    try { window.speechSynthesis.cancel(); } catch (e) {}
   }
-  globalSpeechQueue = queue;
+
+  const engine = state.audioEngine || "cloud_hd";
+  const isCloudEngine = (engine === "cloud_hd" || engine === "openai") && state.grokKey;
+
+  if (isCloudEngine && queue && queue.length > 0) {
+    // For Grok / Cloud TTS: Batch adjacent items of the same language into a single string!
+    // This prevents individual HTTP requests per item from rate-limiting or interrupting audio playback on iOS/browsers.
+    const batchedQueue = [];
+    queue.forEach(item => {
+      if (batchedQueue.length > 0 && batchedQueue[batchedQueue.length - 1].lang === item.lang) {
+        batchedQueue[batchedQueue.length - 1].text += ", " + item.text;
+      } else {
+        batchedQueue.push({ ...item });
+      }
+    });
+    globalSpeechQueue = batchedQueue;
+  } else {
+    globalSpeechQueue = queue;
+  }
+
   currentSpeechIndex = 0;
   playNextInQueue(activeQueueId);
 }
