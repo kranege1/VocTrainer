@@ -1554,6 +1554,8 @@ function getBestVoice(langCode) {
 //   openai               → xAI Grok TTS (same, explicit choice)
 // ============================================================
 
+let _activeGrokAudio = null; // keep reference to prevent GC and allow cancellation
+
 async function speakGrokTTS(text, langCode, rate = 1.0, callback) {
   if (!state.grokKey) {
     speakBrowserTTS(text, langCode, rate, callback);
@@ -1561,8 +1563,10 @@ async function speakGrokTTS(text, langCode, rate = 1.0, callback) {
   }
 
   try {
-    if ('speechSynthesis' in window) {
-      try { window.speechSynthesis.cancel(); } catch (e) {}
+    // Stop any currently playing Grok audio cleanly
+    if (_activeGrokAudio) {
+      try { _activeGrokAudio.pause(); _activeGrokAudio.src = ""; } catch (e) {}
+      _activeGrokAudio = null;
     }
 
     const cleanText = (text || "").trim();
@@ -1584,29 +1588,63 @@ async function speakGrokTTS(text, langCode, rate = 1.0, callback) {
 
     document.body.classList.add("api-active-purple");
 
-    const response = await fetch("https://api.x.ai/v1/tts", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${state.grokKey}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        text: cleanText,
-        voice_id: "eve",
-        language: ttsLang
-      })
-    });
+    // Fetch with timeout (8 seconds) and retry (1 retry)
+    let response = null;
+    let lastError = null;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-    if (!response.ok) throw new Error("xAI TTS Error " + response.status);
+        response = await fetch("https://api.x.ai/v1/tts", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${state.grokKey}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            text: cleanText,
+            voice_id: "eve",
+            language: ttsLang
+          }),
+          signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        if (response.ok) break; // success
+        
+        // Rate limit (429) – wait and retry
+        if (response.status === 429 && attempt === 0) {
+          console.warn("xAI TTS rate limited, retrying in 1s...");
+          await new Promise(r => setTimeout(r, 1000));
+          continue;
+        }
+        
+        throw new Error("xAI TTS Error " + response.status);
+      } catch (fetchErr) {
+        lastError = fetchErr;
+        if (attempt === 0 && fetchErr.name !== 'AbortError') {
+          console.warn("xAI TTS attempt failed, retrying:", fetchErr.message);
+          await new Promise(r => setTimeout(r, 500));
+          continue;
+        }
+        throw fetchErr;
+      }
+    }
+
+    if (!response || !response.ok) throw lastError || new Error("xAI TTS failed after retries");
 
     const blob = await response.blob();
     const audioUrl = URL.createObjectURL(blob);
     const audio = new Audio(audioUrl);
+    _activeGrokAudio = audio; // prevent GC
 
     let finished = false;
     const finish = () => {
       if (finished) return;
       finished = true;
+      if (_activeGrokAudio === audio) _activeGrokAudio = null;
       document.body.classList.remove("api-active-purple");
       URL.revokeObjectURL(audioUrl);
       if (callback) callback();
@@ -1618,9 +1656,15 @@ async function speakGrokTTS(text, langCode, rate = 1.0, callback) {
       finish();
     };
 
+    // Pre-load audio data before playing to reduce iOS issues
+    audio.preload = "auto";
+    audio.load();
+
     const playPromise = audio.play();
     if (playPromise !== undefined) {
-      playPromise.catch(() => {
+      playPromise.catch((playErr) => {
+        console.warn("xAI TTS play() rejected:", playErr.message);
+        if (_activeGrokAudio === audio) _activeGrokAudio = null;
         document.body.classList.remove("api-active-purple");
         URL.revokeObjectURL(audioUrl);
         speakBrowserTTS(text, langCode, rate, callback);
@@ -1628,6 +1672,7 @@ async function speakGrokTTS(text, langCode, rate = 1.0, callback) {
     }
   } catch (e) {
     console.error("xAI Grok TTS failed:", e);
+    _activeGrokAudio = null;
     document.body.classList.remove("api-active-purple");
     speakBrowserTTS(text, langCode, rate, callback);
   }
@@ -1768,7 +1813,7 @@ function playNextInQueue(queueId) {
   
   speakWordWithCallback(chunk.text, chunk.lang, 1.0, () => {
     if (queueId === currentQueueId) {
-      setTimeout(() => playNextInQueue(queueId), 300);
+      setTimeout(() => playNextInQueue(queueId), 500);
     }
   });
 }
