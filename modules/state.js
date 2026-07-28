@@ -126,7 +126,7 @@ export function loadState() {
     state.grokKey = parsed.grokKey || "";
     state.geminiKey = parsed.geminiKey || "";
     state.anthropicKey = parsed.anthropicKey || "";
-    state.audioEngine = parsed.audioEngine || "cloud_hd";
+    state.audioEngine = (!parsed.audioEngine || parsed.audioEngine === "browser") ? "cloud_hd" : parsed.audioEngine;
     state.allowSynonyms = parsed.allowSynonyms !== undefined ? parsed.allowSynonyms : true;
     state.questionTimer = parsed.questionTimer || 0;
     state.baseLang = parsed.baseLang || "en";
