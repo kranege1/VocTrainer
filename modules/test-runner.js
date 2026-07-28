@@ -603,6 +603,14 @@ function extractCoreWords(text, lang) {
   return core.length > 0 ? core : s;
 }
 
+function stripDiacritics(str) {
+  if (!str) return "";
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // removes accents/diacritics (à -> a, è -> e, ì -> i, ò -> o, ù -> u, etc.)
+    .replace(/ß/g, "ss");
+}
+
 function checkAnswer(userAnswer, correctAnswer, wordObj) {
   if (!userAnswer || !correctAnswer) return false;
   
@@ -611,13 +619,19 @@ function checkAnswer(userAnswer, correctAnswer, wordObj) {
   const cleanUser = cleanArticlesAndSpaces(userAnswer, lang);
   const cleanCorrect = cleanArticlesAndSpaces(correctAnswer, lang);
 
-  if (cleanUser === cleanCorrect) return true;
+  const cleanUserNorm = stripDiacritics(cleanUser);
+  const cleanCorrectNorm = stripDiacritics(cleanCorrect);
+
+  if (cleanUserNorm === cleanCorrectNorm) return true;
 
   // Check core phrase matching (allowing optional pronouns, helper verbs, articles & prepositions)
   const coreUser = extractCoreWords(userAnswer, lang);
   const coreCorrect = extractCoreWords(correctAnswer, lang);
-  if (coreUser === coreCorrect && coreUser.length > 0) {
-    console.log(`Core phrase match accepted: "${userAnswer}" -> core "${coreUser}" matches "${correctAnswer}" -> core "${coreCorrect}"`);
+  const coreUserNorm = stripDiacritics(coreUser);
+  const coreCorrectNorm = stripDiacritics(coreCorrect);
+
+  if (coreUserNorm === coreCorrectNorm && coreUserNorm.length > 0) {
+    console.log(`Core phrase match accepted: "${userAnswer}" -> core "${coreUserNorm}" matches "${correctAnswer}" -> core "${coreCorrectNorm}"`);
     return true;
   }
 
@@ -631,9 +645,9 @@ function checkAnswer(userAnswer, correctAnswer, wordObj) {
       const synList = cacheEntry.synonyms[targetLang];
       if (Array.isArray(synList)) {
         for (let syn of synList) {
-          const cleanSyn = cleanArticlesAndSpaces(syn, lang);
-          const coreSyn = extractCoreWords(syn, lang);
-          if (cleanSyn === cleanUser || (coreSyn === coreUser && coreSyn.length > 0)) {
+          const cleanSynNorm = stripDiacritics(cleanArticlesAndSpaces(syn, lang));
+          const coreSynNorm = stripDiacritics(extractCoreWords(syn, lang));
+          if (cleanSynNorm === cleanUserNorm || (coreSynNorm === coreUserNorm && coreSynNorm.length > 0)) {
             console.log(`Synonym match found: "${userAnswer}" matches synonym "${syn}" for "${correctAnswer}"`);
             return true;
           }
@@ -645,8 +659,8 @@ function checkAnswer(userAnswer, correctAnswer, wordObj) {
   // Typo toleration threshold check (against both clean strings and core strings)
   const threshold = state.typoThreshold !== undefined ? state.typoThreshold : 15;
   if (threshold > 0) {
-    const editDist = getLevenshteinDistance(cleanUser, cleanCorrect);
-    const maxLen = Math.max(cleanUser.length, cleanCorrect.length);
+    const editDist = getLevenshteinDistance(cleanUserNorm, cleanCorrectNorm);
+    const maxLen = Math.max(cleanUserNorm.length, cleanCorrectNorm.length);
     const distancePercent = maxLen > 0 ? (editDist / maxLen) * 100 : 100;
     if (distancePercent <= threshold) {
       console.log(`Typo match accepted: "${userAnswer}" is within ${Math.round(distancePercent)}% difference of "${correctAnswer}" (Threshold: ${threshold}%)`);
@@ -654,8 +668,8 @@ function checkAnswer(userAnswer, correctAnswer, wordObj) {
     }
 
     // Core Levenshtein distance
-    const coreDist = getLevenshteinDistance(coreUser, coreCorrect);
-    const maxCoreLen = Math.max(coreUser.length, coreCorrect.length);
+    const coreDist = getLevenshteinDistance(coreUserNorm, coreCorrectNorm);
+    const maxCoreLen = Math.max(coreUserNorm.length, coreCorrectNorm.length);
     const corePercent = maxCoreLen > 0 ? (coreDist / maxCoreLen) * 100 : 100;
     if (corePercent <= threshold) {
       console.log(`Core typo match accepted: "${userAnswer}" is within ${Math.round(corePercent)}% core difference of "${correctAnswer}"`);
