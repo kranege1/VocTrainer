@@ -162,6 +162,42 @@ export function onBackupFileAccessGranted() {
 }
 
 
+let lastAutoSyncTime = 0;
+export async function autoSyncOnActivation() {
+  const now = Date.now();
+  if (now - lastAutoSyncTime < 2500) return;
+  lastAutoSyncTime = now;
+
+  if (!state.icloudHandle) {
+    try {
+      const handle = await idb.get("icloud_handle");
+      if (handle) state.icloudHandle = handle;
+    } catch (e) {}
+  }
+
+  if (state.icloudHandle) {
+    try {
+      const perm = await state.icloudHandle.queryPermission({ mode: "readwrite" });
+      if (perm === "granted") {
+        console.log("Auto-syncing folder on app activation...");
+        await onICloudFolderAccessGranted();
+      }
+    } catch (e) {}
+  }
+}
+
+if (typeof window !== "undefined") {
+  window.addEventListener("focus", () => {
+    autoSyncOnActivation();
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      autoSyncOnActivation();
+    }
+  });
+}
+
 export async function initICloudSync() {
   if (!window.showDirectoryPicker) {
     const statusSpan = document.getElementById("icloud-folder-status");
@@ -182,6 +218,16 @@ export async function initICloudSync() {
     const handle = await idb.get("icloud_handle");
     if (handle) {
       state.icloudHandle = handle;
+      
+      // Auto-check permission silently on app start
+      try {
+        const perm = await handle.queryPermission({ mode: "readwrite" });
+        if (perm === "granted") {
+          await onICloudFolderAccessGranted();
+          return;
+        }
+      } catch (e) {}
+
       const statusSpan = document.getElementById("icloud-folder-status");
       if (statusSpan) {
         statusSpan.textContent = `📁 ${handle.name} (Access Needed)`;
