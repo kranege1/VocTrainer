@@ -1539,14 +1539,67 @@ function getBestVoice(langCode) {
   return best || matchingVoices[0];
 }
 
-function speakWord(text, langCode, rate = 1.0) {
-  if (state.audioEngine === "openai" && state.openaiKey) {
-    speakOpenAI(text, rate);
-    return;
+function speakCloudHD(text, langCode, rate = 1.0, callback) {
+  try {
+    if ('speechSynthesis' in window) {
+      try { window.speechSynthesis.cancel(); } catch (e) {}
+    }
+
+    const cleanText = (text || "").trim();
+    if (!cleanText) {
+      if (callback) callback();
+      return;
+    }
+
+    const localeMap = { de: "de", it: "it", en: "en", es: "es", fr: "fr" };
+    const targetLang = localeMap[langCode] || langCode || "it";
+
+    const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(cleanText)}&tl=${targetLang}&client=tw-ob`;
+    const audio = new Audio(audioUrl);
+    audio.playbackRate = rate;
+
+    if (window.triggerAPITelemetry) {
+      window.triggerAPITelemetry({
+        color: "purple",
+        icon: "🔊",
+        title: "Cloud HD Neural Voice (Human Speaker)",
+        infoText: `Native ${targetLang.toUpperCase()} • "${cleanText.length > 25 ? cleanText.slice(0, 25) + '...' : cleanText}"`,
+        durationMs: 2500
+      });
+    }
+
+    document.body.classList.add("api-active-purple");
+
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      document.body.classList.remove("api-active-purple");
+      if (callback) callback();
+    };
+
+    audio.onended = finish;
+    audio.onerror = () => {
+      document.body.classList.remove("api-active-purple");
+      speakBrowserTTS(text, langCode, rate, callback);
+    };
+
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        document.body.classList.remove("api-active-purple");
+        speakBrowserTTS(text, langCode, rate, callback);
+      });
+    }
+  } catch (e) {
+    document.body.classList.remove("api-active-purple");
+    speakBrowserTTS(text, langCode, rate, callback);
   }
-  
+}
+
+function speakBrowserTTS(text, langCode, rate = 1.0, callback) {
   if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
+    try { window.speechSynthesis.cancel(); } catch (e) {}
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = LANG_LOCALES[langCode] || "en-US";
     utterance.rate = rate; 
@@ -1568,7 +1621,7 @@ function speakWord(text, langCode, rate = 1.0) {
       window.triggerAPITelemetry({
         color: "purple",
         icon: "🔊",
-        title: `TTS Voice (${voiceInfo.quality})`,
+        title: `Browser System Voice (${voiceInfo.quality})`,
         infoText: `${voiceInfo.displayName} • "${text.length > 25 ? text.slice(0, 25) + '...' : text}"`,
         durationMs: 2500
       });
@@ -1579,69 +1632,48 @@ function speakWord(text, langCode, rate = 1.0) {
     };
     utterance.onend = () => {
       document.body.classList.remove("api-active-purple");
+      if (callback) callback();
     };
     utterance.onerror = () => {
       document.body.classList.remove("api-active-purple");
+      if (callback) callback();
     };
 
     window.speechSynthesis.speak(utterance);
+  } else {
+    if (callback) callback();
   }
+}
+
+function speakWord(text, langCode, rate = 1.0) {
+  const engine = state.audioEngine || "cloud_hd";
+  if (engine === "openai" && state.openaiKey) {
+    speakOpenAI(text, rate);
+    return;
+  }
+  if (engine === "cloud_hd") {
+    speakCloudHD(text, langCode, rate);
+    return;
+  }
+  speakBrowserTTS(text, langCode, rate);
 }
 
 let currentSpeechIndex = 0;
 let globalSpeechQueue = [];
 
 function speakWordWithCallback(text, langCode, rate = 1.0, callback) {
-  if (state.audioEngine === "openai" && state.openaiKey) {
+  const engine = state.audioEngine || "cloud_hd";
+  if (engine === "openai" && state.openaiKey) {
     speakOpenAI(text, rate).finally(() => {
       if (callback) callback();
     });
     return;
   }
-  
-  if ('speechSynthesis' in window) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = LANG_LOCALES[langCode] || "en-US";
-    utterance.rate = rate; 
-    
-    let selectedVoice = null;
-    const customVoiceName = state.customVoices?.[langCode];
-    if (customVoiceName && customVoiceName !== "default") {
-      const voices = window.speechSynthesis.getVoices();
-      selectedVoice = voices.find(v => v.name === customVoiceName);
-    }
-    
-    const finalVoice = selectedVoice || getBestVoice(langCode);
-    if (finalVoice) {
-      utterance.voice = finalVoice;
-    }
-
-    const voiceInfo = getVoiceQualityDetails(finalVoice);
-    if (window.triggerAPITelemetry) {
-      window.triggerAPITelemetry({
-        color: "purple",
-        icon: "🔊",
-        title: `TTS Voice (${voiceInfo.quality})`,
-        infoText: `${voiceInfo.displayName} • "${text.length > 25 ? text.slice(0, 25) + '...' : text}"`,
-        durationMs: 2500
-      });
-    }
-
-    utterance.onstart = () => {
-      document.body.classList.add("api-active-purple");
-    };
-    utterance.onend = () => {
-      document.body.classList.remove("api-active-purple");
-      if (callback) callback();
-    };
-    utterance.onerror = () => {
-      document.body.classList.remove("api-active-purple");
-      if (callback) callback();
-    };
-    window.speechSynthesis.speak(utterance);
-  } else {
-    if (callback) callback();
+  if (engine === "cloud_hd") {
+    speakCloudHD(text, langCode, rate, callback);
+    return;
   }
+  speakBrowserTTS(text, langCode, rate, callback);
 }
 
 let currentQueueId = 0;

@@ -13,7 +13,7 @@ export let state = {
   grokKey: "",
   geminiKey: "",
   anthropicKey: "",
-  audioEngine: "browser", // browser or openai
+  audioEngine: "cloud_hd", // cloud_hd, browser, or openai
   allowSynonyms: true, // Allow similar words/synonyms
   questionTimer: 0, // Per-question timer limit (0, 5, 10, 15)
   history: [], // Completed tests history
@@ -126,7 +126,7 @@ export function loadState() {
     state.grokKey = parsed.grokKey || "";
     state.geminiKey = parsed.geminiKey || "";
     state.anthropicKey = parsed.anthropicKey || "";
-    state.audioEngine = parsed.audioEngine || "browser";
+    state.audioEngine = parsed.audioEngine || "cloud_hd";
     state.allowSynonyms = parsed.allowSynonyms !== undefined ? parsed.allowSynonyms : true;
     state.questionTimer = parsed.questionTimer || 0;
     state.baseLang = parsed.baseLang || "en";
