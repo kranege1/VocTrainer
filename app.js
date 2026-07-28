@@ -1546,59 +1546,88 @@ function getBestVoice(langCode) {
   return best || matchingVoices[0];
 }
 
-function speakCloudHD(text, langCode, rate = 1.0, callback) {
+// ============================================================
+// Unified TTS Engine with fallback chain:
+//   cloud_hd + Grok key → xAI Grok TTS (studio quality)
+//   cloud_hd without key → Browser speechSynthesis
+//   browser              → Browser speechSynthesis
+//   openai               → xAI Grok TTS (same, explicit choice)
+// ============================================================
+
+async function speakGrokTTS(text, langCode, rate = 1.0, callback) {
+  if (!state.grokKey) {
+    speakBrowserTTS(text, langCode, rate, callback);
+    return;
+  }
+
   try {
     if ('speechSynthesis' in window) {
       try { window.speechSynthesis.cancel(); } catch (e) {}
     }
 
     const cleanText = (text || "").trim();
-    if (!cleanText) {
-      if (callback) callback();
-      return;
-    }
+    if (!cleanText) { if (callback) callback(); return; }
 
-    const localeMap = { de: "de", it: "it", en: "en", es: "es", fr: "fr" };
-    const targetLang = localeMap[langCode] || langCode || "it";
-
-    const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(cleanText)}&tl=${targetLang}&client=tw-ob`;
-    const audio = new Audio(audioUrl);
-    audio.playbackRate = rate;
+    // Map language codes to BCP-47 for xAI TTS
+    const langMap = { de: "de", it: "it", en: "en", es: "es", fr: "fr" };
+    const ttsLang = langMap[langCode] || langCode || "it";
 
     if (window.triggerAPITelemetry) {
       window.triggerAPITelemetry({
         color: "purple",
         icon: "🔊",
-        title: "Cloud HD Neural Voice (Human Speaker)",
-        infoText: `Native ${targetLang.toUpperCase()} • "${cleanText.length > 25 ? cleanText.slice(0, 25) + '...' : cleanText}"`,
-        durationMs: 2500
+        title: "xAI Grok TTS (Studio Quality)",
+        infoText: `Neural Voice (${ttsLang.toUpperCase()}) • "${cleanText.length > 25 ? cleanText.slice(0, 25) + '...' : cleanText}"`,
+        durationMs: 3000
       });
     }
 
     document.body.classList.add("api-active-purple");
+
+    const response = await fetch("https://api.x.ai/v1/tts", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${state.grokKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        text: cleanText,
+        voice_id: "eve",
+        language: ttsLang
+      })
+    });
+
+    if (!response.ok) throw new Error("xAI TTS Error " + response.status);
+
+    const blob = await response.blob();
+    const audioUrl = URL.createObjectURL(blob);
+    const audio = new Audio(audioUrl);
 
     let finished = false;
     const finish = () => {
       if (finished) return;
       finished = true;
       document.body.classList.remove("api-active-purple");
+      URL.revokeObjectURL(audioUrl);
       if (callback) callback();
     };
 
     audio.onended = finish;
     audio.onerror = () => {
-      document.body.classList.remove("api-active-purple");
-      speakBrowserTTS(text, langCode, rate, callback);
+      console.error("xAI TTS audio playback error");
+      finish();
     };
 
     const playPromise = audio.play();
     if (playPromise !== undefined) {
       playPromise.catch(() => {
         document.body.classList.remove("api-active-purple");
+        URL.revokeObjectURL(audioUrl);
         speakBrowserTTS(text, langCode, rate, callback);
       });
     }
   } catch (e) {
+    console.error("xAI Grok TTS failed:", e);
     document.body.classList.remove("api-active-purple");
     speakBrowserTTS(text, langCode, rate, callback);
   }
@@ -1607,6 +1636,18 @@ function speakCloudHD(text, langCode, rate = 1.0, callback) {
 function speakBrowserTTS(text, langCode, rate = 1.0, callback) {
   if ('speechSynthesis' in window) {
     try { window.speechSynthesis.cancel(); } catch (e) {}
+
+    // iOS priming: speak a silent utterance first to unlock the audio session
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (isIOS) {
+      try {
+        const primer = new SpeechSynthesisUtterance("");
+        primer.volume = 0;
+        window.speechSynthesis.speak(primer);
+        window.speechSynthesis.cancel();
+      } catch (e) {}
+    }
+
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = LANG_LOCALES[langCode] || "en-US";
     utterance.rate = rate; 
@@ -1636,7 +1677,7 @@ function speakBrowserTTS(text, langCode, rate = 1.0, callback) {
       window.triggerAPITelemetry({
         color: "purple",
         icon: "🔊",
-        title: `Browser System Voice (${voiceInfo.quality})`,
+        title: `System Voice (${voiceInfo.quality})`,
         infoText: `${voiceInfo.displayName} • "${text.length > 25 ? text.slice(0, 25) + '...' : text}"`,
         durationMs: 2500
       });
@@ -1662,12 +1703,14 @@ function speakBrowserTTS(text, langCode, rate = 1.0, callback) {
 
 function speakWord(text, langCode, rate = 1.0) {
   const engine = state.audioEngine || "cloud_hd";
-  if (engine === "openai" && state.openaiKey) {
-    speakOpenAI(text, rate);
-    return;
-  }
-  if (engine === "cloud_hd") {
-    speakCloudHD(text, langCode, rate);
+
+  // cloud_hd or openai: use xAI Grok TTS if key available, otherwise browser TTS
+  if (engine === "cloud_hd" || engine === "openai") {
+    if (state.grokKey) {
+      speakGrokTTS(text, langCode, rate);
+    } else {
+      speakBrowserTTS(text, langCode, rate);
+    }
     return;
   }
   speakBrowserTTS(text, langCode, rate);
@@ -1678,17 +1721,23 @@ let globalSpeechQueue = [];
 
 function speakWordWithCallback(text, langCode, rate = 1.0, callback) {
   const engine = state.audioEngine || "cloud_hd";
-  if (engine === "openai" && state.openaiKey) {
-    speakOpenAI(text, rate).finally(() => {
-      if (callback) callback();
-    });
-    return;
-  }
-  if (engine === "cloud_hd") {
-    speakCloudHD(text, langCode, rate, callback);
+
+  if (engine === "cloud_hd" || engine === "openai") {
+    if (state.grokKey) {
+      speakGrokTTS(text, langCode, rate, callback);
+    } else {
+      speakBrowserTTS(text, langCode, rate, callback);
+    }
     return;
   }
   speakBrowserTTS(text, langCode, rate, callback);
+}
+
+// Legacy speakOpenAI wrapper (used by playSpeechQueue)
+async function speakOpenAI(text, rate) {
+  return new Promise((resolve) => {
+    speakGrokTTS(text, state.selectedLang || "it", rate, resolve);
+  });
 }
 
 let currentQueueId = 0;
@@ -1793,34 +1842,6 @@ function speakMultilingualText(text, targetLang) {
   }
 }
 
-// Speak using OpenAI API
-async function speakOpenAI(text, rate) {
-  try {
-    const response = await fetch("https://api.openai.com/v1/audio/speech", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${state.openaiKey}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "tts-1",
-        input: text,
-        voice: "alloy",
-        speed: rate
-      })
-    });
-    if (!response.ok) throw new Error("TTS API Error");
-    const blob = await response.blob();
-    const audioUrl = URL.createObjectURL(blob);
-    const audio = new Audio(audioUrl);
-    audio.play();
-  } catch (e) {
-    console.error(e);
-    // Fallback to browser TTS if API fails
-    state.audioEngine = "browser";
-    speakWord(text, state.selectedLang, rate);
-  }
-}
 
 // Play custom recorded sound
 function playCustomAudio(base64Data) {
