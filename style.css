@@ -2123,6 +2123,31 @@ body.api-active-green::after {
   box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45);
 }
 
+#api-usage-info-bar.theme-cyan {
+  background: rgba(3, 20, 38, 0.94);
+  border: 1.5px solid #38bdf8;
+  color: #38bdf8;
+  box-shadow: 0 8px 25px rgba(56, 189, 248, 0.45);
+}
+
+/* 4. Cyan Glowing Frame for iCloud Folder Sync */
+body.api-active-cyan::after {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 999999;
+  border: 5px solid #38bdf8;
+  box-shadow: inset 0 0 25px #38bdf8, inset 0 0 50px rgba(56, 189, 248, 0.7), 0 0 30px #38bdf8;
+  animation: api-pulse-cyan 1.4s infinite ease-in-out;
+}
+
+@keyframes api-pulse-cyan {
+  0% { border-color: #0284c7; box-shadow: inset 0 0 15px #0284c7, 0 0 15px rgba(2, 132, 199, 0.4); }
+  50% { border-color: #38bdf8; box-shadow: inset 0 0 35px #38bdf8, inset 0 0 70px rgba(56, 189, 248, 0.9), 0 0 45px rgba(56, 189, 248, 0.85); }
+  100% { border-color: #0284c7; box-shadow: inset 0 0 15px #0284c7, 0 0 15px rgba(2, 132, 199, 0.4); }
+}
+
 /* Quick Translate Flag Buttons */
 .quick-lang-flag-btn {
   display: inline-flex;

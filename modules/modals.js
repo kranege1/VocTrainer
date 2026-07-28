@@ -791,6 +791,9 @@ export function triggerAPITelemetry({ color = "blue", icon = "🤖", title = "AP
   } else if (color === "green") {
     document.body.classList.add("api-active-green");
     setTimeout(() => document.body.classList.remove("api-active-green"), durationMs);
+  } else if (color === "cyan") {
+    document.body.classList.add("api-active-cyan");
+    setTimeout(() => document.body.classList.remove("api-active-cyan"), durationMs);
   } else {
     document.body.classList.add("ai-active-border");
     setTimeout(() => document.body.classList.remove("ai-active-border"), durationMs);

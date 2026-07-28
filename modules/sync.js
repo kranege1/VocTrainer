@@ -420,6 +420,18 @@ export async function syncICloudFolder() {
     renderImportedList();
     updateCategoryCounts();
 
+    // Trigger visual telemetry info bar & cyan glowing frame
+    if (window.triggerAPITelemetry) {
+      const totalSyncWords = uniqueFileListDetails.reduce((sum, item) => sum + (item.count || 0), 0);
+      window.triggerAPITelemetry({
+        color: "cyan",
+        icon: "☁️",
+        title: "iCloud Sync",
+        infoText: `Synced ${uniqueFileListDetails.length} list(s) (${totalSyncWords} words)`,
+        durationMs: 3500
+      });
+    }
+
     // Render table
     if (tbody) {
       if (uniqueFileListDetails.length === 0) {
