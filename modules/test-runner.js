@@ -358,10 +358,8 @@ export function renderQuestion() {
     }
   }
 
-  // Speak target word automatically if in reverse direction (target -> base)
-  if (direction === "reverse") {
-    speakCurrentTestWord();
-  }
+  // Speak prompt word automatically when a new question/word is tested
+  speakCurrentTestWord();
 
   // Update difficulty vote UI for the current word
   const wordKey = questionWord.origEn || questionWord.en;
@@ -726,8 +724,8 @@ function triggerCorrectAnswerUI() {
   const vStats = state.wordStats[wordKey] || { difficulty: "medium" };
   updateDifficultyVoteUI(vStats.difficulty || "medium");
 
-  // Speak word automatically on success
-  speakCurrentTestWord();
+  // Speak target translation word automatically on success
+  speakTargetTranslationWord();
 }
 
 function escapeHtml(str) {
@@ -840,8 +838,8 @@ function triggerIncorrectAnswerUI(correctText, studentAnswer = "") {
   const vStats = state.wordStats[wordKey] || { difficulty: "medium" };
   updateDifficultyVoteUI(vStats.difficulty || "medium");
 
-  // Speak word automatically on failure
-  speakCurrentTestWord();
+  // Speak target translation word automatically on failure
+  speakTargetTranslationWord();
 }
 
 function updateWordStats(wordEn, isCorrect) {
@@ -969,6 +967,37 @@ export function speakCurrentTestWord(rate = 1.0) {
     // Forward & Conjugation mode: Question displayed on screen is base language (e.g. German "reisen")
     const text = wordObj.en;
     if (window.speakWord) window.speakWord(text, baseLang, rate);
+  }
+}
+
+export function speakTargetTranslationWord(rate = 1.0) {
+  const test = state.currentTest;
+  if (!test) return;
+  const wordObj = test.words[test.index];
+  if (!wordObj) return;
+
+  const direction = state.testDirection || "forward";
+  const targetLang = state.selectedLang || "de";
+  const baseLang = state.baseLang || "en";
+
+  if (direction === "conjugation") {
+    let correctConjugation = "";
+    const starterVocabRaw = window.STARTER_VOCAB_RAW || [];
+    const starterMatch = starterVocabRaw.find(w => w[baseLang] === wordObj.en);
+    if (starterMatch && starterMatch.details && starterMatch.details.variations && starterMatch.details.variations.he && starterMatch.details.variations.he[targetLang]) {
+      correctConjugation = starterMatch.details.variations.he[targetLang];
+    } else if (wordObj.details && wordObj.details.variations && wordObj.details.variations.he && wordObj.details.variations.he[targetLang]) {
+      correctConjugation = wordObj.details.variations.he[targetLang];
+    } else {
+      correctConjugation = wordObj.target;
+    }
+    if (window.speakWord) window.speakWord(correctConjugation, targetLang, rate);
+  } else if (direction === "reverse") {
+    const text = wordObj.en;
+    if (window.speakWord) window.speakWord(text, baseLang, rate);
+  } else {
+    const text = wordObj.target;
+    if (window.speakWord) window.speakWord(text, targetLang, rate);
   }
 }
 
