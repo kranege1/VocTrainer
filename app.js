@@ -1496,8 +1496,15 @@ function getBestVoice(langCode) {
   const langPrefix = targetLocale.split('-')[0];
   
   const matchingVoices = voices.filter(v => {
-    const vLang = v.lang.toLowerCase().replace('_', '-');
-    return vLang === targetLocale || vLang.startsWith(langPrefix);
+    const vLang = (v.lang || "").toLowerCase().replace('_', '-');
+    if (vLang === targetLocale || (vLang && vLang.startsWith(langPrefix))) return true;
+    const vName = (v.name || "").toLowerCase();
+    if (langCode === "it" && (vName.includes("italian") || vName.includes("italiano") || vName.includes("alice") || vName.includes("federica") || vName.includes("luca") || vName.includes("paola"))) return true;
+    if (langCode === "de" && (vName.includes("german") || vName.includes("deutsch") || vName.includes("anna") || vName.includes("viktor") || vName.includes("markus"))) return true;
+    if (langCode === "es" && (vName.includes("spanish") || vName.includes("español") || vName.includes("monica") || vName.includes("jorge"))) return true;
+    if (langCode === "fr" && (vName.includes("french") || vName.includes("français") || vName.includes("amelie") || vName.includes("thomas"))) return true;
+    if (langCode === "en" && (vName.includes("english") || vName.includes("samantha") || vName.includes("alex"))) return true;
+    return false;
   });
 
   if (matchingVoices.length === 0) return null;
@@ -1606,14 +1613,22 @@ function speakBrowserTTS(text, langCode, rate = 1.0, callback) {
     
     let selectedVoice = null;
     const customVoiceName = state.customVoices?.[langCode];
+    const voices = window.speechSynthesis.getVoices();
+
     if (customVoiceName && customVoiceName !== "default") {
-      const voices = window.speechSynthesis.getVoices();
-      selectedVoice = voices.find(v => v.name === customVoiceName);
+      selectedVoice = voices.find(v => 
+        v.name === customVoiceName || 
+        v.name.includes(customVoiceName) || 
+        customVoiceName.includes(v.name)
+      );
     }
     
     const finalVoice = selectedVoice || getBestVoice(langCode);
     if (finalVoice) {
       utterance.voice = finalVoice;
+      if (finalVoice.lang) {
+        utterance.lang = finalVoice.lang;
+      }
     }
 
     const voiceInfo = getVoiceQualityDetails(finalVoice);
