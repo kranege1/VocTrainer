@@ -424,6 +424,65 @@ You MUST write the explanation in German. Keep it concise, clear, and format it 
       })();
     };
   }
+
+  // Delete Word from Wordlist trigger
+  const deleteBtn = document.getElementById("btn-delete-word-from-list");
+  if (deleteBtn) {
+    deleteBtn.onclick = () => {
+      const wordKey = currentWord.origEn || currentWord.en;
+      const baseText = currentWord[state.baseLang || "en"] || currentWord.en;
+      const targetText = currentWord[state.selectedLang || "it"] || currentWord.target;
+
+      const confirmMsg = `Are you sure you want to permanently delete the word pair "${baseText}" ↔ "${targetText}" from your wordlist? It will no longer appear in test sessions or vocabulary lists.`;
+      
+      const executeDelete = () => {
+        // 1. If it's a custom vocabulary item, remove from state.customVocab
+        const customIdx = state.customVocab.findIndex(v => v.en === wordKey || v.origEn === wordKey);
+        if (customIdx !== -1) {
+          state.customVocab.splice(customIdx, 1);
+        }
+
+        // 2. Add to deletedStarters so starter list ignores it
+        if (!state.deletedStarters.includes(wordKey)) {
+          state.deletedStarters.push(wordKey);
+        }
+        if (currentWord.en && !state.deletedStarters.includes(currentWord.en)) {
+          state.deletedStarters.push(currentWord.en);
+        }
+        if (currentWord.target && !state.deletedStarters.includes(currentWord.target)) {
+          state.deletedStarters.push(currentWord.target);
+        }
+
+        // 3. Remove from current session wrongAnswers & words pool if active
+        if (state.currentTest) {
+          state.currentTest.words = state.currentTest.words.filter(w => (w.origEn || w.en) !== wordKey);
+          state.currentTest.wrongAnswers = state.currentTest.wrongAnswers.filter(w => (w.origEn || w.en) !== wordKey);
+        }
+
+        saveState();
+
+        if (window.showCustomAlert) {
+          window.showCustomAlert(`🗑️ "${baseText}" deleted from wordlist.`);
+        }
+
+        // 4. Hide feedback overlay and advance to next question
+        const overlay = document.getElementById("feedback-overlay");
+        if (overlay) overlay.classList.remove("active");
+
+        if (window.nextQuestion) {
+          window.nextQuestion();
+        }
+      };
+
+      if (window.showCustomConfirm) {
+        window.showCustomConfirm(confirmMsg, (confirmed) => {
+          if (confirmed) executeDelete();
+        });
+      } else if (confirm(confirmMsg)) {
+        executeDelete();
+      }
+    };
+  }
 }
 
 function parseMarkdownToHTML(md) {
