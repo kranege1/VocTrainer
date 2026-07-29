@@ -825,7 +825,28 @@ function triggerIncorrectAnswerUI(correctText, studentAnswer = "") {
     const highlighted = diffStrings(studentAnswer, correctText);
     const lang = state.testDirection === "forward" ? state.selectedLang : state.baseLang;
     const progressHtml = getDistanceProgressBarHtml(studentAnswer, correctText, lang);
-    fDesc.innerHTML = `You typed: <strong style="color: #fff; font-size: 1.15rem; letter-spacing: 0.5px;">${highlighted}</strong>${progressHtml}`;
+    
+    let acceptBtnHtml = "";
+    if (studentAnswer && studentAnswer.trim()) {
+      acceptBtnHtml = `
+        <div style="margin-top: 10px;">
+          <button id="btn-accept-my-answer" class="btn btn-secondary btn-sm" style="margin: 0 auto; padding: 6px 12px; font-size: 0.8rem; border-radius: 8px; border: 1px solid var(--accent-color); color: var(--accent-color); background: rgba(59, 130, 246, 0.1); cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+            <span>✏️</span> Accept "${escapeHtml(studentAnswer.trim())}" & Save to Wordlist
+          </button>
+        </div>
+      `;
+    }
+
+    fDesc.innerHTML = `You typed: <strong style="color: #fff; font-size: 1.15rem; letter-spacing: 0.5px;">${highlighted}</strong>${progressHtml}${acceptBtnHtml}`;
+
+    if (studentAnswer && studentAnswer.trim()) {
+      setTimeout(() => {
+        const btnAccept = document.getElementById("btn-accept-my-answer");
+        if (btnAccept) {
+          btnAccept.onclick = () => window.acceptUserAnswerAndUpdateWordlist(studentAnswer.trim(), wordObj);
+        }
+      }, 0);
+    }
   }
 
   // Populate word details in the sidebar
@@ -841,6 +862,107 @@ function triggerIncorrectAnswerUI(correctText, studentAnswer = "") {
   // Speak target translation word automatically on failure
   speakTargetTranslationWord();
 }
+
+window.acceptUserAnswerAndUpdateWordlist = async function(typedAnswer, wordObj) {
+  if (!typedAnswer || !wordObj) return;
+
+  const testDir = state.testDirection || "forward";
+  const ansLang = testDir === "forward" ? state.selectedLang : state.baseLang;
+  const qLang = testDir === "forward" ? state.baseLang : state.selectedLang;
+  const wordKey = wordObj.origEn || wordObj.en;
+
+  // 1. Save typed answer into state (customVocab, editedStarters, and dictionaryCache)
+  const addSynonymToWord = (word) => {
+    if (!word.details) word.details = {};
+    if (!word.details.synonyms) word.details.synonyms = {};
+    if (!word.details.synonyms[ansLang]) word.details.synonyms[ansLang] = [];
+    if (!word.details.synonyms[ansLang].includes(typedAnswer)) {
+      word.details.synonyms[ansLang].push(typedAnswer);
+    }
+  };
+
+  const addSynonymToCache = (key) => {
+    if (!state.dictionaryCache) state.dictionaryCache = {};
+    if (!state.dictionaryCache[key]) state.dictionaryCache[key] = {};
+    if (!state.dictionaryCache[key].synonyms) state.dictionaryCache[key].synonyms = {};
+    if (!state.dictionaryCache[key].synonyms[ansLang]) state.dictionaryCache[key].synonyms[ansLang] = [];
+    if (!state.dictionaryCache[key].synonyms[ansLang].includes(typedAnswer)) {
+      state.dictionaryCache[key].synonyms[ansLang].push(typedAnswer);
+    }
+  };
+
+  const customIdx = state.customVocab.findIndex(v => v.en === wordKey || v.origEn === wordKey);
+  if (customIdx !== -1) {
+    addSynonymToWord(state.customVocab[customIdx]);
+  } else {
+    if (!state.editedStarters[wordKey]) {
+      state.editedStarters[wordKey] = { details: { synonyms: {} } };
+    }
+    addSynonymToWord(state.editedStarters[wordKey]);
+  }
+
+  addSynonymToCache(wordKey);
+  addSynonymToWord(wordObj);
+  saveState();
+
+  // 2. Adjust stats & currentTest scores (mark as correct)
+  const test = state.currentTest;
+  if (test) {
+    test.points = (test.points || 0) + 10;
+    test.correctCount++;
+    // Remove from wrongAnswers if present
+    test.wrongAnswers = test.wrongAnswers.filter(w => (w.origEn || w.en) !== wordKey);
+  }
+  updateWordStats(wordKey, true);
+
+  // 3. Update feedback UI overlay from 'Incorrect' to 'Correct!'
+  const overlay = document.getElementById("feedback-overlay");
+  const fTitle = document.getElementById("feedback-title");
+  const fIcon = document.getElementById("feedback-icon");
+  const fDesc = document.getElementById("feedback-desc");
+
+  if (overlay) overlay.className = "test-right-pane active correct-ans";
+  if (fTitle) fTitle.textContent = "Accepted as Correct!";
+  if (fIcon) fIcon.textContent = "✅";
+  if (fDesc) {
+    fDesc.innerHTML = `Saved <strong style="color: #4ade80;">"${escapeHtml(typedAnswer)}"</strong> as a valid alternative translation for <strong>"${escapeHtml(wordKey)}"</strong>!`;
+  }
+
+  // Refresh sidebar details to show updated synonyms
+  if (window.setupWordDetails) {
+    window.setupWordDetails(wordObj);
+  }
+
+  // 4. Verify with Google Translate in background and show hint if questionable (without overruling!)
+  try {
+    const promptText = wordObj[qLang] || wordKey;
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${qLang}&tl=${ansLang}&dt=t&q=${encodeURIComponent(promptText)}`;
+    const res = await fetch(url);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data[0] && data[0][0] && data[0][0][0]) {
+        const officialTrans = data[0][0][0].toLowerCase().trim();
+        const cleanTyped = typedAnswer.toLowerCase().trim();
+        
+        // If typed answer differs significantly from standard GT result, offer a friendly hint banner
+        const cleanOfficial = cleanArticlesAndSpaces(officialTrans, ansLang);
+        const cleanTypedNorm = cleanArticlesAndSpaces(cleanTyped, ansLang);
+        
+        if (!cleanOfficial.includes(cleanTypedNorm) && !cleanTypedNorm.includes(cleanOfficial)) {
+          if (fDesc) {
+            fDesc.innerHTML += `
+              <div style="margin-top: 10px; padding: 8px 12px; border-radius: 8px; background: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.4); color: #fde047; font-size: 0.8rem; text-align: left;">
+                ℹ️ <strong>Google Translate Note:</strong> Standard translation is <em>"${escapeHtml(officialTrans)}"</em>. Your version <em>"${escapeHtml(typedAnswer)}"</em> was accepted and saved into your wordlist.
+              </div>
+            `;
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.warn("Google translate verification hint skipped:", err);
+  }
+};
 
 function updateWordStats(wordEn, isCorrect) {
   if (!state.wordStats) state.wordStats = {};
