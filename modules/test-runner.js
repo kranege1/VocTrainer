@@ -1936,16 +1936,13 @@ window.checkAllSlotsAuto = function() {
 
 window.clickConjugationCard = function(cardEl, text) {
   playLocalSound("sound-bubble");
-  
-  if (cardEl.classList.contains("selected")) {
-    cardEl.classList.remove("selected");
-    window.conjugationSelectedCard = null;
-    return;
-  }
+  const cardIndex = cardEl.dataset.index;
 
-  document.querySelectorAll(".conjugation-card").forEach(c => c.classList.remove("selected"));
-  cardEl.classList.add("selected");
-  window.conjugationSelectedCard = { el: cardEl, text: text, index: cardEl.dataset.index };
+  // Find the first empty slot (index 0 to 5)
+  const emptySlotIndex = window.conjugationUserMatches.findIndex(m => m === null);
+  if (emptySlotIndex !== -1) {
+    window.placeCardInSlot(text, cardIndex, emptySlotIndex);
+  }
 };
 
 window.clickConjugationSlot = function(index) {
@@ -1953,14 +1950,6 @@ window.clickConjugationSlot = function(index) {
 
   if (existingMatch) {
     window.returnCardToPool(index);
-    return;
-  }
-
-  if (window.conjugationSelectedCard) {
-    const text = window.conjugationSelectedCard.text;
-    const cardIndex = window.conjugationSelectedCard.index;
-    window.conjugationSelectedCard = null;
-    window.placeCardInSlot(text, cardIndex, index);
   }
 };
 
