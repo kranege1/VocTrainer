@@ -864,7 +864,7 @@ window.acceptUserAnswerAndUpdateWordlist = async function(typedAnswer, wordObj) 
 
   // Render interactive inline editor for both words
   fDesc.innerHTML = `
-    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; margin-top: 8px; text-align: left;">
+    <div id="word-pair-edit-box" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; margin-top: 8px; text-align: left;">
       <h4 style="margin: 0 0 10px 0; font-size: 0.95rem; color: var(--accent-color);">✏️ Edit Word Pair & Save</h4>
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <div>
@@ -883,6 +883,13 @@ window.acceptUserAnswerAndUpdateWordlist = async function(typedAnswer, wordObj) 
       </div>
     </div>
   `;
+
+  setTimeout(() => {
+    const editBox = document.getElementById("word-pair-edit-box");
+    if (editBox) editBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    const inputQ = document.getElementById("edit-pair-q");
+    if (inputQ) inputQ.focus();
+  }, 50);
 
   const inputQ = document.getElementById("edit-pair-q");
   const inputA = document.getElementById("edit-pair-a");
