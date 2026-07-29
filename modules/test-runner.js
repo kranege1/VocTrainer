@@ -1,5 +1,5 @@
 // VocTrainer - Test Runner Module
-import { state, saveState } from './state.js';
+import { state, saveState, getFlagHtml } from './state.js';
 import { getConjugationsForVerb, PRONOUNS } from './conjugation.js';
 import { callLLM } from './modals.js';
 
@@ -860,6 +860,8 @@ window.acceptUserAnswerAndUpdateWordlist = async function(typedAnswer, wordObj) 
   // Prompt user with inline/modal form allowing editing of BOTH base and target words!
   const qLangName = (qLang || "en").toUpperCase();
   const aLangName = (ansLang || "target").toUpperCase();
+  const qFlagHtml = getFlagHtml(qLang || "en");
+  const aFlagHtml = getFlagHtml(ansLang || "it");
 
   const fDesc = document.getElementById("feedback-desc");
   if (!fDesc) return;
@@ -870,11 +872,11 @@ window.acceptUserAnswerAndUpdateWordlist = async function(typedAnswer, wordObj) 
       <h4 style="margin: 0 0 10px 0; font-size: 0.95rem; color: var(--accent-color);">✏️ Edit Word Pair & Save</h4>
       <div style="display: flex; flex-direction: column; gap: 8px;">
         <div>
-          <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 2px;">Question Word (${qLangName}):</label>
+          <label style="font-size: 0.75rem; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; margin-bottom: 3px; font-weight: 700; letter-spacing: 0.5px;">${qFlagHtml} ${qLangName}</label>
           <input type="text" id="edit-pair-q" value="${escapeHtml(currentQWord)}" style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: #fff; font-size: 0.85rem;" />
         </div>
         <div>
-          <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 2px;">Answer Translation (${aLangName}):</label>
+          <label style="font-size: 0.75rem; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; margin-bottom: 3px; font-weight: 700; letter-spacing: 0.5px;">${aFlagHtml} ${aLangName}</label>
           <input type="text" id="edit-pair-a" value="${escapeHtml(currentAnsWord)}" style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: #fff; font-size: 0.85rem;" />
         </div>
         <div id="gt-check-hint-box" style="display: none; margin-top: 4px; padding: 8px; border-radius: 6px; font-size: 0.78rem;"></div>
