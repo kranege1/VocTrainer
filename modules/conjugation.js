@@ -508,9 +508,10 @@ export function renderConjugationDashboard() {
           <h3 style="margin: 0; font-size: 1.15rem; color: var(--accent-color); font-weight: 700;">${verb.target}</h3>
           <span style="font-size: 0.85rem; color: var(--text-secondary);" id="verb-base-trans-${idx}">${baseTrans}</span>
         </div>
-        <div style="display: flex; gap: 8px;" onclick="event.stopPropagation();">
-          <button class="btn btn-secondary btn-sm" style="margin: 0; padding: 6px 12px; min-height: 32px; font-size: 0.75rem;" id="btn-melody-${idx}">🔊 Melody</button>
-          <button class="btn btn-primary btn-sm" style="margin: 0; padding: 6px 12px; min-height: 32px; font-size: 0.75rem;" id="btn-practice-${idx}">🎯 Match</button>
+        <div style="display: flex; gap: 6px;" onclick="event.stopPropagation();">
+          <button class="btn btn-secondary btn-sm" style="margin: 0; padding: 6px 10px; min-height: 32px; font-size: 0.75rem;" id="btn-melody-verbs-${idx}" title="Pronounce verbs only">🔊</button>
+          <button class="btn btn-secondary btn-sm" style="margin: 0; padding: 6px 10px; min-height: 32px; font-size: 0.75rem;" id="btn-melody-full-${idx}" title="Pronounce pronouns + verbs">🔊 +</button>
+          <button class="btn btn-primary btn-sm" style="margin: 0; padding: 6px 10px; min-height: 32px; font-size: 0.75rem;" id="btn-practice-${idx}">🎯 Match</button>
         </div>
       </div>
       <div class="verb-details-panel" id="verb-details-${idx}" style="display: none; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 0.85rem;">
@@ -541,7 +542,20 @@ export function renderConjugationDashboard() {
       }
     };
 
-    card.querySelector(`#btn-melody-${idx}`).onclick = (e) => {
+    // 🔊 Button: Pronounce ONLY the conjugated verbs (e.g. "faccio, fai, fa, facciamo, fate, fanno")
+    card.querySelector(`#btn-melody-verbs-${idx}`).onclick = (e) => {
+      e.stopPropagation();
+      const speechQueue = conjugations.map(conj => ({
+        text: conj,
+        lang: lang
+      }));
+      if (window.playSpeechQueue) {
+        window.playSpeechQueue(speechQueue);
+      }
+    };
+
+    // 🔊 + Button: Pronounce PRONOUNS + VERBS (e.g. "io faccio, tu fai, lui/lei fa...")
+    card.querySelector(`#btn-melody-full-${idx}`).onclick = (e) => {
       e.stopPropagation();
       const speechQueue = pronouns.map((pr, i) => ({
         text: `${pr} ${conjugations[i]}`,
