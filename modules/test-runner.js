@@ -1024,19 +1024,12 @@ window.acceptUserAnswerAndUpdateWordlist = async function(typedAnswer, wordObj) 
       }
       updateWordStats(wordKey, true);
 
-      // 4. Update UI to Correct state
+      // 4. Update UI & advance immediately to next question
       const overlay = document.getElementById("feedback-overlay");
-      const fTitle = document.getElementById("feedback-title");
-      const fIcon = document.getElementById("feedback-icon");
+      if (overlay) overlay.classList.remove("active");
 
-      if (overlay) overlay.className = "test-right-pane active correct-ans";
-      if (fTitle) fTitle.textContent = "Accepted as Correct!";
-      if (fIcon) fIcon.textContent = "✅";
-      fDesc.innerHTML = `Saved word pair <strong style="color:#4ade80;">"${escapeHtml(newQ)}" &rarr; "${escapeHtml(newA)}"</strong> to your wordlist!`;
-
-      // Refresh sidebar details
-      if (window.setupWordDetails) {
-        window.setupWordDetails(wordObj);
+      if (window.nextQuestion) {
+        window.nextQuestion();
       }
     };
   }
