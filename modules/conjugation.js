@@ -414,9 +414,20 @@ export function renderConjugationDashboard() {
     if (!baseTrans) {
       const importantVerbsBaseList = IMPORTANT_VERBS[base];
       if (importantVerbsBaseList) {
-        const baseMatch = importantVerbsBaseList.find(v => v.en && (v.en.toLowerCase() === verb.en.toLowerCase() || verb.en.toLowerCase().includes(v.en.toLowerCase())));
+        // Match exact english infinitive phrase first to avoid substring confusion (e.g. "to be able to" vs "to be")
+        const baseMatch = importantVerbsBaseList.find(v => v.en && v.en.toLowerCase().trim() === verb.en.toLowerCase().trim());
         if (baseMatch) {
           baseTrans = baseMatch.target;
+        } else {
+          // Fallback match by exact primary English verb word
+          const cleanVerbEn = verb.en.toLowerCase().replace(/^to\s+/, "").trim();
+          const secondMatch = importantVerbsBaseList.find(v => {
+            const cleanBaseEn = v.en.toLowerCase().replace(/^to\s+/, "").trim();
+            return cleanBaseEn === cleanVerbEn;
+          });
+          if (secondMatch) {
+            baseTrans = secondMatch.target;
+          }
         }
       }
     }
