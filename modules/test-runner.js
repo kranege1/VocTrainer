@@ -825,28 +825,7 @@ function triggerIncorrectAnswerUI(correctText, studentAnswer = "") {
     const highlighted = diffStrings(studentAnswer, correctText);
     const lang = state.testDirection === "forward" ? state.selectedLang : state.baseLang;
     const progressHtml = getDistanceProgressBarHtml(studentAnswer, correctText, lang);
-    
-    let acceptBtnHtml = "";
-    if (studentAnswer && studentAnswer.trim()) {
-      acceptBtnHtml = `
-        <div style="margin-top: 10px;">
-          <button id="btn-accept-my-answer" class="btn btn-secondary btn-sm" style="margin: 0 auto; padding: 6px 12px; font-size: 0.8rem; border-radius: 8px; border: 1px solid var(--accent-color); color: var(--accent-color); background: rgba(59, 130, 246, 0.1); cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
-            <span>✏️</span> Accept "${escapeHtml(studentAnswer.trim())}" & Save to Wordlist
-          </button>
-        </div>
-      `;
-    }
-
-    fDesc.innerHTML = `You typed: <strong style="color: #fff; font-size: 1.15rem; letter-spacing: 0.5px;">${highlighted}</strong>${progressHtml}${acceptBtnHtml}`;
-
-    if (studentAnswer && studentAnswer.trim()) {
-      setTimeout(() => {
-        const btnAccept = document.getElementById("btn-accept-my-answer");
-        if (btnAccept) {
-          btnAccept.onclick = () => window.acceptUserAnswerAndUpdateWordlist(studentAnswer.trim(), wordObj);
-        }
-      }, 0);
-    }
+    fDesc.innerHTML = `You typed: <strong style="color: #fff; font-size: 1.15rem; letter-spacing: 0.5px;">${highlighted}</strong>${progressHtml}`;
   }
 
   // Populate word details in the sidebar

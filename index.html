@@ -121,7 +121,7 @@
         <h1>VocTrainer</h1>
         <div id="build-timestamp"
           style="font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6; font-family: monospace; margin-top: -6px; margin-bottom: 8px; pointer-events: none;">
-          Build: 2026-07-29 08:55:00
+          Build: 2026-07-29 09:06:00
         </div>
         <p>Master languages with premium gamified learning!</p>
       </div>
@@ -371,9 +371,9 @@
               <!-- Word Details Container (Directly Visible) -->
               <div id="word-details-container"
                 style="display: block; text-align: left; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color); font-size: 0.85rem; padding-bottom: 12px;">
-                <!-- Word & Translation Speakers -->
+                <!-- Word & Translation Speakers with Quick Actions -->
                 <div class="detail-section"
-                  style="display: flex; gap: 12px; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                  style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.06);">
                   <div style="flex: 1; cursor: pointer;" id="clickable-speak-base">
                     <span id="detail-base-label"
                       style="font-size: 0.7rem; color: var(--text-secondary); display: block; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">DE
@@ -386,6 +386,15 @@
                       🔊</span>
                     <strong id="detail-target-word"
                       style="font-size: 1rem; color: var(--accent-color); display: block; margin-top: 2px;">...</strong>
+                  </div>
+                  <!-- Quick Word Actions: Pencil & Trash icon buttons -->
+                  <div style="display: flex; gap: 6px; align-items: center;" onclick="event.stopPropagation();">
+                    <button id="btn-edit-word-pair-icon" class="btn btn-secondary btn-sm"
+                      style="margin: 0; padding: 4px 8px; min-height: 32px; min-width: 32px; font-size: 0.95rem; border-radius: 8px; border: 1px solid var(--accent-color); color: var(--accent-color); background: rgba(59, 130, 246, 0.1); cursor: pointer;"
+                      title="Edit / Accept Word Pair">✏️</button>
+                    <button id="btn-delete-word-from-list" class="btn btn-secondary btn-sm"
+                      style="margin: 0; padding: 4px 8px; min-height: 32px; min-width: 32px; font-size: 0.95rem; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; background: rgba(239, 68, 68, 0.1); cursor: pointer;"
+                      title="Delete Word from Wordlist">🗑️</button>
                   </div>
                 </div>
 
@@ -422,12 +431,6 @@
                 <button id="btn-show-word-insights" class="btn btn-primary btn-block"
                   style="margin-top: 10px; min-height: 32px; padding: 4px 8px; font-size: 0.8rem; border-radius: 8px;">
                   ✨ Word Insights & Grammar Rules
-                </button>
-
-                <!-- Delete Word Button -->
-                <button id="btn-delete-word-from-list" class="btn btn-secondary btn-block"
-                  style="margin-top: 8px; min-height: 30px; padding: 4px 8px; font-size: 0.75rem; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; background: rgba(239, 68, 68, 0.08); cursor: pointer;">
-                  🗑️ Delete Word from Wordlist
                 </button>
               </div>
 
@@ -1861,8 +1864,8 @@
     }
   </style>
 
-  <script src="speech.js?v=20260729_085500"></script>
-  <script type="module" src="app.js?v=20260729_085500"></script>
+  <script src="speech.js?v=20260729_090600"></script>
+  <script type="module" src="app.js?v=20260729_090600"></script>
 </body>
 
 </html>

@@ -425,6 +425,17 @@ You MUST write the explanation in German. Keep it concise, clear, and format it 
     };
   }
 
+  // Edit / Accept Word Pair Pencil Icon trigger
+  const editIconBtn = document.getElementById("btn-edit-word-pair-icon");
+  if (editIconBtn) {
+    editIconBtn.onclick = (e) => {
+      e.stopPropagation();
+      if (window.acceptUserAnswerAndUpdateWordlist) {
+        window.acceptUserAnswerAndUpdateWordlist(window.lastUserAnswer || "", currentWord);
+      }
+    };
+  }
+
   // Delete Word from Wordlist trigger
   const deleteBtn = document.getElementById("btn-delete-word-from-list");
   if (deleteBtn) {
