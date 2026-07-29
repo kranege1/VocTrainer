@@ -496,16 +496,31 @@ export function renderConjugationDashboard() {
     const conjugations = getConjugationsForVerb(fakeWordObj, lang);
     const pronouns = PRONOUNS[lang] || PRONOUNS.en;
 
+    const cleanInfinitive = stripArticles(verb.target, lang);
+    const irrs = IRREGULAR_VERBS[lang] || {};
+    const isIrregular = !!irrs[cleanInfinitive];
+
     const card = document.createElement("div");
     card.className = "verb-dash-card";
-    card.style.cssText = "background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; transition: all 0.2s ease; cursor: pointer;";
+    
+    // Border color & background tint: Red/Orange for Irregular, Soft Green for Regular
+    const borderColor = isIrregular ? "rgba(239, 68, 68, 0.4)" : "rgba(34, 197, 94, 0.4)";
+    const bgTint = isIrregular ? "rgba(239, 68, 68, 0.03)" : "rgba(34, 197, 94, 0.03)";
+    const badgeBg = isIrregular ? "rgba(239, 68, 68, 0.2)" : "rgba(34, 197, 94, 0.2)";
+    const badgeColor = isIrregular ? "#f87171" : "#4ade80";
+    const badgeText = isIrregular ? "⚡ Irregular" : "✓ Regular";
+
+    card.style.cssText = `background: ${bgTint}; border: 1px solid ${borderColor}; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; transition: all 0.2s ease; cursor: pointer;`;
     
     const order = [0, 3, 1, 4, 2, 5]; // Singular indices (0, 1, 2) in Col 1, Plural indices (3, 4, 5) in Col 2
     
     card.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <div>
-          <h3 style="margin: 0; font-size: 1.15rem; color: var(--accent-color); font-weight: 700;">${verb.target}</h3>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <h3 style="margin: 0; font-size: 1.15rem; color: var(--accent-color); font-weight: 700;">${verb.target}</h3>
+            <span style="font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 10px; background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${borderColor};">${badgeText}</span>
+          </div>
           <span style="font-size: 0.85rem; color: var(--text-secondary);" id="verb-base-trans-${idx}">${baseTrans}</span>
         </div>
         <div style="display: flex; gap: 6px;" onclick="event.stopPropagation();">
