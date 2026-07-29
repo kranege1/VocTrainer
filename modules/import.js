@@ -555,13 +555,15 @@ export function sanitizeWordTranslation(text, lang, category = "") {
   // Enforce capitalization rules based on language and category
   if (clean.length > 0) {
     const cat = (category || "").toLowerCase();
+    const isNoun = cat.includes("noun") || cat.includes("substantiv") || cat.includes("all") || cat === "";
     const isExplicitNonNoun = cat.includes("verb") || cat.includes("adj") || cat.includes("phrase");
+    
     if (lang === "de") {
-      if (!isExplicitNonNoun) {
-        // German nouns/default words should be capitalized (e.g. "Großmutter")
+      if (isNoun && !isExplicitNonNoun) {
+        // Capitalize German Nouns (e.g. "Großmutter", "Hochzeit", "Mutter")
         clean = clean.charAt(0).toUpperCase() + clean.slice(1);
-      } else {
-        // Lowercase German verbs/adjectives
+      } else if (isExplicitNonNoun) {
+        // Lowercase German verbs and adjectives (e.g. "aufgeregt", "gehen")
         clean = clean.charAt(0).toLowerCase() + clean.slice(1);
       }
     } else {

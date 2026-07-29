@@ -2115,8 +2115,8 @@ function renderBrowseWordsList(folderId) {
         }
 
         if (item) {
-          const baseLang = item.en ? "en" : item.de ? "de" : item.it ? "it" : item.es ? "es" : "fr";
-          const baseText = item[baseLang];
+          const baseLang = base; // User's active base language (e.g. "de")
+          const baseText = item[baseLang] || baseKey;
 
           const langs = ["en", "de", "it", "es", "fr"];
           const promises = langs.map(async (targetLang) => {
@@ -2130,7 +2130,11 @@ function renderBrowseWordsList(folderId) {
               if (res.ok) {
                 const data = await res.json();
                 if (data && data[0] && data[0][0] && data[0][0][0]) {
-                  item[targetLang] = sanitizeWordTranslation(data[0][0][0], targetLang, folderId);
+                  const translatedText = data[0][0][0].trim();
+                  // Check if Google Translate returned the identical word (meaning unknown/untranslated in target language)
+                  if (translatedText.toLowerCase() !== baseText.toLowerCase()) {
+                    item[targetLang] = sanitizeWordTranslation(translatedText, targetLang, folderId);
+                  }
                 }
               }
             } catch (err) {
