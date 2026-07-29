@@ -500,6 +500,18 @@ export function renderConjugationDashboard() {
     const irrs = IRREGULAR_VERBS[lang] || {};
     const isIrregular = !!irrs[cleanInfinitive];
 
+    const langMap = { de: "de", it: "it", en: "en", es: "es", fr: "fr" };
+    const ttsLang = langMap[lang] || lang || "it";
+
+    const verbsConcatText = conjugations.join(", ").toLowerCase();
+    const fullConcatText = pronouns.map((pr, i) => `${pr} ${conjugations[i]}`).join(", ").toLowerCase();
+
+    const verbsCacheKey = `${ttsLang}_${verbsConcatText}`;
+    const fullCacheKey = `${ttsLang}_${fullConcatText}`;
+
+    const isVerbsCached = !!(state.ttsAudioCache && state.ttsAudioCache[verbsCacheKey]);
+    const isFullCached = !!(state.ttsAudioCache && state.ttsAudioCache[fullCacheKey]);
+
     const card = document.createElement("div");
     card.className = "verb-dash-card";
     
@@ -524,8 +536,14 @@ export function renderConjugationDashboard() {
           <span style="font-size: 0.85rem; color: var(--text-secondary);" id="verb-base-trans-${idx}">${baseTrans}</span>
         </div>
         <div style="display: flex; gap: 6px;" onclick="event.stopPropagation();">
-          <button class="btn btn-secondary btn-sm" style="margin: 0; padding: 6px 10px; min-height: 32px; font-size: 0.75rem;" id="btn-melody-verbs-${idx}" title="Pronounce verbs only">🔊</button>
-          <button class="btn btn-secondary btn-sm" style="margin: 0; padding: 6px 10px; min-height: 32px; font-size: 0.75rem;" id="btn-melody-full-${idx}" title="Pronounce pronouns + verbs">🔊 +</button>
+          <button class="btn btn-secondary btn-sm" style="margin: 0; padding: 6px 10px; min-height: 32px; font-size: 0.75rem; position: relative;" id="btn-melody-verbs-${idx}" title="Pronounce verbs only">
+            🔊
+            <span class="cache-badge-verbs" style="position: absolute; bottom: 1px; right: 2px; font-size: 0.55rem; line-height: 1; opacity: 0.95; display: ${isVerbsCached ? 'inline' : 'none'};">💾</span>
+          </button>
+          <button class="btn btn-secondary btn-sm" style="margin: 0; padding: 6px 10px; min-height: 32px; font-size: 0.75rem; position: relative;" id="btn-melody-full-${idx}" title="Pronounce pronouns + verbs">
+            🔊 +
+            <span class="cache-badge-full" style="position: absolute; bottom: 1px; right: 2px; font-size: 0.55rem; line-height: 1; opacity: 0.95; display: ${isFullCached ? 'inline' : 'none'};">💾</span>
+          </button>
           <button class="btn btn-primary btn-sm" style="margin: 0; padding: 6px 10px; min-height: 32px; font-size: 0.75rem;" id="btn-practice-${idx}">🎯 Match</button>
         </div>
       </div>
@@ -557,8 +575,9 @@ export function renderConjugationDashboard() {
       }
     };
 
-    // 🔊 Button: Pronounce ONLY the conjugated verbs (e.g. "faccio, fai, fa, facciamo, fate, fanno")
-    card.querySelector(`#btn-melody-verbs-${idx}`).onclick = (e) => {
+    // 🔊 Button: Pronounce ONLY the conjugated verbs
+    const btnMelodyVerbs = card.querySelector(`#btn-melody-verbs-${idx}`);
+    btnMelodyVerbs.onclick = (e) => {
       e.stopPropagation();
       const speechQueue = conjugations.map(conj => ({
         text: conj,
@@ -566,11 +585,17 @@ export function renderConjugationDashboard() {
       }));
       if (window.playSpeechQueue) {
         window.playSpeechQueue(speechQueue);
+        // Show cache badge after short delay
+        setTimeout(() => {
+          const badge = btnMelodyVerbs.querySelector(".cache-badge-verbs");
+          if (badge) badge.style.display = "inline";
+        }, 1500);
       }
     };
 
-    // 🔊 + Button: Pronounce PRONOUNS + VERBS (e.g. "io faccio, tu fai, lui/lei fa...")
-    card.querySelector(`#btn-melody-full-${idx}`).onclick = (e) => {
+    // 🔊 + Button: Pronounce PRONOUNS + VERBS
+    const btnMelodyFull = card.querySelector(`#btn-melody-full-${idx}`);
+    btnMelodyFull.onclick = (e) => {
       e.stopPropagation();
       const speechQueue = pronouns.map((pr, i) => ({
         text: `${pr} ${conjugations[i]}`,
@@ -578,6 +603,11 @@ export function renderConjugationDashboard() {
       }));
       if (window.playSpeechQueue) {
         window.playSpeechQueue(speechQueue);
+        // Show cache badge after short delay
+        setTimeout(() => {
+          const badge = btnMelodyFull.querySelector(".cache-badge-full");
+          if (badge) badge.style.display = "inline";
+        }, 1500);
       }
     };
 
