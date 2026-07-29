@@ -439,7 +439,7 @@ You MUST write the explanation in German. Keep it concise, clear, and format it 
   // Delete Word from Wordlist trigger
   const deleteBtn = document.getElementById("btn-delete-word-from-list");
   if (deleteBtn) {
-    deleteBtn.onclick = () => {
+    deleteBtn.onclick = async () => {
       const wordKey = currentWord.origEn || currentWord.en;
       const baseText = currentWord[state.baseLang || "en"] || currentWord.en;
       const targetText = currentWord[state.selectedLang || "it"] || currentWord.target;
@@ -472,11 +472,7 @@ You MUST write the explanation in German. Keep it concise, clear, and format it 
 
         saveState();
 
-        if (window.showCustomAlert) {
-          window.showCustomAlert(`🗑️ "${baseText}" deleted from wordlist.`);
-        }
-
-        // 4. Hide feedback overlay and advance to next question
+        // 4. Hide feedback overlay and advance immediately to next question
         const overlay = document.getElementById("feedback-overlay");
         if (overlay) overlay.classList.remove("active");
 
@@ -485,10 +481,15 @@ You MUST write the explanation in German. Keep it concise, clear, and format it 
         }
       };
 
+      let confirmed = false;
       if (window.showCustomConfirm) {
-        window.showCustomConfirm(confirmMsg, (confirmed) => {
-          if (confirmed) executeDelete();
+        const res = window.showCustomConfirm(confirmMsg, (c) => {
+          if (c) executeDelete();
         });
+        if (res && typeof res.then === "function") {
+          confirmed = await res;
+          if (confirmed) executeDelete();
+        }
       } else if (confirm(confirmMsg)) {
         executeDelete();
       }
