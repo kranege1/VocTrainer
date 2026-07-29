@@ -121,6 +121,7 @@ export function startTestSession(language, category, count, isMistakesOnly = fal
         }
         
         return {
+          ...item,
           en: finalEn,
           target: finalTarget,
           origEn: stableEn,
@@ -132,6 +133,7 @@ export function startTestSession(language, category, count, isMistakesOnly = fal
     const customs = state.customVocab
       .filter(item => item.category === category && item[base] && item[language] && item[base].toLowerCase().trim() !== item[language].toLowerCase().trim())
       .map(item => ({
+        ...item,
         en: item[base],
         target: item[language],
         origEn: item.en || item[base],
@@ -852,8 +854,8 @@ window.acceptUserAnswerAndUpdateWordlist = async function(typedAnswer, wordObj) 
   const qLang = testDir === "forward" ? state.baseLang : state.selectedLang;
   const wordKey = wordObj.origEn || wordObj.en;
 
-  const currentQWord = wordObj[qLang] || (qLang === "en" ? wordObj.en : wordObj.target) || "";
-  const currentAnsWord = cleanTyped || wordObj[ansLang] || (ansLang === "en" ? wordObj.en : wordObj.target) || "";
+  const currentQWord = wordObj[qLang] || (testDir === "forward" ? (wordObj.en || wordObj[state.baseLang]) : (wordObj.target || wordObj[state.selectedLang])) || wordObj.en || "";
+  const currentAnsWord = wordObj[ansLang] || (testDir === "forward" ? (wordObj.target || wordObj[state.selectedLang]) : (wordObj.en || wordObj[state.baseLang])) || wordObj.target || "";
 
   // Prompt user with inline/modal form allowing editing of BOTH base and target words!
   const qLangName = (qLang || "en").toUpperCase();
@@ -967,6 +969,13 @@ window.acceptUserAnswerAndUpdateWordlist = async function(typedAnswer, wordObj) 
       // 1. Update wordObj dynamically
       wordObj[qLang] = newQ;
       wordObj[ansLang] = newA;
+      if (testDir === "forward") {
+        wordObj.en = newQ;
+        wordObj.target = newA;
+      } else {
+        wordObj.target = newQ;
+        wordObj.en = newA;
+      }
 
       // 2. Save into state (customVocab or editedStarters + dictionaryCache)
       const updateWordInObj = (targetObj) => {
