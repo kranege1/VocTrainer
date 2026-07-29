@@ -2078,6 +2078,7 @@ function renderBrowseWordsList(folderId) {
       btnFixTrans.disabled = true;
       btnFixTrans.textContent = `⏳ Fixing 0/${selected.length}...`;
 
+      const target = state.browseTargetLang || state.selectedLang || "de";
       let count = 0;
       for (const chk of selected) {
         const baseKey = chk.dataset.baseKey;
