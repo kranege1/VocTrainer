@@ -254,8 +254,8 @@ function setupWordDetails(currentWord) {
     }
 
     // 4. Synonyms — show answer language synonyms with question language equivalents (Always visible!)
-    const aSyns = (details.synonyms && details.synonyms[aLang]) ? details.synonyms[aLang] : [];
-    const qSyns = (details.synonyms && details.synonyms[qLang]) ? details.synonyms[qLang] : [];
+    const aSyns = ((details.synonyms && details.synonyms[aLang]) ? details.synonyms[aLang] : []).filter(s => s && s !== "...");
+    const qSyns = ((details.synonyms && details.synonyms[qLang]) ? details.synonyms[qLang] : []).filter(s => s && s !== "...");
     if (sectionSynonyms) {
       sectionSynonyms.style.display = "flex";
       if (aSyns && aSyns.length > 0) {

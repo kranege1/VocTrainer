@@ -864,103 +864,184 @@ function triggerIncorrectAnswerUI(correctText, studentAnswer = "") {
 }
 
 window.acceptUserAnswerAndUpdateWordlist = async function(typedAnswer, wordObj) {
-  if (!typedAnswer || !wordObj) return;
+  if (!wordObj) return;
+  const cleanTyped = (typedAnswer || "").trim();
+  if (cleanTyped === "...") return;
 
   const testDir = state.testDirection || "forward";
   const ansLang = testDir === "forward" ? state.selectedLang : state.baseLang;
   const qLang = testDir === "forward" ? state.baseLang : state.selectedLang;
   const wordKey = wordObj.origEn || wordObj.en;
 
-  // 1. Save typed answer into state (customVocab, editedStarters, and dictionaryCache)
-  const addSynonymToWord = (word) => {
-    if (!word.details) word.details = {};
-    if (!word.details.synonyms) word.details.synonyms = {};
-    if (!word.details.synonyms[ansLang]) word.details.synonyms[ansLang] = [];
-    if (!word.details.synonyms[ansLang].includes(typedAnswer)) {
-      word.details.synonyms[ansLang].push(typedAnswer);
-    }
-  };
+  const currentQWord = wordObj[qLang] || (qLang === "en" ? wordObj.en : wordObj.target) || "";
+  const currentAnsWord = cleanTyped || wordObj[ansLang] || (ansLang === "en" ? wordObj.en : wordObj.target) || "";
 
-  const addSynonymToCache = (key) => {
-    if (!state.dictionaryCache) state.dictionaryCache = {};
-    if (!state.dictionaryCache[key]) state.dictionaryCache[key] = {};
-    if (!state.dictionaryCache[key].synonyms) state.dictionaryCache[key].synonyms = {};
-    if (!state.dictionaryCache[key].synonyms[ansLang]) state.dictionaryCache[key].synonyms[ansLang] = [];
-    if (!state.dictionaryCache[key].synonyms[ansLang].includes(typedAnswer)) {
-      state.dictionaryCache[key].synonyms[ansLang].push(typedAnswer);
-    }
-  };
+  // Prompt user with inline/modal form allowing editing of BOTH base and target words!
+  const qLangName = (qLang || "en").toUpperCase();
+  const aLangName = (ansLang || "target").toUpperCase();
 
-  const customIdx = state.customVocab.findIndex(v => v.en === wordKey || v.origEn === wordKey);
-  if (customIdx !== -1) {
-    addSynonymToWord(state.customVocab[customIdx]);
-  } else {
-    if (!state.editedStarters[wordKey]) {
-      state.editedStarters[wordKey] = { details: { synonyms: {} } };
-    }
-    addSynonymToWord(state.editedStarters[wordKey]);
-  }
-
-  addSynonymToCache(wordKey);
-  addSynonymToWord(wordObj);
-  saveState();
-
-  // 2. Adjust stats & currentTest scores (mark as correct)
-  const test = state.currentTest;
-  if (test) {
-    test.points = (test.points || 0) + 10;
-    test.correctCount++;
-    // Remove from wrongAnswers if present
-    test.wrongAnswers = test.wrongAnswers.filter(w => (w.origEn || w.en) !== wordKey);
-  }
-  updateWordStats(wordKey, true);
-
-  // 3. Update feedback UI overlay from 'Incorrect' to 'Correct!'
-  const overlay = document.getElementById("feedback-overlay");
-  const fTitle = document.getElementById("feedback-title");
-  const fIcon = document.getElementById("feedback-icon");
   const fDesc = document.getElementById("feedback-desc");
+  if (!fDesc) return;
 
-  if (overlay) overlay.className = "test-right-pane active correct-ans";
-  if (fTitle) fTitle.textContent = "Accepted as Correct!";
-  if (fIcon) fIcon.textContent = "✅";
-  if (fDesc) {
-    fDesc.innerHTML = `Saved <strong style="color: #4ade80;">"${escapeHtml(typedAnswer)}"</strong> as a valid alternative translation for <strong>"${escapeHtml(wordKey)}"</strong>!`;
-  }
+  // Render interactive inline editor for both words
+  fDesc.innerHTML = `
+    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; margin-top: 8px; text-align: left;">
+      <h4 style="margin: 0 0 10px 0; font-size: 0.95rem; color: var(--accent-color);">✏️ Edit Word Pair & Save</h4>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div>
+          <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 2px;">Question Word (${qLangName}):</label>
+          <input type="text" id="edit-pair-q" value="${escapeHtml(currentQWord)}" style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: #fff; font-size: 0.85rem;" />
+        </div>
+        <div>
+          <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; margin-bottom: 2px;">Answer Translation (${aLangName}):</label>
+          <input type="text" id="edit-pair-a" value="${escapeHtml(currentAnsWord)}" style="width: 100%; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: #fff; font-size: 0.85rem;" />
+        </div>
+        <div id="gt-check-hint-box" style="display: none; margin-top: 4px; padding: 8px; border-radius: 6px; font-size: 0.78rem;"></div>
+        <div style="display: flex; gap: 8px; margin-top: 6px;">
+          <button id="btn-save-edited-pair" class="btn btn-primary btn-sm" style="flex: 1; margin: 0;">💾 Save & Accept</button>
+          <button id="btn-cancel-edited-pair" class="btn btn-secondary btn-sm" style="flex: 1; margin: 0;">Cancel</button>
+        </div>
+      </div>
+    </div>
+  `;
 
-  // Refresh sidebar details to show updated synonyms
-  if (window.setupWordDetails) {
-    window.setupWordDetails(wordObj);
-  }
+  const inputQ = document.getElementById("edit-pair-q");
+  const inputA = document.getElementById("edit-pair-a");
+  const hintBox = document.getElementById("gt-check-hint-box");
+  const btnSave = document.getElementById("btn-save-edited-pair");
+  const btnCancel = document.getElementById("btn-cancel-edited-pair");
 
-  // 4. Verify with Google Translate in background and show hint if questionable (without overruling!)
-  try {
-    const promptText = wordObj[qLang] || wordKey;
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${qLang}&tl=${ansLang}&dt=t&q=${encodeURIComponent(promptText)}`;
-    const res = await fetch(url);
-    if (res.ok) {
-      const data = await res.json();
-      if (data && data[0] && data[0][0] && data[0][0][0]) {
-        const officialTrans = data[0][0][0].toLowerCase().trim();
-        const cleanTyped = typedAnswer.toLowerCase().trim();
-        
-        // If typed answer differs significantly from standard GT result, offer a friendly hint banner
-        const cleanOfficial = cleanArticlesAndSpaces(officialTrans, ansLang);
-        const cleanTypedNorm = cleanArticlesAndSpaces(cleanTyped, ansLang);
-        
-        if (!cleanOfficial.includes(cleanTypedNorm) && !cleanTypedNorm.includes(cleanOfficial)) {
-          if (fDesc) {
-            fDesc.innerHTML += `
-              <div style="margin-top: 10px; padding: 8px 12px; border-radius: 8px; background: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.4); color: #fde047; font-size: 0.8rem; text-align: left;">
-                ℹ️ <strong>Google Translate Note:</strong> Standard translation is <em>"${escapeHtml(officialTrans)}"</em>. Your version <em>"${escapeHtml(typedAnswer)}"</em> was accepted and saved into your wordlist.
-              </div>
-            `;
+  // Google Translate verification function on live input
+  const checkGoogleTranslate = async (qVal, aVal) => {
+    if (!qVal || !aVal || qVal === "..." || aVal === "...") return;
+    try {
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${qLang}&tl=${ansLang}&dt=t&q=${encodeURIComponent(qVal)}`;
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data[0] && data[0][0] && data[0][0][0]) {
+          const gtTrans = data[0][0][0].trim();
+          const cleanGT = cleanArticlesAndSpaces(gtTrans, ansLang);
+          const cleanA = cleanArticlesAndSpaces(aVal, ansLang);
+          if (!cleanGT.includes(cleanA) && !cleanA.includes(cleanGT)) {
+            if (hintBox) {
+              hintBox.style.display = "block";
+              hintBox.style.background = "rgba(234, 179, 8, 0.15)";
+              hintBox.style.border = "1px solid rgba(234, 179, 8, 0.4)";
+              hintBox.style.color = "#fde047";
+              hintBox.innerHTML = `ℹ️ <strong>Google Translate Suggestion:</strong> GT translates "${escapeHtml(qVal)}" as <em>"${escapeHtml(gtTrans)}"</em>. Your entry will still be saved as an accepted custom variant.`;
+            }
+          } else if (hintBox) {
+            hintBox.style.display = "block";
+            hintBox.style.background = "rgba(34, 197, 94, 0.15)";
+            hintBox.style.border = "1px solid rgba(34, 197, 94, 0.4)";
+            hintBox.style.color = "#4ade80";
+            hintBox.innerHTML = `✓ <strong>Google Translate Verified:</strong> Translation matches!`;
           }
         }
       }
+    } catch (e) {
+      if (hintBox) hintBox.style.display = "none";
     }
-  } catch (err) {
-    console.warn("Google translate verification hint skipped:", err);
+  };
+
+  // Trigger Google Translate check initially
+  checkGoogleTranslate(currentQWord, currentAnsWord);
+
+  if (inputQ && inputA) {
+    let checkTimeout = null;
+    const triggerCheck = () => {
+      clearTimeout(checkTimeout);
+      checkTimeout = setTimeout(() => {
+        checkGoogleTranslate(inputQ.value.trim(), inputA.value.trim());
+      }, 500);
+    };
+    inputQ.oninput = triggerCheck;
+    inputA.oninput = triggerCheck;
+  }
+
+  if (btnCancel) {
+    btnCancel.onclick = () => {
+      const highlighted = diffStrings(typedAnswer, wordObj[ansLang] || wordObj.target);
+      const progressHtml = getDistanceProgressBarHtml(typedAnswer, wordObj[ansLang] || wordObj.target, ansLang);
+      fDesc.innerHTML = `You typed: <strong style="color: #fff; font-size: 1.15rem; letter-spacing: 0.5px;">${highlighted}</strong>${progressHtml}`;
+    };
+  }
+
+  if (btnSave) {
+    btnSave.onclick = () => {
+      const newQ = inputQ ? inputQ.value.trim() : "";
+      const newA = inputA ? inputA.value.trim() : "";
+
+      if (!newQ || !newA || newQ === "..." || newA === "...") {
+        alert("Please enter valid words (cannot be empty or '...').");
+        return;
+      }
+
+      // 1. Update wordObj dynamically
+      wordObj[qLang] = newQ;
+      wordObj[ansLang] = newA;
+
+      // 2. Save into state (customVocab or editedStarters + dictionaryCache)
+      const updateWordInObj = (targetObj) => {
+        targetObj[qLang] = newQ;
+        targetObj[ansLang] = newA;
+        if (!targetObj.details) targetObj.details = {};
+        if (!targetObj.details.synonyms) targetObj.details.synonyms = {};
+        if (!targetObj.details.synonyms[ansLang]) targetObj.details.synonyms[ansLang] = [];
+        if (!targetObj.details.synonyms[ansLang].includes(newA)) {
+          targetObj.details.synonyms[ansLang].push(newA);
+        }
+      };
+
+      const addSynonymToCache = (key) => {
+        if (!state.dictionaryCache) state.dictionaryCache = {};
+        if (!state.dictionaryCache[key]) state.dictionaryCache[key] = {};
+        if (!state.dictionaryCache[key].synonyms) state.dictionaryCache[key].synonyms = {};
+        if (!state.dictionaryCache[key].synonyms[ansLang]) state.dictionaryCache[key].synonyms[ansLang] = [];
+        if (!state.dictionaryCache[key].synonyms[ansLang].includes(newA)) {
+          state.dictionaryCache[key].synonyms[ansLang].push(newA);
+        }
+      };
+
+      const customIdx = state.customVocab.findIndex(v => v.en === wordKey || v.origEn === wordKey);
+      if (customIdx !== -1) {
+        updateWordInObj(state.customVocab[customIdx]);
+      } else {
+        if (!state.editedStarters[wordKey]) {
+          state.editedStarters[wordKey] = { details: { synonyms: {} } };
+        }
+        updateWordInObj(state.editedStarters[wordKey]);
+      }
+
+      addSynonymToCache(wordKey);
+      updateWordInObj(wordObj);
+      saveState();
+
+      // 3. Mark test answer as correct
+      const test = state.currentTest;
+      if (test) {
+        test.points = (test.points || 0) + 10;
+        test.correctCount++;
+        test.wrongAnswers = test.wrongAnswers.filter(w => (w.origEn || w.en) !== wordKey);
+      }
+      updateWordStats(wordKey, true);
+
+      // 4. Update UI to Correct state
+      const overlay = document.getElementById("feedback-overlay");
+      const fTitle = document.getElementById("feedback-title");
+      const fIcon = document.getElementById("feedback-icon");
+
+      if (overlay) overlay.className = "test-right-pane active correct-ans";
+      if (fTitle) fTitle.textContent = "Accepted as Correct!";
+      if (fIcon) fIcon.textContent = "✅";
+      fDesc.innerHTML = `Saved word pair <strong style="color:#4ade80;">"${escapeHtml(newQ)}" &rarr; "${escapeHtml(newA)}"</strong> to your wordlist!`;
+
+      // Refresh sidebar details
+      if (window.setupWordDetails) {
+        window.setupWordDetails(wordObj);
+      }
+    };
   }
 };
 
