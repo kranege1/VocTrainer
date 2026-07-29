@@ -1070,6 +1070,11 @@ export function updateDirectionButtonsUI() {
 
   btnForward.innerHTML = `➡️ ${baseFlag} ${baseName} &rarr; ${targetFlag} ${targetName}`;
   btnReverse.innerHTML = `⬅️ ${targetFlag} ${targetName} &rarr; ${baseFlag} ${baseName}`;
+
+  const currentDir = state.testDirection || "forward";
+  btnForward.classList.toggle("active", currentDir === "forward");
+  btnReverse.classList.toggle("active", currentDir === "reverse");
+
   if (btnConjugation) {
     if (targetLang === "en") {
       btnConjugation.style.display = "none";
@@ -1083,6 +1088,7 @@ export function updateDirectionButtonsUI() {
     } else {
       btnConjugation.style.display = "";
       btnConjugation.innerHTML = `🎯 Conjugate (${targetFlag} ${targetName})`;
+      btnConjugation.classList.toggle("active", currentDir === "conjugation");
     }
   }
 }
