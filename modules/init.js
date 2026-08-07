@@ -436,6 +436,11 @@ export async function initApp() {
       return;
     }
 
+    if (state.testDirection === "possessives") {
+      showView("view-possessives-dashboard");
+      return;
+    }
+
     const activeSeg = document.querySelector(".segmented-control:not(#test-direction-selector) .seg-btn.active");
     const count = activeSeg ? parseInt(activeSeg.dataset.count) : 10;
     const category = document.getElementById("select-category").value;

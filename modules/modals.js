@@ -1042,6 +1042,7 @@ export function updateDirectionButtonsUI() {
   const btnForward = document.getElementById("btn-direction-forward");
   const btnReverse = document.getElementById("btn-direction-reverse");
   const btnConjugation = document.getElementById("btn-direction-conjugation");
+  const btnPossessives = document.getElementById("btn-direction-possessives");
   if (!btnForward || !btnReverse) return;
 
   const baseLang = state.baseLang || "en";
@@ -1090,6 +1091,12 @@ export function updateDirectionButtonsUI() {
       btnConjugation.innerHTML = `🎯 Conjugate (${targetFlag} ${targetName})`;
       btnConjugation.classList.toggle("active", currentDir === "conjugation");
     }
+  }
+
+  if (btnPossessives) {
+    btnPossessives.style.display = "";
+    btnPossessives.innerHTML = `🏷️ Possessivpronomen (${targetFlag} ${targetName})`;
+    btnPossessives.classList.toggle("active", currentDir === "possessives");
   }
 }
 
