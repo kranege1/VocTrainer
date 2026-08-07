@@ -2205,6 +2205,24 @@ body.api-active-cyan::after {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
+/* Possessivpronomen Board Styles */
+.possessive-dash-card:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(76, 201, 240, 0.3) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.possessive-chip {
+  transition: all 0.2s ease;
+}
+
+.possessive-chip:hover {
+  background: rgba(76, 201, 240, 0.12) !important;
+  transform: scale(1.02);
+}
+
+
 
 
 

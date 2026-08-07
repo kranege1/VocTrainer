@@ -15,6 +15,7 @@ import {
 import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes, adjustDifficulty, updateDifficultyVoteUI, submitAnswer, toggleListening } from './modules/test-runner.js';
 import { initApp, renderHistoryList, renderBrowseList } from './modules/init.js';
 import './modules/conjugation.js';
+import { renderPossessivesDashboard } from './modules/possessives.js';
 
 // ==========================================
 // 9. Word Details & AI/Web Lookups
@@ -1155,6 +1156,8 @@ function showView(viewId) {
     }, 150);
   } else if (viewId === "view-conjugation-dashboard") {
     renderConjugationDashboard();
+  } else if (viewId === "view-possessives-dashboard") {
+    renderPossessivesDashboard();
   } else if (viewId === "view-import") {
     populateManualCategoryDropdown();
   }

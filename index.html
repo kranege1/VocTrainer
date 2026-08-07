@@ -121,7 +121,7 @@
         <h1>VocTrainer</h1>
         <div id="build-timestamp"
           style="font-size: 0.7rem; color: var(--text-secondary); opacity: 0.6; font-family: monospace; margin-top: -6px; margin-bottom: 8px; pointer-events: none;">
-          Build: 2026-07-29 10:00:00
+          Build: 2026-08-07 19:02:28
         </div>
         <p>Master languages with premium gamified learning!</p>
       </div>
@@ -224,6 +224,9 @@
         </button>
         <button id="btn-go-grammar" class="btn btn-secondary" style="margin: 0;">
           <span class="icon">📖</span> Grammar Guide
+        </button>
+        <button id="btn-go-possessives" class="btn btn-secondary" style="margin: 0;">
+          <span class="icon">🏷️</span> Possessivpronomen
         </button>
       </div>
     </section>
@@ -504,6 +507,36 @@
         <div id="conjugation-dashboard-verbs-list"
           style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
           <!-- Verb Row Cards -->
+        </div>
+      </div>
+    </section>
+
+    <!-- POSSESSIVES DASHBOARD VIEW -->
+    <section id="view-possessives-dashboard" class="app-view">
+      <div class="test-header" style="justify-content: space-between;">
+        <button id="btn-quit-possessives-dash" class="btn-close" style="margin: 0;">&times;</button>
+        <h2 style="font-size: 1.25rem; margin: 0; color: #fff; font-weight: 700;" id="possessives-dash-title">
+          Possessivpronomen (Italian)</h2>
+        <button id="btn-play-all-possessives" class="btn btn-primary btn-sm"
+          style="margin: 0; min-height: 32px; font-size: 0.8rem;">🔊 Play All</button>
+      </div>
+
+      <p class="speech-instruction" style="margin: 10px 0 12px 0;">Übersicht der italienischen Possessivpronomen / Possessivadjektive nach Besitzer, Geschlecht und Zahl.</p>
+
+      <!-- Search Box inside Possessives Board -->
+      <div style="max-width: 100%; margin-bottom: 16px; display: flex; gap: 8px;">
+        <input type="text" id="possessives-search-input" placeholder="Suchbegriff (z.B. mio, unser, 1. P.)..."
+          class="custom-select"
+          style="margin: 0; flex: 1; height: 42px; padding: 0 14px; font-size: 0.9rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: #fff;">
+        <button id="btn-clear-possessives-search" class="btn btn-secondary"
+          style="margin: 0; min-height: 42px; display: flex; align-items: center; justify-content: center; width: 42px; padding: 0; font-size: 1rem; border-radius: 8px;">✕</button>
+      </div>
+
+      <div class="possessives-dashboard-layout"
+        style="display: flex; flex-direction: column; gap: 16px; overflow-y: auto; flex: 1; padding-bottom: 20px;">
+        <div id="possessives-dashboard-list"
+          style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+          <!-- Possessive Row Cards -->
         </div>
       </div>
     </section>

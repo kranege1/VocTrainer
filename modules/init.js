@@ -2,6 +2,7 @@
 import { state, saveState, loadState, getFolderFullPath, updateCategoryCounts, getFlagHtml } from './state.js';
 import { startTestSession, renderQuestion, selectOption, submitTypingAnswer, submitConjugationAnswer, nextQuestion, finishTestSession, quitTestSession, speakCurrentTestWord, repeatMistakes, submitAnswer, toggleListening } from './test-runner.js';
 import { executeCSVImport } from './sync.js';
+import { POSSESSIVE_PRONOUNS_DATA } from './possessives.js';
 
 // Window proxy shims — init.js is a module and cannot access app.js scope directly.
 // These shims forward calls to the functions assigned to window by app.js.
@@ -241,6 +242,9 @@ export async function initApp() {
   document.getElementById("btn-go-statistics").onclick = () => showView("view-statistics");
   if (document.getElementById("btn-go-grammar")) {
     document.getElementById("btn-go-grammar").onclick = () => showView("view-grammar");
+  }
+  if (document.getElementById("btn-go-possessives")) {
+    document.getElementById("btn-go-possessives").onclick = () => showView("view-possessives-dashboard");
   }
   
   document.getElementById("btn-import-back").onclick = () => showView("view-dashboard");
@@ -484,6 +488,50 @@ export async function initApp() {
         conjSearchInput.value = "";
         conjSearchInput.dispatchEvent(new Event("input"));
         conjSearchInput.focus();
+      }
+    };
+  }
+
+  // Possessives Dashboard actions
+  const btnQuitPossessivesDash = document.getElementById("btn-quit-possessives-dash");
+  if (btnQuitPossessivesDash) {
+    btnQuitPossessivesDash.onclick = () => {
+      showView("view-dashboard");
+    };
+  }
+
+  const btnPlayAllPossessives = document.getElementById("btn-play-all-possessives");
+  if (btnPlayAllPossessives) {
+    btnPlayAllPossessives.onclick = () => {
+      const speechQueue = [];
+      POSSESSIVE_PRONOUNS_DATA.forEach(item => {
+        Object.values(item.forms).forEach(form => {
+          speechQueue.push({ text: form, lang: "it" });
+        });
+      });
+      if (window.playSpeechQueue) {
+        window.playSpeechQueue(speechQueue);
+      }
+    };
+  }
+
+  const possSearchInput = document.getElementById("possessives-search-input");
+  if (possSearchInput) {
+    possSearchInput.oninput = () => {
+      if (window.renderPossessivesDashboard) {
+        window.renderPossessivesDashboard();
+      }
+    };
+  }
+
+  const btnClearPossSearch = document.getElementById("btn-clear-possessives-search");
+  if (btnClearPossSearch) {
+    btnClearPossSearch.onclick = () => {
+      if (possSearchInput) {
+        possSearchInput.value = "";
+        if (window.renderPossessivesDashboard) {
+          window.renderPossessivesDashboard();
+        }
       }
     };
   }
