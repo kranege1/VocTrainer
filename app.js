@@ -1571,17 +1571,19 @@ function getBestVoice(langCode) {
   
   const matchingVoices = voices.filter(v => {
     const vLang = (v.lang || "").toLowerCase().replace('_', '-');
-    if (vLang === targetLocale || (vLang && vLang.startsWith(langPrefix))) return true;
+    if (vLang && vLang.startsWith(langPrefix)) return true;
     const vName = (v.name || "").toLowerCase();
-    if (langCode === "it" && (vName.includes("italian") || vName.includes("italiano") || vName.includes("alice") || vName.includes("federica") || vName.includes("luca") || vName.includes("paola"))) return true;
-    if (langCode === "de" && (vName.includes("german") || vName.includes("deutsch") || vName.includes("anna") || vName.includes("viktor") || vName.includes("markus"))) return true;
-    if (langCode === "es" && (vName.includes("spanish") || vName.includes("español") || vName.includes("monica") || vName.includes("jorge"))) return true;
-    if (langCode === "fr" && (vName.includes("french") || vName.includes("français") || vName.includes("amelie") || vName.includes("thomas"))) return true;
-    if (langCode === "en" && (vName.includes("english") || vName.includes("samantha") || vName.includes("alex"))) return true;
+    if (langCode === "it" && (vName.includes("italian") || vName.includes("italiano")) && !vName.includes("spanish") && !vName.includes("español")) return true;
+    if (langCode === "de" && (vName.includes("german") || vName.includes("deutsch")) && !vName.includes("spanish")) return true;
+    if (langCode === "es" && (vName.includes("spanish") || vName.includes("español"))) return true;
+    if (langCode === "fr" && (vName.includes("french") || vName.includes("français"))) return true;
+    if (langCode === "en" && (vName.includes("english"))) return true;
     return false;
   });
 
-  if (matchingVoices.length === 0) return null;
+  if (matchingVoices.length === 0) {
+    return voices.find(v => (v.lang || "").toLowerCase().startsWith(langPrefix)) || null;
+  }
 
   // Tier 1: Premium / Neural high-fidelity voices (iOS Premium / Edge Neural)
   let best = matchingVoices.find(v => 
@@ -1963,6 +1965,10 @@ window.playSpeechQueue = playSpeechQueue;
 
 window.stopSpeechQueue = function() {
   currentQueueId++;
+  if (_activeGrokAudio) {
+    try { _activeGrokAudio.pause(); _activeGrokAudio.src = ""; } catch (e) {}
+    _activeGrokAudio = null;
+  }
   if (window.speechSynthesis) {
     try { window.speechSynthesis.cancel(); } catch (e) {}
   }
