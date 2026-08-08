@@ -131,7 +131,7 @@ export function renderPossessivesDashboard() {
             <span style="font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; background: rgba(76, 201, 240, 0.15); color: var(--accent-color); font-weight: 600;">${item.de}</span>
           </div>
         </div>
-        <div style="display: flex; gap: 6px;" onclick="event.stopPropagation();">
+        <div style="display: flex; gap: 6px;">
           <button class="btn btn-secondary btn-sm" style="margin: 0; padding: 6px 10px; min-height: 32px; font-size: 0.75rem;" id="btn-audio-possessive-${idx}" title="Pronounce 4 forms">
             🔊 Play
           </button>
@@ -139,29 +139,30 @@ export function renderPossessivesDashboard() {
       </div>
 
       <div class="possessive-details-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px;">
-        <div class="possessive-chip" style="background: rgba(76, 201, 240, 0.05); border: 1px solid rgba(76, 201, 240, 0.15); padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column;">
+        <div class="possessive-chip" data-form="${item.forms.ms}" style="background: rgba(76, 201, 240, 0.05); border: 1px solid rgba(76, 201, 240, 0.15); padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; cursor: pointer;">
           <span style="font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase;">${labels.ms}</span>
           <span style="font-size: 0.95rem; font-weight: 700; color: #fff;">${item.forms.ms}</span>
         </div>
-        <div class="possessive-chip" style="background: rgba(247, 37, 133, 0.05); border: 1px solid rgba(247, 37, 133, 0.15); padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column;">
+        <div class="possessive-chip" data-form="${item.forms.fs}" style="background: rgba(247, 37, 133, 0.05); border: 1px solid rgba(247, 37, 133, 0.15); padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; cursor: pointer;">
           <span style="font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase;">${labels.fs}</span>
           <span style="font-size: 0.95rem; font-weight: 700; color: #fff;">${item.forms.fs}</span>
         </div>
-        <div class="possessive-chip" style="background: rgba(76, 201, 240, 0.05); border: 1px solid rgba(76, 201, 240, 0.15); padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column;">
+        <div class="possessive-chip" data-form="${item.forms.mp}" style="background: rgba(76, 201, 240, 0.05); border: 1px solid rgba(76, 201, 240, 0.15); padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; cursor: pointer;">
           <span style="font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase;">${labels.mp}</span>
           <span style="font-size: 0.95rem; font-weight: 700; color: #fff;">${item.forms.mp}</span>
         </div>
-        <div class="possessive-chip" style="background: rgba(247, 37, 133, 0.05); border: 1px solid rgba(247, 37, 133, 0.15); padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column;">
+        <div class="possessive-chip" data-form="${item.forms.fp}" style="background: rgba(247, 37, 133, 0.05); border: 1px solid rgba(247, 37, 133, 0.15); padding: 8px 12px; border-radius: 10px; display: flex; flex-direction: column; cursor: pointer;">
           <span style="font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase;">${labels.fp}</span>
           <span style="font-size: 0.95rem; font-weight: 700; color: #fff;">${item.forms.fp}</span>
         </div>
       </div>
     `;
 
-    // Audio click handler
+    // Audio click handler for 🔊 Play button
     const btnAudio = card.querySelector(`#btn-audio-possessive-${idx}`);
     if (btnAudio) {
       btnAudio.onclick = (e) => {
+        e.preventDefault();
         e.stopPropagation();
         const speechQueue = Object.values(item.forms).map(form => ({
           text: form,
@@ -172,6 +173,18 @@ export function renderPossessivesDashboard() {
         }
       };
     }
+
+    // Individual chip click to pronounce single form
+    card.querySelectorAll(".possessive-chip").forEach(chip => {
+      chip.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const formText = chip.dataset.form;
+        if (formText && window.playSpeechQueue) {
+          window.playSpeechQueue([{ text: formText, lang: "it" }]);
+        }
+      };
+    });
 
     container.appendChild(card);
   });

@@ -1929,21 +1929,23 @@ function playNextInQueue(queueId) {
 }
 
 function playSpeechQueue(queue) {
-  currentQueueId++;
-  const activeQueueId = currentQueueId;
-  if (window.speechSynthesis) {
-    try { window.speechSynthesis.cancel(); } catch (e) {}
+  if (window.stopSpeechQueue) {
+    window.stopSpeechQueue();
   }
 
-  const engine = state.audioEngine || "cloud_hd";
-  const isCloudEngine = (engine === "cloud_hd" || engine === "openai") && state.grokKey;
+  currentQueueId++;
+  const activeQueueId = currentQueueId;
 
-  if (isCloudEngine && queue && queue.length > 0) {
-    // For Grok / Cloud TTS: Batch adjacent items of the same language into a single string!
-    // This prevents individual HTTP requests per item from rate-limiting or interrupting audio playback on iOS/browsers.
+  if (queue && queue.length > 0) {
+    // Batch adjacent items of the same language into a single string to avoid separate speech triggers / double playback
     const batchedQueue = [];
     queue.forEach(item => {
-      if (batchedQueue.length > 0 && batchedQueue[batchedQueue.length - 1].lang === item.lang) {
+      if (
+        batchedQueue.length > 0 &&
+        batchedQueue[batchedQueue.length - 1].lang === item.lang &&
+        !item.showOverlay &&
+        !batchedQueue[batchedQueue.length - 1].showOverlay
+      ) {
         batchedQueue[batchedQueue.length - 1].text += ", " + item.text;
       } else {
         batchedQueue.push({ ...item });
@@ -1951,7 +1953,7 @@ function playSpeechQueue(queue) {
     });
     globalSpeechQueue = batchedQueue;
   } else {
-    globalSpeechQueue = queue;
+    globalSpeechQueue = [];
   }
 
   currentSpeechIndex = 0;
@@ -1962,7 +1964,7 @@ window.playSpeechQueue = playSpeechQueue;
 window.stopSpeechQueue = function() {
   currentQueueId++;
   if (window.speechSynthesis) {
-    window.speechSynthesis.cancel();
+    try { window.speechSynthesis.cancel(); } catch (e) {}
   }
   globalSpeechQueue = [];
   currentSpeechIndex = 0;
