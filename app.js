@@ -1794,17 +1794,6 @@ function speakBrowserTTS(text, langCode, rate = 1.0, callback) {
   if ('speechSynthesis' in window) {
     try { window.speechSynthesis.cancel(); } catch (e) {}
 
-    // iOS priming: speak a silent utterance first to unlock the audio session
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    if (isIOS) {
-      try {
-        const primer = new SpeechSynthesisUtterance("");
-        primer.volume = 0;
-        window.speechSynthesis.speak(primer);
-        window.speechSynthesis.cancel();
-      } catch (e) {}
-    }
-
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = LANG_LOCALES[langCode] || "en-US";
     utterance.rate = rate; 
