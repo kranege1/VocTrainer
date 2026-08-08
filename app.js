@@ -1639,15 +1639,7 @@ async function speakGrokTTS(text, langCode, rate = 1.0, callback) {
   }
 
   try {
-    // Stop any currently playing Grok audio cleanly
-    if (_activeGrokAudio) {
-      try { _activeGrokAudio.pause(); _activeGrokAudio.src = ""; } catch (e) {}
-      _activeGrokAudio = null;
-    }
-    // Also cancel any running browser TTS to prevent overlap
-    if (window.speechSynthesis) {
-      try { window.speechSynthesis.cancel(); } catch (e) {}
-    }
+    _stopAllAudio();
 
     const cleanText = (text || "").trim();
     if (!cleanText) { if (callback) callback(); return; }
@@ -1797,15 +1789,24 @@ async function speakGrokTTS(text, langCode, rate = 1.0, callback) {
     speakBrowserTTS(text, langCode, rate, callback);
   }
 }
+let _ttsActive = false; // Global lock: only one TTS utterance at a time
+
+function _stopAllAudio() {
+  if (_activeGrokAudio) {
+    try { _activeGrokAudio.pause(); _activeGrokAudio.src = ""; } catch (e) {}
+    _activeGrokAudio = null;
+  }
+  if (window.speechSynthesis) {
+    try { window.speechSynthesis.cancel(); } catch (e) {}
+  }
+  _ttsActive = false;
+}
 
 function speakBrowserTTS(text, langCode, rate = 1.0, callback) {
   if ('speechSynthesis' in window) {
-    // Stop any playing Grok audio first to prevent overlap
-    if (_activeGrokAudio) {
-      try { _activeGrokAudio.pause(); _activeGrokAudio.src = ""; } catch (e) {}
-      _activeGrokAudio = null;
-    }
-    try { window.speechSynthesis.cancel(); } catch (e) {}
+    // Hard-stop everything before starting
+    _stopAllAudio();
+    _ttsActive = true;
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = LANG_LOCALES[langCode] || "en-US";
@@ -1846,10 +1847,12 @@ function speakBrowserTTS(text, langCode, rate = 1.0, callback) {
       document.body.classList.add("api-active-purple");
     };
     utterance.onend = () => {
+      _ttsActive = false;
       document.body.classList.remove("api-active-purple");
       if (callback) callback();
     };
     utterance.onerror = () => {
+      _ttsActive = false;
       document.body.classList.remove("api-active-purple");
       if (callback) callback();
     };
@@ -1861,18 +1864,8 @@ function speakBrowserTTS(text, langCode, rate = 1.0, callback) {
 }
 
 function speakWord(text, langCode, rate = 1.0) {
-  // Always stop any currently running audio first
-  if (_activeGrokAudio) {
-    try { _activeGrokAudio.pause(); _activeGrokAudio.src = ""; } catch (e) {}
-    _activeGrokAudio = null;
-  }
-  if (window.speechSynthesis) {
-    try { window.speechSynthesis.cancel(); } catch (e) {}
-  }
-
+  _stopAllAudio();
   const engine = state.audioEngine || "cloud_hd";
-
-  // cloud_hd or openai: use xAI Grok TTS if key available, otherwise browser TTS
   if (engine === "cloud_hd" || engine === "openai") {
     if (state.grokKey) {
       speakGrokTTS(text, langCode, rate);
@@ -1888,17 +1881,8 @@ let currentSpeechIndex = 0;
 let globalSpeechQueue = [];
 
 function speakWordWithCallback(text, langCode, rate = 1.0, callback) {
-  // Always stop any currently running audio first
-  if (_activeGrokAudio) {
-    try { _activeGrokAudio.pause(); _activeGrokAudio.src = ""; } catch (e) {}
-    _activeGrokAudio = null;
-  }
-  if (window.speechSynthesis) {
-    try { window.speechSynthesis.cancel(); } catch (e) {}
-  }
-
+  _stopAllAudio();
   const engine = state.audioEngine || "cloud_hd";
-
   if (engine === "cloud_hd" || engine === "openai") {
     if (state.grokKey) {
       speakGrokTTS(text, langCode, rate, callback);
@@ -1985,13 +1969,7 @@ window.playSpeechQueue = playSpeechQueue;
 
 window.stopSpeechQueue = function() {
   currentQueueId++;
-  if (_activeGrokAudio) {
-    try { _activeGrokAudio.pause(); _activeGrokAudio.src = ""; } catch (e) {}
-    _activeGrokAudio = null;
-  }
-  if (window.speechSynthesis) {
-    try { window.speechSynthesis.cancel(); } catch (e) {}
-  }
+  _stopAllAudio();
   globalSpeechQueue = [];
   currentSpeechIndex = 0;
   const overlay = document.getElementById("conjugation-speech-overlay");
