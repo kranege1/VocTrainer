@@ -1633,7 +1633,9 @@ function getBestVoice(langCode) {
 let _activeGrokAudio = null; // keep reference to prevent GC and allow cancellation
 
 async function speakGrokTTS(text, langCode, rate = 1.0, callback) {
+  _ttsLog('speakGrokTTS', `text="${(text||'').slice(0,30)}" lang=${langCode} hasKey=${!!state.grokKey}`);
   if (!state.grokKey) {
+    _ttsLog('speakGrokTTS→fallback', 'no grokKey, falling back to browser TTS');
     speakBrowserTTS(text, langCode, rate, callback);
     return;
   }
@@ -1790,8 +1792,28 @@ async function speakGrokTTS(text, langCode, rate = 1.0, callback) {
   }
 }
 let _ttsActive = false; // Global lock: only one TTS utterance at a time
+let _ttsDebugLog = []; // Debug log entries
+
+function _ttsLog(label, detail) {
+  const now = new Date();
+  const ts = now.toTimeString().split(' ')[0] + '.' + String(now.getMilliseconds()).padStart(3, '0');
+  // Get short caller info from stack trace
+  const stack = new Error().stack || "";
+  const callerLines = stack.split('\n').slice(2, 5).map(l => l.trim().replace(/^at\s+/, '').replace(/https?:\/\/[^/]+\//g, '')).join(' ← ');
+  const entry = `[${ts}] ${label}: ${detail} | from: ${callerLines}`;
+  _ttsDebugLog.push(entry);
+  if (_ttsDebugLog.length > 30) _ttsDebugLog.shift();
+  console.log('%c[TTS-DEBUG]', 'color: #ff6b6b; font-weight: bold;', entry);
+  // Update on-screen debug panel
+  const panel = document.getElementById('tts-debug-panel');
+  if (panel) {
+    panel.textContent = _ttsDebugLog.join('\n');
+    panel.scrollTop = panel.scrollHeight;
+  }
+}
 
 function _stopAllAudio() {
+  _ttsLog('_stopAllAudio', `grokAudio=${!!_activeGrokAudio}, synthSpeaking=${window.speechSynthesis?.speaking}`);
   if (_activeGrokAudio) {
     try { _activeGrokAudio.pause(); _activeGrokAudio.src = ""; } catch (e) {}
     _activeGrokAudio = null;
@@ -1803,6 +1825,7 @@ function _stopAllAudio() {
 }
 
 function speakBrowserTTS(text, langCode, rate = 1.0, callback) {
+  _ttsLog('speakBrowserTTS', `text="${(text||'').slice(0,30)}" lang=${langCode} hasCB=${!!callback}`);
   if ('speechSynthesis' in window) {
     // Hard-stop everything before starting
     _stopAllAudio();
@@ -1864,6 +1887,7 @@ function speakBrowserTTS(text, langCode, rate = 1.0, callback) {
 }
 
 function speakWord(text, langCode, rate = 1.0) {
+  _ttsLog('speakWord', `text="${(text||'').slice(0,30)}" lang=${langCode} engine=${state.audioEngine||'cloud_hd'} grokKey=${!!state.grokKey}`);
   _stopAllAudio();
   const engine = state.audioEngine || "cloud_hd";
   if (engine === "cloud_hd" || engine === "openai") {
@@ -1881,6 +1905,7 @@ let currentSpeechIndex = 0;
 let globalSpeechQueue = [];
 
 function speakWordWithCallback(text, langCode, rate = 1.0, callback) {
+  _ttsLog('speakWordWithCallback', `text="${(text||'').slice(0,30)}" lang=${langCode} engine=${state.audioEngine||'cloud_hd'} grokKey=${!!state.grokKey}`);
   _stopAllAudio();
   const engine = state.audioEngine || "cloud_hd";
   if (engine === "cloud_hd" || engine === "openai") {

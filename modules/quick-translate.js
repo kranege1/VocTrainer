@@ -316,6 +316,9 @@ export async function runQuickTranslate(text) {
       quickLangSelect.value = sourceLang;
       state.quickTranslateLastLang = sourceLang;
       saveState();
+      if (typeof window.updateQuickTranslateLangDropdown === "function") {
+        window.updateQuickTranslateLangDropdown();
+      }
     }
     
     const langs = [

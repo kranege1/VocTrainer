@@ -38,6 +38,8 @@ export let state = {
   lastSelectedCustomCategory: "none",
   useLLMForSentences: false,
   quickTranslateMode: "base_learning",
+  quickTranslateLastLang: "",
+  quickTranslateLastFolder: "",
 
   // Device Cumulative AI Token Counter
   totalInputTokens: 0,
@@ -102,6 +104,8 @@ export function saveState() {
     lastSelectedCategory: state.lastSelectedCategory,
     lastSelectedCustomCategory: state.lastSelectedCustomCategory,
     quickTranslateMode: state.quickTranslateMode,
+    quickTranslateLastLang: state.quickTranslateLastLang,
+    quickTranslateLastFolder: state.quickTranslateLastFolder,
     totalInputTokens: state.totalInputTokens || 0,
     totalOutputTokens: state.totalOutputTokens || 0,
     ttsAudioCache: state.ttsAudioCache || {}
@@ -172,6 +176,8 @@ export function loadState() {
     state.baseLang = parsed.baseLang || "en";
     state.selectedLang = parsed.selectedLang || "en";
     state.quickTranslateMode = parsed.quickTranslateMode || "base_learning";
+    state.quickTranslateLastLang = parsed.quickTranslateLastLang || "";
+    state.quickTranslateLastFolder = parsed.quickTranslateLastFolder || "";
     state.history = parsed.history || [];
     state.deletedStarters = parsed.deletedStarters || [];
     state.deletedCustomVocab = parsed.deletedCustomVocab || [];
