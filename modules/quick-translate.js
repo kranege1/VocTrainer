@@ -304,21 +304,13 @@ export async function runQuickTranslate(text) {
       </div>
     `;
     
-    // Auto detect source language
-    const { detectedLang, translation: enTranslation } = await detectLanguageAndTranslateToEn(text);
+    const sourceLang = document.getElementById("quick-translate-lang")?.value || "en";
     
-    const supportedLangs = ["de", "en", "it", "es", "fr"];
-    const sourceLang = supportedLangs.includes(detectedLang) ? detectedLang : (document.getElementById("quick-translate-lang")?.value || "en");
-    
-    // Update dropdown in UI to show detected language
-    const quickLangSelect = document.getElementById("quick-translate-lang");
-    if (quickLangSelect) {
-      quickLangSelect.value = sourceLang;
-      state.quickTranslateLastLang = sourceLang;
-      saveState();
-      if (typeof window.updateQuickTranslateLangDropdown === "function") {
-        window.updateQuickTranslateLangDropdown();
-      }
+    let enTranslation = "";
+    if (sourceLang === "en") {
+      enTranslation = text;
+    } else {
+      enTranslation = await translateTextGTX(text, sourceLang, "en");
     }
     
     const langs = [
@@ -642,11 +634,13 @@ export async function saveQuickTranslateWord() {
   
   let success = false;
   try {
-    // Auto detect source language
-    const { detectedLang, translation: enTranslation } = await detectLanguageAndTranslateToEn(spokenText);
-    
-    const supportedLangs = ["de", "en", "it", "es", "fr"];
-    const sourceLang = supportedLangs.includes(detectedLang) ? detectedLang : (document.getElementById("quick-translate-lang")?.value || "en");
+    const sourceLang = document.getElementById("quick-translate-lang")?.value || "en";
+    let enTranslation = "";
+    if (sourceLang === "en") {
+      enTranslation = spokenText;
+    } else {
+      enTranslation = await translateTextGTX(spokenText, sourceLang, "en");
+    }
     
     let englishBaseWord = enTranslation;
 
