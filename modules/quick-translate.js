@@ -866,13 +866,20 @@ export async function detectLanguageAndTranslateToEn(text) {
     const response = await fetch(url);
     if (response.ok) {
       const data = await response.json();
-      let detectedLang = "en";
-      if (data && data.matches && data.matches.length > 0) {
-        const firstMatch = data.matches[0];
-        if (firstMatch.source) {
-          detectedLang = firstMatch.source.split("-")[0].toLowerCase();
+      let detectedLang = data.responseData?.detectedSourceLanguage;
+      if (!detectedLang && data.matches && data.matches.length > 0) {
+        // Fallback to searching matches if detectedSourceLanguage is not directly provided
+        for (const match of data.matches) {
+          if (match.source && match.source !== "all") {
+            const code = match.source.split("-")[0].toLowerCase();
+            if (["de", "en", "it", "es", "fr"].includes(code)) {
+              detectedLang = code;
+              break;
+            }
+          }
         }
       }
+      detectedLang = (detectedLang || "en").toLowerCase().trim();
       const translation = data.responseData?.translatedText || text;
       result.detectedLang = detectedLang;
       result.translation = translation;
