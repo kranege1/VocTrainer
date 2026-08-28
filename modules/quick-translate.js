@@ -839,6 +839,7 @@ export function isVerbAnyLanguage(text) {
 export async function detectLanguageAndTranslateToEn(text) {
   let gtxError = null;
   let myMemoryError = null;
+  let gtxDetectedLang = "unknown";
 
   try {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(text)}`;
@@ -846,6 +847,7 @@ export async function detectLanguageAndTranslateToEn(text) {
     if (response.ok) {
       const data = await response.json();
       const detectedLang = data[2] || "en";
+      gtxDetectedLang = detectedLang;
       const translation = data[0].map(item => item[0]).join("");
       return { detectedLang, translation };
     } else {
@@ -856,6 +858,8 @@ export async function detectLanguageAndTranslateToEn(text) {
     console.warn("Language detection failed, trying MyMemory fallback:", e);
   }
 
+  const result = { detectedLang: "en", translation: text };
+  
   // Fallback to MyMemory API (CORS friendly)
   try {
     const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=auto|en`;
@@ -870,7 +874,8 @@ export async function detectLanguageAndTranslateToEn(text) {
         }
       }
       const translation = data.responseData?.translatedText || text;
-      return { detectedLang, translation };
+      result.detectedLang = detectedLang;
+      result.translation = translation;
     } else {
       myMemoryError = new Error(`HTTP Status ${response.status}`);
     }
@@ -879,8 +884,8 @@ export async function detectLanguageAndTranslateToEn(text) {
     console.error("MyMemory language detection fallback failed:", err);
   }
 
-  alert(`Detect Debug:\nText: "${text}"\nGoogle Error: ${gtxError ? gtxError.message : "None"}\nMyMemory Error: ${myMemoryError ? myMemoryError.message : "None"}`);
-  return { detectedLang: "en", translation: text };
+  alert(`Detect Debug:\nText: "${text}"\nGoogle Detected: ${gtxDetectedLang}\nMyMemory Detected: ${result.detectedLang}\nFinal Selected: ${result.detectedLang}\nGoogle Error: ${gtxError ? gtxError.message : "None"}\nMyMemory Error: ${myMemoryError ? myMemoryError.message : "None"}`);
+  return result;
 }
 
 function getArticleFromGender(gender, cleanWord, targetLang) {
