@@ -882,7 +882,20 @@ async function translateTextGTX(text, fromLang, toLang) {
       return data[0].map(item => item[0]).join("");
     }
   } catch (e) {
-    console.error("GTX translation failed:", e);
+    console.warn("GTX translation failed, trying MyMemory fallback:", e);
+  }
+
+  // Fallback to MyMemory API (CORS friendly)
+  try {
+    const myMemoryRes = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${fromLang}|${toLang}`);
+    if (myMemoryRes.ok) {
+      const data = await myMemoryRes.json();
+      if (data && data.responseData && data.responseData.translatedText) {
+        return data.responseData.translatedText;
+      }
+    }
+  } catch (err) {
+    console.error("MyMemory fallback translation failed:", err);
   }
   return text;
 }

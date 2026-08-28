@@ -847,7 +847,27 @@ export async function detectLanguageAndTranslateToEn(text) {
       return { detectedLang, translation };
     }
   } catch (e) {
-    console.warn("Language detection failed:", e);
+    console.warn("Language detection failed, trying MyMemory fallback:", e);
+  }
+
+  // Fallback to MyMemory API (CORS friendly)
+  try {
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=auto|en`;
+    const response = await fetch(url);
+    if (response.ok) {
+      const data = await response.json();
+      let detectedLang = "en";
+      if (data && data.matches && data.matches.length > 0) {
+        const firstMatch = data.matches[0];
+        if (firstMatch.source) {
+          detectedLang = firstMatch.source.split("-")[0].toLowerCase();
+        }
+      }
+      const translation = data.responseData?.translatedText || text;
+      return { detectedLang, translation };
+    }
+  } catch (err) {
+    console.error("MyMemory language detection fallback failed:", err);
   }
   return { detectedLang: "en", translation: text };
 }
