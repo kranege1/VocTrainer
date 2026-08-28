@@ -842,11 +842,11 @@ function detectLanguageHeuristic(text) {
   const words = clean.split(/\s+/).filter(Boolean);
   
   const stopwords = {
-    de: ["ich", "ist", "und", "oder", "nicht", "der", "die", "das", "ein", "eine", "zu", "mit", "auf", "von", "im", "in", "heute", "schule", "gehe", "wir", "ihr", "sie", "es", "reisen", "will", "märz"],
-    it: ["il", "la", "i", "gli", "le", "un", "una", "e", "o", "non", "di", "da", "in", "con", "su", "per", "tra", "fra", "sono", "oggi", "scuola", "vado", "viaggiare", "voglio", "marzo"],
-    es: ["el", "la", "los", "las", "un", "una", "y", "o", "no", "de", "en", "con", "por", "para", "como", "hoy", "escuela", "voy", "viajar", "quiero", "marzo"],
-    fr: ["le", "la", "les", "un", "une", "et", "ou", "ne", "pas", "de", "en", "dans", "avec", "pour", "sur", "aujourd", "aujourd'hui", "ecole", "école", "vais", "voyager", "veux", "mars"],
-    en: ["the", "a", "an", "and", "or", "not", "is", "are", "to", "in", "on", "at", "with", "for", "of", "go", "today", "school", "i", "we", "you", "they", "travel", "want", "march"]
+    de: ["ich", "du", "er", "sie", "es", "wir", "ihr", "ist", "sind", "bin", "war", "und", "oder", "nicht", "der", "die", "das", "ein", "eine", "einer", "eines", "einem", "einen", "zu", "mit", "auf", "von", "im", "in", "nach", "bei", "an", "aus", "für", "um", "nach", "vor", "hinter", "unter", "über", "gehe", "gehen", "fahren", "reisen", "will", "wollen", "müssen", "können", "heute", "morgen", "schule", "haus", "zeit", "märz"],
+    it: ["io", "tu", "lui", "lei", "noi", "voi", "loro", "è", "sono", "sei", "era", "e", "o", "non", "il", "la", "i", "gli", "le", "un", "una", "a", "con", "su", "da", "di", "in", "per", "tra", "fra", "vado", "andare", "guidare", "viaggiare", "voglio", "volere", "devo", "posso", "oggi", "domani", "scuola", "casa", "tempo", "marzo"],
+    es: ["yo", "tú", "él", "ella", "nosotros", "vosotros", "ellos", "es", "son", "soy", "era", "y", "o", "no", "el", "la", "los", "las", "un", "una", "a", "con", "en", "de", "por", "para", "sobre", "voy", "ir", "conducir", "viajar", "quiero", "querer", "debo", "puedo", "hoy", "mañana", "escuela", "casa", "tiempo", "marzo"],
+    fr: ["je", "tu", "il", "elle", "nous", "vous", "ils", "est", "sont", "suis", "était", "et", "ou", "ne", "pas", "le", "la", "les", "un", "une", "à", "avec", "sur", "de", "en", "dans", "pour", "par", "vais", "aller", "conduire", "voyager", "veux", "vouloir", "dois", "peux", "aujourd", "aujourd'hui", "demain", "ecole", "école", "maison", "temps", "mars"],
+    en: ["the", "a", "an", "and", "or", "not", "is", "are", "am", "was", "were", "to", "with", "on", "at", "by", "from", "in", "into", "for", "about", "of", "go", "going", "drive", "driving", "travel", "want", "must", "can", "today", "tomorrow", "school", "house", "time", "march"]
   };
 
   const counts = { de: 0, it: 0, es: 0, fr: 0, en: 0 };
