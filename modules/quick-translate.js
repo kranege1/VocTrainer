@@ -837,6 +837,9 @@ export function isVerbAnyLanguage(text) {
 }
 
 export async function detectLanguageAndTranslateToEn(text) {
+  let gtxError = null;
+  let myMemoryError = null;
+
   try {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(text)}`;
     const response = await fetch(url);
@@ -845,8 +848,11 @@ export async function detectLanguageAndTranslateToEn(text) {
       const detectedLang = data[2] || "en";
       const translation = data[0].map(item => item[0]).join("");
       return { detectedLang, translation };
+    } else {
+      gtxError = new Error(`HTTP Status ${response.status}`);
     }
   } catch (e) {
+    gtxError = e;
     console.warn("Language detection failed, trying MyMemory fallback:", e);
   }
 
@@ -865,10 +871,15 @@ export async function detectLanguageAndTranslateToEn(text) {
       }
       const translation = data.responseData?.translatedText || text;
       return { detectedLang, translation };
+    } else {
+      myMemoryError = new Error(`HTTP Status ${response.status}`);
     }
   } catch (err) {
+    myMemoryError = err;
     console.error("MyMemory language detection fallback failed:", err);
   }
+
+  alert(`Detect Debug:\nText: "${text}"\nGoogle Error: ${gtxError ? gtxError.message : "None"}\nMyMemory Error: ${myMemoryError ? myMemoryError.message : "None"}`);
   return { detectedLang: "en", translation: text };
 }
 

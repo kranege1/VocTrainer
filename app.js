@@ -864,6 +864,9 @@ function isCommonWord(wordText, lang) {
 }
 
 async function translateTextGTX(text, fromLang, toLang) {
+  let gtxError = null;
+  let myMemoryError = null;
+
   try {
     const bytes = new Blob([text]).size;
     const words = text.trim().split(/\s+/).filter(Boolean).length;
@@ -880,8 +883,11 @@ async function translateTextGTX(text, fromLang, toLang) {
     if (res.ok) {
       const data = await res.json();
       return data[0].map(item => item[0]).join("");
+    } else {
+      gtxError = new Error(`HTTP Status ${res.status}`);
     }
   } catch (e) {
+    gtxError = e;
     console.warn("GTX translation failed, trying MyMemory fallback:", e);
   }
 
@@ -893,10 +899,15 @@ async function translateTextGTX(text, fromLang, toLang) {
       if (data && data.responseData && data.responseData.translatedText) {
         return data.responseData.translatedText;
       }
+    } else {
+      myMemoryError = new Error(`HTTP Status ${myMemoryRes.status}`);
     }
   } catch (err) {
+    myMemoryError = err;
     console.error("MyMemory fallback translation failed:", err);
   }
+
+  alert(`Translation Debug:\nText: "${text}"\nFrom: ${fromLang} To: ${toLang}\nGoogle Error: ${gtxError ? gtxError.message : "None"}\nMyMemory Error: ${myMemoryError ? myMemoryError.message : "None"}`);
   return text;
 }
 
