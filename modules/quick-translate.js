@@ -836,62 +836,80 @@ export function isVerbAnyLanguage(text) {
   return false;
 }
 
-export async function detectLanguageAndTranslateToEn(text) {
-  let gtxError = null;
-  let myMemoryError = null;
-  let gtxDetectedLang = "unknown";
+function detectLanguageHeuristic(text) {
+  if (!text) return "en";
+  const clean = text.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "").trim();
+  const words = clean.split(/\s+/).filter(Boolean);
+  
+  const stopwords = {
+    de: ["ich", "ist", "und", "oder", "nicht", "der", "die", "das", "ein", "eine", "zu", "mit", "auf", "von", "im", "in", "heute", "schule", "gehe", "wir", "ihr", "sie", "es", "reisen", "will", "märz"],
+    it: ["il", "la", "i", "gli", "le", "un", "una", "e", "o", "non", "di", "da", "in", "con", "su", "per", "tra", "fra", "sono", "oggi", "scuola", "vado", "viaggiare", "voglio", "marzo"],
+    es: ["el", "la", "los", "las", "un", "una", "y", "o", "no", "de", "en", "con", "por", "para", "como", "hoy", "escuela", "voy", "viajar", "quiero", "marzo"],
+    fr: ["le", "la", "les", "un", "une", "et", "ou", "ne", "pas", "de", "en", "dans", "avec", "pour", "sur", "aujourd", "aujourd'hui", "ecole", "école", "vais", "voyager", "veux", "mars"],
+    en: ["the", "a", "an", "and", "or", "not", "is", "are", "to", "in", "on", "at", "with", "for", "of", "go", "today", "school", "i", "we", "you", "they", "travel", "want", "march"]
+  };
 
+  const counts = { de: 0, it: 0, es: 0, fr: 0, en: 0 };
+  
+  for (const word of words) {
+    for (const lang in stopwords) {
+      if (stopwords[lang].includes(word)) {
+        counts[lang]++;
+      }
+    }
+  }
+
+  let maxLang = "en";
+  let maxCount = 0;
+  for (const lang in counts) {
+    if (counts[lang] > maxCount) {
+      maxCount = counts[lang];
+      maxLang = lang;
+    }
+  }
+  
+  // Character level overrides
+  if (maxCount === 0) {
+    if (/[äöüß]/i.test(text)) return "de";
+    if (/[éèàùçâêîôûëïüÿœæ]/i.test(text)) return "fr";
+    if (/[áíóúñ¿¡]/i.test(text)) return "es";
+    if (/[ìòù]/i.test(text)) return "it";
+  }
+
+  return maxLang;
+}
+
+export async function detectLanguageAndTranslateToEn(text) {
   try {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(text)}`;
     const response = await fetch(url);
     if (response.ok) {
       const data = await response.json();
       const detectedLang = data[2] || "en";
-      gtxDetectedLang = detectedLang;
       const translation = data[0].map(item => item[0]).join("");
       return { detectedLang, translation };
-    } else {
-      gtxError = new Error(`HTTP Status ${response.status}`);
     }
   } catch (e) {
-    gtxError = e;
     console.warn("Language detection failed, trying MyMemory fallback:", e);
   }
 
-  const result = { detectedLang: "en", translation: text };
+  // Fallback to MyMemory with Stopword Heuristic (CORS friendly)
+  const detectedLang = detectLanguageHeuristic(text);
+  const result = { detectedLang, translation: text };
   
-  // Fallback to MyMemory API (CORS friendly)
   try {
-    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=auto|en`;
+    // Translate from explicitly detected language to English
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${detectedLang}|en`;
     const response = await fetch(url);
     if (response.ok) {
       const data = await response.json();
-      let detectedLang = data.responseData?.detectedSourceLanguage;
-      if (!detectedLang && data.matches && data.matches.length > 0) {
-        // Fallback to searching matches if detectedSourceLanguage is not directly provided
-        for (const match of data.matches) {
-          if (match.source && match.source !== "all") {
-            const code = match.source.split("-")[0].toLowerCase();
-            if (["de", "en", "it", "es", "fr"].includes(code)) {
-              detectedLang = code;
-              break;
-            }
-          }
-        }
-      }
-      detectedLang = (detectedLang || "en").toLowerCase().trim();
       const translation = data.responseData?.translatedText || text;
-      result.detectedLang = detectedLang;
       result.translation = translation;
-    } else {
-      myMemoryError = new Error(`HTTP Status ${response.status}`);
     }
   } catch (err) {
-    myMemoryError = err;
     console.error("MyMemory language detection fallback failed:", err);
   }
 
-  alert(`Detect Debug:\nText: "${text}"\nGoogle Detected: ${gtxDetectedLang}\nMyMemory Detected: ${result.detectedLang}\nFinal Selected: ${result.detectedLang}\nGoogle Error: ${gtxError ? gtxError.message : "None"}\nMyMemory Error: ${myMemoryError ? myMemoryError.message : "None"}`);
   return result;
 }
 
