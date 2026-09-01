@@ -410,6 +410,16 @@ export async function fetchFastGTXDetails(text, sourceLang, targetLang) {
     console.warn("fetchFastGTXDetails error for", targetLang, e);
   }
 
+  // Fallback if primary GTX call failed or returned unchanged text for a cross-language request
+  if (!resObj.translation || (resObj.translation.toLowerCase().trim() === cleanText.toLowerCase() && sourceLang !== targetLang)) {
+    try {
+      const altTrans = await translateTextGTX(cleanText, sourceLang, targetLang);
+      if (altTrans && altTrans.toLowerCase().trim() !== cleanText.toLowerCase() && !altTrans.includes("PLEASE SELECT")) {
+        resObj.translation = altTrans;
+      }
+    } catch (e) {}
+  }
+
   sessionStorage.setItem(cacheKey, JSON.stringify(resObj));
   return resObj;
 }
@@ -453,7 +463,11 @@ export async function runQuickTranslate(text) {
     const resultsHtml = await Promise.all(targets.map(async (target) => {
       try {
         const details = await fetchFastGTXDetails(text, sourceLang, target.code);
-        let translation = normalizeWordCasing(details.translation, target.code, folderId);
+        let rawTrans = details.translation || text;
+        let translation = rawTrans;
+        if (rawTrans.toLowerCase().trim() !== text.toLowerCase().trim() || target.code === "de") {
+          translation = normalizeWordCasing(rawTrans, target.code, folderId);
+        }
         let article = details.article;
         let synonyms = details.synonyms || [];
 
