@@ -887,7 +887,16 @@ async function translateTextGTX(text, fromLang, toLang) {
     } catch(e) {}
 
     if (!res || !res.ok) {
-      res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&${gtxQuery}`, { signal: controller.signal });
+      try {
+        res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&${gtxQuery}`, { signal: controller.signal });
+      } catch(e) {}
+    }
+
+    if (!res || !res.ok) {
+      try {
+        const corsProxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://translate.googleapis.com/translate_a/single?client=gtx&${gtxQuery}`)}`;
+        res = await fetch(corsProxyUrl, { signal: controller.signal });
+      } catch(e) {}
     }
     clearTimeout(timeoutId);
     if (res.ok) {

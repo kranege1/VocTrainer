@@ -330,7 +330,16 @@ export async function fetchFastGTXDetails(text, sourceLang, targetLang) {
 
     if (!res || !res.ok) {
       const directUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&${gtxQuery}`;
-      res = await fetch(directUrl, { signal: controller.signal });
+      try {
+        res = await fetch(directUrl, { signal: controller.signal });
+      } catch(e) {}
+    }
+
+    if (!res || !res.ok) {
+      const corsProxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://translate.googleapis.com/translate_a/single?client=gtx&${gtxQuery}`)}`;
+      try {
+        res = await fetch(corsProxyUrl, { signal: controller.signal });
+      } catch(e) {}
     }
     clearTimeout(timeoutId);
 
