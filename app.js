@@ -876,7 +876,10 @@ async function translateTextGTX(text, fromLang, toLang) {
         durationMs: 2500
       });
     }
-    const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${fromLang}&tl=${toLang}&dt=t&q=${encodeURIComponent(text)}`);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${fromLang}&tl=${toLang}&dt=t&q=${encodeURIComponent(text)}`, { signal: controller.signal });
+    clearTimeout(timeoutId);
     if (res.ok) {
       const data = await res.json();
       return data[0].map(item => item[0]).join("");
@@ -887,7 +890,10 @@ async function translateTextGTX(text, fromLang, toLang) {
 
   // Fallback to MyMemory API (CORS friendly)
   try {
-    const myMemoryRes = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${fromLang}|${toLang}`);
+    const controller2 = new AbortController();
+    const timeoutId2 = setTimeout(() => controller2.abort(), 4000);
+    const myMemoryRes = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${fromLang}|${toLang}`, { signal: controller2.signal });
+    clearTimeout(timeoutId2);
     if (myMemoryRes.ok) {
       const data = await myMemoryRes.json();
       if (data && data.responseData && data.responseData.translatedText) {

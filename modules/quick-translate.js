@@ -343,13 +343,15 @@ export async function runQuickTranslate(text) {
       // Look up in dictionary API for English synonyms
       if (englishBaseWord) {
         try {
-          const dictRes = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(englishBaseWord)}`);
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 2500);
+          const dictRes = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(englishBaseWord)}`, { signal: controller.signal });
+          clearTimeout(timeoutId);
           if (dictRes.ok) {
             const dictData = await dictRes.json();
-            const entry = dictData[0];
-            if (entry && entry.meanings) {
-              entry.meanings.forEach(m => {
-                if (m.synonyms) englishSynonyms.push(...m.synonyms);
+            if (Array.isArray(dictData) && dictData[0] && Array.isArray(dictData[0].meanings)) {
+              dictData[0].meanings.forEach(m => {
+                if (Array.isArray(m.synonyms)) englishSynonyms.push(...m.synonyms);
               });
             }
           }
@@ -523,7 +525,16 @@ export async function runQuickTranslate(text) {
     updateDuplicateStatus();
   } catch (err) {
     console.error("runQuickTranslate crash:", err);
-    alert("Error: " + err.message + "\nStack: " + err.stack);
+    const targetGrid = document.getElementById("quick-translate-results");
+    if (targetGrid) {
+      targetGrid.innerHTML = `
+        <div style="grid-column: 1/-1; text-align: center; padding: 30px; color: var(--error-color); font-weight: 600; background: rgba(239, 68, 68, 0.08); border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.2);">
+          ⚠️ Translation encountered an issue (${err.message || "Network timeout"}). Please tap Translate to try again.
+        </div>
+      `;
+    }
+    const status = document.getElementById("quick-translate-status");
+    if (status) status.textContent = "Tap Translate to try again";
   }
 }
 
@@ -1021,18 +1032,23 @@ export async function getArticleForTranslation(translation, targetLang, sourceTe
   const isSingleWord = !cleanWord.includes(" ");
   if (isSingleWord) {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2500);
       const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${targetLang}&tl=${targetLang}&dt=bd&q=${encodeURIComponent(cleanWord)}`;
-      const res = await fetch(url);
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeoutId);
       if (res.ok) {
         const data = await res.json();
-        if (data && data[1]) {
+        if (Array.isArray(data) && Array.isArray(data[1])) {
           for (const entry of data[1]) {
-            const pos = (entry[0] || "").toLowerCase();
-            if (pos === "noun" || pos === "substantiv" || pos === "sustantivo" || pos === "sostantivo" || pos === "nom") {
-              const genderStr = (entry[3] || "").toLowerCase();
-              const derivedArticle = getArticleFromGender(genderStr, cleanWord, targetLang);
-              if (derivedArticle) {
-                return { article: derivedArticle, cleanTranslation: cleanWord };
+            if (Array.isArray(entry)) {
+              const pos = (entry[0] || "").toLowerCase();
+              if (pos === "noun" || pos === "substantiv" || pos === "sustantivo" || pos === "sostantivo" || pos === "nom") {
+                const genderStr = (entry[3] || "").toLowerCase();
+                const derivedArticle = getArticleFromGender(genderStr, cleanWord, targetLang);
+                if (derivedArticle) {
+                  return { article: derivedArticle, cleanTranslation: cleanWord };
+                }
               }
             }
           }
@@ -1060,27 +1076,56 @@ export async function fetchSynonymsForTarget(sourceText, sourceLang, targetLang,
   
   // Use Google Translate (GTX) alternative translations & dictionary entries (100% free, 0 AI tokens)
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=at&dt=bd&q=${encodeURIComponent(cleanSource)}`;
-    const res = await fetch(url);
+    const res = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
+
     if (res.ok) {
       const data = await res.json();
       let alts = [];
-      if (data && data[5] && data[5][0] && data[5][0][2]) {
-        alts.push(...data[5][0][2].map(item => item[0]));
-      }
-      if (data && data[1]) {
-        data[1].forEach(entry => {
-          if (entry[2]) {
-            entry[2].forEach(sub => {
-              if (sub[0]) alts.push(sub[0]);
+
+      // Check data[5] (alternative translations array)
+      if (Array.isArray(data) && Array.isArray(data[5])) {
+        data[5].forEach(group => {
+          if (Array.isArray(group) && Array.isArray(group[2])) {
+            group[2].forEach(item => {
+              if (Array.isArray(item) && typeof item[0] === "string") {
+                alts.push(item[0]);
+              }
             });
           }
         });
       }
+
+      // Check data[1] (dictionary entries by part of speech)
+      if (Array.isArray(data) && Array.isArray(data[1])) {
+        data[1].forEach(entry => {
+          if (Array.isArray(entry)) {
+            // entry[1] is array of synonym strings e.g. ["grido", "urlo", "clamore"]
+            if (Array.isArray(entry[1])) {
+              entry[1].forEach(word => {
+                if (typeof word === "string") alts.push(word);
+              });
+            }
+            // entry[2] is detailed sub-array
+            if (Array.isArray(entry[2])) {
+              entry[2].forEach(sub => {
+                if (Array.isArray(sub) && typeof sub[0] === "string") {
+                  alts.push(sub[0]);
+                }
+              });
+            }
+          }
+        });
+      }
+
       const uniqueAlts = [...new Set(alts)].filter(a => {
-        const lower = a.toLowerCase().trim();
+        const lower = (a || "").toLowerCase().trim();
         return lower && lower !== cleanMain && lower !== cleanSource.toLowerCase();
       });
+
       if (uniqueAlts.length > 0) {
         return uniqueAlts.slice(0, 5);
       }
