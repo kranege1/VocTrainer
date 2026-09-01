@@ -293,6 +293,104 @@ export function toggleQuickTranslateSpeech() {
   }
 }
 
+export async function fetchFastGTXDetails(text, sourceLang, targetLang) {
+  const cleanText = text.trim();
+  const cacheKey = `qt_fast_${sourceLang}_${targetLang}_${cleanText.toLowerCase()}`;
+  const cached = sessionStorage.getItem(cacheKey);
+  if (cached) {
+    try { return JSON.parse(cached); } catch(e) {}
+  }
+
+  let resObj = {
+    translation: cleanText,
+    article: "",
+    synonyms: []
+  };
+
+  if (sourceLang === targetLang) {
+    resObj.translation = cleanText;
+    sessionStorage.setItem(cacheKey, JSON.stringify(resObj));
+    return resObj;
+  }
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    // Combine core translation (dt=t), alternative translations (dt=at), and dictionary/gender (dt=bd) into 1 single request
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&dt=at&dt=bd&q=${encodeURIComponent(cleanText)}`;
+    const res = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const data = await res.json();
+
+      // 1. Core Translation
+      if (Array.isArray(data) && Array.isArray(data[0])) {
+        resObj.translation = data[0].map(item => item[0]).join("");
+      }
+
+      const cleanTrans = stripArticles(resObj.translation, targetLang).trim();
+      const isShortPhrase = cleanText.split(/\s+/).filter(Boolean).length <= 2;
+
+      // 2. Article resolution for nouns
+      if (isShortPhrase && !isVerbCheck(cleanTrans, targetLang) && !isVerbCheck(cleanText, targetLang)) {
+        const starterRaw = window.STARTER_VOCAB_RAW || [];
+        const match = starterRaw.find(v => (v[targetLang] || "").toLowerCase() === cleanTrans.toLowerCase());
+        if (match && match.details && match.details.articles && match.details.articles[targetLang]) {
+          resObj.article = match.details.articles[targetLang];
+        } else if (Array.isArray(data) && Array.isArray(data[1])) {
+          for (const entry of data[1]) {
+            if (Array.isArray(entry)) {
+              const pos = (entry[0] || "").toLowerCase();
+              if (pos === "noun" || pos === "substantiv" || pos === "sustantivo" || pos === "sostantivo" || pos === "nom") {
+                const genderStr = (entry[3] || "").toLowerCase();
+                resObj.article = getArticleFromGender(genderStr, cleanTrans, targetLang);
+                if (resObj.article) break;
+              }
+            }
+          }
+          if (!resObj.article) {
+            resObj.article = getArticleFromGender("", cleanTrans, targetLang);
+          }
+        }
+      }
+
+      // 3. Synonyms / Alternative Translations
+      if (isShortPhrase) {
+        let alts = [];
+        if (Array.isArray(data) && Array.isArray(data[5])) {
+          data[5].forEach(group => {
+            if (Array.isArray(group) && Array.isArray(group[2])) {
+              group[2].forEach(item => {
+                if (Array.isArray(item) && typeof item[0] === "string") alts.push(item[0]);
+              });
+            }
+          });
+        }
+        if (Array.isArray(data) && Array.isArray(data[1])) {
+          data[1].forEach(entry => {
+            if (Array.isArray(entry) && Array.isArray(entry[1])) {
+              entry[1].forEach(word => {
+                if (typeof word === "string") alts.push(word);
+              });
+            }
+          });
+        }
+        const cleanMainLower = stripArticles(resObj.translation, targetLang).toLowerCase().trim();
+        resObj.synonyms = [...new Set(alts)].filter(a => {
+          const lower = (a || "").toLowerCase().trim();
+          return lower && lower !== cleanMainLower && lower !== cleanText.toLowerCase();
+        }).slice(0, 5);
+      }
+    }
+  } catch (e) {
+    console.warn("fetchFastGTXDetails error for", targetLang, e);
+  }
+
+  sessionStorage.setItem(cacheKey, JSON.stringify(resObj));
+  return resObj;
+}
+
 export async function runQuickTranslate(text) {
   try {
     if (!text || !text.trim()) return;
@@ -308,14 +406,7 @@ export async function runQuickTranslate(text) {
         <span style="display: inline-block; animation: spin 1s linear infinite; margin-right: 8px;">🔄</span> Translating from ${sourceLangName}...
       </div>
     `;
-    
-    let enTranslation = "";
-    if (sourceLang === "en") {
-      enTranslation = text;
-    } else {
-      enTranslation = await translateTextGTX(text, sourceLang, "en");
-    }
-    
+
     const langs = [
       { code: "de", name: "German", flag: "de" },
       { code: "en", name: "English", flag: "gb" },
@@ -324,7 +415,6 @@ export async function runQuickTranslate(text) {
       { code: "fr", name: "French", flag: "fr" }
     ];
     
-    // Filter target languages based on quickTranslateMode preference
     let targets = langs;
     const mode = state.quickTranslateMode || "base_learning";
     if (mode === "base_learning") {
@@ -333,108 +423,20 @@ export async function runQuickTranslate(text) {
       const activeCodes = [...new Set([base, learning])];
       targets = langs.filter(l => activeCodes.includes(l.code));
     }
-    
-    // Is it a single word?
-    const isSingleWord = !text.trim().includes(" ");
-    let englishBaseWord = enTranslation;
-    let englishSynonyms = [];
-    if (isSingleWord) {
-      
-      // Look up in dictionary API for English synonyms
-      if (englishBaseWord) {
-        try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 2500);
-          const dictRes = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(englishBaseWord)}`, { signal: controller.signal });
-          clearTimeout(timeoutId);
-          if (dictRes.ok) {
-            const dictData = await dictRes.json();
-            if (Array.isArray(dictData) && dictData[0] && Array.isArray(dictData[0].meanings)) {
-              dictData[0].meanings.forEach(m => {
-                if (Array.isArray(m.synonyms)) englishSynonyms.push(...m.synonyms);
-              });
-            }
-          }
-        } catch (e) {
-          console.warn("Dictionary look up failed for synonyms:", e);
-        }
-      }
-      englishSynonyms = [...new Set(englishSynonyms)].slice(0, 5);
-    }
-    
-    // Translate to all other languages in parallel
+
     const folderId = document.getElementById("quick-translate-save-folder")?.value || "";
-    
-    // Determine if the input is a verb:
-    //  - Folder name explicitly contains "verb"
-    //  - OR isVerbCheck confirms it (using the noun-exception-aware version)
-    // IMPORTANT: We do NOT rely on the English dictionary part-of-speech any more
-    //   because many nouns (garden, water, book) are also valid verbs in dictionaries.
-    const isFolderVerb = folderId.toLowerCase().includes("verb");
-    const isInputVerb = isVerbCheck(text, sourceLang) || isFolderVerb;
-    let translationSource = text;
-    let translationSourceLang = sourceLang;
-    
-    // Only pivot translation through English and prepend "to " when:
-    //  - Input is genuinely a verb
-    //  - AND we have a valid non-trivial English base word
-    const isValidEnglishVerb = englishBaseWord &&
-      englishBaseWord.toLowerCase().trim() !== text.toLowerCase().trim();
-    
-    if (isInputVerb && isValidEnglishVerb) {
-      if (!englishBaseWord.toLowerCase().startsWith("to ")) {
-        englishBaseWord = "to " + englishBaseWord;
-      }
-      translationSource = englishBaseWord;
-      translationSourceLang = "en";
-    }
+
+    // Parallel 1-shot fetch per target language with fast caching
     const resultsHtml = await Promise.all(targets.map(async (target) => {
       try {
-        // 1. Core translation
-        let translation = "";
-        if (target.code === sourceLang) {
-          translation = text;
-        } else {
-          translation = await translateTextGTX(translationSource, translationSourceLang, target.code);
-        }
-        translation = normalizeWordCasing(translation, target.code, folderId);
+        const details = await fetchFastGTXDetails(text, sourceLang, target.code);
+        let translation = normalizeWordCasing(details.translation, target.code, folderId);
+        let article = details.article;
+        let synonyms = details.synonyms || [];
 
-        const inputWordCount = text.trim().split(/\s+/).filter(Boolean).length;
-        const isShortPhrase = inputWordCount <= 2;
-
-        // Article resolution for nouns/short phrases
-        let article = "";
-        if (isShortPhrase) {
-          try {
-            const artRes = await getArticleForTranslation(translation, target.code, text);
-            article = artRes.article;
-            if (artRes.cleanTranslation) {
-              translation = normalizeWordCasing(artRes.cleanTranslation, target.code, folderId);
-            }
-          } catch (e) {
-            console.warn("Article resolution failed:", e);
-          }
-        }
-        
-        // 2. Synonyms translation/fetching - Only for single words or very short phrases (<= 2 words)
         let synonymsHtml = "";
-        let synonyms = [];
-
-        if (isShortPhrase) {
-          try {
-            synonyms = await fetchSynonymsForTarget(text, sourceLang, target.code, translation);
-          } catch (e) {
-            console.warn("Failed to get synonyms for", target.code, e);
-          }
-          
-          // Fallback to English dictionary synonyms if target is English and we didn't get any
-          if (synonyms.length === 0 && target.code === "en" && englishSynonyms.length > 0) {
-            synonyms = englishSynonyms;
-          }
-        }
-
         if (synonyms.length > 0) {
-          const uniqueSyns = [...new Set(synonyms)].filter(s => s.toLowerCase() !== translation.toLowerCase());
+          const uniqueSyns = synonyms.filter(s => s.toLowerCase() !== translation.toLowerCase());
           if (uniqueSyns.length > 0) {
             synonymsHtml = `
               <div style="margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px;">
@@ -447,17 +449,14 @@ export async function runQuickTranslate(text) {
           }
         }
 
-        // 3. Conjugations — only for confirmed verbs
+        // Conjugations — for verbs
         let conjugationsHtml = "";
         try {
-          // A card is a verb only if:
-          //  - English: translation literally starts with "to "
-          //  - Other languages: isVerbCheck says true (uses the noun-exception list)
           const isTargetVerb = target.code === "en"
             ? translation.trim().toLowerCase().startsWith("to ")
             : isVerbCheck(translation, target.code);
           if (isTargetVerb) {
-            const fakeWordObj = { target: translation, en: englishBaseWord || text, category: "verbs" };
+            const fakeWordObj = { target: translation, en: text, category: "verbs" };
             const conjugations = getConjugationsForVerb(fakeWordObj, target.code);
             const pronouns = PRONOUNS[target.code] || PRONOUNS.en;
             if (conjugations && conjugations.length > 0) {
@@ -479,11 +478,11 @@ export async function runQuickTranslate(text) {
         } catch (e) {
           console.warn("Conjugations failed for", target.code, e);
         }
-        
+
         const flagUrl = target.code === "en" ? "https://flagcdn.com/16x12/gb.png" : `https://flagcdn.com/16x12/${target.code}.png`;
         const flagStyle = `vertical-align: middle; margin-right: 8px; border-radius: 2px; box-shadow: 0 0 2px rgba(0,0,0,0.5);`;
         const langColor = getLangColor(target.code);
-        
+
         return `
           <div class="card" style="margin: 0; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; border-left: 5px solid ${langColor}; background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border-radius: 12px; border-top: 1px solid rgba(255,255,255,0.04); border-right: 1px solid rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.04); box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
             <div>
@@ -511,14 +510,12 @@ export async function runQuickTranslate(text) {
         return `<div class="card" style="margin:0; padding:22px; color:var(--error-color);">Error loading ${target.name}</div>`;
       }
     }));
-    
+
     targetGrid.innerHTML = resultsHtml.join("");
-    
-    // Set status
+
     const status = document.getElementById("quick-translate-status");
     if (status) status.textContent = "Translation Complete!";
 
-    // Show and populate save-to-list section!
     populateQuickTranslateFolders();
     const saveBox = document.getElementById("quick-translate-save-box");
     if (saveBox) saveBox.style.display = "flex";
