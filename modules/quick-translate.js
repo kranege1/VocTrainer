@@ -310,8 +310,9 @@ export async function fetchFastGTXDetails(text, sourceLang, targetLang) {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const slParam = (sourceLang && sourceLang !== targetLang) ? sourceLang : "auto";
     // Combine core translation (dt=t), alternative translations (dt=at), and dictionary/gender (dt=bd) into 1 single request
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&dt=at&dt=bd&q=${encodeURIComponent(cleanText)}`;
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${slParam}&tl=${targetLang}&dt=t&dt=at&dt=bd&q=${encodeURIComponent(cleanText)}`;
     const res = await fetch(url, { signal: controller.signal });
     clearTimeout(timeoutId);
 
