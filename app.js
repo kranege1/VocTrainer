@@ -882,7 +882,22 @@ async function translateTextGTX(text, fromLang, toLang) {
     clearTimeout(timeoutId);
     if (res.ok) {
       const data = await res.json();
-      return data[0].map(item => item[0]).join("");
+      let trans = data[0].map(item => item[0]).join("");
+
+      // Smart Fallback: If translation returned identical text unchanged, try auto-detection (sl=auto)
+      if (trans && trans.toLowerCase().trim() === text.toLowerCase().trim()) {
+        try {
+          const fbRes = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${toLang}&dt=t&q=${encodeURIComponent(text)}`);
+          if (fbRes.ok) {
+            const fbData = await fbRes.json();
+            if (Array.isArray(fbData) && Array.isArray(fbData[0])) {
+              const fbTrans = fbData[0].map(item => item[0]).join("");
+              if (fbTrans) trans = fbTrans;
+            }
+          }
+        } catch(e) {}
+      }
+      return trans;
     }
   } catch (e) {
     console.warn("GTX translation failed, trying MyMemory fallback:", e);

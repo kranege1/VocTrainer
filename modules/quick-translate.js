@@ -307,12 +307,6 @@ export async function fetchFastGTXDetails(text, sourceLang, targetLang) {
     synonyms: []
   };
 
-  if (sourceLang === targetLang) {
-    resObj.translation = cleanText;
-    sessionStorage.setItem(cacheKey, JSON.stringify(resObj));
-    return resObj;
-  }
-
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
@@ -329,8 +323,8 @@ export async function fetchFastGTXDetails(text, sourceLang, targetLang) {
         resObj.translation = data[0].map(item => item[0]).join("");
       }
 
-      // Smart Fallback: If translation returned identical input text unchanged for a non-matching language, try auto-detection (sl=auto)
-      if (resObj.translation.toLowerCase().trim() === cleanText.toLowerCase() && sourceLang !== targetLang) {
+      // Smart Fallback: If translation returned identical input text unchanged, try auto-detection (sl=auto)
+      if (resObj.translation.toLowerCase().trim() === cleanText.toLowerCase()) {
         try {
           const fbUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&dt=at&dt=bd&q=${encodeURIComponent(cleanText)}`;
           const fbRes = await fetch(fbUrl);
@@ -668,12 +662,8 @@ export async function saveQuickTranslateWord() {
   let success = false;
   try {
     const sourceLang = document.getElementById("quick-translate-lang")?.value || "en";
-    let enTranslation = "";
-    if (sourceLang === "en") {
-      enTranslation = spokenText;
-    } else {
-      enTranslation = await translateTextGTX(spokenText, sourceLang, "en");
-    }
+    let enTranslation = await translateTextGTX(spokenText, sourceLang, "en");
+    if (!enTranslation) enTranslation = spokenText;
     
     let englishBaseWord = enTranslation;
 
