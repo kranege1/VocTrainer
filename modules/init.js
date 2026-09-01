@@ -1811,6 +1811,11 @@ export async function initApp() {
       overlay.classList.add("active");
     };
   }
+
+  // Check version in background on startup
+  if (window.checkAppVersion) {
+    window.checkAppVersion(false);
+  }
 }
 
 
@@ -3121,6 +3126,96 @@ function showSaveSuccessAnimation(buttonId, successText) {
     }, 300);
   }, 1500);
 }
+
+window.checkAppVersion = async function(isManual = false) {
+  const reloadBtns = document.querySelectorAll(".btn-reload-icon");
+  reloadBtns.forEach(btn => btn.classList.add("reloading"));
+
+  try {
+    const currentBuildEl = document.getElementById("build-timestamp");
+    if (!currentBuildEl) return;
+    
+    const currentMatch = currentBuildEl.textContent.match(/Build:\s*([^\n\r↻]+)/i);
+    if (!currentMatch) return;
+    const currentTimestamp = currentMatch[1].trim();
+
+    // Fetch index.html with cache buster query parameter
+    const response = await fetch('/index.html?cb=' + Date.now());
+    if (!response.ok) {
+      if (isManual) {
+        showCustomAlert("Failed to connect to the server to check the version.");
+      }
+      return;
+    }
+    
+    const htmlText = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlText, "text/html");
+    const serverBuildEl = doc.getElementById("build-timestamp");
+    
+    if (!serverBuildEl) {
+      if (isManual) {
+        showCustomAlert("Could not read build timestamp from server.");
+      }
+      return;
+    }
+    
+    const serverMatch = serverBuildEl.textContent.match(/Build:\s*([^\n\r↻]+)/i);
+    if (!serverMatch) {
+      if (isManual) {
+        showCustomAlert("Could not parse build timestamp from server.");
+      }
+      return;
+    }
+    const serverTimestamp = serverMatch[1].trim();
+
+    if (serverTimestamp !== currentTimestamp) {
+      // Clear cache storage
+      if ('caches' in window) {
+        try {
+          const keys = await caches.keys();
+          await Promise.all(keys.map(key => caches.delete(key)));
+        } catch (e) {
+          console.warn("Failed to clear service worker caches:", e);
+        }
+      }
+      
+      const confirmReload = await showCustomConfirm(
+        `🚀 A new version of VocTrainer is available!\n\n` +
+        `Current version: ${currentTimestamp}\n` +
+        `Newest version: ${serverTimestamp}\n\n` +
+        `Would you like to clear browser cache and reload the application now?`
+      );
+      
+      if (confirmReload) {
+        window.location.replace(window.location.origin + window.location.pathname + '?v=' + Date.now() + window.location.hash);
+      }
+    } else {
+      if (isManual) {
+        const forceReload = await showCustomConfirm(
+          `✨ Your app is up-to-date!\n\nVersion: ${currentTimestamp}\n\nDo you want to clear browser cache and force reload anyway?`
+        );
+        if (forceReload) {
+          if ('caches' in window) {
+            try {
+              const keys = await caches.keys();
+              await Promise.all(keys.map(key => caches.delete(key)));
+            } catch (e) {}
+          }
+          window.location.replace(window.location.origin + window.location.pathname + '?v=' + Date.now() + window.location.hash);
+        }
+      }
+    }
+  } catch (err) {
+    console.error("Error checking app version:", err);
+    if (isManual) {
+      showCustomAlert("Error checking for updates: " + err.message);
+    }
+  } finally {
+    reloadBtns.forEach(btn => btn.classList.remove("reloading"));
+  }
+};
+
 
 
 

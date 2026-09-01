@@ -295,16 +295,19 @@ export function toggleQuickTranslateSpeech() {
 
 export async function runQuickTranslate(text) {
   try {
+    if (!text || !text.trim()) return;
     const targetGrid = document.getElementById("quick-translate-results");
     if (!targetGrid) return;
     
+    const sourceLang = document.getElementById("quick-translate-lang")?.value || "en";
+    const langNames = { de: "German", en: "English", it: "Italian", es: "Spanish", fr: "French" };
+    const sourceLangName = langNames[sourceLang] || sourceLang.toUpperCase();
+
     targetGrid.innerHTML = `
       <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-secondary); font-size: 1.1rem; font-weight: 600;">
-        <span style="display: inline-block; animation: spin 1s linear infinite; margin-right: 8px;">🔄</span> Auto-detecting language & translating...
+        <span style="display: inline-block; animation: spin 1s linear infinite; margin-right: 8px;">🔄</span> Translating from ${sourceLangName}...
       </div>
     `;
-    
-    const sourceLang = document.getElementById("quick-translate-lang")?.value || "en";
     
     let enTranslation = "";
     if (sourceLang === "en") {
@@ -417,7 +420,7 @@ export async function runQuickTranslate(text) {
 
         if (isShortPhrase) {
           try {
-            synonyms = await fetchSynonymsForTarget(translation, target.code, sourceLang);
+            synonyms = await fetchSynonymsForTarget(text, sourceLang, target.code, translation);
           } catch (e) {
             console.warn("Failed to get synonyms for", target.code, e);
           }
@@ -566,7 +569,9 @@ export function updateDuplicateStatus() {
   const saveBtn = document.getElementById("btn-quick-translate-save");
   if (!statusEl) return;
   
-  const spokenText = document.getElementById("quick-translate-input-display")?.textContent?.trim() || "";
+  const inputVal = document.getElementById("quick-translate-text-input")?.value?.trim();
+  const displayVal = document.getElementById("quick-translate-input-display")?.textContent?.trim();
+  const spokenText = inputVal || (displayVal !== "..." ? displayVal : "") || "";
   const folderEl = document.getElementById("quick-translate-save-folder");
   const folderId = folderEl ? folderEl.value : "";
   
@@ -611,7 +616,9 @@ export function updateDuplicateStatus() {
 }
 
 export async function saveQuickTranslateWord() {
-  const spokenText = document.getElementById("quick-translate-input-display").textContent.trim();
+  const inputVal = document.getElementById("quick-translate-text-input")?.value?.trim();
+  const displayVal = document.getElementById("quick-translate-input-display")?.textContent?.trim();
+  const spokenText = inputVal || (displayVal !== "..." ? displayVal : "") || "";
   const folderSelect = document.getElementById("quick-translate-save-folder");
   const folderId = folderSelect ? folderSelect.value : "";
   
@@ -1014,7 +1021,7 @@ export async function getArticleForTranslation(translation, targetLang, sourceTe
   const isSingleWord = !cleanWord.includes(" ");
   if (isSingleWord) {
     try {
-      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=bd&q=${encodeURIComponent(cleanWord)}`;
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${targetLang}&tl=${targetLang}&dt=bd&q=${encodeURIComponent(cleanWord)}`;
       const res = await fetch(url);
       if (res.ok) {
         const data = await res.json();
@@ -1045,24 +1052,37 @@ export async function getArticleForTranslation(translation, targetLang, sourceTe
   return { article: "", cleanTranslation: cleanWord };
 }
 
-export async function fetchSynonymsForTarget(word, targetLang, sourceLang = "de") {
-  if (!word || word === "...") return [];
+export async function fetchSynonymsForTarget(sourceText, sourceLang, targetLang, mainTranslation = "") {
+  if (!sourceText || sourceText === "...") return [];
   
-  // Clean translation if it contains articles
-  const cleanWord = stripArticles(word, targetLang).trim();
+  const cleanSource = sourceText.trim();
+  const cleanMain = stripArticles(mainTranslation, targetLang).toLowerCase().trim();
   
-  // Use Google Translate (GTX) alternative translations (100% free, 0 AI tokens)
+  // Use Google Translate (GTX) alternative translations & dictionary entries (100% free, 0 AI tokens)
   try {
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=at&q=${encodeURIComponent(cleanWord)}`;
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=at&dt=bd&q=${encodeURIComponent(cleanSource)}`;
     const res = await fetch(url);
     if (res.ok) {
       const data = await res.json();
+      let alts = [];
       if (data && data[5] && data[5][0] && data[5][0][2]) {
-        const alts = data[5][0][2].map(item => item[0]);
-        const uniqueAlts = alts.filter(a => a.toLowerCase() !== cleanWord.toLowerCase() && a.toLowerCase() !== word.toLowerCase());
-        if (uniqueAlts.length > 0) {
-          return uniqueAlts.slice(0, 5);
-        }
+        alts.push(...data[5][0][2].map(item => item[0]));
+      }
+      if (data && data[1]) {
+        data[1].forEach(entry => {
+          if (entry[2]) {
+            entry[2].forEach(sub => {
+              if (sub[0]) alts.push(sub[0]);
+            });
+          }
+        });
+      }
+      const uniqueAlts = [...new Set(alts)].filter(a => {
+        const lower = a.toLowerCase().trim();
+        return lower && lower !== cleanMain && lower !== cleanSource.toLowerCase();
+      });
+      if (uniqueAlts.length > 0) {
+        return uniqueAlts.slice(0, 5);
       }
     }
   } catch (e) {
