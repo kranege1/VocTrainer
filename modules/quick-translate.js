@@ -322,11 +322,29 @@ export async function fetchFastGTXDetails(text, sourceLang, targetLang) {
     clearTimeout(timeoutId);
 
     if (res.ok) {
-      const data = await res.json();
+      let data = await res.json();
 
       // 1. Core Translation
       if (Array.isArray(data) && Array.isArray(data[0])) {
         resObj.translation = data[0].map(item => item[0]).join("");
+      }
+
+      // Smart Fallback: If translation returned identical input text unchanged for a non-matching language, try auto-detection (sl=auto)
+      if (resObj.translation.toLowerCase().trim() === cleanText.toLowerCase() && sourceLang !== targetLang) {
+        try {
+          const fbUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&dt=at&dt=bd&q=${encodeURIComponent(cleanText)}`;
+          const fbRes = await fetch(fbUrl);
+          if (fbRes.ok) {
+            const fbData = await fbRes.json();
+            if (Array.isArray(fbData) && Array.isArray(fbData[0])) {
+              const fbTrans = fbData[0].map(item => item[0]).join("");
+              if (fbTrans) {
+                resObj.translation = fbTrans;
+                data = fbData;
+              }
+            }
+          }
+        } catch(e) {}
       }
 
       const cleanTrans = stripArticles(resObj.translation, targetLang).trim();
