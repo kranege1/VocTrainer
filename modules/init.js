@@ -3171,6 +3171,7 @@ window.checkAppVersion = async function(isManual = false) {
 
     if (serverTimestamp !== currentTimestamp) {
       // Clear cache storage
+      try { sessionStorage.clear(); } catch(e) {}
       if ('caches' in window) {
         try {
           const keys = await caches.keys();
@@ -3188,6 +3189,7 @@ window.checkAppVersion = async function(isManual = false) {
       );
       
       if (confirmReload) {
+        try { sessionStorage.clear(); } catch(e) {}
         window.location.replace(window.location.origin + window.location.pathname + '?v=' + Date.now() + window.location.hash);
       }
     } else {
@@ -3196,6 +3198,7 @@ window.checkAppVersion = async function(isManual = false) {
           `✨ Your app is up-to-date!\n\nVersion: ${currentTimestamp}\n\nDo you want to clear browser cache and force reload anyway?`
         );
         if (forceReload) {
+          try { sessionStorage.clear(); } catch(e) {}
           if ('caches' in window) {
             try {
               const keys = await caches.keys();

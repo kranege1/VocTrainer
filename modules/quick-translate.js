@@ -294,11 +294,21 @@ export function toggleQuickTranslateSpeech() {
 }
 
 export async function fetchFastGTXDetails(text, sourceLang, targetLang) {
-  const cleanText = text.trim();
-  const cacheKey = `qt_fast_${sourceLang}_${targetLang}_${cleanText.toLowerCase()}`;
+  const cleanText = (text || "").replace(/[\u00A0\u200B\u200C\u200D\uFEFF]/g, " ").trim();
+  if (!cleanText) return { translation: "", article: "", synonyms: [] };
+
+  const cacheKey = `qt_fast_v3_${sourceLang}_${targetLang}_${cleanText.toLowerCase()}`;
   const cached = sessionStorage.getItem(cacheKey);
   if (cached) {
-    try { return JSON.parse(cached); } catch(e) {}
+    try {
+      const parsed = JSON.parse(cached);
+      if (parsed && parsed.translation) {
+        const isUntranslatedSame = (parsed.translation.toLowerCase().trim() === cleanText.toLowerCase());
+        if (!isUntranslatedSame || sourceLang === targetLang) {
+          return parsed;
+        }
+      }
+    } catch(e) {}
   }
 
   let resObj = {
