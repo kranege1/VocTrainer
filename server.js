@@ -31,6 +31,25 @@ app.use(express.static(path.join(__dirname), {
   }
 }));
 
+// GET: Proxy Google Translate GTX API requests to bypass browser CORS restrictions (especially on iOS Safari)
+app.get('/api/gtx', async (req, res) => {
+  try {
+    const { sl, tl, q } = req.query;
+    if (!q) return res.status(400).json({ error: 'Missing query' });
+    const sourceLang = sl || 'auto';
+    const targetLang = tl || 'en';
+    const gtxUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${encodeURIComponent(sourceLang)}&tl=${encodeURIComponent(targetLang)}&dt=t&dt=at&dt=bd&q=${encodeURIComponent(q)}`;
+    const response = await fetch(gtxUrl);
+    if (response.ok) {
+      const data = await response.json();
+      return res.json(data);
+    }
+    res.status(response.status).json({ error: 'GTX upstream error' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Directory to store temporary sync data
 const SYNC_DIR = path.join(__dirname, 'sync_data');
 if (!fs.existsSync(SYNC_DIR)) {

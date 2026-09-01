@@ -878,7 +878,17 @@ async function translateTextGTX(text, fromLang, toLang) {
     }
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 4000);
-    const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${fromLang}&tl=${toLang}&dt=t&q=${encodeURIComponent(text)}`, { signal: controller.signal });
+    const slParam = (fromLang && fromLang !== toLang) ? fromLang : "auto";
+    const gtxQuery = `sl=${encodeURIComponent(slParam)}&tl=${encodeURIComponent(toLang)}&dt=t&dt=at&dt=bd&q=${encodeURIComponent(text)}`;
+
+    let res = null;
+    try {
+      res = await fetch(`/api/gtx?${gtxQuery}`, { signal: controller.signal });
+    } catch(e) {}
+
+    if (!res || !res.ok) {
+      res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&${gtxQuery}`, { signal: controller.signal });
+    }
     clearTimeout(timeoutId);
     if (res.ok) {
       const data = await res.json();
